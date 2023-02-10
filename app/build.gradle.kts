@@ -37,10 +37,10 @@ dependencies {
     implementation(projects.auth)
     implementation(projects.common)
     implementation(projects.commonAndroid)
+    implementation(projects.worker)
     implementation(projects.utilsLocation)
     implementation(projects.utilsRecognizer)
     implementation(projects.domain)
-    implementation(projects.presentation)
     implementation(projects.data)
     implementation(projects.dataDatabase)
     implementation(projects.dataPreference)
@@ -48,27 +48,10 @@ dependencies {
 
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)
-    implementation(libs.androidX.room.ktx)
-    implementation(libs.androidX.room.runtime)
-    implementation(libs.androidX.datastore.preferences)
 
-    implementation(libs.kotlin.coroutine.core)
-    implementation(libs.kotlin.coroutine.android)
-
-    implementation(libs.squareup.retrofit2)
-    implementation(libs.squareup.retrofit2.converter.moshi)
-    implementation(libs.squareup.moshi.kotlin)
-    implementation(libs.squareup.moshi.adapters)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
-
-    implementation(libs.gms.play.services.oss.licences)
+    implementation(libs.material)
 
     implementation(libs.timber)
-
-    ksp(libs.androidX.room.compiler)
-    ksp(libs.glide.ksp)
 }
 
 kapt {

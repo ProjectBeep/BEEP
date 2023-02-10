@@ -38,8 +38,6 @@ dependencies {
     implementation(libs.kotlin.coroutine.android)
     implementation(libs.kotlin.serialization.json)
 
-    implementation(libs.material)
-
     implementation(libs.accompanist.appcompat.theme)
     implementation(libs.accompanist.flowlayout)
     implementation(libs.accompanist.placeholder.material)

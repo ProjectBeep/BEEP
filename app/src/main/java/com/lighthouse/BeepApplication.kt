@@ -3,7 +3,6 @@ package com.lighthouse
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.utils.log.ComponentLogger
 import com.lighthouse.utils.log.CustomTimberTree
 import dagger.hilt.android.HiltAndroidApp
@@ -27,7 +26,7 @@ class BeepApplication : Application(), Configuration.Provider {
         Timber.plant(customTimberTree)
         componentLogger.initialize(this)
 
-        BeepWorkManager(this)
+//        BeepWorkManager(this)
     }
 
     override fun getWorkManagerConfiguration() =
