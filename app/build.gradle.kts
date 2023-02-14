@@ -45,11 +45,10 @@ dependencies {
     implementation(projects.dataDatabase)
     implementation(projects.dataPreference)
     implementation(projects.dataRemote)
+    implementation(projects.uiCommon)
 
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)
-
-    implementation(libs.material)
 
     implementation(libs.timber)
 }

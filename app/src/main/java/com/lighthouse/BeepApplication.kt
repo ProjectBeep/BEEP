@@ -25,8 +25,6 @@ class BeepApplication : Application(), Configuration.Provider {
         super.onCreate()
         Timber.plant(customTimberTree)
         componentLogger.initialize(this)
-
-//        BeepWorkManager(this)
     }
 
     override fun getWorkManagerConfiguration() =

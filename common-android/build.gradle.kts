@@ -17,5 +17,7 @@ dependencies {
     implementation(libs.squareup.moshi.kotlin)
     implementation(libs.squareup.moshi.adapters)
 
+    implementation(libs.material)
+
     ksp(libs.squareup.moshi.kotlin.codegen)
 }
