@@ -15,5 +15,6 @@ data class Gifticon(
     val isCashCard: Boolean,
     val balance: Int,
     val memo: String,
-    val isUsed: Boolean
+    val isUsed: Boolean,
+    val dDay: Int
 )

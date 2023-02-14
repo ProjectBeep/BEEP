@@ -3,6 +3,7 @@ package com.lighthouse.data.database.repository.gifticon
 import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.etc.SortBy
 import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.gifticon.GifticonNotification
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
 import com.lighthouse.data.database.dao.GifticonSearchDao
 import com.lighthouse.data.database.exception.DBNotFoundException
@@ -19,6 +20,22 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
     private val gifticonSearchDao: GifticonSearchDao
 ) : GifticonSearchDatabaseRepository {
 
+    override fun getGifticonsWithLimit(userId: String, limit: Int): Flow<List<Gifticon>> {
+        return gifticonSearchDao.getGifticonsSortByDeadlineWithLimit(userId, limit).map {
+            it.toDomain()
+        }
+    }
+
+    override fun getGifticonsWithDDay(
+        userId: String,
+        dDaySet: Set<Int>
+    ): Flow<List<GifticonNotification>> {
+        return gifticonSearchDao.getGifticonsWithDDay(userId, dDaySet).map {
+            it.toDomain()
+        }
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////
     override fun getGifticon(
         userId: String,
         gifticonId: String

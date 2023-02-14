@@ -23,6 +23,7 @@ internal fun DBGifticonEntity.toDomain(): Gifticon {
         isCashCard = isCashCard,
         balance = balance,
         memo = memo,
-        isUsed = isUsed
+        isUsed = isUsed,
+        0
     )
 }

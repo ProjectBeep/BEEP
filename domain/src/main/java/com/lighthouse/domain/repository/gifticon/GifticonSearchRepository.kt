@@ -3,10 +3,23 @@ package com.lighthouse.domain.repository.gifticon
 import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.etc.SortBy
 import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.gifticon.GifticonNotification
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonSearchRepository {
+
+    fun getGifticonsWithLimit(
+        userId: String,
+        limit: Int
+    ): Flow<List<Gifticon>>
+
+    fun getGifticonsWithDDay(
+        userId: String,
+        dDaySet: Set<Int>
+    ): Flow<List<GifticonNotification>>
+
+    // ////////////////////////////////////////////////////
 
     fun getGifticon(
         userId: String,

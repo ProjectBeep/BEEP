@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Query
 import com.lighthouse.data.database.entity.DBGifticonEntity
 import com.lighthouse.data.database.model.DBBrandWithGifticonCount
+import com.lighthouse.data.database.model.DBGifticon
+import com.lighthouse.data.database.model.DBGifticonNotification
 import com.lighthouse.data.database.model.DBGifticonWithCrop
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
@@ -11,6 +13,48 @@ import java.util.Date
 @Dao
 internal interface GifticonSearchDao {
 
+    /**
+     * 만료되지 않은 Gifticon 정보를 DDay를 포함해서 가져옴
+     * 1. UserId
+     * 2. Limit
+     */
+    @Query(
+        "SELECT *, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
+            "WHERE user_id = :userId AND is_used = 0 AND d_day > 0 " +
+            "ORDER BY expire_at " +
+            "LIMIT :limit"
+    )
+    fun getGifticonsSortByDeadlineWithLimit(
+        userId: String,
+        limit: Int
+    ): Flow<List<DBGifticon>>
+
+    /**
+     * Notification 에서 보여주기위해 DDay Set에 있는 Gifticon 정보를 가져옴
+     * 1. UserId
+     * 2. DDay Set
+     */
+    @Query(
+        "SELECT id, name, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
+            "WHERE user_id = :userId AND is_used = 0 AND d_day in (:dDaySet) " +
+            "ORDER BY expire_at"
+    )
+    fun getGifticonsWithDDay(
+        userId: String,
+        dDaySet: Set<Int>
+    ): Flow<List<DBGifticonNotification>>
+
+    // /////////////////////////////////////////////////////////////////////////////////////
     /**
      * 기프티콘 1개를 가져온다
      * 1. 유저 ID
@@ -286,7 +330,7 @@ internal interface GifticonSearchDao {
     @Query(
         "SELECT EXISTS (" +
             "SELECT * FROM gifticon_table " +
-            "WHERE user_id = :userId AND is_used = 0)"
+            "WHERE user_id = :userId AND is_used = :isUsed)"
     )
     fun hasGifticon(
         userId: String,

@@ -51,6 +51,16 @@ internal class UserRepositoryImpl @Inject constructor(
         return userPreferenceRepository.getNotificationEnable(userId)
     }
 
+    override suspend fun setFilterExpired(enable: Boolean): Result<Unit> {
+        val userId = authRepository.getCurrentUserId()
+        return userPreferenceRepository.setFilterExpired(userId, enable)
+    }
+
+    override fun getFilterExpired(): Flow<Result<Boolean>> {
+        val userId = authRepository.getCurrentUserId()
+        return userPreferenceRepository.getFilterExpired(userId)
+    }
+
     override suspend fun transferData(newUserId: String): Result<Unit> {
         val userId = authRepository.getCurrentUserId()
         return userPreferenceRepository.transferData(userId, newUserId)

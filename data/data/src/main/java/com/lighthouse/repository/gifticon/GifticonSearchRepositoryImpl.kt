@@ -3,6 +3,7 @@ package com.lighthouse.repository.gifticon
 import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.etc.SortBy
 import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.gifticon.GifticonNotification
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
 import com.lighthouse.domain.repository.gifticon.GifticonSearchRepository
 import kotlinx.coroutines.flow.Flow
@@ -11,6 +12,16 @@ import javax.inject.Inject
 internal class GifticonSearchRepositoryImpl @Inject constructor(
     private val gifticonSearchDatabaseRepository: GifticonSearchDatabaseRepository
 ) : GifticonSearchRepository {
+
+    override fun getGifticonsWithLimit(userId: String, limit: Int): Flow<List<Gifticon>> {
+        return gifticonSearchDatabaseRepository.getGifticonsWithLimit(userId, limit)
+    }
+
+    override fun getGifticonsWithDDay(userId: String, dDaySet: Set<Int>): Flow<List<GifticonNotification>> {
+        return gifticonSearchDatabaseRepository.getGifticonsWithDDay(userId, dDaySet)
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////
 
     override fun getGifticon(
         userId: String,
