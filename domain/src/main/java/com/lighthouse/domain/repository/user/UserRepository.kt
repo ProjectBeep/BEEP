@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
+    suspend fun isLogin(): Boolean
+    suspend fun login(): Result<Unit>
+
     fun getUserId(): String
     fun isGuest(): Flow<Boolean>
 

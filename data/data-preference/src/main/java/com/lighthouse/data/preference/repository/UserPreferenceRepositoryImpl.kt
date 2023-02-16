@@ -3,6 +3,7 @@ package com.lighthouse.data.preference.repository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.lighthouse.beep.model.auth.EncryptData
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.data.preference.exception.PrefNotFoundException
@@ -19,6 +20,24 @@ import javax.inject.Inject
 internal class UserPreferenceRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferenceRepository {
+
+    override suspend fun setLoginUserUid(
+        userId: String
+    ): Result<Unit> = runCatchingPref {
+        val loginUserUidKey = stringPreferencesKey(KEY_NAME_LOGIN_USER_UID)
+        dataStore.edit { pref ->
+            pref[loginUserUidKey] = userId
+        }
+    }
+
+    override suspend fun getLoginUserUid(): Result<String> {
+        val loginUserUidKey = stringPreferencesKey(KEY_NAME_LOGIN_USER_UID)
+        return runCatchingPref {
+            dataStore.data.map { pref ->
+                pref[loginUserUidKey] ?: ""
+            }.first()
+        }
+    }
 
     override suspend fun setEncryptData(
         userId: String,
@@ -150,6 +169,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
     }
 
     companion object {
+        private const val KEY_NAME_LOGIN_USER_UID = "LoginUserUid"
         private const val KEY_NAME_PIN_PASSWORD = "PinPassword"
         private const val KEY_NAME_IV = "IV"
         private const val KEY_NAME_SECURITY_OPTION = "SecurityOption"

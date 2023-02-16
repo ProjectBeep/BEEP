@@ -10,6 +10,16 @@ internal class UserRepositoryImpl @Inject constructor(
     private val userPreferenceRepository: UserPreferenceRepository
 ) : UserRepository {
 
+    override suspend fun isLogin(): Boolean {
+        val loginUserUid = userPreferenceRepository.getLoginUserUid().getOrDefault("")
+        return loginUserUid != ""
+    }
+
+    override suspend fun login(): Result<Unit> {
+        val userId = authRepository.getCurrentUserId()
+        return userPreferenceRepository.setLoginUserUid(userId)
+    }
+
     override fun getUserId(): String {
         return authRepository.getCurrentUserId()
     }
