@@ -13,8 +13,8 @@ import androidx.work.WorkerParameters
 import com.lighthouse.beep.model.gifticon.GifticonNotification
 import com.lighthouse.core.utils.time.TimeCalculator
 import com.lighthouse.domain.usecase.GetGifticonsWithDDayUseCase
+import com.lighthouse.features.common.navigator.DetailPendingNavigator
 import com.lighthouse.worker.R
-import com.lighthouse.worker.navigator.NotificationNavigator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.first
@@ -25,7 +25,7 @@ class NotificationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val getGifticonsUseCase: GetGifticonsWithDDayUseCase,
-    private val navigator: NotificationNavigator
+    private val navigator: DetailPendingNavigator
 ) : CoroutineWorker(context, workerParams) {
 
     private val notificationManager by lazy {
@@ -69,7 +69,7 @@ class NotificationWorker @AssistedInject constructor(
                 )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(navigator.gotoDetail(applicationContext, gifticon.id))
+            .setContentIntent(navigator.getPendingIntent(applicationContext, gifticon.id))
             .build().apply {
                 flags = Notification.FLAG_AUTO_CANCEL
             }

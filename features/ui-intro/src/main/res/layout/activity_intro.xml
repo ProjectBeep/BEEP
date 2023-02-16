@@ -3,16 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/beep_pink"
-        android:paddingHorizontal="32dp"
-        tools:context=".ui.signin.SignInFragment">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/iv_logo"
@@ -39,7 +32,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-
         <TextView
             android:id="@+id/tv_guest_signin"
             android:layout_width="wrap_content"
@@ -51,6 +43,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="signin_guest">게스트로 시작하기</string>
+</resources>

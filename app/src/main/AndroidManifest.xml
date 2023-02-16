@@ -22,19 +22,5 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BEEP"
         tools:targetApi="31">
-
-        <meta-data
-            android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="${naver_map_api_id}" />
-
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove">
-            <meta-data
-                android:name="com.lighthouse.di.WorkManagerInitializer"
-                android:value="androidx.startup" />
-        </provider>
-
     </application>
 </manifest>

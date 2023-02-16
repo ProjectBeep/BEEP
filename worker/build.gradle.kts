@@ -14,6 +14,7 @@ dependencies {
     implementation(projects.model)
     implementation(projects.commonAndroid)
     implementation(projects.domain)
+    implementation(projects.uiCommon)
 
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)
