@@ -14,7 +14,7 @@ class IntroViewModel @Inject constructor(
 
     suspend fun isLogin() = isLoginUserUseCase()
 
-    suspend fun login() {
-        loginUseCase()
+    suspend fun login(): Result<Unit> {
+        return loginUseCase()
     }
 }

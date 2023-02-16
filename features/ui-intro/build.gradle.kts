@@ -1,7 +1,7 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("beep.android.library")
     id("beep.android.hilt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -23,7 +23,12 @@ dependencies {
     implementation(libs.androidX.constraintlayout)
     implementation(libs.androidX.fragment.ktx)
 
+    implementation(libs.material)
+
     implementation(libs.gms.play.services.auth)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
 
     implementation(libs.timber)
 }

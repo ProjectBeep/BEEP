@@ -86,11 +86,11 @@ kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.
 ## Material
 material = "com.google.android.material:material:1.7.0"
 ## GMS (google mobile service)
-gms-play-services-auth = "com.google.android.gms:play-services-auth:20.3.0"
+gms-play-services-auth = "com.google.android.gms:play-services-auth:20.4.1"
 gms-play-services-location = "com.google.android.gms:play-services-location:20.0.0"
 gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.0"
 ## Firebase
-firebase-bom = "com.google.firebase:firebase-bom:31.0.2"
+firebase-bom = "com.google.firebase:firebase-bom:31.2.0"
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
