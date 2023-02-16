@@ -22,5 +22,7 @@ dependencies {
     implementation(libs.androidX.constraintlayout)
     implementation(libs.androidX.fragment.ktx)
 
+    implementation(libs.material)
+
     implementation(libs.timber)
 }
