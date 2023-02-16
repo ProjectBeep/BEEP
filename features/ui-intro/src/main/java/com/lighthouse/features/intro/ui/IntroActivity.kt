@@ -1,6 +1,7 @@
 package com.lighthouse.features.intro.ui
 
 import android.app.Activity
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -87,9 +88,15 @@ class IntroActivity : AppCompatActivity() {
             R.layout.activity_intro
         )
 
+        animateLogo()
         setUpLoadingFlow()
         setUpBtnGoogleLogin()
         setUpTvGuestSignIn()
+    }
+
+    private fun animateLogo() {
+        val drawable = binding.ivLogo.drawable as AnimatedVectorDrawable
+        drawable.start()
     }
 
     private fun setUpLoadingFlow() {
