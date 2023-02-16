@@ -16,11 +16,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.lighthouse.features.common.dialog.progress.ProgressDialog
+import com.lighthouse.features.common.ext.repeatOnStarted
+import com.lighthouse.features.common.ext.show
 import com.lighthouse.features.common.navigator.MainNavigator
 import com.lighthouse.features.common.utils.throttle.onThrottleClick
 import com.lighthouse.features.intro.R
 import com.lighthouse.features.intro.databinding.ActivityIntroBinding
-import com.lighthouse.features.intro.exception.NotFoundEmailException
+import com.lighthouse.features.intro.exception.FailedConnectException
+import com.lighthouse.features.intro.exception.FailedLoginException
+import com.lighthouse.features.intro.exception.FailedSaveLoginUserException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +39,8 @@ class IntroActivity : AppCompatActivity() {
 
     @Inject
     lateinit var navigator: MainNavigator
+
+    private var progressDialog: ProgressDialog? = null
 
     private val googleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -49,13 +56,11 @@ class IntroActivity : AppCompatActivity() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 try {
                     signInWithGoogle(task.getResult(ApiException::class.java))
-                } catch (e: ApiException) {
-                    showSnackBar(getString(R.string.google_login_failed))
-                } catch (e: NotFoundEmailException) {
-                    showSnackBar(getString(R.string.error_not_found_email))
+                } catch (e: Exception) {
+                    signInFailed(e)
                 }
             } else {
-                showSnackBar(getString(R.string.google_connect_fail))
+                signInFailed(FailedConnectException())
             }
         }
 
@@ -82,12 +87,38 @@ class IntroActivity : AppCompatActivity() {
             R.layout.activity_intro
         )
 
-        initBtnGoogleLogin()
+        setUpLoadingFlow()
+        setUpBtnGoogleLogin()
+        setUpTvGuestSignIn()
     }
 
-    private fun initBtnGoogleLogin() {
+    private fun setUpLoadingFlow() {
+        repeatOnStarted {
+            viewModel.loading.collect { loading ->
+                if (loading) {
+                    if (progressDialog?.isAdded == true) {
+                        progressDialog?.dismiss()
+                    }
+                    progressDialog = ProgressDialog()
+                    progressDialog?.show(supportFragmentManager)
+                } else {
+                    progressDialog?.dismiss()
+                }
+            }
+        }
+    }
+
+    private fun setUpBtnGoogleLogin() {
         binding.btnGoogleLogin.onThrottleClick {
+            viewModel.setLoading(true)
             loginLauncher.launch(googleSignInClient.signInIntent)
+        }
+    }
+
+    private fun setUpTvGuestSignIn() {
+        binding.tvGuestSignin.onThrottleClick {
+            viewModel.setLoading(true)
+            signIn()
         }
     }
 
@@ -97,7 +128,7 @@ class IntroActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 signIn()
             } else {
-                showSnackBar(getString(R.string.login_failed))
+                signInFailed(FailedLoginException())
             }
         }
     }
@@ -105,11 +136,28 @@ class IntroActivity : AppCompatActivity() {
     private fun signIn() {
         lifecycleScope.launch {
             if (viewModel.login().isSuccess) {
-                navigator.openMain(this@IntroActivity)
+                signInSuccess()
             } else {
-                showSnackBar(getString(R.string.error_save_login_user))
+                signInFailed(FailedSaveLoginUserException())
             }
         }
+    }
+
+    private fun signInSuccess() {
+        viewModel.setLoading(false)
+        navigator.openMain(this)
+    }
+
+    private fun signInFailed(e: Exception) {
+        viewModel.setLoading(false)
+        val message = when (e) {
+            is ApiException -> getString(R.string.google_login_failed)
+            is FailedLoginException -> getString(R.string.login_failed)
+            is FailedSaveLoginUserException -> getString(R.string.error_save_login_user)
+            is FailedConnectException -> getString(R.string.google_connect_fail)
+            else -> getString(R.string.error_unknown)
+        }
+        showSnackBar(message)
     }
 
     private fun showSnackBar(string: String) {
