@@ -1,6 +1,6 @@
-package com.lighthouse
+package com.lighthouse.features.common
 
-object Const {
+object Extras {
 
     const val KEY_SELECTED_GALLERY_ITEM = "Extra.SelectedGalleryItem"
     const val KEY_ORIGIN_IMAGE = "Extra.OriginImage"

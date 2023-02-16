@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.common
+package com.lighthouse.features.common.binding
 
 import android.view.View
 import androidx.fragment.app.Fragment

@@ -109,7 +109,7 @@
     <string name="modify_gifticon_confirmation_cancel_title">정말 나가시겠습니까?</string>
     <string name="modify_gifticon_confirmation_cancel_message">편집중인 기프티콘이 존재합니다.</string>
 
-    <string name="origin_image_description">기프티콘 원본 이미지</string>
+
 
     <string name="modify_gifticon_back_description">기프티콘 편집에서 뒤로가기 버튼</string>
     <string name="modify_gifticon_title">기프티콘 편집</string>

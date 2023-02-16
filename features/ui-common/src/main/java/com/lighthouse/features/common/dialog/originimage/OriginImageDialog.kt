@@ -1,19 +1,26 @@
-package com.lighthouse.presentation.ui.common.dialog
+package com.lighthouse.features.common.dialog.originimage
 
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import com.lighthouse.presentation.R
-import com.lighthouse.presentation.databinding.DialogProgressBinding
-import com.lighthouse.presentation.ui.common.viewBindings
+import coil.load
+import com.lighthouse.core.android.exts.getRequiredParcelableExtra
+import com.lighthouse.features.common.Extras
+import com.lighthouse.features.common.R
+import com.lighthouse.features.common.binding.viewBindings
+import com.lighthouse.features.common.databinding.DialogOriginImageBinding
 
-class ProgressDialog : DialogFragment(R.layout.dialog_progress) {
+class OriginImageDialog : DialogFragment(R.layout.dialog_origin_image) {
 
-    private val binding: DialogProgressBinding by viewBindings()
+    private val binding: DialogOriginImageBinding by viewBindings()
+
+    private val originUri
+        get() = arguments?.getRequiredParcelableExtra<Uri>(Extras.KEY_ORIGIN_IMAGE)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -25,7 +32,15 @@ class ProgressDialog : DialogFragment(R.layout.dialog_progress) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.lifecycleOwner = viewLifecycleOwner
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+        }
+
+        binding.root.setOnClickListener {
+            dismiss()
+        }
+
+        binding.ivOrigin.load(originUri)
     }
 
     override fun onResume() {

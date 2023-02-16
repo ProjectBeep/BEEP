@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.common.dialog
+package com.lighthouse.features.common.dialog.confirmation
 
 import android.app.Dialog
 import android.graphics.Color
@@ -7,11 +7,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import com.lighthouse.presentation.R
-import com.lighthouse.presentation.databinding.DialogConfirmationBinding
-import com.lighthouse.presentation.ui.common.viewBindings
+import com.lighthouse.features.common.R
+import com.lighthouse.features.common.binding.viewBindings
+import com.lighthouse.features.common.databinding.DialogConfirmationBinding
 
 class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
@@ -62,46 +63,42 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            lifecycleOwner = viewLifecycleOwner
-        }
 
-        binding.tvTitle.apply {
-            text = initTitle ?: text
-            isVisible = text != ""
-        }
-        binding.tvMessage.apply {
-            text = initMessage ?: text
-            isVisible = text != ""
-        }
-        binding.tvOk.apply {
-            text = initOkText ?: text
-            isVisible = text != ""
-        }
-        binding.tvCancel.apply {
-            text = initCancelText ?: text
-            isVisible = text != ""
-        }
+        binding.tvTitle.setTextWithVisible(initTitle)
+        binding.tvMessage.setTextWithVisible(initMessage)
 
-        setUpClickListener()
+        setUpRoot()
+        setUpOkButton()
+        setUpCancelButton()
     }
 
-    private fun setUpClickListener() {
+    private fun setUpRoot() {
         binding.root.setOnClickListener {
             dismiss()
         }
+    }
 
-        binding.tvOk.setOnClickListener { v ->
-            if (onOkClickListener != null) {
-                onOkClickListener?.onClick(v)
+    private fun setUpOkButton() {
+        binding.tvOk.apply {
+            setTextWithVisible(initOkText)
+            setOnClickListener { v ->
+                if (onOkClickListener != null) {
+                    onOkClickListener?.onClick(v)
+                }
+                dismiss()
             }
-            dismiss()
         }
-        binding.tvCancel.setOnClickListener { v ->
-            if (onCancelClickListener != null) {
-                onCancelClickListener?.onClick(v)
+    }
+
+    private fun setUpCancelButton() {
+        binding.tvCancel.apply {
+            setTextWithVisible(initCancelText)
+            setOnClickListener { v ->
+                if (onCancelClickListener != null) {
+                    onCancelClickListener?.onClick(v)
+                }
+                dismiss()
             }
-            dismiss()
         }
     }
 
@@ -114,5 +111,10 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
                 height = WindowManager.LayoutParams.MATCH_PARENT
             }
         }
+    }
+
+    private fun TextView.setTextWithVisible(text: String?) {
+        this.text = text ?: this.text ?: ""
+        isVisible = this.text != ""
     }
 }

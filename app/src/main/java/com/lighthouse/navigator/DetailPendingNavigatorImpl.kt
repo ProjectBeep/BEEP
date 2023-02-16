@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import com.lighthouse.Const
+import com.lighthouse.features.common.Extras
 import com.lighthouse.features.common.navigator.DetailPendingNavigator
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ internal class DetailPendingNavigatorImpl @Inject constructor() : DetailPendingN
     override fun getPendingIntent(context: Context, gifticonId: String): PendingIntent {
         // Activity 를 실행할 Activity 로 변경하기
         val intent = Intent(context, Activity::class.java).apply {
-            putExtra(Const.KEY_GIFTICON_ID, gifticonId)
+            putExtra(Extras.KEY_GIFTICON_ID, gifticonId)
         }
 
         return TaskStackBuilder.create(context)

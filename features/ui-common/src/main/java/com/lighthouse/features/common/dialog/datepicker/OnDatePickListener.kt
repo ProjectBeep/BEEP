@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.common.dialog.datepicker
+package com.lighthouse.features.common.dialog.datepicker
 
 interface OnDatePickListener {
     fun onDatePick(year: Int, month: Int, date: Int)

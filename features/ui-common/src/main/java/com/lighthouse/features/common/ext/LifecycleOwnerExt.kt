@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.extension
+package com.lighthouse.features.common.ext
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner

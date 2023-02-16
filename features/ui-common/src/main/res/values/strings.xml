@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="confirmation_ok">확인</string>
+    <string name="confirmation_cancel">취소</string>
+
+    <string name="origin_image_description">기프티콘 원본 이미지</string>
+
+    <string name="date_picker_year">년</string>
+    <string name="date_picker_month">월</string>
+    <string name="date_picker_day">일</string>
+    <string name="date_picker_ok">확인</string>
+</resources>
