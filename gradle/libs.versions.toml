@@ -8,6 +8,7 @@ paging = "3.1.1"
 room = "2.4.3"
 hilt-work = "1.0.0"
 work = "2.8.0"
+navigation = "2.5.3"
 compose-compiler = "1.4.0"
 
 # 3rd-party
@@ -62,6 +63,8 @@ androidX-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref =
 androidX-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version = "lifecycle" }
 androidX-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
 androidX-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+androidX-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+androidX-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
 androidX-room-common = { module = "androidx.room:room-common", version.ref = "room" }
 androidX-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidX-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
