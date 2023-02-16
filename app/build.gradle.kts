@@ -46,6 +46,7 @@ dependencies {
     implementation(projects.dataPreference)
     implementation(projects.dataRemote)
     implementation(projects.uiCommon)
+    implementation(projects.uiIntro)
 
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)
