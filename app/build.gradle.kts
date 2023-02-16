@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)
 
+    implementation(libs.androidX.navigation.ui.ktx)
+
     implementation(libs.timber)
 }
 
