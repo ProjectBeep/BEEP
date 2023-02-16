@@ -56,7 +56,6 @@ class NotificationWorker @AssistedInject constructor(
     }
 
     private fun createNotification(gifticon: GifticonNotification) {
-        // DetailActivity 를 넣어준다
         val notification = NotificationCompat.Builder(
             applicationContext,
             applicationContext.getString(R.string.expired_channel_id)
@@ -70,7 +69,7 @@ class NotificationWorker @AssistedInject constructor(
                 )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(navigator.gotoDetail(gifticon.id))
+            .setContentIntent(navigator.gotoDetail(applicationContext, gifticon.id))
             .build().apply {
                 flags = Notification.FLAG_AUTO_CANCEL
             }
