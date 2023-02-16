@@ -1,4 +1,4 @@
-package com.lighthouse.features.common
+package com.lighthouse
 
 object Const {
 
