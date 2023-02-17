@@ -4,15 +4,15 @@ import android.app.Activity
 import android.content.Context
 import androidx.activity.result.ActivityResult
 import com.lighthouse.features.common.navigator.AddGifticonNavigator
+import com.lighthouse.features.common.navigator.GifticonListNavigator
 import com.lighthouse.features.common.navigator.HomeNavigator
-import com.lighthouse.features.common.navigator.ListNavigator
 import com.lighthouse.features.common.navigator.MapNavigator
 import com.lighthouse.features.common.navigator.SecurityNavigator
 import com.lighthouse.features.common.navigator.SettingNavigator
 import javax.inject.Inject
 
 class MainNav @Inject constructor(
-    private val listNavigator: ListNavigator,
+    private val gifticonListNavigator: GifticonListNavigator,
     private val homeNavigator: HomeNavigator,
     private val settingNavigator: SettingNavigator,
     private val mapNavigator: MapNavigator,
@@ -20,7 +20,7 @@ class MainNav @Inject constructor(
     private val securityNavigator: SecurityNavigator
 ) {
 
-    fun openList(activity: Activity) = listNavigator.openList(activity)
+    fun openList(activity: Activity) = gifticonListNavigator.openList(activity)
 
     fun openHome(activity: Activity) = homeNavigator.openHome(activity)
 
