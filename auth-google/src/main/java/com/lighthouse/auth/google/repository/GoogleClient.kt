@@ -9,4 +9,6 @@ interface GoogleClient {
     fun googleSignInIntent(): Intent
 
     suspend fun googleSignIn(result: ActivityResult): Result<AuthResult>
+
+    suspend fun googleSignOut(): Result<Unit>
 }

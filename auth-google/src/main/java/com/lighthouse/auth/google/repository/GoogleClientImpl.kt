@@ -16,6 +16,7 @@ import com.lighthouse.auth.google.R
 import com.lighthouse.auth.google.exception.FailedApiException
 import com.lighthouse.auth.google.exception.FailedConnectException
 import com.lighthouse.auth.google.exception.FailedLoginException
+import com.lighthouse.auth.google.exception.FailedSignOutException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -58,5 +59,9 @@ internal class GoogleClientImpl @Inject constructor(
         } else {
             Result.failure(FailedConnectException())
         }
+    }
+
+    override suspend fun googleSignOut(): Result<Unit> = runCatching {
+        googleSignInClient.signOut().getResult(FailedSignOutException::class.java)
     }
 }
