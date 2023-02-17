@@ -1,4 +1,4 @@
-package com.lighthouse.auth.repository
+package com.lighthouse.auth.google.repository
 
 import android.content.Intent
 import androidx.activity.result.ActivityResult

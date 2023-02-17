@@ -30,12 +30,12 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getLoginUserUid(): Result<String> {
+    override fun getLoginUserUid(): Flow<Result<String>> {
         val loginUserUidKey = stringPreferencesKey(KEY_NAME_LOGIN_USER_UID)
-        return runCatchingPref {
-            dataStore.data.map { pref ->
+        return dataStore.data.map { pref ->
+            runCatchingPref {
                 pref[loginUserUidKey] ?: ""
-            }.first()
+            }
         }
     }
 
@@ -52,16 +52,18 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getEncryptData(userId: String): Result<EncryptData> = runCatchingPref {
+    override fun getEncryptData(userId: String): Flow<Result<EncryptData>> {
         val pinPasswordKey = byteArrayKey(userId, KEY_NAME_PIN_PASSWORD)
         val ivKey = byteArrayKey(userId, KEY_NAME_IV)
 
-        dataStore.data.map { pref ->
-            val data = pref[pinPasswordKey]
-                ?: throw PrefNotFoundException("PinPassword 값이 없습니다.")
-            val iv = pref[ivKey] ?: throw PrefNotFoundException("IV 값이 없습니다.")
-            EncryptData(data, iv)
-        }.first()
+        return dataStore.data.map { pref ->
+            runCatchingPref {
+                val data = pref[pinPasswordKey]
+                    ?: throw PrefNotFoundException("PinPassword 값이 없습니다.")
+                val iv = pref[ivKey] ?: throw PrefNotFoundException("IV 값이 없습니다.")
+                EncryptData(data, iv)
+            }
+        }
     }
 
     override suspend fun setSecurityOption(

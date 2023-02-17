@@ -1,4 +1,4 @@
-package com.lighthouse.auth.repository
+package com.lighthouse.auth.google.repository
 
 import android.app.Activity
 import android.content.Context
@@ -12,10 +12,9 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.lighthouse.auth.R
-import com.lighthouse.auth.exception.FailedApiException
-import com.lighthouse.auth.exception.FailedConnectException
-import com.lighthouse.auth.exception.FailedLoginException
+import com.lighthouse.auth.google.exception.FailedApiException
+import com.lighthouse.auth.google.exception.FailedConnectException
+import com.lighthouse.auth.google.exception.FailedLoginException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -28,7 +27,7 @@ internal class GoogleClientImpl @Inject constructor(
 
     private val googleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(R.string.default_web_client_id))
+//            .requestIdToken(context.getString(R.string.default_web_client_id))
             .build()
         GoogleSignIn.getClient(context, gso)
     }

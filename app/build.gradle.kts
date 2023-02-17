@@ -35,6 +35,7 @@ dependencies {
     implementation(projects.coreAndroid)
     implementation(projects.model)
     implementation(projects.auth)
+    implementation(projects.authGoogle)
     implementation(projects.common)
     implementation(projects.commonAndroid)
     implementation(projects.worker)

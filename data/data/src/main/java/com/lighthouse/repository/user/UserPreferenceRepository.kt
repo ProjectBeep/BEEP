@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserPreferenceRepository {
 
-    suspend fun getLoginUserUid(): Result<String>
+    fun getLoginUserUid(): Flow<Result<String>>
 
     suspend fun setLoginUserUid(userId: String): Result<Unit>
 
     suspend fun setEncryptData(userId: String, encryptData: EncryptData): Result<Unit>
 
-    suspend fun getEncryptData(userId: String): Result<EncryptData>
+    fun getEncryptData(userId: String): Flow<Result<EncryptData>>
 
     suspend fun setSecurityOption(
         userId: String,

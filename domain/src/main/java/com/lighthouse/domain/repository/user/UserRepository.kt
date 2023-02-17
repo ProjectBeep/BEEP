@@ -1,28 +1,26 @@
 package com.lighthouse.domain.repository.user
 
+import com.lighthouse.beep.model.auth.EncryptData
 import com.lighthouse.beep.model.user.SecurityOption
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
     suspend fun isLogin(): Boolean
-    suspend fun login(): Result<Unit>
+    suspend fun login(userId: String): Result<Unit>
 
-    fun getUserId(): String
-    fun isGuest(): Flow<Boolean>
+    suspend fun setPinPassword(userId: String, encryptData: EncryptData): Result<Unit>
+    fun getPinPassword(userId: String): Flow<Result<EncryptData>>
 
-    suspend fun setPinPassword(pinPassword: String): Result<Unit>
-    suspend fun confirmPinPassword(pinPassword: String): Result<Boolean>
+    suspend fun setSecurityOption(userId: String, securityOption: SecurityOption): Result<Unit>
+    fun getSecurityOption(userId: String): Flow<Result<SecurityOption>>
 
-    suspend fun setSecurityOption(securityOption: SecurityOption): Result<Unit>
-    fun getSecurityOption(): Flow<Result<SecurityOption>>
+    suspend fun setNotificationEnable(userId: String, enable: Boolean): Result<Unit>
+    fun getNotificationEnable(userId: String): Flow<Result<Boolean>>
 
-    suspend fun setNotificationEnable(enable: Boolean): Result<Unit>
-    fun getNotificationEnable(): Flow<Result<Boolean>>
+    suspend fun setFilterExpired(userId: String, enable: Boolean): Result<Unit>
+    fun getFilterExpired(userId: String): Flow<Result<Boolean>>
 
-    suspend fun setFilterExpired(enable: Boolean): Result<Unit>
-    fun getFilterExpired(): Flow<Result<Boolean>>
-
-    suspend fun transferData(newUserId: String): Result<Unit>
-    suspend fun clearData(): Result<Unit>
+    suspend fun transferData(userId: String, newUserId: String): Result<Unit>
+    suspend fun clearData(userId: String): Result<Unit>
 }

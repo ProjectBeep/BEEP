@@ -3,6 +3,7 @@ package com.lighthouse.auth.repository
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import com.lighthouse.beep.model.auth.EncryptData
+import com.lighthouse.domain.repository.auth.CipherTool
 import java.security.Key
 import java.security.KeyStore
 import javax.crypto.Cipher

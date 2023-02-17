@@ -1,4 +1,4 @@
-package com.lighthouse.auth.repository
+package com.lighthouse.domain.repository.auth
 
 import com.lighthouse.beep.model.auth.EncryptData
 

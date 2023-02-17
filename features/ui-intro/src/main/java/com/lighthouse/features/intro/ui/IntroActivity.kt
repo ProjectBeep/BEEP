@@ -9,10 +9,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.auth.exception.FailedApiException
-import com.lighthouse.auth.exception.FailedConnectException
-import com.lighthouse.auth.exception.FailedLoginException
-import com.lighthouse.auth.repository.GoogleClient
+import com.lighthouse.auth.google.exception.FailedApiException
+import com.lighthouse.auth.google.exception.FailedConnectException
+import com.lighthouse.auth.google.exception.FailedLoginException
+import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show

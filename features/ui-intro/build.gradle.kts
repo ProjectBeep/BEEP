@@ -14,7 +14,7 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.common)
     implementation(projects.commonAndroid)
-    implementation(projects.auth)
+    implementation(projects.authGoogle)
     implementation(projects.uiCommon)
 
     implementation(libs.androidX.core.ktx)
