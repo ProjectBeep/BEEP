@@ -14,10 +14,12 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <FrameLayout
-            android:id="@+id/fl_container"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcv"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:defaultNavHost="true"
             app:layout_constraintBottom_toTopOf="@id/bnv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
+            android:padding="16dp"
             android:contentDescription="@string/add_gifticon_description"
             android:src="@drawable/ic_add"
             app:layout_constraintBottom_toTopOf="@id/bnv"

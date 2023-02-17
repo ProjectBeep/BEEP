@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.lighthouse.core.android.utils.permission.StoragePermissionManager
 import com.lighthouse.core.android.utils.permission.core.permissions
 import com.lighthouse.features.main.R
@@ -22,5 +24,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        setUpBottomNavigation()
+    }
+
+    private fun setUpBottomNavigation() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fcv) as NavHostFragment
+
+        val navController = navHostFragment.navController
+        binding.bnv.setupWithNavController(navController)
     }
 }

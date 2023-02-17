@@ -48,6 +48,9 @@ dependencies {
     implementation(projects.uiCommon)
     implementation(projects.uiIntro)
     implementation(projects.uiMain)
+    implementation(projects.uiGifticonlist)
+    implementation(projects.uiHome)
+    implementation(projects.uiSetting)
 
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)

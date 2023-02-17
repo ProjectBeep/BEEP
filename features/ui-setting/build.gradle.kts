@@ -1,11 +1,10 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("beep.android.library")
     id("beep.android.hilt")
 }
 
 android {
-    namespace = "com.lighthouse.features.main"
+    namespace = "com.lighthouse.features.setting"
 }
 
 dependencies {
@@ -21,8 +20,6 @@ dependencies {
     implementation(libs.androidX.appcompat)
     implementation(libs.androidX.constraintlayout)
     implementation(libs.androidX.fragment.ktx)
-    implementation(libs.androidX.navigation.fragment.ktx)
-    implementation(libs.androidX.navigation.ui.ktx)
 
     implementation(libs.material)
 
