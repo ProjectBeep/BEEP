@@ -3,6 +3,7 @@ package com.lighthouse.features.intro.ui
 import androidx.lifecycle.ViewModel
 import com.lighthouse.domain.usecase.user.IsLoginUserUseCase
 import com.lighthouse.domain.usecase.user.LoginUseCase
+import com.lighthouse.features.intro.model.SignInState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,8 +15,8 @@ internal class IntroViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
-    private val _loading = MutableStateFlow(false)
-    val loading = _loading.asStateFlow()
+    private val _signInState = MutableStateFlow<SignInState>(SignInState.None)
+    val signInState = _signInState.asStateFlow()
 
     suspend fun isLogin() = isLoginUserUseCase()
 
@@ -23,7 +24,7 @@ internal class IntroViewModel @Inject constructor(
         return loginUseCase()
     }
 
-    fun setLoading(loading: Boolean) {
-        _loading.value = loading
+    fun setState(state: SignInState) {
+        _signInState.value = state
     }
 }

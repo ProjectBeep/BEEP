@@ -21,6 +21,7 @@ import com.lighthouse.features.intro.R
 import com.lighthouse.features.intro.databinding.ActivityIntroBinding
 import com.lighthouse.features.intro.di.IntroNav
 import com.lighthouse.features.intro.exception.FailedSaveLoginUserException
+import com.lighthouse.features.intro.model.SignInState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,7 +46,7 @@ class IntroActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val exception = googleClient.googleSignIn(result).exceptionOrNull()
                 if (exception != null) {
-                    signInFailed(exception)
+                    viewModel.setState(SignInState.Failed(exception))
                 } else {
                     signIn()
                 }
@@ -59,7 +60,7 @@ class IntroActivity : AppCompatActivity() {
             if (viewModel.isLogin()) {
                 openMainScreen()
             } else {
-                openSignInScreen()
+                openIntroScreen()
             }
         }
     }
@@ -69,14 +70,14 @@ class IntroActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun openSignInScreen() {
+    private fun openIntroScreen() {
         binding = DataBindingUtil.setContentView(
             this@IntroActivity,
             R.layout.activity_intro
         )
 
         animateLogo()
-        setUpLoadingFlow()
+        setUpSignInStateFlow()
         setUpBtnGoogleLogin()
         setUpTvGuestSignIn()
     }
@@ -86,10 +87,10 @@ class IntroActivity : AppCompatActivity() {
         drawable.start()
     }
 
-    private fun setUpLoadingFlow() {
+    private fun setUpSignInStateFlow() {
         repeatOnStarted {
-            viewModel.loading.collect { loading ->
-                if (loading) {
+            viewModel.signInState.collect { state ->
+                if (state == SignInState.Loading) {
                     if (progressDialog?.isAdded == true) {
                         progressDialog?.dismiss()
                     }
@@ -98,41 +99,42 @@ class IntroActivity : AppCompatActivity() {
                 } else {
                     progressDialog?.dismiss()
                 }
+
+                when (state) {
+                    is SignInState.Success -> openMainScreen()
+                    is SignInState.Failed -> signInFailed(state.e)
+                    else -> {}
+                }
             }
         }
     }
 
     private fun setUpBtnGoogleLogin() {
         binding.btnGoogleLogin.onThrottleClick {
-            viewModel.setLoading(true)
+            viewModel.setState(SignInState.Loading)
             loginLauncher.launch(googleClient.googleSignInIntent())
         }
     }
 
     private fun setUpTvGuestSignIn() {
         binding.tvGuestSignin.onThrottleClick {
-            viewModel.setLoading(true)
+            viewModel.setState(SignInState.Loading)
             signIn()
         }
     }
 
     private fun signIn() {
         lifecycleScope.launch {
-            if (viewModel.login().isSuccess) {
-                signInSuccess()
+            val state = if (viewModel.login().isSuccess) {
+                SignInState.Success
             } else {
-                signInFailed(FailedSaveLoginUserException())
+                SignInState.Failed(FailedSaveLoginUserException())
             }
+            viewModel.setState(state)
         }
     }
 
-    private fun signInSuccess() {
-        viewModel.setLoading(false)
-        openMainScreen()
-    }
-
-    private fun signInFailed(e: Throwable) {
-        viewModel.setLoading(false)
+    private fun signInFailed(e: Exception) {
         val message = when (e) {
             is FailedApiException -> getString(R.string.google_login_failed)
             is FailedLoginException -> getString(R.string.login_failed)
