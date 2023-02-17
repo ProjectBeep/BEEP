@@ -180,7 +180,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="tv_sign_in, iv_sign_in_arrow, divider3"
-                    app:setVisible="@{vm.isGuest}" />
+                    app:setVisible="@{vm.isVisibleSignIn}" />
 
                 <TextView
                     android:id="@+id/tv_sign_in"
@@ -212,7 +212,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="tv_sign_out, iv_sign_out_arrow, divider4"
-                    app:setVisible="@{!vm.isGuest}" />
+                    app:setVisible="@{vm.isVisibleSignOut}" />
 
                 <TextView
                     android:id="@+id/tv_sign_out"

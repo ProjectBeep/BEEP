@@ -1,5 +1,5 @@
-package com.lighthouse.features.intro.exception
+package com.lighthouse.auth.exception
 
-internal class FailedConnectException(
+class FailedConnectException(
     message: String = "서버와 연결을 실패 했습니다."
 ) : Exception(message)

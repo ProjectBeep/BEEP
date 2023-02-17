@@ -1,6 +1,7 @@
 plugins {
     id("beep.android.library")
     id("beep.android.hilt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -13,7 +14,8 @@ dependencies {
     implementation(projects.model)
     implementation(projects.common)
     implementation(projects.commonAndroid)
-    implementation(projects.data)
+
+    implementation(libs.gms.play.services.auth)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)

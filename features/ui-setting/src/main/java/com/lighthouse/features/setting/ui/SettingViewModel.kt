@@ -21,7 +21,15 @@ class SettingViewModel @Inject constructor(
     getSecurityOptionUseCase: GetSecurityOptionUseCase
 ) : ViewModel() {
 
-    val isGuest = isGuestUseCase()
+    private val isGuest = isGuestUseCase()
+
+    val isVisibleSignIn = isGuest.map {
+        it
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val isVisibleSignOut = isGuest.map {
+        !it
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val notificationEnable = getNotificationOptionUseCase().map {
         it.getOrDefault(false)

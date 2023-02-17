@@ -1,5 +1,7 @@
 package com.lighthouse.repository.user
 
+import com.lighthouse.auth.repository.AuthRepository
+import com.lighthouse.auth.repository.CipherTool
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
@@ -7,6 +9,7 @@ import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
     private val authRepository: AuthRepository,
+    private val cipherTool: CipherTool,
     private val userPreferenceRepository: UserPreferenceRepository
 ) : UserRepository {
 
@@ -30,14 +33,14 @@ internal class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setPinPassword(pinPassword: String): Result<Unit> = runCatching {
         val userId = authRepository.getCurrentUserId()
-        val encryptData = authRepository.encrypt(SecurityOption.PIN.name, pinPassword).getOrThrow()
+        val encryptData = cipherTool.encrypt(SecurityOption.PIN.name, pinPassword).getOrThrow()
         userPreferenceRepository.setEncryptData(userId, encryptData).getOrThrow()
     }
 
     override suspend fun confirmPinPassword(pinPassword: String): Result<Boolean> = runCatching {
         val userId = authRepository.getCurrentUserId()
         val encryptData = userPreferenceRepository.getEncryptData(userId).getOrThrow()
-        val decryptData = authRepository.decrypt(SecurityOption.PIN.name, encryptData).getOrThrow()
+        val decryptData = cipherTool.decrypt(SecurityOption.PIN.name, encryptData).getOrThrow()
         pinPassword == decryptData
     }
 

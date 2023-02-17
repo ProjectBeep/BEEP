@@ -1,13 +1,8 @@
-package com.lighthouse.repository.user
+package com.lighthouse.auth.repository
 
 import com.lighthouse.beep.model.auth.EncryptData
-import kotlinx.coroutines.flow.Flow
 
-interface AuthRepository {
-
-    fun isGuest(): Flow<Boolean>
-
-    fun getCurrentUserId(): String
+interface CipherTool {
 
     fun encrypt(alias: String, data: String): Result<EncryptData>
 

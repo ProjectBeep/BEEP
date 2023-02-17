@@ -16,6 +16,7 @@ dependencies {
     implementation(projects.common)
     implementation(projects.commonAndroid)
     implementation(projects.domain)
+    implementation(projects.auth)
     implementation(projects.utilsLocation)
     implementation(projects.utilsRecognizer)
 

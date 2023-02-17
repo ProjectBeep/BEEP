@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.common)
     implementation(projects.commonAndroid)
+    implementation(projects.auth)
     implementation(projects.uiCommon)
 
     implementation(libs.androidX.core.ktx)
@@ -26,9 +27,6 @@ dependencies {
     implementation(libs.material)
 
     implementation(libs.gms.play.services.auth)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
 
     implementation(libs.timber)
 }

@@ -1,6 +1,5 @@
 package com.lighthouse.features.intro.ui
 
-import android.app.Activity
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,14 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.lighthouse.auth.exception.FailedApiException
+import com.lighthouse.auth.exception.FailedConnectException
+import com.lighthouse.auth.exception.FailedLoginException
+import com.lighthouse.auth.repository.GoogleClient
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
@@ -24,8 +20,6 @@ import com.lighthouse.features.common.utils.throttle.onThrottleClick
 import com.lighthouse.features.intro.R
 import com.lighthouse.features.intro.databinding.ActivityIntroBinding
 import com.lighthouse.features.intro.di.IntroNav
-import com.lighthouse.features.intro.exception.FailedConnectException
-import com.lighthouse.features.intro.exception.FailedLoginException
 import com.lighthouse.features.intro.exception.FailedSaveLoginUserException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -41,27 +35,20 @@ class IntroActivity : AppCompatActivity() {
     @Inject
     lateinit var nav: IntroNav
 
-    private var progressDialog: ProgressDialog? = null
+    @Inject
+    lateinit var googleClient: GoogleClient
 
-    private val googleSignInClient by lazy {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        GoogleSignIn.getClient(this, gso)
-    }
+    private var progressDialog: ProgressDialog? = null
 
     private val loginLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    signInWithGoogle(task.getResult(ApiException::class.java))
-                } catch (e: Exception) {
-                    signInFailed(e)
+            lifecycleScope.launch {
+                val exception = googleClient.googleSignIn(result).exceptionOrNull()
+                if (exception != null) {
+                    signInFailed(exception)
+                } else {
+                    signIn()
                 }
-            } else {
-                signInFailed(FailedConnectException())
             }
         }
 
@@ -118,7 +105,7 @@ class IntroActivity : AppCompatActivity() {
     private fun setUpBtnGoogleLogin() {
         binding.btnGoogleLogin.onThrottleClick {
             viewModel.setLoading(true)
-            loginLauncher.launch(googleSignInClient.signInIntent)
+            loginLauncher.launch(googleClient.googleSignInIntent())
         }
     }
 
@@ -126,17 +113,6 @@ class IntroActivity : AppCompatActivity() {
         binding.tvGuestSignin.onThrottleClick {
             viewModel.setLoading(true)
             signIn()
-        }
-    }
-
-    private fun signInWithGoogle(account: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        Firebase.auth.signInWithCredential(credential).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                signIn()
-            } else {
-                signInFailed(FailedLoginException())
-            }
         }
     }
 
@@ -155,10 +131,10 @@ class IntroActivity : AppCompatActivity() {
         openMainScreen()
     }
 
-    private fun signInFailed(e: Exception) {
+    private fun signInFailed(e: Throwable) {
         viewModel.setLoading(false)
         val message = when (e) {
-            is ApiException -> getString(R.string.google_login_failed)
+            is FailedApiException -> getString(R.string.google_login_failed)
             is FailedLoginException -> getString(R.string.login_failed)
             is FailedSaveLoginUserException -> getString(R.string.error_save_login_user)
             is FailedConnectException -> getString(R.string.google_connect_fail)
