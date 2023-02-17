@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="toolbar_title">설정</string>
+
+    <string name="used_gifticon">사용한 기프티콘 확인</string>
+    <string name="subtitle_setting">설정</string>
+    <string name="setting_imminent_notification">사용 임박 알림</string>
+    <string name="setting_security">보안 인증</string>
+    <string name="security_none">사용 안 함</string>
+    <string name="security_pin">PIN</string>
+    <string name="security_fingerprint">지문</string>
+    <string name="setting_location_permission">위치 정보 권한</string>
+    <string name="location_permission_allowed">허용됨</string>
+    <string name="location_permission_not_allowed">허용 안 함</string>
+
+    <string name="subtitle_user">사용자</string>
+    <string name="user_sign_out">로그아웃</string>
+    <string name="user_sign_in">구글 계정 연동</string>
+    <string name="user_withdrawal">회원 탈퇴</string>
+
+    <string name="subtitle_etc">기타</string>
+    <string name="etc_coffee">개발자에게 커피 사주기</string>
+    <string name="etc_terms_of_use">이용약관</string>
+    <string name="etc_personal_info_policy">개인정보처리방침</string>
+    <string name="etc_open_source_license">오픈소스 라이선스</string>
+</resources>

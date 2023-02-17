@@ -1,5 +1,7 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("beep.android.library")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {

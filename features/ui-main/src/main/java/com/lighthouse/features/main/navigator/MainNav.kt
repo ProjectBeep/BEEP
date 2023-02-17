@@ -11,7 +11,7 @@ import com.lighthouse.features.common.navigator.SecurityNavigator
 import com.lighthouse.features.common.navigator.SettingNavigator
 import javax.inject.Inject
 
-class MainNavigator @Inject constructor(
+class MainNav @Inject constructor(
     private val listNavigator: ListNavigator,
     private val homeNavigator: HomeNavigator,
     private val settingNavigator: SettingNavigator,

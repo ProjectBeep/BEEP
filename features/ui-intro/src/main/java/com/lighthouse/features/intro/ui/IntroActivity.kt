@@ -20,10 +20,10 @@ import com.google.firebase.ktx.Firebase
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
-import com.lighthouse.features.common.navigator.MainNavigator
 import com.lighthouse.features.common.utils.throttle.onThrottleClick
 import com.lighthouse.features.intro.R
 import com.lighthouse.features.intro.databinding.ActivityIntroBinding
+import com.lighthouse.features.intro.di.IntroNav
 import com.lighthouse.features.intro.exception.FailedConnectException
 import com.lighthouse.features.intro.exception.FailedLoginException
 import com.lighthouse.features.intro.exception.FailedSaveLoginUserException
@@ -39,7 +39,7 @@ class IntroActivity : AppCompatActivity() {
     private val viewModel: IntroViewModel by viewModels()
 
     @Inject
-    lateinit var navigator: MainNavigator
+    lateinit var nav: IntroNav
 
     private var progressDialog: ProgressDialog? = null
 
@@ -78,7 +78,7 @@ class IntroActivity : AppCompatActivity() {
     }
 
     private fun openMainScreen() {
-        navigator.openMain(this@IntroActivity)
+        nav.openMain(this)
         finish()
     }
 
@@ -152,7 +152,7 @@ class IntroActivity : AppCompatActivity() {
 
     private fun signInSuccess() {
         viewModel.setLoading(false)
-        navigator.openMain(this)
+        openMainScreen()
     }
 
     private fun signInFailed(e: Exception) {

@@ -10,7 +10,9 @@ import com.lighthouse.core.android.utils.permission.StoragePermissionManager
 import com.lighthouse.core.android.utils.permission.core.permissions
 import com.lighthouse.features.main.R
 import com.lighthouse.features.main.databinding.ActivityMainBinding
+import com.lighthouse.features.main.navigator.MainNav
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -20,6 +22,9 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     private val storagePermission: StoragePermissionManager by permissions()
+
+    @Inject
+    lateinit var nav: MainNav
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
