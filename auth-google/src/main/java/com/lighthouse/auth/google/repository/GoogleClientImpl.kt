@@ -12,6 +12,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.lighthouse.auth.google.R
 import com.lighthouse.auth.google.exception.FailedApiException
 import com.lighthouse.auth.google.exception.FailedConnectException
 import com.lighthouse.auth.google.exception.FailedLoginException
@@ -27,7 +28,7 @@ internal class GoogleClientImpl @Inject constructor(
 
     private val googleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestIdToken(context.getString(R.string.default_web_client_id))
             .build()
         GoogleSignIn.getClient(context, gso)
     }

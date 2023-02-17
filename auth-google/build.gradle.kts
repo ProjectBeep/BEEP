@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lighthouse.auth"
+    namespace = "com.lighthouse.auth.google"
 }
 
 dependencies {

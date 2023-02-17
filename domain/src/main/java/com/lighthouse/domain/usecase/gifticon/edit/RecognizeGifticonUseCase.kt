@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase.edit
+package com.lighthouse.domain.usecase.gifticon.edit
 
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult

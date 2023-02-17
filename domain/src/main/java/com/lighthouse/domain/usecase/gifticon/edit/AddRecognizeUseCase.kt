@@ -1,13 +1,12 @@
-package com.lighthouse.domain.usecase.edit.addgifticon
+package com.lighthouse.domain.usecase.gifticon.edit
 
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
-import com.lighthouse.domain.usecase.edit.RecognizeGifticonUseCase
-import com.lighthouse.domain.usecase.edit.recognize.RecognizeBalanceUseCase
-import com.lighthouse.domain.usecase.edit.recognize.RecognizeBarcodeUseCase
-import com.lighthouse.domain.usecase.edit.recognize.RecognizeBrandNameUseCase
-import com.lighthouse.domain.usecase.edit.recognize.RecognizeExpiredUseCase
-import com.lighthouse.domain.usecase.edit.recognize.RecognizeGifticonNameUseCase
+import com.lighthouse.domain.usecase.gifticon.edit.recognize.RecognizeBalanceUseCase
+import com.lighthouse.domain.usecase.gifticon.edit.recognize.RecognizeBarcodeUseCase
+import com.lighthouse.domain.usecase.gifticon.edit.recognize.RecognizeBrandNameUseCase
+import com.lighthouse.domain.usecase.gifticon.edit.recognize.RecognizeExpiredUseCase
+import com.lighthouse.domain.usecase.gifticon.edit.recognize.RecognizeGifticonNameUseCase
 import java.util.Date
 import javax.inject.Inject
 

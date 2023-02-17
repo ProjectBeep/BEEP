@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase.edit.modifygifticon
+package com.lighthouse.domain.usecase.gifticon.edit
 
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
 import com.lighthouse.domain.repository.auth.AuthRepository

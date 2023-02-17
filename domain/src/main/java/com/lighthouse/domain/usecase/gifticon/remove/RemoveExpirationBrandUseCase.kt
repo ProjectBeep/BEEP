@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase
+package com.lighthouse.domain.usecase.gifticon.remove
 
 import com.lighthouse.domain.repository.brand.BrandRepository
 import javax.inject.Inject

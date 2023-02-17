@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase.edit.recognize
+package com.lighthouse.domain.usecase.gifticon.edit.recognize
 
 import com.lighthouse.domain.repository.gifticon.GifticonRecognizeRepository
 import java.util.Date

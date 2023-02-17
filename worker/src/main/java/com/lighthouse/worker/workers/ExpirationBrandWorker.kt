@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.lighthouse.domain.usecase.RemoveExpirationBrandUseCase
+import com.lighthouse.domain.usecase.gifticon.remove.RemoveExpirationBrandUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

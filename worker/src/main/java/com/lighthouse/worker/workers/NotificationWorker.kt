@@ -12,7 +12,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.lighthouse.beep.model.gifticon.GifticonNotification
 import com.lighthouse.core.utils.time.TimeCalculator
-import com.lighthouse.domain.usecase.GetGifticonsWithDDayUseCase
+import com.lighthouse.domain.usecase.gifticon.search.GetGifticonsWithDDayUseCase
 import com.lighthouse.features.common.navigator.DetailPendingNavigator
 import com.lighthouse.worker.R
 import dagger.assisted.Assisted
