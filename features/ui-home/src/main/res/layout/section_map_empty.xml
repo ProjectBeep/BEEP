@@ -4,7 +4,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/card_height"
+        android:layout_height="@dimen/card_container_height"
         android:gravity="center"
         android:textAppearance="@style/BEEP.TextStyle.Body1"
         android:text="@string/empty_near_brands"/>

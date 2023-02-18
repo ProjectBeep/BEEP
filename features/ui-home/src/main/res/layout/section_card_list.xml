@@ -6,10 +6,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_card"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/card_height"
+        android:layout_height="@dimen/card_container_height"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:clipToPadding="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_gifticon"/>
+        tools:listitem="@layout/item_gifticon_loading"/>
 </layout>
