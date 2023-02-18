@@ -21,7 +21,13 @@ dependencies {
     implementation(libs.androidX.constraintlayout)
     implementation(libs.androidX.fragment.ktx)
 
+    implementation(libs.androidX.navigation.ui.ktx)
+    implementation(libs.androidX.navigation.fragment.ktx)
+
     implementation(libs.material)
+
+    implementation(libs.airbnb.lottie)
+    implementation(libs.facebook.shimmer)
 
     implementation(libs.timber)
 }
