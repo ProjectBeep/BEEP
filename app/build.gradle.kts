@@ -53,10 +53,13 @@ dependencies {
     implementation(projects.uiHome)
     implementation(projects.uiSetting)
 
+    implementation(libs.androidX.core.splashscreen)
+
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)
 
     implementation(libs.androidX.navigation.ui.ktx)
+    implementation(libs.androidX.navigation.fragment.ktx)
 
     implementation(libs.timber)
 }

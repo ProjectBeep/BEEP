@@ -4,17 +4,17 @@ import com.lighthouse.beep.model.auth.EncryptData
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
     private val userPreferenceRepository: UserPreferenceRepository
 ) : UserRepository {
 
-    override suspend fun isLogin(): Boolean {
-        val loginUserUid = userPreferenceRepository.getLoginUserUid().first()
-            .getOrDefault("")
-        return loginUserUid != ""
+    override fun isLogin(): Flow<Boolean> {
+        return userPreferenceRepository.getLoginUserUid().map {
+            it.getOrDefault("") != ""
+        }
     }
 
     override suspend fun login(userId: String): Result<Unit> {

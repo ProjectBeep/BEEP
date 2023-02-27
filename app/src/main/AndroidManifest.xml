@@ -22,5 +22,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BEEP"
         tools:targetApi="31">
+
+        <activity
+            android:name="com.lighthouse.ui.MainActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.BEEP.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    suspend fun isLogin(): Boolean
+    fun isLogin(): Flow<Boolean>
     suspend fun login(userId: String): Result<Unit>
 
     suspend fun setPinPassword(userId: String, encryptData: EncryptData): Result<Unit>
