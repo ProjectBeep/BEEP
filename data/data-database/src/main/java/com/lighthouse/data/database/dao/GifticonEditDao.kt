@@ -57,7 +57,8 @@ internal interface GifticonEditDao {
             "expire_at = :expire_at, " +
             "barcode = :barcode, " +
             "is_cash_card = :isCashCard, " +
-            "balance = :balance, " +
+            "total_cash = :totalCash, " +
+            "remain_cash = :remainCash, " +
             "memo = :memo " +
             "WHERE user_id = :userId AND id = :gifticonId"
     )
@@ -70,7 +71,8 @@ internal interface GifticonEditDao {
         expire_at: Date,
         barcode: String,
         isCashCard: Boolean,
-        balance: Int,
+        totalCash: Int,
+        remainCash: Int,
         memo: String
     ): Int
 
@@ -110,7 +112,8 @@ internal interface GifticonEditDao {
                 expireAt,
                 barcode,
                 isCashCard,
-                balance,
+                totalCash,
+                remainCash,
                 memo
             )
             if (updatedCount == 0) {

@@ -33,10 +33,10 @@ internal interface GifticonUsageHistoryDao {
      * 2. 기프티콘 ID
      * */
     @Query(
-        "SELECT balance FROM gifticon_table " +
+        "SELECT remain_cash FROM gifticon_table " +
             "WHERE user_id = :userId AND id = :gifticonId"
     )
-    suspend fun getCurrentGifticonBalance(
+    suspend fun getCurrentGifticonRemainCash(
         userId: String,
         gifticonId: String
     ): Int
@@ -47,7 +47,7 @@ internal interface GifticonUsageHistoryDao {
      * 2. 기프티콘 ID
      * */
     @Query(
-        "SELECT SUM(balance + " +
+        "SELECT SUM(remain_cash + " +
             "(SELECT SUM(amount) FROM usage_history_table " +
             "WHERE gifticon_id = :gifticonId " +
             "GROUP BY gifticon_id)) " +
@@ -55,7 +55,7 @@ internal interface GifticonUsageHistoryDao {
             "WHERE user_id = :userId AND id = :gifticonId " +
             "LIMIT 1"
     )
-    suspend fun getTotalGifticonBalance(
+    suspend fun getTotalGifticonRemainCash(
         userId: String,
         gifticonId: String
     ): Int
@@ -85,13 +85,13 @@ internal interface GifticonUsageHistoryDao {
      * */
     @Query(
         "UPDATE gifticon_table " +
-            "SET balance = :balance " +
+            "SET remain_cash = :remainCash " +
             "WHERE user_id = :userId AND id = :gifticonId"
     )
-    suspend fun updateGifticonBalance(
+    suspend fun updateGifticonRemainCash(
         userId: String,
         gifticonId: String,
-        balance: Int
+        remainCash: Int
     ): Int
 
     /**
@@ -140,13 +140,13 @@ internal interface GifticonUsageHistoryDao {
         usageHistory: DBUsageHistoryEntity
     ) {
         val gifticonId = usageHistory.gifticonId
-        val balance = getCurrentGifticonBalance(userId, gifticonId)
+        val balance = getCurrentGifticonRemainCash(userId, gifticonId)
 
         if (balance < amount) {
             throw DBUpdateException("사용할 금액이 잔액보다 많습니다.")
         }
 
-        if (updateGifticonBalance(userId, gifticonId, balance - amount) == 0) {
+        if (updateGifticonRemainCash(userId, gifticonId, balance - amount) == 0) {
             throw DBNotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
         }
 
@@ -173,8 +173,8 @@ internal interface GifticonUsageHistoryDao {
     ) {
         val isCashCard = getGifticonIsCashCard(userId, gifticonId)
         if (isCashCard) {
-            val totalBalance = getTotalGifticonBalance(userId, gifticonId)
-            if (updateGifticonBalance(userId, gifticonId, totalBalance) == 0) {
+            val totalBalance = getTotalGifticonRemainCash(userId, gifticonId)
+            if (updateGifticonRemainCash(userId, gifticonId, totalBalance) == 0) {
                 throw DBNotFoundException("기프티콘의 정보를 찾을 수 없습니다.")
             }
         }

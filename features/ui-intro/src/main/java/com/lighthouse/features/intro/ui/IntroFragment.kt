@@ -12,6 +12,7 @@ import com.lighthouse.auth.google.exception.FailedApiException
 import com.lighthouse.auth.google.exception.FailedConnectException
 import com.lighthouse.auth.google.exception.FailedLoginException
 import com.lighthouse.auth.google.repository.GoogleClient
+import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
@@ -27,7 +28,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class IntroFragment : Fragment(R.layout.fragment_intro) {
 
-    private lateinit var binding: FragmentIntroBinding
+    private val binding by viewBindings<FragmentIntroBinding>()
 
     private val viewModel: IntroViewModel by viewModels()
 

@@ -2,7 +2,6 @@ package com.lighthouse.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.lighthouse.data.database.entity.DBGifticonEntity
 import com.lighthouse.data.database.model.DBBrandWithGifticonCount
 import com.lighthouse.data.database.model.DBGifticon
 import com.lighthouse.data.database.model.DBGifticonNotification
@@ -19,7 +18,7 @@ internal interface GifticonSearchDao {
      * 2. Limit
      */
     @Query(
-        "SELECT *, " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
             "Cast(" +
             "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
             "JulianDay(date('now')) as Integer" +
@@ -61,13 +60,18 @@ internal interface GifticonSearchDao {
      * 2. 기프티콘 ID
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND id = :gifticonId"
     )
     fun getGifticon(
         userId: String,
         gifticonId: String
-    ): Flow<DBGifticonEntity>
+    ): Flow<DBGifticon>
 
     /**
      * 사용 가능한 기프티콘 중에서 count 만큼만 갖고 오기
@@ -76,7 +80,12 @@ internal interface GifticonSearchDao {
      * 3. 가져올 개수
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND expire_at = :time AND is_used = 0 " +
             "LIMIT :count"
     )
@@ -84,7 +93,7 @@ internal interface GifticonSearchDao {
         userId: String,
         time: Date,
         count: Int
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 기프티콘 리스트를 가져온다
@@ -93,14 +102,19 @@ internal interface GifticonSearchDao {
      * 최신순으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND is_used = :isUsed " +
             "ORDER BY created_at DESC"
     )
     fun getAllGifticonsSortByRecent(
         userId: String,
         isUsed: Boolean
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 기프티콘 리스트를 가져온다
@@ -110,7 +124,12 @@ internal interface GifticonSearchDao {
      * 최신순으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND is_used = :isUsed AND expire_at > :expired " +
             "ORDER BY created_at DESC"
     )
@@ -118,7 +137,7 @@ internal interface GifticonSearchDao {
         userId: String,
         isUsed: Boolean,
         expired: Date
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 기프티콘 리스트를 가져온다
@@ -127,14 +146,19 @@ internal interface GifticonSearchDao {
      * 만료일기준으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND is_used = :isUsed " +
             "ORDER BY expire_at"
     )
     fun getAllGifticonsSortByDeadline(
         userId: String,
         isUsed: Boolean
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 기프티콘 리스트를 가져온다
@@ -144,7 +168,12 @@ internal interface GifticonSearchDao {
      * 만료일기준으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND is_used = :isUsed AND expire_at > :expired " +
             "ORDER BY expire_at"
     )
@@ -152,7 +181,7 @@ internal interface GifticonSearchDao {
         userId: String,
         isUsed: Boolean,
         expired: Date
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 브랜드 이름으로 필터된 기프티콘 리스트를 가져온다
@@ -162,7 +191,12 @@ internal interface GifticonSearchDao {
      * 최신순으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND is_used = :isUsed AND UPPER(brand) IN(:filters) " +
             "ORDER BY created_at DESC"
     )
@@ -170,7 +204,7 @@ internal interface GifticonSearchDao {
         userId: String,
         isUsed: Boolean,
         filters: Set<String>
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 브랜드 이름으로 필터된 기프티콘 리스트를 가져온다
@@ -181,7 +215,12 @@ internal interface GifticonSearchDao {
      * 최신순으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND " +
             "is_used = :isUsed AND " +
             "UPPER(brand) IN(:filters) AND " +
@@ -193,7 +232,7 @@ internal interface GifticonSearchDao {
         isUsed: Boolean,
         filters: Set<String>,
         expired: Date
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 브랜드 이름으로 필터된 기프티콘 리스트를 가져온다
@@ -203,7 +242,12 @@ internal interface GifticonSearchDao {
      * 만료일기준으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND is_used = :isUsed AND UPPER(brand) IN(:filters) " +
             "ORDER BY expire_at"
     )
@@ -211,7 +255,7 @@ internal interface GifticonSearchDao {
         userId: String,
         isUsed: Boolean,
         filters: Set<String>
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 브랜드 이름으로 필터된 기프티콘 리스트를 가져온다
@@ -222,7 +266,12 @@ internal interface GifticonSearchDao {
      * 만료일기준으로 정렬
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND " +
             "is_used = :isUsed AND " +
             "UPPER(brand) IN(:filters) AND " +
@@ -234,7 +283,7 @@ internal interface GifticonSearchDao {
         isUsed: Boolean,
         filters: Set<String>,
         expired: Date
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 브랜드 이름과 해당 브랜드의 기프티콘 개수를 가져오기
@@ -292,14 +341,19 @@ internal interface GifticonSearchDao {
      * 3. 브랜드 이름
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND is_used = :isUsed AND brand =:brand"
     )
     fun getGifticonByBrand(
         userId: String,
         isUsed: Boolean,
         brand: String
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 기프티콘 리스트 가져오기
@@ -309,7 +363,12 @@ internal interface GifticonSearchDao {
      * 4. 만료일
      * */
     @Query(
-        "SELECT * FROM gifticon_table " +
+        "SELECT id, cropped_uri, name, brand, expire_at, is_cash_card, total_cash, remain_cash, " +
+            "Cast(" +
+            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
+            "JulianDay(date('now')) as Integer" +
+            ") as d_day " +
+            "FROM gifticon_table " +
             "WHERE user_id = :userId AND " +
             "is_used = :isUsed AND " +
             "brand =:brand AND " +
@@ -320,7 +379,7 @@ internal interface GifticonSearchDao {
         isUsed: Boolean,
         brand: String,
         expired: Date
-    ): Flow<List<DBGifticonEntity>>
+    ): Flow<List<DBGifticon>>
 
     /**
      * 기프티콘 존재여부 확인

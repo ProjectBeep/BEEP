@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="com.lighthouse.features.main.ui.MainViewModel" />
+            type="com.lighthouse.features.main.ui.MainContainerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
