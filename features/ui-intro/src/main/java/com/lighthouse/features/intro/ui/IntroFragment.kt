@@ -2,11 +2,10 @@ package com.lighthouse.features.intro.ui
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.auth.google.exception.FailedApiException
@@ -18,8 +17,7 @@ import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
 import com.lighthouse.features.common.utils.throttle.onThrottleClick
 import com.lighthouse.features.intro.R
-import com.lighthouse.features.intro.databinding.ActivityIntroBinding
-import com.lighthouse.features.intro.di.IntroNav
+import com.lighthouse.features.intro.databinding.FragmentIntroBinding
 import com.lighthouse.features.intro.exception.FailedSaveLoginUserException
 import com.lighthouse.features.intro.model.SignInState
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,14 +25,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class IntroActivity : AppCompatActivity() {
+class IntroFragment : Fragment(R.layout.fragment_intro) {
 
-    private lateinit var binding: ActivityIntroBinding
+    private lateinit var binding: FragmentIntroBinding
 
     private val viewModel: IntroViewModel by viewModels()
-
-    @Inject
-    lateinit var nav: IntroNav
 
     @Inject
     lateinit var googleClient: GoogleClient
@@ -53,28 +48,8 @@ class IntroActivity : AppCompatActivity() {
             }
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
-        super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            if (viewModel.isLogin()) {
-                openMainScreen()
-            } else {
-                openIntroScreen()
-            }
-        }
-    }
-
-    private fun openMainScreen() {
-        nav.openMain(this)
-        finish()
-    }
-
-    private fun openIntroScreen() {
-        binding = DataBindingUtil.setContentView(
-            this@IntroActivity,
-            R.layout.activity_intro
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         animateLogo()
         setUpSignInStateFlow()
@@ -95,13 +70,13 @@ class IntroActivity : AppCompatActivity() {
                         progressDialog?.dismiss()
                     }
                     progressDialog = ProgressDialog()
-                    progressDialog?.show(supportFragmentManager)
+                    progressDialog?.show(childFragmentManager)
                 } else {
                     progressDialog?.dismiss()
                 }
 
                 when (state) {
-                    is SignInState.Success -> openMainScreen()
+                    is SignInState.Success -> signInSuccess()
                     is SignInState.Failed -> signInFailed(state.e)
                     else -> {}
                 }
@@ -132,6 +107,11 @@ class IntroActivity : AppCompatActivity() {
             }
             viewModel.setState(state)
         }
+    }
+
+    private fun signInSuccess() {
+        val message = getString(R.string.login_success)
+        showSnackBar(message)
     }
 
     private fun signInFailed(e: Exception) {
