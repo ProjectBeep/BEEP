@@ -46,12 +46,18 @@ dependencies {
     implementation(projects.dataDatabase)
     implementation(projects.dataPreference)
     implementation(projects.dataRemote)
+    implementation(projects.uiCoffee)
     implementation(projects.uiCommon)
     implementation(projects.uiIntro)
     implementation(projects.uiMain)
     implementation(projects.uiGifticonlist)
     implementation(projects.uiHome)
+    implementation(projects.uiOpensourcelicense)
+    implementation(projects.uiPersonalinfopolicy)
+    implementation(projects.uiSecurity)
     implementation(projects.uiSetting)
+    implementation(projects.uiTermsofuse)
+    implementation(projects.uiUsedgifticon)
 
     implementation(libs.androidX.core.splashscreen)
 

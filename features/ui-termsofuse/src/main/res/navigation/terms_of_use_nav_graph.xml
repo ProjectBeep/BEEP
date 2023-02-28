@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/terms_of_use_nav_graph"
+    app:startDestination="@id/terms_of_use_fragment">
+
+    <fragment
+        android:id="@+id/terms_of_use_fragment"
+        android:name="com.lighthouse.features.termsofuse.ui.TermsOfUseFragment" />
+</navigation>
