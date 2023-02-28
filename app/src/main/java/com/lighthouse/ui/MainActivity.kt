@@ -5,7 +5,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import com.lighthouse.beep.R
 import com.lighthouse.beep.databinding.ActivityMainBinding
 import com.lighthouse.features.common.ext.repeatOnStarted
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpIsLogin() {
-        val navController = findNavController(R.id.fcv)
+//        val navController = findNavController(R.id.fcv)
         repeatOnStarted {
             viewModel.isLogin().collect { isLogin ->
                 if (isLogin) {
