@@ -19,7 +19,7 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:defaultNavHost="true"
+            app:defaultNavHost="false"
             app:navGraph="@navigation/main_container_nav_graph"
             app:layout_constraintBottom_toTopOf="@id/bnv"
             app:layout_constraintEnd_toEndOf="parent"
