@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.NavHostFragment
 import com.lighthouse.beep.R
 import com.lighthouse.beep.databinding.ActivityMainBinding
 import com.lighthouse.features.common.ext.repeatOnStarted
@@ -25,13 +26,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpIsLogin() {
-//        val navController = findNavController(R.id.fcv)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fcv) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.popBackStack()
         repeatOnStarted {
             viewModel.isLogin().collect { isLogin ->
                 if (isLogin) {
-//                    navController.navigate()
+                    navController.navigate(R.id.action_global_main_graph)
                 } else {
-//                    navController.navigate()
+                    navController.navigate(R.id.action_global_intro_graph)
                 }
             }
         }

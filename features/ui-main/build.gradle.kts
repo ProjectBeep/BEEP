@@ -16,6 +16,9 @@ dependencies {
     implementation(projects.common)
     implementation(projects.commonAndroid)
     implementation(projects.uiCommon)
+    implementation(projects.uiGifticonlist)
+    implementation(projects.uiHome)
+    implementation(projects.uiSetting)
 
     implementation(libs.androidX.core.ktx)
     implementation(libs.androidX.appcompat)

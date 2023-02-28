@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.lighthouse.core.android.utils.permission.StoragePermissionManager
 import com.lighthouse.core.android.utils.permission.core.permissions
 import com.lighthouse.features.common.binding.viewBindings
@@ -30,12 +28,12 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpBottomNavigation()
+//        setUpBottomNavigation()
     }
 
     private fun setUpBottomNavigation() {
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.fcv) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.bnv.setupWithNavController(navController)
+//        val navHostFragment = childFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
+//        val navController = navHostFragment.navController
+//        binding.bnv.setupWithNavController(navController)
     }
 }
