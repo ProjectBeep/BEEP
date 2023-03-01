@@ -10,8 +10,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.lighthouse.beep.R
 import com.lighthouse.beep.databinding.ActivityMainBinding
 import com.lighthouse.features.common.ext.repeatOnStarted
-import com.lighthouse.features.common.model.NavigationItem
-import com.lighthouse.features.common.navigator.AppNavigationViewModel
+import com.lighthouse.navs.app.model.AppNavigationItem
+import com.lighthouse.navs.app.navigator.AppNavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,25 +45,25 @@ class MainActivity : AppCompatActivity() {
         repeatOnStarted {
             appNavigationViewModel.navigation.collect { item ->
                 when (item) {
-                    NavigationItem.Popup ->
-                        navController.popBackStack()
+                    AppNavigationItem.Popup ->
+                        onBackPressedDispatcher.onBackPressed()
 
-                    NavigationItem.UsedGifticon ->
+                    AppNavigationItem.UsedGifticon ->
                         navController.navigate(R.id.used_gifticon_nav_graph)
 
-                    NavigationItem.Security ->
+                    AppNavigationItem.Security ->
                         navController.navigate(R.id.security_nav_graph)
 
-                    NavigationItem.Coffee ->
+                    AppNavigationItem.Coffee ->
                         navController.navigate(R.id.coffee_nav_graph)
 
-                    NavigationItem.TermsOfUse ->
+                    AppNavigationItem.TermsOfUse ->
                         navController.navigate(R.id.terms_of_use_nav_graph)
 
-                    NavigationItem.PersonalInfoPolicy ->
+                    AppNavigationItem.PersonalInfoPolicy ->
                         navController.navigate(R.id.personal_info_policy_nav_graph)
 
-                    NavigationItem.OpensourceLicense ->
+                    AppNavigationItem.OpensourceLicense ->
                         navController.navigate(R.id.open_source_license_nav_graph)
                 }
             }

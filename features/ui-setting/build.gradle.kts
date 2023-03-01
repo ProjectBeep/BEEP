@@ -16,6 +16,8 @@ dependencies {
     implementation(projects.commonAndroid)
     implementation(projects.authGoogle)
     implementation(projects.uiCommon)
+    implementation(projects.navApp)
+    implementation(projects.navMain)
 
     implementation(libs.androidX.core.ktx)
     implementation(libs.androidX.appcompat)

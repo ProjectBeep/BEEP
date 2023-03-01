@@ -20,6 +20,7 @@ dependencies {
 
     implementation(libs.androidX.core.ktx)
     implementation(libs.androidX.constraintlayout)
+    implementation(libs.androidX.navigation.fragment.ktx)
 
     implementation(libs.material)
 

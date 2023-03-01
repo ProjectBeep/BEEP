@@ -15,6 +15,8 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.common)
     implementation(projects.commonAndroid)
+    implementation(projects.navApp)
+    implementation(projects.navMain)
     implementation(projects.uiCommon)
     implementation(projects.uiGifticonlist)
     implementation(projects.uiHome)

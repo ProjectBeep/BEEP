@@ -46,6 +46,8 @@ dependencies {
     implementation(projects.dataDatabase)
     implementation(projects.dataPreference)
     implementation(projects.dataRemote)
+    implementation(projects.navApp)
+    implementation(projects.navMain)
     implementation(projects.uiCoffee)
     implementation(projects.uiCommon)
     implementation(projects.uiIntro)
