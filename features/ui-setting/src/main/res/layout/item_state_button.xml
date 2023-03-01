@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
-            android:text="@string/setting_security"
+            android:text="@string/config_security"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

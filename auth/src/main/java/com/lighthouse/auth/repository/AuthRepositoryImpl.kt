@@ -11,18 +11,14 @@ import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
-    private val isGuestFlow = callbackFlow {
+    override fun isGuest(): Flow<Boolean> = callbackFlow {
         val authStateListener = AuthStateListener {
             trySend(it.currentUser == null)
         }
-
+        Firebase.auth.addAuthStateListener(authStateListener)
         awaitClose {
             Firebase.auth.removeAuthStateListener(authStateListener)
         }
-    }
-
-    override fun isGuest(): Flow<Boolean> {
-        return isGuestFlow
     }
 
     override fun getCurrentUserId(): String {

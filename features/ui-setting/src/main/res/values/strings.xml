@@ -3,13 +3,13 @@
     <string name="toolbar_title">설정</string>
 
     <string name="used_gifticon">사용한 기프티콘 확인</string>
-    <string name="subtitle_setting">설정</string>
-    <string name="setting_imminent_notification">사용 임박 알림</string>
-    <string name="setting_security">보안 인증</string>
+    <string name="subtitle_config">설정</string>
+    <string name="config_imminent_notification">사용 임박 알림</string>
+    <string name="config_security">보안 인증</string>
     <string name="security_none">사용 안 함</string>
     <string name="security_pin">PIN</string>
     <string name="security_fingerprint">지문</string>
-    <string name="setting_location_permission">위치 정보 권한</string>
+    <string name="config_location_permission">위치 정보 권한</string>
     <string name="location_permission_allowed">허용됨</string>
     <string name="location_permission_not_allowed">허용 안 함</string>
 

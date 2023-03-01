@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="vm"
-            type="com.lighthouse.features.setting.ui.SettingViewModel" />
-    </data>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/cl_root"
         android:layout_width="match_parent"
@@ -46,8 +39,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

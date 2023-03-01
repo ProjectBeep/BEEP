@@ -11,7 +11,7 @@ import com.lighthouse.beep.R
 import com.lighthouse.beep.databinding.ActivityMainBinding
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.model.NavigationItem
-import com.lighthouse.features.common.navigator.NavigationViewModel
+import com.lighthouse.features.common.navigator.AppNavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    private val navigationViewModel: NavigationViewModel by viewModels()
+    private val appNavigationViewModel: AppNavigationViewModel by viewModels()
 
     private lateinit var navController: NavController
 
@@ -43,15 +43,28 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpNavigation() {
         repeatOnStarted {
-            navigationViewModel.navigation.collect { item ->
+            appNavigationViewModel.navigation.collect { item ->
                 when (item) {
-                    NavigationItem.Popup -> navController.popBackStack()
-                    NavigationItem.UsedGifticon -> navController.navigate(R.id.used_gifticon_nav_graph)
-                    NavigationItem.Security -> navController.navigate(R.id.security_nav_graph)
-                    NavigationItem.Coffee -> navController.navigate(R.id.coffee_nav_graph)
-                    NavigationItem.TermsOfUse -> navController.navigate(R.id.terms_of_use_nav_graph)
-                    NavigationItem.PersonalInfoPolicy -> navController.navigate(R.id.personal_info_policy_nav_graph)
-                    NavigationItem.OpensourceLicense -> navController.navigate(R.id.open_source_license_nav_graph)
+                    NavigationItem.Popup ->
+                        navController.popBackStack()
+
+                    NavigationItem.UsedGifticon ->
+                        navController.navigate(R.id.used_gifticon_nav_graph)
+
+                    NavigationItem.Security ->
+                        navController.navigate(R.id.security_nav_graph)
+
+                    NavigationItem.Coffee ->
+                        navController.navigate(R.id.coffee_nav_graph)
+
+                    NavigationItem.TermsOfUse ->
+                        navController.navigate(R.id.terms_of_use_nav_graph)
+
+                    NavigationItem.PersonalInfoPolicy ->
+                        navController.navigate(R.id.personal_info_policy_nav_graph)
+
+                    NavigationItem.OpensourceLicense ->
+                        navController.navigate(R.id.open_source_license_nav_graph)
                 }
             }
         }
@@ -60,10 +73,10 @@ class MainActivity : AppCompatActivity() {
     private fun setUpIsLogin() {
         repeatOnStarted {
             viewModel.isLogin().collect { isLogin ->
-                if (isLogin) {
-                    navController.navigate(R.id.action_global_main_graph)
-                } else {
-                    navController.navigate(R.id.action_global_intro_graph)
+                when (isLogin) {
+                    true -> navController.navigate(R.id.action_global_main_graph)
+                    false -> navController.navigate(R.id.action_global_intro_graph)
+                    else -> Unit
                 }
             }
         }

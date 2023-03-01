@@ -6,7 +6,27 @@ import com.lighthouse.features.setting.model.SettingItem
 internal class SettingItemDiff : DiffUtil.ItemCallback<SettingItem>() {
 
     override fun areItemsTheSame(oldItem: SettingItem, newItem: SettingItem): Boolean {
-        return oldItem === newItem
+        if (oldItem == newItem) return true
+        if (oldItem is SettingItem.Button &&
+            newItem is SettingItem.Button &&
+            oldItem.menu == newItem.menu
+        ) {
+            return true
+        } else if (
+            oldItem is SettingItem.StateButton &&
+            newItem is SettingItem.StateButton &&
+            oldItem.menu == newItem.menu
+        ) {
+            return true
+        } else if (
+            oldItem is SettingItem.StateSwitch &&
+            newItem is SettingItem.StateSwitch &&
+            oldItem.menu == newItem.menu
+        ) {
+            return true
+        }
+
+        return false
     }
 
     override fun areContentsTheSame(oldItem: SettingItem, newItem: SettingItem): Boolean {

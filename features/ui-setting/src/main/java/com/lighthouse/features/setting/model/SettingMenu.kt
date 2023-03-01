@@ -6,9 +6,9 @@ import com.lighthouse.features.setting.R
 internal enum class SettingMenu(val uiText: UIText) {
 
     USED_GIFTICON(UIText.StringResource(R.string.used_gifticon)),
-    IMMINENT_NOTIFICATION(UIText.StringResource(R.string.setting_imminent_notification)),
-    SECURITY(UIText.StringResource(R.string.setting_security)),
-    LOCATION(UIText.StringResource(R.string.setting_location_permission)),
+    IMMINENT_NOTIFICATION(UIText.StringResource(R.string.config_imminent_notification)),
+    SECURITY(UIText.StringResource(R.string.config_security)),
+    LOCATION(UIText.StringResource(R.string.config_location_permission)),
     SIGN_IN(UIText.StringResource(R.string.user_sign_in)),
     SIGN_OUT(UIText.StringResource(R.string.user_sign_out)),
     WITHDRAWAL(UIText.StringResource(R.string.user_withdrawal)),

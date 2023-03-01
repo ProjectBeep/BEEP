@@ -11,9 +11,7 @@ import com.lighthouse.core.android.utils.permission.core.permissions
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.main.R
 import com.lighthouse.features.main.databinding.FragmentMainContainerBinding
-import com.lighthouse.features.main.navigator.MainNav
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
@@ -24,9 +22,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
 
     private val storagePermission: StoragePermissionManager by permissions()
 
-    @Inject
-    lateinit var nav: MainNav
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -34,7 +29,8 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
     }
 
     private fun setUpBottomNavigation() {
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bnv.setupWithNavController(navController)
     }

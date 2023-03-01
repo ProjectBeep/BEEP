@@ -4,6 +4,17 @@ import com.lighthouse.core.android.utils.resource.UIText
 
 internal class SettingGroup(val title: UIText?, val items: List<SettingItem>) {
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SettingGroup) return false
+
+        return title == other.title && items == other.items
+    }
+
+    override fun hashCode(): Int {
+        return 31 * title.hashCode() + items.hashCode()
+    }
+
     class Builder {
         private var title: UIText? = null
         private val items = ArrayList<SettingItem>()
@@ -31,5 +42,9 @@ internal class SettingGroup(val title: UIText?, val items: List<SettingItem>) {
         fun build(): SettingGroup {
             return SettingGroup(title, items.toList())
         }
+    }
+
+    companion object {
+        val Empty = SettingGroup(null, listOf())
     }
 }

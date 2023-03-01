@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NavigationViewModel @Inject constructor() : ViewModel() {
+class AppNavigationViewModel @Inject constructor() : ViewModel() {
 
     private val _navigation = MutableEventFlow<NavigationItem>()
     val navigation = _navigation.asEventFlow()

@@ -49,9 +49,7 @@ sealed class UIText(
         }
 
         override fun hashCode(): Int {
-            var result = resId.hashCode()
-            result = 31 * result + args.contentHashCode()
-            return result
+            return 31 * resId.hashCode() + args.contentHashCode()
         }
     }
 
@@ -82,9 +80,7 @@ sealed class UIText(
         }
 
         override fun hashCode(): Int {
-            var result = text.hashCode()
-            result = 31 * result + spans.contentHashCode()
-            return result
+            return 31 * text.hashCode() + spans.contentHashCode()
         }
     }
 

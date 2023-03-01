@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit
 class NotificationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-    private val getGifticonsUseCase: GetGifticonsWithDDayUseCase,
-    private val navigator: DetailPendingNavigator
+    private val getGifticonsUseCase: GetGifticonsWithDDayUseCase
+//    private val navigator: DetailPendingNavigator
 ) : CoroutineWorker(context, workerParams) {
 
     private val notificationManager by lazy {
@@ -68,7 +68,7 @@ class NotificationWorker @AssistedInject constructor(
                 )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(navigator.getPendingIntent(applicationContext, gifticon.id))
+//            .setContentIntent(navigator.getPendingIntent(applicationContext, gifticon.id))
             .build().apply {
                 flags = Notification.FLAG_AUTO_CANCEL
             }
