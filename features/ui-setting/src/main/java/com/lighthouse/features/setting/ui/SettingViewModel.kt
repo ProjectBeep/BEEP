@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.core.android.utils.resource.UIText
+import com.lighthouse.core.utils.flow.MutableEventFlow
+import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.usecase.setting.GetNotificationOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.domain.usecase.setting.SetNotificationOptionUseCase
@@ -13,6 +15,7 @@ import com.lighthouse.domain.usecase.user.WithdrawalUseCase
 import com.lighthouse.features.setting.R
 import com.lighthouse.features.setting.ext.settingGroup
 import com.lighthouse.features.setting.ext.settingItems
+import com.lighthouse.features.setting.model.SettingEvent
 import com.lighthouse.features.setting.model.SettingMenu
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +35,9 @@ internal class SettingViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val withdrawalUseCase: WithdrawalUseCase
 ) : ViewModel() {
+
+    private val _eventFlow = MutableEventFlow<SettingEvent>()
+    val eventFlow = _eventFlow.asEventFlow()
 
     private val notificationEnable = getNotificationOptionUseCase().map {
         it.getOrDefault(false)
@@ -90,13 +96,27 @@ internal class SettingViewModel @Inject constructor(
 
     fun signOut() {
         viewModelScope.launch {
-            signOutUseCase()
+            val exception = signOutUseCase().exceptionOrNull()
+            if (exception != null) {
+                _eventFlow.emit(
+                    SettingEvent.SnackBar(
+                        UIText.StringResource(R.string.user_sign_out_exception)
+                    )
+                )
+            }
         }
     }
 
     fun withdrawal() {
         viewModelScope.launch {
-            withdrawalUseCase()
+            val exception = withdrawalUseCase().exceptionOrNull()
+            if (exception != null) {
+                _eventFlow.emit(
+                    SettingEvent.SnackBar(
+                        UIText.StringResource(R.string.user_withdrawal_exception)
+                    )
+                )
+            }
         }
     }
 

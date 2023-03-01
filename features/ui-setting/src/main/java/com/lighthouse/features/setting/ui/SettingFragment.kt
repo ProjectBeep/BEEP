@@ -11,11 +11,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.auth.google.repository.GoogleClient
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.setting.R
 import com.lighthouse.features.setting.adapter.SettingAdapter
 import com.lighthouse.features.setting.databinding.FragmentSettingBinding
+import com.lighthouse.features.setting.model.SettingEvent
 import com.lighthouse.features.setting.model.SettingMenu
 import com.lighthouse.navs.app.model.AppNavigationItem
 import com.lighthouse.navs.app.navigator.AppNavigationViewModel
@@ -72,6 +74,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         super.onViewCreated(view, savedInstanceState)
 
         setUpSettingMenu()
+        setUpEvent()
     }
 
     private fun setUpSettingMenu() {
@@ -79,6 +82,16 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.settingMenus.collect { menus ->
                 settingAdapter.submitList(menus)
+            }
+        }
+    }
+
+    private fun setUpEvent() {
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
+                    is SettingEvent.SnackBar -> showSnackBar(event.text)
+                }
             }
         }
     }
@@ -146,5 +159,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private fun showSnackBar(string: String) {
         Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showSnackBar(uiText: UIText) {
+        showSnackBar(uiText.asString(requireContext()).toString())
     }
 }
