@@ -13,6 +13,7 @@ import com.lighthouse.data.preference.ext.runCatchingPref
 import com.lighthouse.data.preference.ext.stringKey
 import com.lighthouse.repository.user.UserPreferenceRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -36,7 +37,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
             runCatchingPref {
                 pref[loginUserUidKey] ?: ""
             }
-        }
+        }.distinctUntilChanged()
     }
 
     override suspend fun setEncryptData(
@@ -63,7 +64,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
                 val iv = pref[ivKey] ?: throw PrefNotFoundException("IV 값이 없습니다.")
                 EncryptData(data, iv)
             }
-        }
+        }.distinctUntilChanged()
     }
 
     override suspend fun setSecurityOption(
@@ -85,7 +86,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
                 val value = pref[key] ?: throw PrefNotFoundException("Security 값이 없습니다.")
                 SecurityOption.valueOf(value)
             }
-        }
+        }.distinctUntilChanged()
     }
 
     override suspend fun setNotificationEnable(
@@ -98,7 +99,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
     override fun getNotificationEnable(
         userId: String
     ): Flow<Result<Boolean>> {
-        return getBoolean(userId, KEY_NAME_NOTIFICATION_ENABLE)
+        return getBoolean(userId, KEY_NAME_NOTIFICATION_ENABLE).distinctUntilChanged()
     }
 
     override suspend fun setFilterExpired(
@@ -109,7 +110,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
     }
 
     override fun getFilterExpired(userId: String): Flow<Result<Boolean>> {
-        return getBoolean(userId, KEY_NAME_FILTER_EXPIRED)
+        return getBoolean(userId, KEY_NAME_FILTER_EXPIRED).distinctUntilChanged()
     }
 
     override suspend fun transferData(
@@ -171,7 +172,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
             runCatchingPref {
                 pref[key] ?: throw PrefNotFoundException("$keyName 값이 없습니다.")
             }
-        }
+        }.distinctUntilChanged()
     }
 
     companion object {
