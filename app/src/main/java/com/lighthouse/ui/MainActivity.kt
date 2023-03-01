@@ -72,11 +72,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpIsLogin() {
         repeatOnStarted {
-            viewModel.isLogin().collect { isLogin ->
+            viewModel.isLoginFlow.collect { isLogin ->
                 when (isLogin) {
                     true -> navController.navigate(R.id.action_global_main_graph)
                     false -> navController.navigate(R.id.action_global_intro_graph)
-                    else -> Unit
                 }
             }
         }

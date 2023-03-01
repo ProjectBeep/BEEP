@@ -167,9 +167,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             SettingMenu.USED_GIFTICON ->
                 appNavigationViewModel.navigate(AppNavigationItem.UsedGifticon)
 
-            SettingMenu.SECURITY ->
-                appNavigationViewModel.navigate(AppNavigationItem.Security)
-
+            SettingMenu.SECURITY -> gotoSecurity()
             SettingMenu.LOCATION -> gotoLocation()
             SettingMenu.SIGN_IN -> signIn()
             SettingMenu.SIGN_OUT -> signOut()
@@ -188,6 +186,10 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
             else -> Unit
         }
+    }
+
+    private fun gotoSecurity() {
+        appNavigationViewModel.navigate(AppNavigationItem.Security)
     }
 
     private fun gotoLocation() {
