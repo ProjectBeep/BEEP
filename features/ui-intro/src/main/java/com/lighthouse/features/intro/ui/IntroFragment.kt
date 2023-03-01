@@ -8,9 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.auth.google.exception.FailedApiException
 import com.lighthouse.auth.google.exception.FailedConnectException
-import com.lighthouse.auth.google.exception.FailedLoginException
 import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
@@ -40,7 +38,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
     private val loginLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             lifecycleScope.launch {
-                val exception = googleClient.googleSignIn(result).exceptionOrNull()
+                val exception = googleClient.signIn(result).exceptionOrNull()
                 if (exception != null) {
                     viewModel.setState(SignInState.Failed(exception))
                 } else {
@@ -88,7 +86,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
     private fun setUpBtnGoogleLogin() {
         binding.btnGoogleLogin.onThrottleClick {
             viewModel.setState(SignInState.Loading)
-            loginLauncher.launch(googleClient.googleSignInIntent())
+            loginLauncher.launch(googleClient.signInIntent())
         }
     }
 
@@ -117,8 +115,6 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     private fun signInFailed(e: Exception) {
         val message = when (e) {
-            is FailedApiException -> getString(R.string.google_login_failed)
-            is FailedLoginException -> getString(R.string.login_failed)
             is FailedSaveLoginUserException -> getString(R.string.error_save_login_user)
             is FailedConnectException -> getString(R.string.google_connect_fail)
             else -> getString(R.string.error_unknown)

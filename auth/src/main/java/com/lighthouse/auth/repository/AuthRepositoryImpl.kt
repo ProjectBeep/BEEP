@@ -7,6 +7,7 @@ import com.lighthouse.domain.repository.auth.AuthRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor() : AuthRepository {
@@ -23,6 +24,21 @@ internal class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
     override fun getCurrentUserId(): String {
         return Firebase.auth.currentUser?.uid ?: GUEST_ID
+    }
+
+    override suspend fun withdrawal(): Result<Unit> {
+        val user = Firebase.auth.currentUser ?: return Result.success(Unit)
+        return runCatching {
+            callbackFlow {
+                user.delete().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(Unit)
+                    }
+                    close(it.exception)
+                }
+                awaitClose()
+            }.first()
+        }
     }
 
     companion object {

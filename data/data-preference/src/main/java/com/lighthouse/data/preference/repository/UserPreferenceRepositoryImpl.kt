@@ -140,7 +140,11 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
         clearData(oldUserId)
     }
 
-    override suspend fun clearData(userId: String): Result<Unit> = runCatchingPref {
+    override suspend fun withdrawal(userId: String): Result<Unit> = runCatchingPref {
+        clearData(userId)
+    }
+
+    private suspend fun clearData(userId: String) {
         dataStore.edit { pref ->
             pref.remove(byteArrayKey(userId, KEY_NAME_IV))
             pref.remove(byteArrayKey(userId, KEY_NAME_PIN_PASSWORD))

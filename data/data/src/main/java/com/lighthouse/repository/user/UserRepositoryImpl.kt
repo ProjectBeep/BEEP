@@ -21,7 +21,11 @@ internal class UserRepositoryImpl @Inject constructor(
         return userPreferenceRepository.setLoginUserUid(userId)
     }
 
-//    override fun getUserId(): String {
+    override suspend fun signOut(): Result<Unit> {
+        return userPreferenceRepository.setLoginUserUid("")
+    }
+
+    //    override fun getUserId(): String {
 //        return authRepository.getCurrentUserId()
 //    }
 //
@@ -76,11 +80,12 @@ internal class UserRepositoryImpl @Inject constructor(
         return userPreferenceRepository.getFilterExpired(userId)
     }
 
-    override suspend fun transferData(oldUserId: String, newUserId: String): Result<Unit> {
-        return userPreferenceRepository.transferData(oldUserId, newUserId)
+    override suspend fun transferData(userId: String, newUserId: String): Result<Unit> {
+        return userPreferenceRepository.transferData(userId, newUserId)
     }
 
-    override suspend fun clearData(userId: String): Result<Unit> {
-        return userPreferenceRepository.clearData(userId)
+    override suspend fun withdrawal(userId: String): Result<Unit> = runCatching {
+        userPreferenceRepository.withdrawal(userId).getOrThrow()
+        userPreferenceRepository.setLoginUserUid("").getOrThrow()
     }
 }

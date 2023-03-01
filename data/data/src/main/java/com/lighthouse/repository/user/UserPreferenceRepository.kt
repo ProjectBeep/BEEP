@@ -40,5 +40,5 @@ interface UserPreferenceRepository {
         newUserId: String
     ): Result<Unit>
 
-    suspend fun clearData(userId: String): Result<Unit>
+    suspend fun withdrawal(userId: String): Result<Unit>
 }

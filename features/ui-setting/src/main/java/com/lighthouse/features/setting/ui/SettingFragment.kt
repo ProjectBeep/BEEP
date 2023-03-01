@@ -7,7 +7,9 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.ext.repeatOnStarted
@@ -20,6 +22,7 @@ import com.lighthouse.navs.app.navigator.AppNavigationViewModel
 import com.lighthouse.navs.main.model.MainNavigationItem
 import com.lighthouse.navs.main.navigator.MainNavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -115,9 +118,23 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun signOut() {
+        lifecycleScope.launch {
+            val exception = googleClient.signOut().exceptionOrNull()
+            if (exception != null) {
+                showSnackBar(getString(R.string.user_sign_out_exception))
+            }
+            viewModel.signOut()
+        }
     }
 
     private fun withdrawal() {
+        lifecycleScope.launch {
+            val exception = googleClient.signOut().exceptionOrNull()
+            if (exception != null) {
+                showSnackBar(getString(R.string.user_withdrawal_exception))
+            }
+            viewModel.withdrawal()
+        }
     }
 
     private fun setUpMenuOnCheckedChange(menu: SettingMenu, isChecked: Boolean) {
@@ -125,5 +142,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             SettingMenu.IMMINENT_NOTIFICATION -> viewModel.setNotificationEnable(isChecked)
             else -> Unit
         }
+    }
+
+    private fun showSnackBar(string: String) {
+        Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT).show()
     }
 }

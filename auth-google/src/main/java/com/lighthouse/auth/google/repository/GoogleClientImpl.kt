@@ -7,16 +7,12 @@ import androidx.activity.result.ActivityResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.auth.google.R
-import com.lighthouse.auth.google.exception.FailedApiException
 import com.lighthouse.auth.google.exception.FailedConnectException
-import com.lighthouse.auth.google.exception.FailedLoginException
-import com.lighthouse.auth.google.exception.FailedSignOutException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -34,34 +30,57 @@ internal class GoogleClientImpl @Inject constructor(
         GoogleSignIn.getClient(context, gso)
     }
 
-    override fun googleSignInIntent(): Intent {
+    override fun signInIntent(): Intent {
         return googleSignInClient.signInIntent
     }
 
-    private suspend fun signInWithAccount(account: GoogleSignInAccount): Task<AuthResult> {
+    private suspend fun getGoogleAccount(result: ActivityResult): GoogleSignInAccount =
+        callbackFlow {
+            GoogleSignIn.getSignedInAccountFromIntent(result.data).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    trySend(it.result)
+                }
+                close(it.exception)
+            }
+            awaitClose()
+        }.first()
+
+    private suspend fun signInWithAccount(account: GoogleSignInAccount): AuthResult {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         return callbackFlow {
             Firebase.auth.signInWithCredential(credential).addOnCompleteListener {
-                trySend(it)
-                close()
+                if (it.isSuccessful) {
+                    trySend(it.result)
+                }
+                close(it.exception)
             }
             awaitClose()
         }.first()
     }
 
-    override suspend fun googleSignIn(result: ActivityResult): Result<AuthResult> {
+    override suspend fun signIn(result: ActivityResult): Result<AuthResult> {
         return if (result.resultCode == Activity.RESULT_OK) {
             runCatching {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                signInWithAccount(task.getResult(FailedApiException::class.java))
-                    .getResult(FailedLoginException::class.java)
+                val account = getGoogleAccount(result)
+                signInWithAccount(account)
             }
         } else {
             Result.failure(FailedConnectException())
         }
     }
 
-    override suspend fun googleSignOut(): Result<Unit> = runCatching {
-        googleSignInClient.signOut().getResult(FailedSignOutException::class.java)
+    override suspend fun signOut(): Result<Unit> {
+        Firebase.auth.currentUser ?: return Result.success(Unit)
+        return runCatching {
+            callbackFlow {
+                googleSignInClient.signOut().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(Unit)
+                    }
+                    close(it.exception)
+                }
+                awaitClose()
+            }.first()
+        }
     }
 }

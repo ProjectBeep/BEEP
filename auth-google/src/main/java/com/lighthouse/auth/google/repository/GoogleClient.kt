@@ -6,9 +6,9 @@ import com.google.firebase.auth.AuthResult
 
 interface GoogleClient {
 
-    fun googleSignInIntent(): Intent
+    fun signInIntent(): Intent
 
-    suspend fun googleSignIn(result: ActivityResult): Result<AuthResult>
+    suspend fun signIn(result: ActivityResult): Result<AuthResult>
 
-    suspend fun googleSignOut(): Result<Unit>
+    suspend fun signOut(): Result<Unit>
 }

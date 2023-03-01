@@ -8,6 +8,7 @@ interface UserRepository {
 
     fun isLogin(): Flow<Boolean>
     suspend fun login(userId: String): Result<Unit>
+    suspend fun signOut(): Result<Unit>
 
     suspend fun setPinPassword(userId: String, encryptData: EncryptData): Result<Unit>
     fun getPinPassword(userId: String): Flow<Result<EncryptData>>
@@ -22,5 +23,5 @@ interface UserRepository {
     fun getFilterExpired(userId: String): Flow<Result<Boolean>>
 
     suspend fun transferData(userId: String, newUserId: String): Result<Unit>
-    suspend fun clearData(userId: String): Result<Unit>
+    suspend fun withdrawal(userId: String): Result<Unit>
 }

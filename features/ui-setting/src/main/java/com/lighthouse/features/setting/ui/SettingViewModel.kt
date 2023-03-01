@@ -8,10 +8,11 @@ import com.lighthouse.domain.usecase.setting.GetNotificationOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.domain.usecase.setting.SetNotificationOptionUseCase
 import com.lighthouse.domain.usecase.user.IsGuestUseCase
+import com.lighthouse.domain.usecase.user.SignOutUseCase
+import com.lighthouse.domain.usecase.user.WithdrawalUseCase
 import com.lighthouse.features.setting.R
 import com.lighthouse.features.setting.ext.settingGroup
 import com.lighthouse.features.setting.ext.settingItems
-import com.lighthouse.features.setting.model.SettingGroup
 import com.lighthouse.features.setting.model.SettingMenu
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,10 +25,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SettingViewModel @Inject constructor(
-    private val isGuestUseCase: IsGuestUseCase,
+    isGuestUseCase: IsGuestUseCase,
     getNotificationOptionUseCase: GetNotificationOptionUseCase,
     getSecurityOptionUseCase: GetSecurityOptionUseCase,
-    private val setNotificationOptionUseCase: SetNotificationOptionUseCase
+    private val setNotificationOptionUseCase: SetNotificationOptionUseCase,
+    private val signOutUseCase: SignOutUseCase,
+    private val withdrawalUseCase: WithdrawalUseCase
 ) : ViewModel() {
 
     private val notificationEnable = getNotificationOptionUseCase().map {
@@ -71,7 +74,7 @@ internal class SettingViewModel @Inject constructor(
             addStateButton(SettingMenu.SECURITY, securityOption)
             addStateButton(SettingMenu.LOCATION, locationEnableText)
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingGroup.Empty)
+    }
 
     private val userGroup = isGuestUseCase().map { isGuest ->
         settingGroup {
@@ -83,7 +86,19 @@ internal class SettingViewModel @Inject constructor(
             }
             addStateButton(SettingMenu.WITHDRAWAL)
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingGroup.Empty)
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            signOutUseCase()
+        }
+    }
+
+    fun withdrawal() {
+        viewModelScope.launch {
+            withdrawalUseCase()
+        }
+    }
 
     val settingMenus = combine(
         configGroup,
