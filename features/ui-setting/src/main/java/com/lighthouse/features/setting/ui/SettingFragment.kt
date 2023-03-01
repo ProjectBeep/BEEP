@@ -7,9 +7,9 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
 import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.features.common.binding.viewBindings
-import com.lighthouse.features.common.ext.parentViewModels
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.setting.R
 import com.lighthouse.features.setting.adapter.SettingAdapter
@@ -31,7 +31,15 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private val appNavigationViewModel: AppNavigationViewModel by activityViewModels()
 
-    private val mainNavigationViewModel: MainNavigationViewModel by parentViewModels()
+    private val mainNavigationViewModel: MainNavigationViewModel by viewModels(
+        ownerProducer = {
+            var parent = requireParentFragment()
+            while (parent is NavHostFragment) {
+                parent = parent.requireParentFragment()
+            }
+            parent
+        }
+    )
 
     private val settingAdapter = SettingAdapter(
         onClick = { menu ->
