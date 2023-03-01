@@ -80,9 +80,11 @@ internal class UserRepositoryImpl @Inject constructor(
         return userPreferenceRepository.getFilterExpired(userId)
     }
 
-    override suspend fun transferData(userId: String, newUserId: String): Result<Unit> {
-        return userPreferenceRepository.transferData(userId, newUserId)
-    }
+    override suspend fun transferData(userId: String, newUserId: String): Result<Unit> =
+        runCatching {
+            userPreferenceRepository.transferData(userId, newUserId).getOrThrow()
+            userPreferenceRepository.setLoginUserUid(newUserId).getOrThrow()
+        }
 
     override suspend fun withdrawal(userId: String): Result<Unit> = runCatching {
         userPreferenceRepository.withdrawal(userId).getOrThrow()

@@ -14,6 +14,9 @@ dependencies {
     implementation(projects.model)
     implementation(projects.common)
     implementation(projects.commonAndroid)
+    implementation(projects.domain)
+
+    implementation(libs.androidX.fragment.ktx)
 
     implementation(libs.gms.play.services.auth)
 

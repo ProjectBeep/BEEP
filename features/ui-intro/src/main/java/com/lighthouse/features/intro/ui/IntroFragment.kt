@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.auth.google.exception.FailedConnectException
+import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
+import com.lighthouse.auth.google.ui.GoogleAuthViewModel
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
@@ -17,8 +19,6 @@ import com.lighthouse.features.common.ext.show
 import com.lighthouse.features.common.utils.throttle.onThrottleClick
 import com.lighthouse.features.intro.R
 import com.lighthouse.features.intro.databinding.FragmentIntroBinding
-import com.lighthouse.features.intro.exception.FailedSaveLoginUserException
-import com.lighthouse.features.intro.model.SignInState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     private val binding by viewBindings<FragmentIntroBinding>()
 
-    private val viewModel: IntroViewModel by viewModels()
+    private val googleAuthViewModel: GoogleAuthViewModel by viewModels()
 
     @Inject
     lateinit var googleClient: GoogleClient
@@ -40,9 +40,9 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
             lifecycleScope.launch {
                 val exception = googleClient.signIn(result).exceptionOrNull()
                 if (exception != null) {
-                    viewModel.setState(SignInState.Failed(exception))
+                    googleAuthViewModel.finishSignIn(exception)
                 } else {
-                    signIn()
+                    googleAuthViewModel.login()
                 }
             }
         }
@@ -51,7 +51,8 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
         super.onViewCreated(view, savedInstanceState)
 
         animateLogo()
-        setUpSignInStateFlow()
+        setUpGoogleAuthEvent()
+        setUpSignInLoading()
         setUpBtnGoogleLogin()
         setUpTvGuestSignIn()
     }
@@ -61,10 +62,20 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
         drawable.start()
     }
 
-    private fun setUpSignInStateFlow() {
+    private fun setUpGoogleAuthEvent() {
         repeatOnStarted {
-            viewModel.signInState.collect { state ->
-                if (state == SignInState.Loading) {
+            googleAuthViewModel.eventFlow.collect { event ->
+                when (event) {
+                    is GoogleAuthEvent.SnackBar -> showSnackBar(event.text)
+                }
+            }
+        }
+    }
+
+    private fun setUpSignInLoading() {
+        repeatOnStarted {
+            googleAuthViewModel.signInLoading.collect { loading ->
+                if (loading) {
                     if (progressDialog?.isAdded == true) {
                         progressDialog?.dismiss()
                     }
@@ -73,56 +84,29 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
                 } else {
                     progressDialog?.dismiss()
                 }
-
-                when (state) {
-                    is SignInState.Success -> signInSuccess()
-                    is SignInState.Failed -> signInFailed(state.e)
-                    else -> {}
-                }
             }
         }
     }
 
     private fun setUpBtnGoogleLogin() {
         binding.btnGoogleLogin.onThrottleClick {
-            viewModel.setState(SignInState.Loading)
+            googleAuthViewModel.startSignIn()
             loginLauncher.launch(googleClient.signInIntent())
         }
     }
 
     private fun setUpTvGuestSignIn() {
         binding.tvGuestSignin.onThrottleClick {
-            viewModel.setState(SignInState.Loading)
-            signIn()
+            googleAuthViewModel.startSignIn()
+            googleAuthViewModel.login()
         }
-    }
-
-    private fun signIn() {
-        lifecycleScope.launch {
-            val state = if (viewModel.login().isSuccess) {
-                SignInState.Success
-            } else {
-                SignInState.Failed(FailedSaveLoginUserException())
-            }
-            viewModel.setState(state)
-        }
-    }
-
-    private fun signInSuccess() {
-        val message = getString(R.string.login_success)
-        showSnackBar(message)
-    }
-
-    private fun signInFailed(e: Exception) {
-        val message = when (e) {
-            is FailedSaveLoginUserException -> getString(R.string.error_save_login_user)
-            is FailedConnectException -> getString(R.string.google_connect_fail)
-            else -> getString(R.string.error_unknown)
-        }
-        showSnackBar(message)
     }
 
     private fun showSnackBar(string: String) {
         Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showSnackBar(text: UIText) {
+        showSnackBar(text.asString(requireContext()).toString())
     }
 }

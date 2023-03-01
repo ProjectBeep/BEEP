@@ -4,20 +4,24 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
+import com.lighthouse.auth.google.ui.GoogleAuthViewModel
 import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.features.common.binding.viewBindings
+import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
+import com.lighthouse.features.common.ext.show
 import com.lighthouse.features.setting.R
 import com.lighthouse.features.setting.adapter.SettingAdapter
 import com.lighthouse.features.setting.databinding.FragmentSettingBinding
-import com.lighthouse.features.setting.model.SettingEvent
 import com.lighthouse.features.setting.model.SettingMenu
 import com.lighthouse.navs.app.model.AppNavigationItem
 import com.lighthouse.navs.app.navigator.AppNavigationViewModel
@@ -55,8 +59,24 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         }
     )
 
+    private val googleAuthViewModel: GoogleAuthViewModel by viewModels()
+
     @Inject
     lateinit var googleClient: GoogleClient
+
+    private var progressDialog: ProgressDialog? = null
+
+    private val loginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            lifecycleScope.launch {
+                val exception = googleClient.signIn(result).exceptionOrNull()
+                if (exception != null) {
+                    googleAuthViewModel.finishSignIn(exception)
+                } else {
+                    googleAuthViewModel.login()
+                }
+            }
+        }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -73,8 +93,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpGoogleAuthEvent()
+        setUpSignInLoading()
         setUpSettingMenu()
-        setUpEvent()
     }
 
     private fun setUpSettingMenu() {
@@ -86,11 +107,27 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         }
     }
 
-    private fun setUpEvent() {
+    private fun setUpGoogleAuthEvent() {
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.eventFlow.collect { event ->
+            googleAuthViewModel.eventFlow.collect { event ->
                 when (event) {
-                    is SettingEvent.SnackBar -> showSnackBar(event.text)
+                    is GoogleAuthEvent.SnackBar -> showSnackBar(event.text)
+                }
+            }
+        }
+    }
+
+    private fun setUpSignInLoading() {
+        repeatOnStarted {
+            googleAuthViewModel.signInLoading.collect { loading ->
+                if (loading) {
+                    if (progressDialog?.isAdded == true) {
+                        progressDialog?.dismiss()
+                    }
+                    progressDialog = ProgressDialog()
+                    progressDialog?.show(childFragmentManager)
+                } else {
+                    progressDialog?.dismiss()
                 }
             }
         }
@@ -128,15 +165,18 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun signIn() {
+        googleAuthViewModel.startSignIn()
+        loginLauncher.launch(googleClient.signInIntent())
     }
 
     private fun signOut() {
         lifecycleScope.launch {
             val exception = googleClient.signOut().exceptionOrNull()
             if (exception != null) {
-                showSnackBar(getString(R.string.user_sign_out_exception))
+                showSnackBar(getString(R.string.error_sign_out_google_client))
+            } else {
+                googleAuthViewModel.signOut()
             }
-            viewModel.signOut()
         }
     }
 
@@ -144,9 +184,10 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         lifecycleScope.launch {
             val exception = googleClient.signOut().exceptionOrNull()
             if (exception != null) {
-                showSnackBar(getString(R.string.user_withdrawal_exception))
+                showSnackBar(getString(R.string.error_sign_out_google_client))
+            } else {
+                googleAuthViewModel.withdrawal()
             }
-            viewModel.withdrawal()
         }
     }
 

@@ -12,6 +12,7 @@ class WithdrawalUseCase @Inject constructor(
     suspend operator fun invoke(): Result<Unit> = runCatching {
         val userId = authRepository.getCurrentUserId()
         authRepository.withdrawal().getOrThrow()
+        authRepository.signOut()
         userRepository.withdrawal(userId).getOrThrow()
     }
 }

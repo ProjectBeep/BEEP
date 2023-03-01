@@ -8,5 +8,7 @@ interface AuthRepository {
 
     fun getCurrentUserId(): String
 
+    fun signOut()
+
     suspend fun withdrawal(): Result<Unit>
 }

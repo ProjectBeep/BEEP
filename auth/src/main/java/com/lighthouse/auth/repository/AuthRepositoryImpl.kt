@@ -26,6 +26,10 @@ internal class AuthRepositoryImpl @Inject constructor() : AuthRepository {
         return Firebase.auth.currentUser?.uid ?: GUEST_ID
     }
 
+    override fun signOut() {
+        Firebase.auth.signOut()
+    }
+
     override suspend fun withdrawal(): Result<Unit> {
         val user = Firebase.auth.currentUser ?: return Result.success(Unit)
         return runCatching {
