@@ -1,16 +1,13 @@
 package com.lighthouse.features.setting.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
@@ -27,8 +24,6 @@ import com.lighthouse.features.setting.databinding.FragmentSettingBinding
 import com.lighthouse.features.setting.model.SettingMenu
 import com.lighthouse.navs.app.model.AppNavigationItem
 import com.lighthouse.navs.app.navigator.AppNavigationViewModel
-import com.lighthouse.navs.main.model.MainNavigationItem
-import com.lighthouse.navs.main.navigator.MainNavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,16 +36,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     private val viewModel: SettingViewModel by viewModels()
 
     private val appNavigationViewModel: AppNavigationViewModel by activityViewModels()
-
-    private val mainNavigationViewModel: MainNavigationViewModel by viewModels(
-        ownerProducer = {
-            var parent = requireParentFragment()
-            while (parent is NavHostFragment) {
-                parent = parent.requireParentFragment()
-            }
-            parent
-        }
-    )
 
     private val settingAdapter = SettingAdapter(
         onClick = { menu ->
@@ -100,18 +85,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private val locationPermissionManager by lazy {
         LocationPermissionManager(requireActivity())
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        setUpOnBackPressed()
-    }
-
-    private fun setUpOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            mainNavigationViewModel.navigate(MainNavigationItem.Popup)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
