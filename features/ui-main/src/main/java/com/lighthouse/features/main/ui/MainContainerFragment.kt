@@ -8,8 +8,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.lighthouse.core.android.utils.permission.StoragePermissionManager
-import com.lighthouse.core.android.utils.permission.core.permissions
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.main.R
@@ -29,8 +27,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
     private val appNavigationViewModel: AppNavigationViewModel by activityViewModels()
 
     private val mainNavigationViewModel: MainNavigationViewModel by viewModels()
-
-    private val storagePermission: StoragePermissionManager by permissions()
 
     private lateinit var navController: NavController
 

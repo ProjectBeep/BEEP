@@ -12,6 +12,7 @@
     <string name="config_location_permission">위치 정보 권한</string>
     <string name="location_permission_allowed">허용됨</string>
     <string name="location_permission_not_allowed">허용 안 함</string>
+    <string name="error_permission_not_allowed">권한을 허용하지 않았습니다.</string>
 
     <string name="subtitle_user">사용자</string>
     <string name="user_sign_out">로그아웃</string>

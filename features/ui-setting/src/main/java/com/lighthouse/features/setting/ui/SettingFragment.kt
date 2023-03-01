@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.auth.google.ui.GoogleAuthViewModel
+import com.lighthouse.core.android.utils.permission.LocationPermissionManager
 import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
@@ -78,6 +80,28 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             }
         }
 
+    private val locationPermissionSettingLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val isGrant = locationPermissionManager.isGrant()
+            if (!isGrant) {
+                showSnackBar(R.string.error_permission_not_allowed)
+            }
+            viewModel.setLocationEnable(isGrant)
+        }
+
+    private val locationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            val isGrant = results.all { it.value }
+            if (!isGrant) {
+                showSnackBar(R.string.error_permission_not_allowed)
+            }
+            viewModel.setLocationEnable(isGrant)
+        }
+
+    private val locationPermissionManager by lazy {
+        LocationPermissionManager(requireActivity())
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -93,9 +117,14 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpLocationPermission()
+        setUpSettingMenu()
         setUpGoogleAuthEvent()
         setUpSignInLoading()
-        setUpSettingMenu()
+    }
+
+    private fun setUpLocationPermission() {
+        viewModel.setLocationEnable(locationPermissionManager.isGrant())
     }
 
     private fun setUpSettingMenu() {
@@ -141,7 +170,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             SettingMenu.SECURITY ->
                 appNavigationViewModel.navigate(AppNavigationItem.Security)
 
-            SettingMenu.LOCATION -> location()
+            SettingMenu.LOCATION -> gotoLocation()
             SettingMenu.SIGN_IN -> signIn()
             SettingMenu.SIGN_OUT -> signOut()
             SettingMenu.WITHDRAWAL -> withdrawal()
@@ -161,7 +190,15 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         }
     }
 
-    private fun location() {
+    private fun gotoLocation() {
+        if (
+            locationPermissionManager.isGrant() ||
+            locationPermissionManager.getManyTimesRejectedPermission() != null
+        ) {
+            locationPermissionSettingLauncher.launch(locationPermissionManager.settingIntent())
+        } else {
+            locationPermissionLauncher.launch(locationPermissionManager.getPermissions())
+        }
     }
 
     private fun signIn() {
@@ -200,6 +237,10 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private fun showSnackBar(string: String) {
         Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showSnackBar(@StringRes resId: Int) {
+        Snackbar.make(binding.root, getString(resId), Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showSnackBar(uiText: UIText) {
