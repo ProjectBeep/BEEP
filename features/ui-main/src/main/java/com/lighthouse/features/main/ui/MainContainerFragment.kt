@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -15,7 +14,6 @@ import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.main.R
 import com.lighthouse.features.main.databinding.FragmentMainContainerBinding
-import com.lighthouse.navs.app.navigator.AppNavigationViewModel
 import com.lighthouse.navs.main.model.MainNavigationItem
 import com.lighthouse.navs.main.navigator.MainNavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,8 +25,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
 
     private val viewModel: MainContainerViewModel by viewModels()
 
-    private val appNavigationViewModel: AppNavigationViewModel by activityViewModels()
-
     private val mainNavigationViewModel: MainNavigationViewModel by viewModels()
 
     private lateinit var navController: NavController
@@ -36,6 +32,15 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
         NavController.OnDestinationChangedListener { controller, destination, _ ->
             backPressedCallback.isEnabled =
                 controller.graph.findStartDestination().id != destination.id
+
+            when (destination.id) {
+                com.lighthouse.features.home.R.id.home_container_fragment,
+                com.lighthouse.features.gifticonlist.R.id.gifticon_list_fragment ->
+                    binding.fabAddGifticon.show()
+
+                else ->
+                    binding.fabAddGifticon.hide()
+            }
         }
 
     private val backPressedCallback = object : OnBackPressedCallback(false) {
