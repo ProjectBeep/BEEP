@@ -1,15 +1,19 @@
 package com.lighthouse.ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.beep.R
 import com.lighthouse.beep.databinding.ActivityMainBinding
 import com.lighthouse.features.common.ext.repeatOnStarted
+import com.lighthouse.features.common.model.MessageEvent
+import com.lighthouse.features.common.ui.MessageViewModel
 import com.lighthouse.navs.app.model.AppNavigationItem
 import com.lighthouse.navs.app.navigator.AppNavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +25,8 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
+    private val messageViewModel: MessageViewModel by viewModels()
+
     private val appNavigationViewModel: AppNavigationViewModel by viewModels()
 
     private lateinit var navController: NavController
@@ -30,9 +36,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        setUpMessage()
         setUpNavController()
         setUpNavigation()
         setUpIsLogin()
+    }
+
+    private fun setUpMessage() {
+        repeatOnStarted {
+            messageViewModel.messageFlow.collect { event ->
+                when (event) {
+                    is MessageEvent.SnackBar ->
+                        showSnackBar(event.uiText.asString(this).toString())
+
+                    is MessageEvent.Toast ->
+                        showToast(event.uiText.asString(this).toString())
+                }
+            }
+        }
+    }
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun setUpNavController() {

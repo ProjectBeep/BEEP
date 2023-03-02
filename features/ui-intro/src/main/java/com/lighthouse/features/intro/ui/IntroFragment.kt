@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.auth.google.ui.GoogleAuthViewModel
-import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
+import com.lighthouse.features.common.ui.MessageViewModel
 import com.lighthouse.features.common.utils.throttle.onThrottleClick
 import com.lighthouse.features.intro.R
 import com.lighthouse.features.intro.databinding.FragmentIntroBinding
@@ -27,6 +27,8 @@ import javax.inject.Inject
 class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     private val binding by viewBindings<FragmentIntroBinding>()
+
+    private val messageViewModel: MessageViewModel by activityViewModels()
 
     private val googleAuthViewModel: GoogleAuthViewModel by viewModels()
 
@@ -66,7 +68,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
         repeatOnStarted {
             googleAuthViewModel.eventFlow.collect { event ->
                 when (event) {
-                    is GoogleAuthEvent.SnackBar -> showSnackBar(event.text)
+                    is GoogleAuthEvent.SnackBar -> messageViewModel.sendToast(event.text)
                 }
             }
         }
@@ -100,13 +102,5 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
             googleAuthViewModel.startSignIn()
             googleAuthViewModel.login()
         }
-    }
-
-    private fun showSnackBar(string: String) {
-        Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun showSnackBar(text: UIText) {
-        showSnackBar(text.asString(requireContext()).toString())
     }
 }

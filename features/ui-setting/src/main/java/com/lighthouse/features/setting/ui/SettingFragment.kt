@@ -3,21 +3,19 @@ package com.lighthouse.features.setting.ui
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.auth.google.ui.GoogleAuthViewModel
 import com.lighthouse.core.android.utils.permission.LocationPermissionManager
-import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
+import com.lighthouse.features.common.ui.MessageViewModel
 import com.lighthouse.features.setting.R
 import com.lighthouse.features.setting.adapter.SettingAdapter
 import com.lighthouse.features.setting.databinding.FragmentSettingBinding
@@ -34,6 +32,8 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     private val binding: FragmentSettingBinding by viewBindings()
 
     private val viewModel: SettingViewModel by viewModels()
+
+    private val messageViewModel: MessageViewModel by activityViewModels()
 
     private val appNavigationViewModel: AppNavigationViewModel by activityViewModels()
 
@@ -69,7 +69,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val isGrant = locationPermissionManager.isGrant()
             if (!isGrant) {
-                showSnackBar(R.string.error_permission_not_allowed)
+                messageViewModel.sendSnackBar(R.string.error_permission_not_allowed)
             }
             viewModel.setLocationEnable(isGrant)
         }
@@ -78,7 +78,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
             val isGrant = results.all { it.value }
             if (!isGrant) {
-                showSnackBar(R.string.error_permission_not_allowed)
+                messageViewModel.sendSnackBar(R.string.error_permission_not_allowed)
             }
             viewModel.setLocationEnable(isGrant)
         }
@@ -113,7 +113,8 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         viewLifecycleOwner.repeatOnStarted {
             googleAuthViewModel.eventFlow.collect { event ->
                 when (event) {
-                    is GoogleAuthEvent.SnackBar -> showSnackBar(event.text)
+                    is GoogleAuthEvent.SnackBar ->
+                        messageViewModel.sendSnackBar(event.text)
                 }
             }
         }
@@ -185,7 +186,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         lifecycleScope.launch {
             val exception = googleClient.signOut().exceptionOrNull()
             if (exception != null) {
-                showSnackBar(getString(R.string.error_sign_out_google_client))
+                messageViewModel.sendSnackBar(R.string.error_sign_out_google_client)
             } else {
                 googleAuthViewModel.signOut()
             }
@@ -196,7 +197,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         lifecycleScope.launch {
             val exception = googleClient.signOut().exceptionOrNull()
             if (exception != null) {
-                showSnackBar(getString(R.string.error_sign_out_google_client))
+                messageViewModel.sendSnackBar(R.string.error_sign_out_google_client)
             } else {
                 googleAuthViewModel.withdrawal()
             }
@@ -208,17 +209,5 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             SettingMenu.IMMINENT_NOTIFICATION -> viewModel.setNotificationEnable(isChecked)
             else -> Unit
         }
-    }
-
-    private fun showSnackBar(string: String) {
-        Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun showSnackBar(@StringRes resId: Int) {
-        Snackbar.make(binding.root, getString(resId), Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun showSnackBar(uiText: UIText) {
-        showSnackBar(uiText.asString(requireContext()).toString())
     }
 }
