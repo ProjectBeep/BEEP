@@ -14,7 +14,7 @@ dependencies {
     implementation(projects.model)
     implementation(projects.common)
     implementation(projects.commonAndroid)
-    implementation(projects.domain)
+    implementation(projects.auth)
 
     implementation(libs.androidX.fragment.ktx)
 

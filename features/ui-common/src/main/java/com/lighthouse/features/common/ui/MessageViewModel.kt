@@ -18,6 +18,12 @@ class MessageViewModel @Inject constructor() : ViewModel() {
 
     val messageFlow = _messageFlow.asEventFlow()
 
+    fun sendMessage(event: MessageEvent) {
+        viewModelScope.launch {
+            _messageFlow.emit(event)
+        }
+    }
+
     fun sendSnackBar(@StringRes resId: Int) {
         viewModelScope.launch {
             _messageFlow.emit(MessageEvent.SnackBar(UIText.StringResource(resId)))

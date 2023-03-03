@@ -7,21 +7,22 @@ import androidx.activity.result.ActivityResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.auth.google.R
-import com.lighthouse.auth.google.exception.FailedConnectException
+import com.lighthouse.beep.model.auth.exception.FailedConnectException
+import com.lighthouse.auth.repository.OAuthRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-internal class GoogleClientImpl @Inject constructor(
+internal class GoogleOAuthRepository @Inject constructor(
     @ApplicationContext context: Context
-) : GoogleClient {
+) : OAuthRepository, GoogleClient {
 
     private val googleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -45,27 +46,28 @@ internal class GoogleClientImpl @Inject constructor(
             awaitClose()
         }.first()
 
-    private suspend fun signInWithAccount(account: GoogleSignInAccount): AuthResult {
-        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        return callbackFlow {
-            Firebase.auth.signInWithCredential(credential).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    trySend(it.result)
-                }
-                close(it.exception)
-            }
-            awaitClose()
-        }.first()
-    }
-
-    override suspend fun signIn(result: ActivityResult): Result<AuthResult> {
+    override suspend fun getAuthCredential(result: ActivityResult): Result<AuthCredential> {
         return if (result.resultCode == Activity.RESULT_OK) {
             runCatching {
                 val account = getGoogleAccount(result)
-                signInWithAccount(account)
+                GoogleAuthProvider.getCredential(account.idToken, null)
             }
         } else {
             Result.failure(FailedConnectException())
+        }
+    }
+
+    override suspend fun signIn(credential: AuthCredential): Result<Unit> {
+        return runCatching {
+            callbackFlow {
+                Firebase.auth.signInWithCredential(credential).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(Unit)
+                    }
+                    close(it.exception)
+                }
+                awaitClose()
+            }.first()
         }
     }
 

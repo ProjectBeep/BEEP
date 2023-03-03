@@ -19,6 +19,8 @@ dependencies {
     implementation(projects.utilsLocation)
     implementation(projects.utilsRecognizer)
 
+    implementation(projects.ciphertool)
+
     implementation(libs.androidX.paging.common.ktx)
 
     implementation(libs.kotlin.coroutine.core)

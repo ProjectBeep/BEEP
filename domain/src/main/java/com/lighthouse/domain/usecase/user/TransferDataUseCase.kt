@@ -1,5 +1,6 @@
 package com.lighthouse.domain.usecase.user
 
+import com.lighthouse.beep.model.auth.exception.InvalidUserException
 import com.lighthouse.domain.repository.auth.AuthRepository
 import com.lighthouse.domain.repository.user.UserRepository
 import javax.inject.Inject
@@ -10,7 +11,9 @@ class TransferDataUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(oldUserId: String): Result<Unit> {
-        val newUserId = authRepository.getCurrentUserId()
-        return userRepository.transferData(oldUserId, newUserId)
+        return runCatching {
+            val newUserId = authRepository.getCurrentUserId()
+            userRepository.transferData(oldUserId, newUserId).getOrThrow()
+        }
     }
 }

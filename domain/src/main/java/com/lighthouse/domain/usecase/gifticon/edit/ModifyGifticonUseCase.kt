@@ -1,6 +1,6 @@
 package com.lighthouse.domain.usecase.gifticon.edit
 
-import com.lighthouse.beep.model.exception.auth.AuthenticationException
+import com.lighthouse.beep.model.auth.exception.AuthenticationException
 import com.lighthouse.beep.model.gifticon.GifticonForUpdate
 import com.lighthouse.domain.repository.auth.AuthRepository
 import com.lighthouse.domain.repository.gifticon.GifticonEditRepository

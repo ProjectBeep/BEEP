@@ -1,9 +1,7 @@
 package com.lighthouse.auth.di
 
 import com.lighthouse.auth.repository.AuthRepositoryImpl
-import com.lighthouse.auth.repository.CipherToolImpl
 import com.lighthouse.domain.repository.auth.AuthRepository
-import com.lighthouse.domain.repository.auth.CipherTool
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,9 +16,4 @@ internal abstract class DataModule {
     abstract fun bindsAuthRepository(
         repository: AuthRepositoryImpl
     ): AuthRepository
-
-    @Binds
-    abstract fun bindsCipherTool(
-        tool: CipherToolImpl
-    ): CipherTool
 }

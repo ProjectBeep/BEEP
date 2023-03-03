@@ -1,5 +1,6 @@
 package com.lighthouse.domain.usecase.user
 
+import com.lighthouse.beep.model.auth.exception.InvalidUserException
 import com.lighthouse.domain.repository.auth.AuthRepository
 import com.lighthouse.domain.repository.user.UserRepository
 import javax.inject.Inject
@@ -10,9 +11,9 @@ class WithdrawalUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Result<Unit> = runCatching {
-        val userId = authRepository.getCurrentUserId()
+        val userId = authRepository.getCurrentUserId() ?: throw InvalidUserException()
         authRepository.withdrawal().getOrThrow()
-        authRepository.signOut()
+        authRepository.signOut().getOrThrow()
         userRepository.withdrawal(userId).getOrThrow()
     }
 }

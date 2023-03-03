@@ -3,14 +3,13 @@ package com.lighthouse.data.preference.repository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import com.lighthouse.beep.model.auth.EncryptData
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.data.preference.exception.PrefNotFoundException
 import com.lighthouse.data.preference.ext.booleanKey
 import com.lighthouse.data.preference.ext.byteArrayKey
 import com.lighthouse.data.preference.ext.runCatchingPref
 import com.lighthouse.data.preference.ext.stringKey
+import com.lighthouse.libs.ciphertool.EncryptData
 import com.lighthouse.repository.user.UserPreferenceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,24 +20,6 @@ import javax.inject.Inject
 internal class UserPreferenceRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferenceRepository {
-
-    override suspend fun setLoginUserUid(
-        userId: String
-    ): Result<Unit> = runCatchingPref {
-        val loginUserUidKey = stringPreferencesKey(KEY_NAME_LOGIN_USER_UID)
-        dataStore.edit { pref ->
-            pref[loginUserUidKey] = userId
-        }
-    }
-
-    override fun getLoginUserUid(): Flow<Result<String>> {
-        val loginUserUidKey = stringPreferencesKey(KEY_NAME_LOGIN_USER_UID)
-        return dataStore.data.map { pref ->
-            runCatchingPref {
-                pref[loginUserUidKey] ?: ""
-            }
-        }.distinctUntilChanged()
-    }
 
     override suspend fun setEncryptData(
         userId: String,
@@ -176,7 +157,6 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        private const val KEY_NAME_LOGIN_USER_UID = "LoginUserUid"
         private const val KEY_NAME_PIN_PASSWORD = "PinPassword"
         private const val KEY_NAME_IV = "IV"
         private const val KEY_NAME_SECURITY_OPTION = "SecurityOption"

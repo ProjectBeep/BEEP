@@ -25,4 +25,7 @@ dependencies {
     implementation(libs.material)
 
     implementation(libs.coil)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
 }

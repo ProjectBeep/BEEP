@@ -17,6 +17,8 @@ dependencies {
     implementation(projects.commonAndroid)
     implementation(projects.data)
 
+    implementation(projects.ciphertool)
+
     implementation(libs.androidX.datastore.preferences)
     implementation(libs.javax.inject)
 }

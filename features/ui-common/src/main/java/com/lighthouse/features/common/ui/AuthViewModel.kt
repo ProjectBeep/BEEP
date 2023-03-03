@@ -1,65 +1,55 @@
-package com.lighthouse.auth.google.ui
+package com.lighthouse.features.common.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.auth.google.R
-import com.lighthouse.auth.google.exception.FailedConnectException
-import com.lighthouse.auth.google.model.GoogleAuthEvent
-import com.lighthouse.beep.model.exception.auth.FailedSaveLoginUserException
+import com.google.firebase.auth.AuthCredential
+import com.lighthouse.beep.model.auth.AuthProvider
+import com.lighthouse.beep.model.auth.exception.FailedConnectException
+import com.lighthouse.beep.model.auth.exception.FailedSaveLoginUserException
 import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
-import com.lighthouse.domain.usecase.user.GetUserIdUseCase
-import com.lighthouse.domain.usecase.user.LoginUseCase
+import com.lighthouse.domain.usecase.user.SignInUseCase
 import com.lighthouse.domain.usecase.user.SignOutUseCase
-import com.lighthouse.domain.usecase.user.TransferDataUseCase
 import com.lighthouse.domain.usecase.user.WithdrawalUseCase
+import com.lighthouse.features.common.R
+import com.lighthouse.features.common.model.MessageEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.lang.Exception
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.lang.Exception
-import javax.inject.Inject
 
 @HiltViewModel
-class GoogleAuthViewModel @Inject constructor(
-    private val getUserIdUseCase: GetUserIdUseCase,
-    private val loginUseCase: LoginUseCase,
-    private val transferDataUseCase: TransferDataUseCase,
+class AuthViewModel @Inject constructor(
+    private val signInUseCase: SignInUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val withdrawalUseCase: WithdrawalUseCase
 ) : ViewModel() {
 
-    private val _eventFlow = MutableEventFlow<GoogleAuthEvent>()
+    private val _eventFlow = MutableEventFlow<MessageEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
-    private val _signInLoading = MutableStateFlow(false)
-    val signInLoading = _signInLoading.asStateFlow()
+    private val _loginLoading = MutableStateFlow(false)
+    val loginLoading = _loginLoading.asStateFlow()
 
-    fun getUserId() = getUserIdUseCase()
-
-    fun login() {
+    fun login(provider: AuthProvider, credential: AuthCredential) {
         viewModelScope.launch {
-            finishSignIn(loginUseCase().exceptionOrNull())
+            endLogin(signInUseCase(provider, credential).exceptionOrNull())
         }
     }
 
-    fun transferData(oldUserId: String) {
-        viewModelScope.launch {
-            finishSignIn(transferDataUseCase(oldUserId).exceptionOrNull())
-        }
+    fun startLogin() {
+        _loginLoading.value = true
     }
 
-    fun startSignIn() {
-        _signInLoading.value = true
+    fun endLogin(throwable: Throwable? = null) {
+        endLogin(throwable as? Exception)
     }
 
-    fun finishSignIn(throwable: Throwable? = null) {
-        finishSignIn(throwable as? Exception)
-    }
-
-    private fun finishSignIn(exception: Exception? = null) {
-        _signInLoading.value = false
+    fun endLogin(exception: Exception? = null) {
+        _loginLoading.value = false
         viewModelScope.launch {
             val stringRes = when (exception) {
                 null -> R.string.login_success
@@ -67,7 +57,7 @@ class GoogleAuthViewModel @Inject constructor(
                 is FailedConnectException -> R.string.google_connect_fail
                 else -> R.string.error_unknown
             }
-            _eventFlow.emit(GoogleAuthEvent.SnackBar(UIText.StringResource(stringRes)))
+            _eventFlow.emit(MessageEvent.SnackBar(UIText.StringResource(stringRes)))
         }
     }
 
@@ -76,7 +66,7 @@ class GoogleAuthViewModel @Inject constructor(
             val exception = signOutUseCase().exceptionOrNull()
             if (exception != null) {
                 _eventFlow.emit(
-                    GoogleAuthEvent.SnackBar(
+                    MessageEvent.SnackBar(
                         UIText.StringResource(R.string.error_sign_out)
                     )
                 )
@@ -89,7 +79,7 @@ class GoogleAuthViewModel @Inject constructor(
             val exception = withdrawalUseCase().exceptionOrNull()
             if (exception != null) {
                 _eventFlow.emit(
-                    GoogleAuthEvent.SnackBar(
+                    MessageEvent.SnackBar(
                         UIText.StringResource(R.string.error_withdrawal)
                     )
                 )

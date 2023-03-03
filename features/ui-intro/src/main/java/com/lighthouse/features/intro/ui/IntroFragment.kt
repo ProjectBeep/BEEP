@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
-import com.lighthouse.auth.google.ui.GoogleAuthViewModel
+import com.lighthouse.beep.model.auth.AuthProvider
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
+import com.lighthouse.features.common.ui.AuthViewModel
 import com.lighthouse.features.common.ui.MessageViewModel
 import com.lighthouse.features.common.utils.throttle.onThrottleClick
 import com.lighthouse.features.intro.R
@@ -30,21 +30,21 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     private val messageViewModel: MessageViewModel by activityViewModels()
 
-    private val googleAuthViewModel: GoogleAuthViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
 
     @Inject
     lateinit var googleClient: GoogleClient
 
     private var progressDialog: ProgressDialog? = null
 
-    private val loginLauncher =
+    private val googleLoginLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             lifecycleScope.launch {
-                val exception = googleClient.signIn(result).exceptionOrNull()
-                if (exception != null) {
-                    googleAuthViewModel.finishSignIn(exception)
-                } else {
-                    googleAuthViewModel.login()
+                try {
+                    val credential = googleClient.getAuthCredential(result).getOrThrow()
+                    authViewModel.login(AuthProvider.GOOGLE, credential)
+                } catch (e: Exception) {
+                    authViewModel.endLogin(e)
                 }
             }
         }
@@ -66,17 +66,15 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     private fun setUpGoogleAuthEvent() {
         repeatOnStarted {
-            googleAuthViewModel.eventFlow.collect { event ->
-                when (event) {
-                    is GoogleAuthEvent.SnackBar -> messageViewModel.sendToast(event.text)
-                }
+            authViewModel.eventFlow.collect { event ->
+                messageViewModel.sendMessage(event)
             }
         }
     }
 
     private fun setUpSignInLoading() {
         repeatOnStarted {
-            googleAuthViewModel.signInLoading.collect { loading ->
+            authViewModel.loginLoading.collect { loading ->
                 if (loading) {
                     if (progressDialog?.isAdded == true) {
                         progressDialog?.dismiss()
@@ -92,15 +90,15 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     private fun setUpBtnGoogleLogin() {
         binding.btnGoogleLogin.onThrottleClick {
-            googleAuthViewModel.startSignIn()
-            loginLauncher.launch(googleClient.signInIntent())
+            authViewModel.startLogin()
+            googleLoginLauncher.launch(googleClient.signInIntent())
         }
     }
 
     private fun setUpTvGuestSignIn() {
         binding.tvGuestSignin.onThrottleClick {
-            googleAuthViewModel.startSignIn()
-            googleAuthViewModel.login()
+//            googleAuthViewModel.startSignIn()
+//            googleAuthViewModel.login()
         }
     }
 }

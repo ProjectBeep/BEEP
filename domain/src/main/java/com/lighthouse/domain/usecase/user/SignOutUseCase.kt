@@ -1,16 +1,13 @@
 package com.lighthouse.domain.usecase.user
 
 import com.lighthouse.domain.repository.auth.AuthRepository
-import com.lighthouse.domain.repository.user.UserRepository
 import javax.inject.Inject
 
 class SignOutUseCase @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val authRepository: AuthRepository
 ) {
 
-    suspend operator fun invoke(): Result<Unit> = runCatching {
-        authRepository.signOut()
-        userRepository.signOut().getOrThrow()
+    suspend operator fun invoke(): Result<Unit> {
+        return authRepository.signOut()
     }
 }

@@ -1,14 +1,10 @@
 package com.lighthouse.repository.user
 
-import com.lighthouse.beep.model.auth.EncryptData
 import com.lighthouse.beep.model.user.SecurityOption
+import com.lighthouse.libs.ciphertool.EncryptData
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferenceRepository {
-
-    fun getLoginUserUid(): Flow<Result<String>>
-
-    suspend fun setLoginUserUid(userId: String): Result<Unit>
 
     suspend fun setEncryptData(userId: String, encryptData: EncryptData): Result<Unit>
 

@@ -7,14 +7,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.lighthouse.auth.google.model.GoogleAuthEvent
 import com.lighthouse.auth.google.repository.GoogleClient
-import com.lighthouse.auth.google.ui.GoogleAuthViewModel
+import com.lighthouse.beep.model.auth.AuthProvider
 import com.lighthouse.core.android.utils.permission.LocationPermissionManager
 import com.lighthouse.features.common.binding.viewBindings
 import com.lighthouse.features.common.dialog.progress.ProgressDialog
 import com.lighthouse.features.common.ext.repeatOnStarted
 import com.lighthouse.features.common.ext.show
+import com.lighthouse.features.common.ui.AuthViewModel
 import com.lighthouse.features.common.ui.MessageViewModel
 import com.lighthouse.features.setting.R
 import com.lighthouse.features.setting.adapter.SettingAdapter
@@ -46,21 +46,21 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         }
     )
 
-    private val googleAuthViewModel: GoogleAuthViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
 
     @Inject
     lateinit var googleClient: GoogleClient
 
     private var progressDialog: ProgressDialog? = null
 
-    private val loginLauncher =
+    private val googleLoginLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             lifecycleScope.launch {
-                val exception = googleClient.signIn(result).exceptionOrNull()
-                if (exception != null) {
-                    googleAuthViewModel.finishSignIn(exception)
-                } else {
-                    googleAuthViewModel.login()
+                try {
+                    val credential = googleClient.getAuthCredential(result).getOrThrow()
+                    authViewModel.login(AuthProvider.GOOGLE, credential)
+                } catch (e: Exception) {
+                    authViewModel.endLogin(e)
                 }
             }
         }
@@ -111,18 +111,15 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private fun setUpGoogleAuthEvent() {
         viewLifecycleOwner.repeatOnStarted {
-            googleAuthViewModel.eventFlow.collect { event ->
-                when (event) {
-                    is GoogleAuthEvent.SnackBar ->
-                        messageViewModel.sendSnackBar(event.text)
-                }
+            authViewModel.eventFlow.collect { event ->
+                messageViewModel.sendMessage(event)
             }
         }
     }
 
     private fun setUpSignInLoading() {
         repeatOnStarted {
-            googleAuthViewModel.signInLoading.collect { loading ->
+            authViewModel.loginLoading.collect { loading ->
                 if (loading) {
                     if (progressDialog?.isAdded == true) {
                         progressDialog?.dismiss()
@@ -178,30 +175,16 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun signIn() {
-        googleAuthViewModel.startSignIn()
-        loginLauncher.launch(googleClient.signInIntent())
+        authViewModel.startLogin()
+        googleLoginLauncher.launch(googleClient.signInIntent())
     }
 
     private fun signOut() {
-        lifecycleScope.launch {
-            val exception = googleClient.signOut().exceptionOrNull()
-            if (exception != null) {
-                messageViewModel.sendSnackBar(R.string.error_sign_out_google_client)
-            } else {
-                googleAuthViewModel.signOut()
-            }
-        }
+        authViewModel.signOut()
     }
 
     private fun withdrawal() {
-        lifecycleScope.launch {
-            val exception = googleClient.signOut().exceptionOrNull()
-            if (exception != null) {
-                messageViewModel.sendSnackBar(R.string.error_sign_out_google_client)
-            } else {
-                googleAuthViewModel.withdrawal()
-            }
-        }
+        authViewModel.withdrawal()
     }
 
     private fun setUpMenuOnCheckedChange(menu: SettingMenu, isChecked: Boolean) {

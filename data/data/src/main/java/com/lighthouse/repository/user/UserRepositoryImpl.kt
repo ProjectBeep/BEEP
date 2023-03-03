@@ -1,56 +1,30 @@
 package com.lighthouse.repository.user
 
-import com.lighthouse.beep.model.auth.EncryptData
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.domain.repository.user.UserRepository
+import com.lighthouse.libs.ciphertool.CipherTool
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlinx.coroutines.flow.map
 
 internal class UserRepositoryImpl @Inject constructor(
     private val userPreferenceRepository: UserPreferenceRepository
 ) : UserRepository {
 
-    override fun isLogin(): Flow<Boolean> {
-        return userPreferenceRepository.getLoginUserUid().map {
-            it.getOrDefault("") != ""
+    override suspend fun setPinPassword(userId: String, newPin: String): Result<Unit> =
+        runCatching {
+            val encryptData = CipherTool.encrypt(SecurityOption.PIN.name, newPin)
+            userPreferenceRepository.setEncryptData(userId, encryptData).getOrThrow()
         }
-    }
 
-    override suspend fun login(userId: String): Result<Unit> {
-        return userPreferenceRepository.setLoginUserUid(userId)
-    }
-
-    override suspend fun signOut(): Result<Unit> {
-        return userPreferenceRepository.setLoginUserUid("")
-    }
-
-    //    override fun getUserId(): String {
-//        return authRepository.getCurrentUserId()
-//    }
-//
-//    override fun isGuest(): Flow<Boolean> {
-//        return authRepository.isGuest()
-//    }
-
-//    override suspend fun setPinPassword(userId: String, pinPassword: String): Result<Unit> = runCatching {
-//        val userId = authRepository.getCurrentUserId()
-//        val encryptData = cipherTool.encrypt(SecurityOption.PIN.name, pinPassword).getOrThrow()
-//        userPreferenceRepository.setEncryptData(userId, encryptData).getOrThrow()
-//    }
-//
-//    override suspend fun confirmPinPassword(userId: String, pinPassword: String): Result<Boolean> = runCatching {
-//        val encryptData = userPreferenceRepository.getEncryptData(userId).getOrThrow()
-//        val decryptData = cipherTool.decrypt(SecurityOption.PIN.name, encryptData).getOrThrow()
-//        pinPassword == decryptData
-//    }
-
-    override suspend fun setPinPassword(userId: String, encryptData: EncryptData): Result<Unit> {
-        return userPreferenceRepository.setEncryptData(userId, encryptData)
-    }
-
-    override fun getPinPassword(userId: String): Flow<Result<EncryptData>> {
-        return userPreferenceRepository.getEncryptData(userId)
+    override fun confirmPinPassword(userId: String, pin: String): Flow<Result<Boolean>> {
+        return userPreferenceRepository.getEncryptData(userId).map {
+            runCatching {
+                val encryptPin = it.getOrThrow()
+                val decryptData = CipherTool.decrypt(SecurityOption.PIN.name, encryptPin)
+                decryptData == pin
+            }
+        }
     }
 
     override suspend fun setSecurityOption(
@@ -80,14 +54,11 @@ internal class UserRepositoryImpl @Inject constructor(
         return userPreferenceRepository.getFilterExpired(userId)
     }
 
-    override suspend fun transferData(userId: String, newUserId: String): Result<Unit> =
-        runCatching {
-            userPreferenceRepository.transferData(userId, newUserId).getOrThrow()
-            userPreferenceRepository.setLoginUserUid(newUserId).getOrThrow()
-        }
+    override suspend fun transferData(userId: String, newUserId: String): Result<Unit> {
+        return userPreferenceRepository.transferData(userId, newUserId)
+    }
 
-    override suspend fun withdrawal(userId: String): Result<Unit> = runCatching {
-        userPreferenceRepository.withdrawal(userId).getOrThrow()
-        userPreferenceRepository.setLoginUserUid("").getOrThrow()
+    override suspend fun withdrawal(userId: String): Result<Unit> {
+        return userPreferenceRepository.withdrawal(userId)
     }
 }
