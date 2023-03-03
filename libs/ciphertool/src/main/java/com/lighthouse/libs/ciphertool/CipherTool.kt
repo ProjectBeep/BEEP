@@ -24,21 +24,21 @@ object CipherTool {
         }
     }
 
-    fun encrypt(alias: String, data: String): Result<EncryptData> = runCatching {
+    fun encrypt(alias: String, data: String): EncryptData {
         val secretKey = getSecretKey(alias)
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
-        EncryptData(
+        return EncryptData(
             cipher.doFinal(data.toByteArray()),
             cipher.iv
         )
     }
 
-    fun decrypt(alias: String, data: EncryptData): Result<String> = runCatching {
+    fun decrypt(alias: String, data: EncryptData): String {
         val secretKey = getSecretKey(alias)
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(data.iv))
-        String(cipher.doFinal(data.data))
+        return String(cipher.doFinal(data.data))
     }
 
     private fun getSecretKey(alias: String): Key {
