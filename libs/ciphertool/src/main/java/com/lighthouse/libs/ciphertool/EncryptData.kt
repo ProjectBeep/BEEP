@@ -1,4 +1,4 @@
-package com.lighthouse.beep.model.auth
+package com.lighthouse.libs.ciphertool
 
 class EncryptData(
     val data: ByteArray,

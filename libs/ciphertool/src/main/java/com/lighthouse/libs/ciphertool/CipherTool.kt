@@ -1,18 +1,22 @@
-package com.lighthouse.auth.repository
+package com.lighthouse.libs.ciphertool
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import com.lighthouse.beep.model.auth.EncryptData
-import com.lighthouse.domain.repository.auth.CipherTool
 import java.security.Key
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
-import javax.inject.Inject
 
-internal class CipherToolImpl @Inject constructor() : CipherTool {
+object CipherTool {
+
+    private const val KEYSTORE_NAME = "AndroidKeyStore"
+
+    private const val KEY_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
+    private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
+    private const val ENCRYPTION_PADDINGS = KeyProperties.ENCRYPTION_PADDING_PKCS7
+    private const val TRANSFORMATION = "$KEY_ALGORITHM/$BLOCK_MODE/$ENCRYPTION_PADDINGS"
 
     private val keyStore by lazy {
         KeyStore.getInstance(KEYSTORE_NAME).apply {
@@ -20,7 +24,7 @@ internal class CipherToolImpl @Inject constructor() : CipherTool {
         }
     }
 
-    override fun encrypt(alias: String, data: String): Result<EncryptData> = runCatching {
+    fun encrypt(alias: String, data: String): Result<EncryptData> = runCatching {
         val secretKey = getSecretKey(alias)
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
@@ -30,7 +34,7 @@ internal class CipherToolImpl @Inject constructor() : CipherTool {
         )
     }
 
-    override fun decrypt(alias: String, data: EncryptData): Result<String> = runCatching {
+    fun decrypt(alias: String, data: EncryptData): Result<String> = runCatching {
         val secretKey = getSecretKey(alias)
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(data.iv))
@@ -57,14 +61,5 @@ internal class CipherToolImpl @Inject constructor() : CipherTool {
             .build()
         keyGenerator.init(keyGenParameterSpec)
         return keyGenerator.generateKey()
-    }
-
-    companion object {
-        private const val KEYSTORE_NAME = "AndroidKeyStore"
-
-        private const val KEY_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
-        private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
-        private const val ENCRYPTION_PADDINGS = KeyProperties.ENCRYPTION_PADDING_PKCS7
-        private const val TRANSFORMATION = "$KEY_ALGORITHM/$BLOCK_MODE/$ENCRYPTION_PADDINGS"
     }
 }
