@@ -1,5 +1,9 @@
 plugins {
-    id("beep.java.library")
+    id("beep.android.library")
+}
+
+android {
+    namespace = "com.lighthouse.domain"
 }
 
 dependencies {
@@ -10,4 +14,7 @@ dependencies {
     implementation(libs.kotlin.coroutine.core)
     implementation(libs.androidX.paging.common.ktx)
     implementation(libs.javax.inject)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
 }
