@@ -1,6 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.io.FileInputStream
+import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -17,7 +18,11 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        val naverMapApiId = gradleLocalProperties(rootDir).getProperty("naver_map_api_id")
+        val keystorePropertiesFile = rootProject.file("keystore.properties")
+        val keystoreProperties = Properties()
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+        val naverMapApiId = keystoreProperties.getProperty("naver_map_api_id")
         manifestPlaceholders["naver_map_api_id"] = naverMapApiId
     }
 
