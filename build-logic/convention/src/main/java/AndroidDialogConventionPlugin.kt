@@ -5,13 +5,12 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.project
 
 @Suppress("UNUSED")
-class AndroidPageConventionPlugin : Plugin<Project> {
+class AndroidDialogConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target){
             with(pluginManager){
                 apply("beep.android.design.system")
-                apply("beep.android.hilt")
             }
 
             dependencies {

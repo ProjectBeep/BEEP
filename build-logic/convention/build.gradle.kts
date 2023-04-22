@@ -33,6 +33,14 @@ gradlePlugin {
             id = "beep.android.page"
             implementationClass = "AndroidPageConventionPlugin"
         }
+        register("androidDialog") {
+            id = "beep.android.dialog"
+            implementationClass = "AndroidDialogConventionPlugin"
+        }
+        register("androidDesignSystem") {
+            id = "beep.android.design.system"
+            implementationClass = "AndroidDesignSystemConventionPlugin"
+        }
         register("androidData") {
             id = "beep.android.data"
             implementationClass = "AndroidDataConventionPlugin"
