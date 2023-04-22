@@ -1,8 +1,8 @@
 [versions]
-androidStudioGradlePlugin = "7.4.2"
+androidStudioGradlePlugin = "8.0.0"
 
 # AndroidX
-activity = "1.7.0"
+activity = "1.7.1"
 lifecycle = "2.6.1"
 paging = "3.1.1"
 room = "2.5.1"
@@ -17,9 +17,9 @@ accompanist = "0.28.0"
 ## Dagger
 dagger = "2.44.2"
 ## Kotlin
-kotlin = "1.8.0"
+kotlin = "1.8.20"
 kotlin-coroutine = "1.6.4"
-ksp = "1.8.0-1.0.8"
+ksp = "1.8.20-1.0.11"
 ## Squareup
 retrofit = "2.9.0"
 moshi = "1.14.0"
@@ -32,7 +32,7 @@ gms-oss-licenses-plugin = "0.10.6"
 firebase-crashlytics-gradle = "2.9.2"
 
 # test
-junit5 = "5.8.2"
+junit5 = "5.9.2"
 coroutines-test = "1.6.0"
 
 # Android Test
@@ -44,19 +44,19 @@ androidX-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidX-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 androidX-appcompat = "androidx.appcompat:appcompat:1.6.1"
 androidX-biometric = "androidx.biometric:biometric:1.1.0"
-androidX-core-ktx = "androidx.core:core-ktx:1.9.0"
-androidX-core-splashscreen = "androidx.core:core-splashscreen:1.0.0"
+androidX-core-ktx = "androidx.core:core-ktx:1.10.0"
+androidX-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidX-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
-androidX-compose-bom = "androidx.compose:compose-bom:2023.03.00"
+androidX-compose-bom = "androidx.compose:compose-bom:2023.04.01"
 androidX-compose-material = { module = "androidx.compose.material:material" }
 androidX-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidX-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidX-compose-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
-androidX-compose-activity = "androidx.activity:activity-compose:1.7.0"
+androidX-compose-activity = "androidx.activity:activity-compose:1.7.1"
 androidX-compose-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 androidX-compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
-androidX-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.0-alpha03"
-androidX-fragment-ktx = "androidx.fragment:fragment-ktx:1.5.6"
+androidX-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.0-alpha04"
+androidX-fragment-ktx = "androidx.fragment:fragment-ktx:1.5.7"
 androidX-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha05"
 androidX-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidX-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
@@ -91,9 +91,9 @@ material = "com.google.android.material:material:1.8.0"
 ## GMS (google mobile service)
 gms-play-services-auth = "com.google.android.gms:play-services-auth:20.4.1"
 gms-play-services-location = "com.google.android.gms:play-services-location:20.0.0"
-gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.0"
+gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.1"
 ## Firebase
-firebase-bom = "com.google.firebase:firebase-bom:31.4.0"
+firebase-bom = "com.google.firebase:firebase-bom:31.5.0"
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
