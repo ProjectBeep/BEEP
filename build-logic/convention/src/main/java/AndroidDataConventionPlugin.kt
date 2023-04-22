@@ -11,8 +11,8 @@ class AndroidDataConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target){
             with(pluginManager){
-                apply("snowcorp.android.library")
-                apply("snowcorp.android.hilt")
+                apply("beep.android.library")
+                apply("beep.android.hilt")
             }
 
             val libs = findVersionCatalog()
