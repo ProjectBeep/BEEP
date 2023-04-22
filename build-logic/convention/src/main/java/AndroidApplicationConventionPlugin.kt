@@ -1,12 +1,11 @@
-@file:Suppress("UnstableApiUsage")
-
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
-import com.lighthouse.convention.configureAndroid
-import com.lighthouse.convention.configureKotlin
+import com.android.build.api.dsl.ApplicationExtension
+import com.lighthouse.convention.ProjectConfigurations
+import com.lighthouse.convention.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+@Suppress("UNUSED")
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -15,15 +14,20 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
             }
 
-            configureAndroid()
-
-            extensions.configure<BaseAppModuleExtension> {
-                configureKotlin(this)
+            extensions.configure<ApplicationExtension> {
+                configureKotlinAndroid(this)
+                defaultConfig {
+                    targetSdk = ProjectConfigurations.targetSdk
+                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                }
 
                 buildTypes {
                     release {
-                        isMinifyEnabled = false
-                        proguardFile("proguard-rules.pro")
+                        isMinifyEnabled = true
+                        proguardFiles(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            "proguard-rules.pro"
+                        )
                     }
                 }
             }

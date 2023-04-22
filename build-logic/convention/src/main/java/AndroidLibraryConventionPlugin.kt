@@ -1,10 +1,10 @@
 import com.android.build.gradle.LibraryExtension
-import com.lighthouse.convention.configureAndroid
-import com.lighthouse.convention.configureKotlin
+import com.lighthouse.convention.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+@Suppress("UNUSED")
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -13,10 +13,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
             }
 
-            configureAndroid()
-
             extensions.configure<LibraryExtension> {
-                configureKotlin(this)
+                configureKotlinAndroid(this)
             }
         }
     }

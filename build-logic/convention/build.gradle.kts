@@ -1,5 +1,5 @@
 plugins {
-    `kotlin-dsl` // enable the Kotlin-DSL
+    `kotlin-dsl`
 }
 
 group = "com.lighthouse.beep.buildlogic"
@@ -21,25 +21,21 @@ gradlePlugin {
             id = "beep.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
-        register("androidApplicationCompose") {
-            id = "beep.android.application.compose"
-            implementationClass = "AndroidApplicationComposeConventionPlugin"
-        }
         register("androidLibrary") {
             id = "beep.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
-        }
-        register("androidLibraryCompose") {
-            id = "beep.android.library.compose"
-            implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidHilt") {
             id = "beep.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
-        register("javaLibrary") {
-            id = "beep.java.library"
-            implementationClass = "JavaLibraryConventionPlugin"
+        register("androidPage") {
+            id = "beep.android.page"
+            implementationClass = "AndroidPageConventionPlugin"
+        }
+        register("androidData") {
+            id = "beep.android.data"
+            implementationClass = "AndroidDataConventionPlugin"
         }
     }
 }

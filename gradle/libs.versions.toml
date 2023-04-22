@@ -39,29 +39,29 @@ mockito = "4.8.0"
 
 [libraries]
 # AndroidX
-androidX-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
-androidX-appcompat = "androidx.appcompat:appcompat:1.6.1"
-androidX-biometric = "androidx.biometric:biometric:1.1.0"
-androidX-core-ktx = "androidx.core:core-ktx:1.10.0"
-androidX-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
-androidX-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
-androidX-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.0-alpha04"
-androidX-fragment-ktx = "androidx.fragment:fragment-ktx:1.5.7"
-androidX-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha05"
-androidX-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
-androidX-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
-androidX-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-androidX-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
-androidX-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-androidX-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
-androidX-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
-androidX-room-common = { module = "androidx.room:room-common", version.ref = "room" }
-androidX-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidX-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
-androidX-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-androidX-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
-androidX-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
-androidX-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
+androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
+androidx-biometric = "androidx.biometric:biometric:1.1.0"
+androidx-core-ktx = "androidx.core:core-ktx:1.10.0"
+androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
+androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+androidx-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.0-alpha04"
+androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.5.7"
+androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha05"
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+androidx-room-common = { module = "androidx.room:room-common", version.ref = "room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
 # 3rd-party
 ## Accompanist
 accompanist-appcompat-theme = { module = "com.google.accompanist:accompanist-appcompat-theme", version.ref = "accompanist" }

@@ -1,3 +1,7 @@
 plugins {
-    id("beep.java.library")
+    id("beep.android.library")
+}
+
+android {
+    namespace = "com.lighthouse.beep.model"
 }
