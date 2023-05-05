@@ -1,9 +1,10 @@
 *.iml
 .gradle
 .DS_Store
-/build
+build/
 /captures
 .externalNativeBuild
 .cxx
 keystore.properties
 /.idea/
+build-cache/

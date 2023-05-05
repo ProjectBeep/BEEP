@@ -17,21 +17,28 @@ dependencyResolutionManagement {
         maven("https://naver.jfrog.io/artifactory/maven/")
     }
 }
+
+buildCache {
+    local {
+        directory = File(rootDir, "build-cache")
+        removeUnusedEntriesAfterDays = 30
+    }
+}
 rootProject.name = "BEEP"
 
-//fun includeProject(moduleName: String, rootFolderName: String = "") {
-//    settings.include(moduleName)
-//
-//    if (rootFolderName.isNotEmpty()) {
-//        project(moduleName).projectDir =
-//            File(rootDir, "$rootFolderName/${moduleName.substring(startIndex = 1)}")
-//    }
-//}
-
 //includeProject(":app")
-//includeProject(":core")
-//includeProject(":core-android")
-//includeProject(":model")
+include(":core")
+include(":model")
+include(":theme")
+include(":domain")
+include(":data:data")
+include(":data:database")
+include(":data:datastore")
+include(":data:encryptedpreference")
+include(":data:remote")
+include(":data:content")
+include(":library:barcode")
+include(":library:recognizer")
 //includeProject(":auth")
 //includeProject(":auth-google")
 //includeProject(":common")
