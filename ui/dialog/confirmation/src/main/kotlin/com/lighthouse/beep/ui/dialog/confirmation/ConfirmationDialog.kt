@@ -1,4 +1,4 @@
-package com.lighthouse.features.common.dialog.confirmation
+package com.lighthouse.beep.ui.dialog.confirmation
 
 import android.app.Dialog
 import android.graphics.Color
@@ -7,50 +7,23 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import com.lighthouse.features.common.R
-import com.lighthouse.features.common.binding.viewBindings
-import com.lighthouse.features.common.databinding.DialogConfirmationBinding
+import com.lighthouse.beep.ui.core.binding.viewBindings
+import com.lighthouse.beep.ui.dialog.confirmation.databinding.DialogConfirmationBinding
 
 class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
     private val binding: DialogConfirmationBinding by viewBindings()
 
-    private var initTitle: String? = null
-    private var initMessage: String? = null
-    private var initOkText: String? = null
-    private var initCancelText: String? = null
-
-    fun setTitle(title: String) {
-        initTitle = title
-    }
-
-    fun setMessage(message: String) {
-        initMessage = message
-    }
-
-    fun setOkText(okText: String) {
-        initOkText = okText
-    }
-
-    fun setCancelText(cancelText: String) {
-        initCancelText = cancelText
-    }
-
     private var onOkClickListener: OnClickListener? = null
-    fun setOnOkClickListener(listener: (() -> Unit)?) {
-        onOkClickListener = listener?.let {
-            OnClickListener { it() }
-        }
+    fun setOnOkClickListener(listener: OnClickListener?) {
+        onOkClickListener = listener
     }
 
     private var onCancelClickListener: OnClickListener? = null
-    fun setOnCancelListener(listener: (() -> Unit)?) {
-        onCancelClickListener = listener?.let {
-            OnClickListener { it() }
-        }
+    fun setOnCancelListener(listener: OnClickListener?) {
+        onCancelClickListener = listener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -62,12 +35,8 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.tvTitle.setTextWithVisible(initTitle)
-        binding.tvMessage.setTextWithVisible(initMessage)
-
         setUpRoot()
+        setUpContent()
         setUpOkButton()
         setUpCancelButton()
     }
@@ -78,9 +47,22 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
         }
     }
 
+    private fun setUpContent() {
+        binding.tvTitle.apply {
+            text = ConfirmationParams.getTitle(arguments)
+            isVisible = text.isNotEmpty()
+        }
+
+        binding.tvTitle.apply {
+            text = ConfirmationParams.getMessage(arguments)
+            isVisible = text.isNotEmpty()
+        }
+    }
+
     private fun setUpOkButton() {
         binding.tvOk.apply {
-            setTextWithVisible(initOkText)
+            text = ConfirmationParams.getOkText(arguments)
+            isVisible = text.isNotEmpty()
             setOnClickListener { v ->
                 if (onOkClickListener != null) {
                     onOkClickListener?.onClick(v)
@@ -92,7 +74,8 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
     private fun setUpCancelButton() {
         binding.tvCancel.apply {
-            setTextWithVisible(initCancelText)
+            text = ConfirmationParams.getCancelText(arguments)
+            isVisible = text.isNotEmpty()
             setOnClickListener { v ->
                 if (onCancelClickListener != null) {
                     onCancelClickListener?.onClick(v)
@@ -113,8 +96,11 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
         }
     }
 
-    private fun TextView.setTextWithVisible(text: String?) {
-        this.text = text ?: this.text ?: ""
-        isVisible = this.text != ""
+    companion object {
+        fun newInstance(params: ConfirmationParams): ConfirmationDialog {
+            return ConfirmationDialog().apply {
+                arguments = params.buildBundle()
+            }
+        }
     }
 }
