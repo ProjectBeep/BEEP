@@ -8,15 +8,16 @@ import org.gradle.kotlin.dsl.project
 class AndroidPageConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-        with(target){
-            with(pluginManager){
-                apply("beep.android.design.system")
+        with(target) {
+            with(pluginManager) {
+                apply("beep.android.ui")
                 apply("beep.android.hilt")
             }
 
             dependencies {
                 implementation(project(":model"))
                 implementation(project(":domain"))
+                implementation(project(":ui:core"))
             }
         }
     }

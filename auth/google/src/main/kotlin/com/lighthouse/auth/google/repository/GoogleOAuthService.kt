@@ -11,7 +11,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.lighthouse.auth.repository.OAuthRepository
+import com.lighthouse.auth.repository.OAuthService
 import com.lighthouse.beep.auth.google.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
@@ -19,9 +19,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-internal class GoogleOAuthRepository @Inject constructor(
+internal class GoogleOAuthService @Inject constructor(
     @ApplicationContext context: Context,
-) : OAuthRepository, GoogleClient {
+) : OAuthService, GoogleClient {
 
     private val googleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

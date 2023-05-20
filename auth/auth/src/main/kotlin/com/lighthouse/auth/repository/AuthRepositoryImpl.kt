@@ -2,10 +2,8 @@ package com.lighthouse.auth.repository
 
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.lighthouse.auth.di.GoogleOAuth
 import com.lighthouse.beep.domain.repository.auth.AuthRepository
 import com.lighthouse.beep.model.auth.AuthProvider
 import com.lighthouse.beep.model.auth.exception.InvalidUserException
@@ -16,7 +14,7 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor(
-    @GoogleOAuth private val googleOAuthRepository: OAuthRepository,
+    private val serviceProvider: OAuthServiceProvider,
 ) : AuthRepository {
 
     override fun isLogin(): Flow<Boolean> = callbackFlow {
@@ -44,10 +42,9 @@ internal class AuthRepositoryImpl @Inject constructor(
     }
 
     suspend fun signIn(provider: AuthProvider, credential: AuthCredential): Result<Unit> {
+        val service = serviceProvider.getOAuthService(provider)
         return runCatching {
-            when (provider) {
-                AuthProvider.GOOGLE -> googleOAuthRepository.signIn(credential)
-            }
+            service.signIn(credential)
         }
     }
 
@@ -55,7 +52,7 @@ internal class AuthRepositoryImpl @Inject constructor(
         val user = Firebase.auth.currentUser ?: return Result.failure(InvalidUserException())
         return runCatching {
             when (user.providerId) {
-                GoogleAuthProvider.PROVIDER_ID -> googleOAuthRepository.signOut()
+//                GoogleAuthProvider.PROVIDER_ID -> googleOAuthService.signOut()
             }
             Firebase.auth.signOut()
         }
@@ -65,7 +62,7 @@ internal class AuthRepositoryImpl @Inject constructor(
         val user = Firebase.auth.currentUser ?: return Result.failure(InvalidUserException())
         return runCatching {
             when (user.providerId) {
-                GoogleAuthProvider.PROVIDER_ID -> googleOAuthRepository.signOut()
+//                GoogleAuthProvider.PROVIDER_ID -> googleOAuthService.signOut()
             }
             callbackFlow {
                 user.delete().addOnCompleteListener {

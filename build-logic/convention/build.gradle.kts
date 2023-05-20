@@ -29,6 +29,14 @@ gradlePlugin {
             id = "beep.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
+        register("androidUI") {
+            id = "beep.android.ui"
+            implementationClass = "AndroidUIConventionPlugin"
+        }
+        register("androidDesignSystem") {
+            id = "beep.android.design.system"
+            implementationClass = "AndroidDesignSystemConventionPlugin"
+        }
         register("androidPage") {
             id = "beep.android.page"
             implementationClass = "AndroidPageConventionPlugin"
@@ -36,10 +44,6 @@ gradlePlugin {
         register("androidDialog") {
             id = "beep.android.dialog"
             implementationClass = "AndroidDialogConventionPlugin"
-        }
-        register("androidDesignSystem") {
-            id = "beep.android.design.system"
-            implementationClass = "AndroidDesignSystemConventionPlugin"
         }
         register("androidData") {
             id = "beep.android.data"

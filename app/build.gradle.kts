@@ -51,6 +51,10 @@ dependencies {
     implementation(projects.auth.auth)
     implementation(projects.auth.google)
 
+    implementation(projects.ui.page.intro)
+    implementation(projects.ui.page.main)
+
+
 //    implementation(projects.navApp)
 //    implementation(projects.navMain)
 //    implementation(projects.uiCoffee)
