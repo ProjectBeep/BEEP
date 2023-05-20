@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 
 internal fun configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *>
+    commonExtension: CommonExtension<*, *, *, *>,
 ) {
     commonExtension.apply {
         compileSdk = ProjectConfigurations.compileSdk
@@ -28,19 +28,19 @@ internal fun configureKotlinAndroid(
             jvmTarget = ProjectConfigurations.javaVer.toString()
         }
 
-        dataBinding.enable = true
+        viewBinding.enable = true
     }
 }
 
 internal fun CommonExtension<*, *, *, *>.kotlinOptions(
-    block: KotlinJvmOptions.() -> Unit
+    block: KotlinJvmOptions.() -> Unit,
 ) {
     (this as ExtensionAware).extensions.configure("kotlinOptions", block)
 }
 
 @Suppress("RemoveRedundantBackticks")
 internal fun Project.`kapt`(
-    configure: Action<KaptExtension>
+    configure: Action<KaptExtension>,
 ) {
     (this as ExtensionAware).extensions.configure("kapt", configure)
 }

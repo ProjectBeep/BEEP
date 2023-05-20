@@ -9,8 +9,8 @@ import org.gradle.kotlin.dsl.project
 class AndroidDataConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-        with(target){
-            with(pluginManager){
+        with(target) {
+            with(pluginManager) {
                 apply("beep.android.library")
                 apply("beep.android.hilt")
             }
@@ -18,9 +18,7 @@ class AndroidDataConventionPlugin : Plugin<Project> {
             val libs = findVersionCatalog()
 
             dependencies {
-                implementation(project(":core:model"))
-                implementation(project(":core:common"))
-                implementation(project(":domain"))
+                implementation(project(":model"))
 
                 implementation(libs.findLibrary("kotlin-coroutine-core"))
                 implementation(libs.findLibrary("javax-inject"))

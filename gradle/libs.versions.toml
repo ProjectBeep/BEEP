@@ -1,5 +1,5 @@
 [versions]
-androidStudioGradlePlugin = "8.0.0"
+androidStudioGradlePlugin = "8.0.1"
 
 # AndroidX
 activity = "1.7.1"
@@ -42,12 +42,12 @@ mockito = "4.8.0"
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
 androidx-biometric = "androidx.biometric:biometric:1.1.0"
-androidx-core-ktx = "androidx.core:core-ktx:1.10.0"
+androidx-core-ktx = "androidx.core:core-ktx:1.10.1"
 androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 androidx-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.0-alpha04"
 androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.5.7"
-androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha05"
+androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-beta01"
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
@@ -62,6 +62,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
+androidx-security-crypto-ktx = "androidx.security:security-crypto-ktx:1.1.0-alpha06"
 # 3rd-party
 ## Accompanist
 accompanist-appcompat-theme = { module = "com.google.accompanist:accompanist-appcompat-theme", version.ref = "accompanist" }
@@ -75,15 +76,15 @@ javax-inject = "javax.inject:javax.inject:1"
 kotlin-coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutine" }
 kotlin-coroutine-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutine" }
 kotlin-coroutine-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
-kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
 ## Material
-material = "com.google.android.material:material:1.8.0"
+android-material = "com.google.android.material:material:1.9.0"
 ## GMS (google mobile service)
 gms-play-services-auth = "com.google.android.gms:play-services-auth:20.4.1"
 gms-play-services-location = "com.google.android.gms:play-services-location:20.0.0"
 gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.1"
 ## Firebase
-firebase-bom = "com.google.firebase:firebase-bom:31.5.0"
+firebase-bom = "com.google.firebase:firebase-bom:32.0.0"
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
@@ -91,7 +92,7 @@ firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 ## MLKit
-mlkit-text-recognition-korean = "com.google.mlkit:text-recognition-korean:16.0.0-beta6"
+mlkit-text-recognition-korean = "com.google.mlkit:text-recognition-korean:16.0.0"
 ## Zxing
 zxing-core = "com.google.zxing:core:3.5.1"
 ## Squareup
@@ -105,8 +106,6 @@ naver-map-sdk = "com.naver.maps:map-sdk:3.16.0"
 ## coil
 coil = "io.coil-kt:coil:2.2.2"
 
-## Timber
-timber = "com.jakewharton.timber:timber:5.0.1"
 ## Facebook
 facebook-shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 ## Airbnb

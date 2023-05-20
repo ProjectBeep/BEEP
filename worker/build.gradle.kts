@@ -1,11 +1,10 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("beep.android.library")
     id("beep.android.hilt")
 }
 
 android {
-    namespace = "com.lighthouse.worker"
+    namespace = "com.lighthouse.beep.worker"
 }
 
 dependencies {
@@ -21,8 +20,3 @@ dependencies {
 
     implementation(libs.timber)
 }
-
-// JUnit5
-// tasks.withType<Test> {
-//    useJUnitPlatform()
-// }

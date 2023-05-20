@@ -27,54 +27,52 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
+        buildConfig = true
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.add("META-INF/LICENSE*")
     }
 }
 
 dependencies {
-    implementation(projects.core)
-    implementation(projects.coreAndroid)
-    implementation(projects.model)
-    implementation(projects.auth)
-    implementation(projects.authGoogle)
-    implementation(projects.common)
-    implementation(projects.commonAndroid)
-    implementation(projects.worker)
-    implementation(projects.utilsLocation)
-    implementation(projects.utilsRecognizer)
+//    implementation(projects.core)
+//    implementation(projects.worker)
+//    implementation(projects.utilsLocation)
+//    implementation(projects.utilsRecognizer)
+    implementation(projects.theme)
     implementation(projects.domain)
-    implementation(projects.data)
-    implementation(projects.dataDatabase)
-    implementation(projects.dataPreference)
-    implementation(projects.dataRemote)
-    implementation(projects.navApp)
-    implementation(projects.navMain)
-    implementation(projects.uiCoffee)
-    implementation(projects.uiCommon)
-    implementation(projects.uiIntro)
-    implementation(projects.uiMain)
-    implementation(projects.uiGifticonlist)
-    implementation(projects.uiHome)
-    implementation(projects.uiOpensourcelicense)
-    implementation(projects.uiPersonalinfopolicy)
-    implementation(projects.uiSecurity)
-    implementation(projects.uiSetting)
-    implementation(projects.uiTermsofuse)
-    implementation(projects.uiUsedgifticon)
+    implementation(projects.data.data)
+    implementation(projects.data.content)
+    implementation(projects.data.database)
+    implementation(projects.data.datastore)
+    implementation(projects.data.encryptedpreference)
+    implementation(projects.data.remote)
+    implementation(projects.auth.auth)
+    implementation(projects.auth.google)
 
-    implementation(libs.androidX.core.splashscreen)
+//    implementation(projects.navApp)
+//    implementation(projects.navMain)
+//    implementation(projects.uiCoffee)
+//    implementation(projects.uiCommon)
+//    implementation(projects.uiIntro)
+//    implementation(projects.uiMain)
+//    implementation(projects.uiGifticonlist)
+//    implementation(projects.uiHome)
+//    implementation(projects.uiOpensourcelicense)
+//    implementation(projects.uiPersonalinfopolicy)
+//    implementation(projects.uiSecurity)
+//    implementation(projects.uiSetting)
+//    implementation(projects.uiTermsofuse)
+//    implementation(projects.uiUsedgifticon)
 
-    implementation(libs.androidX.hilt.work)
-    implementation(libs.androidX.work.runtime.ktx)
+    implementation(libs.androidx.core.splashscreen)
 
-    implementation(libs.androidX.navigation.ui.ktx)
-    implementation(libs.androidX.navigation.fragment.ktx)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.work.runtime.ktx)
 
-    implementation(libs.timber)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
 }
 
 kapt {
