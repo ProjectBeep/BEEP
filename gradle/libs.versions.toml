@@ -63,11 +63,11 @@ androidx-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
 androidx-security-crypto-ktx = "androidx.security:security-crypto-ktx:1.1.0-alpha06"
+
+## Kakao
+kakao-sdk-user = "com.kakao.sdk:v2-user:2.13.0"
+
 # 3rd-party
-## Accompanist
-accompanist-appcompat-theme = { module = "com.google.accompanist:accompanist-appcompat-theme", version.ref = "accompanist" }
-accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
-accompanist-placeholder-material = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 ## Dagger
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }

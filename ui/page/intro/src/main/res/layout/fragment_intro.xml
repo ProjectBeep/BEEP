@@ -1,80 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/beep_pink">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="32dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="32dp" />
+
+    <ImageView
+        android:id="@+id/iv_logo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/beep_pink">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="64dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/anim_logo"
+        app:layout_constraintBottom_toTopOf="@+id/btn_google_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="32dp" />
+    <TextView
+        android:id="@+id/btn_google_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ripple_black_12_rect_corner_8_on_white"
+        android:gravity="center"
+        android:paddingVertical="16dp"
+        android:text="@string/google_login"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_guest_signin"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="32dp" />
+    <ImageView
+        android:id="@+id/iv_google_logo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:contentDescription="@string/google_login"
+        android:src="@drawable/img_google_logo"
+        app:layout_constraintBottom_toBottomOf="@id/btn_google_login"
+        app:layout_constraintStart_toStartOf="@id/btn_google_login"
+        app:layout_constraintTop_toTopOf="@id/btn_google_login" />
 
-        <ImageView
-            android:id="@+id/iv_logo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="64dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/anim_logo"
-            app:layout_constraintBottom_toTopOf="@+id/btn_google_login"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3" />
-
-        <TextView
-            android:id="@+id/btn_google_login"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/ripple_black_12_rect_corner_8_on_white"
-            android:gravity="center"
-            android:paddingVertical="16dp"
-            android:text="@string/google_login"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/tv_guest_signin"
-            app:layout_constraintEnd_toEndOf="@id/guideline_end"
-            app:layout_constraintStart_toStartOf="@id/guideline_start" />
-
-        <ImageView
-            android:id="@+id/iv_google_logo"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="4dp"
-            android:contentDescription="@string/google_login"
-            android:src="@drawable/img_google_logo"
-            app:layout_constraintBottom_toBottomOf="@id/btn_google_login"
-            app:layout_constraintStart_toStartOf="@id/btn_google_login"
-            app:layout_constraintTop_toTopOf="@id/btn_google_login" />
-
-        <TextView
-            android:id="@+id/tv_guest_signin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/ripple_white_12_rect_corner_8"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="@string/guest_login"
-            android:textAllCaps="false"
-            android:textAppearance="@style/BEEP.TextStyle.Body2"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+    <TextView
+        android:id="@+id/tv_guest_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/ripple_white_12_rect_corner_8"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="@string/guest_login"
+        android:textAllCaps="false"
+        android:textAppearance="@style/BEEP.TextStyle.Body2"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

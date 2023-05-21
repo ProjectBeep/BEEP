@@ -2,9 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/fragment_main_container">
+    >
+<!--    app:startDestination="@id/fragment_main_container"-->
 
-    <fragment
-        android:id="@+id/fragment_main_container"
-        android:name="com.lighthouse.features.main.ui.MainContainerFragment"/>
+<!--    <fragment-->
+<!--        android:id="@+id/fragment_main_container"-->
+<!--        android:name="com.lighthouse.features.main.ui.MainContainerFragment"/>-->
 </navigation>

@@ -51,9 +51,9 @@ dependencies {
     implementation(projects.auth.auth)
     implementation(projects.auth.google)
 
+    implementation(projects.ui.core)
     implementation(projects.ui.page.intro)
     implementation(projects.ui.page.main)
-
 
 //    implementation(projects.navApp)
 //    implementation(projects.navMain)
@@ -71,6 +71,7 @@ dependencies {
 //    implementation(projects.uiUsedgifticon)
 
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.fragment.ktx)
 
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.work.runtime.ktx)

@@ -5,11 +5,13 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.commit
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.beep.R
 import com.lighthouse.beep.databinding.ActivityMainBinding
+import com.lighthouse.features.intro.ui.IntroFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,6 +37,14 @@ class MainActivity : AppCompatActivity() {
         setUpNavController()
         setUpNavigation()
         setUpIsLogin()
+
+        setUpIntroScreen()
+    }
+
+    private fun setUpIntroScreen() {
+        supportFragmentManager.commit {
+            add(R.id.fcv, IntroFragment())
+        }
     }
 
     private fun setUpMessage() {

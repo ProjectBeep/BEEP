@@ -7,15 +7,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.lighthouse.features.common.binding.viewBindings
-import com.lighthouse.features.common.ext.repeatOnStarted
-import com.lighthouse.features.main.R
-import com.lighthouse.features.main.databinding.FragmentMainContainerBinding
-import com.lighthouse.navs.main.model.MainNavigationItem
-import com.lighthouse.navs.main.navigator.MainNavigationViewModel
+import com.lighthouse.beep.ui.core.binding.viewBindings
+import com.lighthouse.beep.ui.core.exts.repeatOnStarted
+import com.lighthouse.beep.ui.page.main.R
+import com.lighthouse.beep.ui.page.main.databinding.FragmentMainContainerBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,23 +22,23 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
 
     private val viewModel: MainContainerViewModel by viewModels()
 
-    private val mainNavigationViewModel: MainNavigationViewModel by viewModels()
+//    private val mainNavigationViewModel: MainNavigationViewModel by viewModels()
 
     private lateinit var navController: NavController
-    private val destinationChangedListener =
-        NavController.OnDestinationChangedListener { controller, destination, _ ->
-            backPressedCallback.isEnabled =
-                controller.graph.findStartDestination().id != destination.id
-
-            when (destination.id) {
-                com.lighthouse.features.home.R.id.home_container_fragment,
-                com.lighthouse.features.gifticonlist.R.id.gifticon_list_fragment ->
-                    binding.fabAddGifticon.show()
-
-                else ->
-                    binding.fabAddGifticon.hide()
-            }
-        }
+//    private val destinationChangedListener =
+//        NavController.OnDestinationChangedListener { controller, destination, _ ->
+//            backPressedCallback.isEnabled =
+//                controller.graph.findStartDestination().id != destination.id
+//
+//            when (destination.id) {
+//                R.id.home_container_fragment,
+//                R.id.gifticon_list_fragment ->
+//                    binding.fabAddGifticon.show()
+//
+//                else ->
+//                    binding.fabAddGifticon.hide()
+//            }
+//        }
 
     private val backPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
@@ -67,7 +64,7 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
         navController = navHostFragment.navController
-        navController.addOnDestinationChangedListener(destinationChangedListener)
+//        navController.addOnDestinationChangedListener(destinationChangedListener)
     }
 
     private fun setUpBottomNavigation() {
@@ -76,17 +73,17 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
 
     private fun setUpNavigation() {
         viewLifecycleOwner.repeatOnStarted {
-            mainNavigationViewModel.navigation.collect { item ->
-                when (item) {
-                    MainNavigationItem.Popup -> navController.popBackStack()
-                    else -> Unit
-                }
-            }
+//            mainNavigationViewModel.navigation.collect { item ->
+//                when (item) {
+//                    MainNavigationItem.Popup -> navController.popBackStack()
+//                    else -> Unit
+//                }
+//            }
         }
     }
 
     override fun onDestroyView() {
-        navController.removeOnDestinationChangedListener(destinationChangedListener)
+//        navController.removeOnDestinationChangedListener(destinationChangedListener)
 
         super.onDestroyView()
     }
