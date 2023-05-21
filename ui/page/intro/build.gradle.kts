@@ -10,6 +10,8 @@ dependencies {
 //    implementation(projects.authGoogle)
 //    implementation(projects.uiCommon)
 
+    implementation(libs.kakao.sdk.user)
+
     implementation(projects.ui.dialog.progress)
 
     implementation(libs.androidx.core.splashscreen)
