@@ -1,8 +1,8 @@
 package com.lighthouse.beep.domain.usecase.gifticon.edit
 
-import com.lighthouse.beep.domain.repository.auth.AuthRepository
+import com.lighthouse.beep.auth.model.exception.AuthenticationException
+import com.lighthouse.beep.auth.repository.AuthRepository
 import com.lighthouse.beep.domain.repository.gifticon.GifticonRepository
-import com.lighthouse.beep.model.auth.exception.AuthenticationException
 import com.lighthouse.beep.model.gifticon.GifticonForUpdate
 import javax.inject.Inject
 

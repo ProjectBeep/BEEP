@@ -14,31 +14,13 @@ android {
         val keystoreProperties = Properties()
         keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
-        buildConfigField(
-            "String",
-            "FIREBASE_KAKAO_AUTH_URL",
-            "\"https://authwithkakao-f3yfujosoa-du.a.run.app\"",
-        )
-
         manifestPlaceholders["kakao_native_app_key"] =
             keystoreProperties.getProperty("kakao_native_app_key")
 
         buildConfigField(
             "String",
-            "FIREBASE_GOOGLE_AUTH_URL",
-            "\"https://authwithgoogle-f3yfujosoa-du.a.run.app\"",
-        )
-
-        buildConfigField(
-            "String",
             "GOOGLE_SERVER_CLIENT_ID",
             keystoreProperties.getProperty("google_server_client_id"),
-        )
-
-        buildConfigField(
-            "String",
-            "FIREBASE_NAVER_AUTH_URL",
-            "\"https://authwithnaver-f3yfujosoa-du.a.run.app\"",
         )
 
         buildConfigField(
@@ -64,8 +46,6 @@ dependencies {
     implementation(libs.kakao.sdk.user)
     implementation(libs.naver.oauth)
     implementation(libs.gms.play.services.auth)
-
-    implementation(projects.library.network)
 
     implementation(projects.ui.dialog.progress)
 

@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(projects.core)
     implementation(projects.model)
+    implementation(projects.auth.auth)
 
     implementation(libs.kotlin.coroutine.core)
     implementation(libs.androidx.paging.common.ktx)

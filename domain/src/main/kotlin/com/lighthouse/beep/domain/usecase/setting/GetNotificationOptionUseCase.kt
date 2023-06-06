@@ -1,6 +1,6 @@
 package com.lighthouse.beep.domain.usecase.setting
 
-import com.lighthouse.beep.domain.repository.auth.AuthRepository
+import com.lighthouse.beep.auth.repository.AuthRepository
 import com.lighthouse.beep.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

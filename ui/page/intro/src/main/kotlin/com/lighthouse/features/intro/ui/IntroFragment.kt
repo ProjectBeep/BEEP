@@ -125,8 +125,6 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
     }
 
     fun authFirebaseWithGoogle() {
-
-
 //        val retrofit = Retrofit.Builder()
 //            .client(
 //                OkHttpClient.Builder()

@@ -49,7 +49,7 @@ dependencies {
     implementation(projects.data.encryptedpreference)
     implementation(projects.data.remote)
     implementation(projects.auth.auth)
-    implementation(projects.auth.google)
+//    implementation(projects.auth.google)
 
     implementation(projects.ui.core)
     implementation(projects.ui.page.intro)

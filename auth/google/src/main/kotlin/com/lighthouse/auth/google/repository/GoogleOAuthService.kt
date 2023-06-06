@@ -11,7 +11,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.lighthouse.auth.repository.OAuthService
+import com.lighthouse.beep.auth.service.OAuthService
 import com.lighthouse.beep.auth.google.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose

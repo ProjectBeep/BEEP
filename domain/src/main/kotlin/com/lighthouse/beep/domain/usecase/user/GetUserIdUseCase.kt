@@ -1,6 +1,6 @@
 package com.lighthouse.beep.domain.usecase.user
 
-import com.lighthouse.beep.domain.repository.auth.AuthRepository
+import com.lighthouse.beep.auth.repository.AuthRepository
 import javax.inject.Inject
 
 class GetUserIdUseCase @Inject constructor(

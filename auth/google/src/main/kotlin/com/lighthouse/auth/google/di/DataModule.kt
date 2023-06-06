@@ -1,9 +1,8 @@
 package com.lighthouse.auth.google.di
 
-import com.lighthouse.auth.di.GoogleOAuth
 import com.lighthouse.auth.google.repository.GoogleClient
 import com.lighthouse.auth.google.repository.GoogleOAuthService
-import com.lighthouse.auth.repository.OAuthService
+import com.lighthouse.beep.auth.service.OAuthService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -19,7 +18,6 @@ internal abstract class DataModule {
         client: GoogleOAuthService,
     ): GoogleClient
 
-    @GoogleOAuth
     @Binds
     abstract fun bindsGoogleOAuthRepository(
         repository: GoogleOAuthService,
