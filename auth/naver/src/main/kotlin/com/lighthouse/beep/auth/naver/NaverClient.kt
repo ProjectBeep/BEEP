@@ -19,7 +19,7 @@ class NaverClient @Inject constructor(
             context,
             BuildConfig.NAVER_LOGIN_CLIENT_ID,
             BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
-            "",
+            context.resources.getString(R.string.app_name),
         )
     }
 
