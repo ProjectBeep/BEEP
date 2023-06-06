@@ -43,6 +43,7 @@ dependencies {
 //    implementation(projects.authGoogle)
 //    implementation(projects.uiCommon)
 
+    implementation(projects.auth.google)
     implementation(projects.auth.naver)
 
     implementation(libs.kakao.sdk.user)

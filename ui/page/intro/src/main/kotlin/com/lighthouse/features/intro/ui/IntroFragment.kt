@@ -6,25 +6,24 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
+import androidx.lifecycle.lifecycleScope
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
+import com.lighthouse.auth.google.GoogleClient
+import com.lighthouse.auth.google.GoogleTokenResult
 import com.lighthouse.beep.auth.naver.NaverClient
 import com.lighthouse.beep.auth.naver.NaverTokenResult
 import com.lighthouse.beep.ui.core.binding.viewBindings
 import com.lighthouse.beep.ui.core.exts.repeatOnStarted
 import com.lighthouse.beep.ui.core.utils.throttle.OnThrottleClickListener
-import com.lighthouse.beep.ui.page.intro.BuildConfig
 import com.lighthouse.beep.ui.page.intro.R
 import com.lighthouse.beep.ui.page.intro.databinding.FragmentIntroBinding
-import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,13 +44,17 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 //        }
 
     private val googleLoginLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            try {
-                val account = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    .getResult(ApiException::class.java)
-                Log.d("GOOGLE_LOGIN", "login accessToken : ${account.idToken}")
-            } catch (e: Exception) {
-                e.printStackTrace()
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                val result = googleClient.getAccessToken(activityResult)
+                when (result) {
+                    is GoogleTokenResult.Success -> {
+                        val idToken = result.idToken
+                    }
+
+                    is GoogleTokenResult.Canceled -> {}
+                    is GoogleTokenResult.Failed -> {}
+                }
             }
         }
 
@@ -60,7 +63,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
             val result = naverClient.getAccessToken(activityResult)
             when (result) {
                 is NaverTokenResult.Success -> {
-                    val accessToken = result.token
+                    val accessToken = result.accessToken
                 }
 
                 is NaverTokenResult.Canceled -> {}
@@ -69,35 +72,20 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
         }
 
     @Inject
+    lateinit var googleClient: GoogleClient
+
+    @Inject
     lateinit var naverClient: NaverClient
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         animateLogo()
-        setUpGoogleAuthEvent()
         setUpSignInLoading()
         setUpClickEvent()
-
-        NaverIdLoginSDK.initialize(
-            requireContext(),
-            BuildConfig.NAVER_LOGIN_CLIENT_ID,
-            BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
-            getString(com.lighthouse.beep.theme.R.string.app_name),
-        )
-        Log.d("NAVER_LOGIN", "accessToken : ${NaverIdLoginSDK.getAccessToken()}")
     }
 
     private fun animateLogo() {
         val drawable = binding.ivLogo.drawable as AnimatedVectorDrawable
         drawable.start()
-    }
-
-    private fun setUpGoogleAuthEvent() {
-        repeatOnStarted {
-//            authViewModel.eventFlow.collect { event ->
-
-//                messageViewModel.sendMessage(event)
-//            }
-        }
     }
 
     private fun setUpSignInLoading() {
@@ -141,13 +129,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
     private fun setUpClickEvent() {
         binding.btnGoogleLogin.setOnClickListener(
             OnThrottleClickListener(viewLifecycleOwner) {
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
-                    .requestEmail()
-                    .build()
-                val client = GoogleSignIn.getClient(requireActivity(), gso)
-
-                googleLoginLauncher.launch(client.signInIntent)
+                googleLoginLauncher.launch(googleClient.signInIntent)
             },
         )
 
