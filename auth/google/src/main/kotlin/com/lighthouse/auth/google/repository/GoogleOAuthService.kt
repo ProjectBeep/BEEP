@@ -17,7 +17,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 internal class GoogleOAuthService @Inject constructor(
     @ApplicationContext context: Context,
@@ -35,15 +38,17 @@ internal class GoogleOAuthService @Inject constructor(
     }
 
     private suspend fun getGoogleAccount(result: ActivityResult): GoogleSignInAccount =
-        callbackFlow {
+        suspendCancellableCoroutine { continuation ->
             GoogleSignIn.getSignedInAccountFromIntent(result.data).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    trySend(it.result)
+                    continuation.resume(it.result)
+                } else {
+                    continuation.resumeWithException(
+                        IllegalStateException(it.exception?.message),
+                    )
                 }
-                close(it.exception)
             }
-            awaitClose()
-        }.first()
+        }
 
     override suspend fun getAuthCredential(result: ActivityResult): Result<AuthCredential> {
         return if (result.resultCode == Activity.RESULT_OK) {

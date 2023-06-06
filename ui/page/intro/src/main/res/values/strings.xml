@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_login">Google 계정으로 로그인</string>
+    <string name="kakao_login">카카오 로그인</string>
+    <string name="naver_login">네이버 로그인</string>
     <string name="guest_login">게스트로 시작하기</string>
 </resources>

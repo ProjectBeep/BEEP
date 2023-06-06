@@ -1,25 +1,30 @@
 package com.lighthouse.beep.ui.core.utils.throttle
 
 import android.view.View
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class OnThrottleClickListener(
-    private val throttleTime: Long = THROTTLE_TIME,
-    private val listener: View.OnClickListener,
+    private val lifecycleOwner: LifecycleOwner,
+    private val throttleTime: Long = DEFAULT_THROTTLE_TIME,
+    private val listener: suspend () -> Unit,
 ) : View.OnClickListener {
 
-    private var recentClickTime: Long = 0L
-
-    private val isSafe: Boolean
-        get() = System.currentTimeMillis() - recentClickTime > throttleTime
+    private var lastRunTime: Long = 0L
 
     override fun onClick(view: View) {
-        if (isSafe) {
-            recentClickTime = System.currentTimeMillis()
-            listener.onClick(view)
+        if (lastRunTime + throttleTime > System.currentTimeMillis()) {
+            return
+        }
+
+        lastRunTime = System.currentTimeMillis()
+        lifecycleOwner.lifecycleScope.launch {
+            listener()
         }
     }
 
     companion object {
-        const val THROTTLE_TIME = 300L
+        const val DEFAULT_THROTTLE_TIME = 400L
     }
 }

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.commit
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.beep.R
 import com.lighthouse.beep.databinding.ActivityMainBinding
@@ -70,9 +69,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpNavController() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fcv) as NavHostFragment
-        navController = navHostFragment.navController
-        navController.popBackStack()
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fcv) as NavHostFragment
+//        navController = navHostFragment.navController
+//        navController.popBackStack()
     }
 
     private fun setUpNavigation() {
