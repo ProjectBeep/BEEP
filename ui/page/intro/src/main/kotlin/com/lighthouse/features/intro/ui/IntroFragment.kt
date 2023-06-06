@@ -25,10 +25,6 @@ import com.lighthouse.beep.ui.page.intro.databinding.FragmentIntroBinding
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLoginState
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 @AndroidEntryPoint
 class IntroFragment : Fragment(R.layout.fragment_intro) {
@@ -120,16 +116,26 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
         }
     }
 
+    fun authFirebaseWithKakao() {
+//        FirebaseAuthWithKakaoApi().request(
+//            FirebaseAuthWithKakaoApi.Param(
+//                token = ""
+//            )
+//        )
+    }
+
     fun authFirebaseWithGoogle() {
-        val retrofit = Retrofit.Builder()
-            .client(
-                OkHttpClient.Builder()
-                    .addInterceptor(HttpLoggingInterceptor())
-                    .build(),
-            )
-            .baseUrl(BuildConfig.FIREBASE_GOOGLE_AUTH_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
+
+
+//        val retrofit = Retrofit.Builder()
+//            .client(
+//                OkHttpClient.Builder()
+//                    .addInterceptor(HttpLoggingInterceptor())
+//                    .build(),
+//            )
+//            .baseUrl(BuildConfig.FIREBASE_GOOGLE_AUTH_URL)
+//            .addConverterFactory(MoshiConverterFactory.create())
+//            .build()
     }
 
     private fun setUpClickEvent() {

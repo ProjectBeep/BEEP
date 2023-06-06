@@ -64,8 +64,8 @@ dependencies {
     implementation(libs.kakao.sdk.user)
     implementation(libs.naver.oauth)
     implementation(libs.gms.play.services.auth)
-    implementation(libs.squareup.retrofit2)
-    implementation(libs.squareup.retrofit2.converter.moshi)
+
+    implementation(projects.library.network)
 
     implementation(projects.ui.dialog.progress)
 
