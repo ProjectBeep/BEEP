@@ -1,6 +1,5 @@
 package com.lighthouse.features.intro.ui
 
-import android.app.Activity
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +15,8 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
+import com.lighthouse.beep.auth.naver.NaverClient
+import com.lighthouse.beep.auth.naver.NaverTokenResult
 import com.lighthouse.beep.ui.core.binding.viewBindings
 import com.lighthouse.beep.ui.core.exts.repeatOnStarted
 import com.lighthouse.beep.ui.core.utils.throttle.OnThrottleClickListener
@@ -23,8 +24,8 @@ import com.lighthouse.beep.ui.page.intro.BuildConfig
 import com.lighthouse.beep.ui.page.intro.R
 import com.lighthouse.beep.ui.page.intro.databinding.FragmentIntroBinding
 import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.NidOAuthLoginState
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class IntroFragment : Fragment(R.layout.fragment_intro) {
@@ -55,19 +56,20 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
         }
 
     private val naverLoginLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            when (result.resultCode) {
-                Activity.RESULT_OK -> {
-                    Log.d("NAVER_LOGIN", "login accessToken : ${NaverIdLoginSDK.getAccessToken()}")
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            val result = naverClient.getAccessToken(activityResult)
+            when (result) {
+                is NaverTokenResult.Success -> {
+                    val accessToken = result.token
                 }
 
-                Activity.RESULT_CANCELED -> {
-                }
-
-                else -> {
-                }
+                is NaverTokenResult.Canceled -> {}
+                is NaverTokenResult.Failed -> {}
             }
         }
+
+    @Inject
+    lateinit var naverClient: NaverClient
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         animateLogo()
@@ -144,6 +146,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
                     .requestEmail()
                     .build()
                 val client = GoogleSignIn.getClient(requireActivity(), gso)
+
                 googleLoginLauncher.launch(client.signInIntent)
             },
         )
@@ -197,16 +200,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
         binding.btnNaverLogin.setOnClickListener(
             OnThrottleClickListener(viewLifecycleOwner) {
-                NaverIdLoginSDK.initialize(
-                    requireContext(),
-                    BuildConfig.NAVER_LOGIN_CLIENT_ID,
-                    BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
-                    getString(com.lighthouse.beep.theme.R.string.app_name),
-                )
-                if (NaverIdLoginSDK.getState() == NidOAuthLoginState.OK) {
-                    NaverIdLoginSDK.getAccessToken()
-                } else {
-                    NaverIdLoginSDK.authenticate(requireContext(), naverLoginLauncher)
+                naverClient.requestAccessToken(naverLoginLauncher) { accessToken ->
                 }
             },
         )

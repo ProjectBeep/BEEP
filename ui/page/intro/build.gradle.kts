@@ -43,6 +43,8 @@ dependencies {
 //    implementation(projects.authGoogle)
 //    implementation(projects.uiCommon)
 
+    implementation(projects.auth.naver)
+
     implementation(libs.kakao.sdk.user)
     implementation(libs.naver.oauth)
     implementation(libs.gms.play.services.auth)
