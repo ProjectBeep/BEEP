@@ -9,3 +9,4 @@ keystore.properties
 /.idea/
 build-cache/
 local.properties
+beep-release.jks

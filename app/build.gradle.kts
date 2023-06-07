@@ -13,17 +13,37 @@ plugins {
 android {
     namespace = "com.lighthouse.beep"
 
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
     defaultConfig {
         applicationId = "com.lighthouse.beep"
         versionCode = 1
         versionName = "1.0.0"
 
-        val keystorePropertiesFile = rootProject.file("keystore.properties")
-        val keystoreProperties = Properties()
-        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
         val naverMapApiId = keystoreProperties.getProperty("naver_map_api_id")
         manifestPlaceholders["naver_map_api_id"] = naverMapApiId
+    }
+
+    signingConfigs {
+        create("release") {
+//            storeFile = File(rootDir, keystoreProperties.getProperty("release_store_file_name"))
+//            storePassword = keystoreProperties.getProperty("release_store_password")
+//            keyAlias = keystoreProperties.getProperty("release_key_alias")
+//            keyPassword = keystoreProperties.getProperty("release_key_password")
+
+            storeFile = File(rootDir, "beep-release.jks")
+            storePassword = "!qweqwe1"
+            keyAlias = "beep"
+            keyPassword = "!qweqwe1"
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+        }
     }
 
     buildFeatures {
@@ -74,8 +94,8 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.fragment.ktx)
 
-    implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.work.runtime.ktx)
+//    implementation(libs.androidx.hilt.work)
+//    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
