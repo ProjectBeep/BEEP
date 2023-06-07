@@ -28,15 +28,10 @@ android {
 
     signingConfigs {
         create("release") {
-//            storeFile = File(rootDir, keystoreProperties.getProperty("release_store_file_name"))
-//            storePassword = keystoreProperties.getProperty("release_store_password")
-//            keyAlias = keystoreProperties.getProperty("release_key_alias")
-//            keyPassword = keystoreProperties.getProperty("release_key_password")
-
-            storeFile = File(rootDir, "beep-release.jks")
-            storePassword = "!qweqwe1"
-            keyAlias = "beep"
-            keyPassword = "!qweqwe1"
+            storeFile = File(rootDir, keystoreProperties.getProperty("release_store_file_name"))
+            storePassword = keystoreProperties.getProperty("release_store_password")
+            keyAlias = keystoreProperties.getProperty("release_key_alias")
+            keyPassword = keystoreProperties.getProperty("release_key_password")
         }
     }
 
