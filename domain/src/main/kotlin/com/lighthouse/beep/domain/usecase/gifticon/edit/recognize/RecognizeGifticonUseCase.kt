@@ -1,6 +1,6 @@
 package com.lighthouse.beep.domain.usecase.gifticon.edit.recognize
 
-import com.lighthouse.beep.domain.repository.gifticon.GifticonRecognizeRepository
+import com.lighthouse.beep.data.repository.gifticon.GifticonRecognizeRepository
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
 import javax.inject.Inject

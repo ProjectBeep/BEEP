@@ -12,10 +12,9 @@ dependencies {
     implementation(projects.model)
     implementation(projects.auth.auth)
 
+    implementation(projects.data.data)
+
     implementation(libs.kotlin.coroutine.core)
     implementation(libs.androidx.paging.common.ktx)
     implementation(libs.javax.inject)
-
-//    implementation(platform(libs.firebase.bom))
-//    implementation(libs.firebase.auth.ktx)
 }

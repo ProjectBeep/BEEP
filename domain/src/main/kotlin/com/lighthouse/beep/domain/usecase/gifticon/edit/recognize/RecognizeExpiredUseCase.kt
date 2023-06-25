@@ -1,7 +1,7 @@
 package com.lighthouse.beep.domain.usecase.gifticon.edit.recognize
 
 import android.net.Uri
-import com.lighthouse.beep.domain.repository.gifticon.GifticonRecognizeRepository
+import com.lighthouse.beep.data.repository.gifticon.GifticonRecognizeRepository
 import java.util.Date
 import javax.inject.Inject
 

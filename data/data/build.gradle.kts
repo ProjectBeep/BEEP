@@ -8,7 +8,6 @@ android {
 
 dependencies {
     implementation(projects.core)
-    implementation(projects.domain)
     implementation(projects.library.recognizer)
 
     implementation(libs.androidx.paging.common.ktx)

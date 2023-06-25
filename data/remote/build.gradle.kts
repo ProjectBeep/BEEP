@@ -2,7 +2,8 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id("beep.android.data")
+    id("beep.android.library")
+    id("beep.android.hilt")
 }
 
 android {
@@ -30,4 +31,6 @@ dependencies {
 
     implementation(libs.squareup.retrofit2)
     implementation(libs.squareup.retrofit2.converter.moshi)
+
+    implementation(libs.javax.inject)
 }

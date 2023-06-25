@@ -1,7 +1,7 @@
 package com.lighthouse.beep.domain.usecase.user
 
 import com.lighthouse.beep.auth.repository.AuthRepository
-import com.lighthouse.beep.domain.repository.user.UserRepository
+import com.lighthouse.beep.data.repository.user.UserRepository
 import javax.inject.Inject
 
 class TransferDataUseCase @Inject constructor(

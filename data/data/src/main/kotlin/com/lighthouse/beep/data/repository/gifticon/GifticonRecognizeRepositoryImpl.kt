@@ -9,7 +9,6 @@ import com.lighthouse.beep.core.exts.decodeBitmap
 import com.lighthouse.beep.core.utils.file.BeepDir
 import com.lighthouse.beep.core.utils.file.BeepFileUtils
 import com.lighthouse.beep.data.mapper.toGifticonRecognizerResult
-import com.lighthouse.beep.domain.repository.gifticon.GifticonRecognizeRepository
 import com.lighthouse.beep.library.recognizer.BalanceRecognizer
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
 import com.lighthouse.beep.library.recognizer.ExpiredRecognizer

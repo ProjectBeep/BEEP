@@ -1,6 +1,5 @@
 package com.lighthouse.beep.data.repository.user
 
-import com.lighthouse.beep.domain.repository.user.UserRepository
 import com.lighthouse.beep.model.user.SecurityOption
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -1,6 +1,6 @@
 package com.lighthouse.beep.domain.usecase.gifticon.remove
 
-import com.lighthouse.beep.domain.repository.brand.BrandRepository
+import com.lighthouse.beep.data.repository.brand.BrandRepository
 import javax.inject.Inject
 
 class RemoveExpirationBrandUseCase @Inject constructor(

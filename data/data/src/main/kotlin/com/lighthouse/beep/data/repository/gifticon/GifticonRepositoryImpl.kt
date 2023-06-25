@@ -1,6 +1,5 @@
 package com.lighthouse.beep.data.repository.gifticon
 
-import com.lighthouse.beep.domain.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.model.brand.BrandCategory
 import com.lighthouse.beep.model.gifticon.GifticonDetail
 import com.lighthouse.beep.model.gifticon.GifticonForAddition
