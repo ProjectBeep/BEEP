@@ -27,3 +27,7 @@
 -dontwarn org.bouncycastle.jsse.**
 -dontwarn org.conscrypt.*
 -dontwarn org.openjsse.**
+
+-keep,allowoptimization class * implements androidx.viewbinding.ViewBinding {
+    public static *** bind(android.view.View);
+}
