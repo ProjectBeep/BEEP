@@ -28,7 +28,7 @@ jobs:
       - name: Create Keystore
         run: |
           echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties
-          echo '${{ secrets.RELEASE_KEYSTORE_JKS }}' | base64 -d > ./app/signing/ku_ring_keystore.jks
+          echo '${{ secrets.RELEASE_KEYSTORE_JKS }}' | base64 -d > ./beep-release.jks
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
