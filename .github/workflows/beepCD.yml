@@ -37,11 +37,11 @@ jobs:
         run: |
           if [ ${{ github.event.inputs.build_type }} == 'debug' ]; then
             echo 'Build Debug'
-            ./gradlew -w assembleDebug
+            ./gradlew -Psplit clean -w assembleDebug
             mv app/build/outputs/apk/debug/app-debug.apk beep.apk
           else
             echo 'Build Release'
-            ./gradlew -w assembleRelease
+            ./gradlew -Psplit clean -w assembleRelease
             mv app/build/outputs/apk/release/app-release.apk beep.apk
           fi
 
