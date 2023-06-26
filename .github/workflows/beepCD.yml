@@ -1,14 +1,15 @@
 name: Android CD
 on:
   workflow_dispatch:
-    build_type:
-      description: "생성할 Build Type 설정"
-      required: true
-      default: 'release'
-      type: choice
-      options:
-        - debug
-        - release
+    inputs:
+      buildType:
+        description: "생성할 Build Type 설정"
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - debug
+          - release
   push:
     branches: [ main ]
 
@@ -35,7 +36,7 @@ jobs:
 
       - name: Run On Build
         run: |
-          if [ ${{ github.event.inputs.build_type }} == 'debug' ]; then
+          if [ ${{ github.event.inputs.buildType }} == 'debug' ]; then
             echo 'Build Debug'
             ./gradlew -Psplit clean -w assembleDebug
             mv app/build/outputs/apk/debug/app-debug.apk beep.apk
