@@ -10,3 +10,4 @@ keystore.properties
 build-cache/
 local.properties
 beep-release.jks
+/credential.json
