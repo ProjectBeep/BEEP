@@ -5,7 +5,7 @@ import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("beep.android.application")
+    id("beep.android.application.compose")
     id("beep.android.hilt")
     alias(libs.plugins.ksp)
 }
@@ -65,8 +65,8 @@ dependencies {
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
     implementation(projects.ui.core)
-    implementation(projects.ui.page.intro)
-    implementation(projects.ui.page.main)
+//    implementation(projects.ui.page.intro)
+//    implementation(projects.ui.page.main)
 
 //    implementation(projects.navApp)
 //    implementation(projects.navMain)
@@ -83,14 +83,16 @@ dependencies {
 //    implementation(projects.uiTermsofuse)
 //    implementation(projects.uiUsedgifticon)
 
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
+
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.fragment.ktx)
 
 //    implementation(libs.androidx.hilt.work)
 //    implementation(libs.androidx.work.runtime.ktx)
-
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
 }
 
 kapt {

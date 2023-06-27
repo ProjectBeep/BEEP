@@ -1,5 +1,5 @@
 plugins {
-    id("beep.android.page")
+    id("beep.android.library")
 }
 
 // @Suppress("UnstableApiUsage")
@@ -13,8 +13,6 @@ dependencies {
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
-
-    implementation(projects.ui.dialog.progress)
 
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.navigation.fragment.ktx)

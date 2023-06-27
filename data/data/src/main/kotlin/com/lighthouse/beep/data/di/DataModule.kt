@@ -4,8 +4,6 @@ import com.lighthouse.beep.data.repository.brand.BrandRepository
 import com.lighthouse.beep.data.repository.brand.BrandRepositoryImpl
 import com.lighthouse.beep.data.repository.gallery.GalleryImageRepository
 import com.lighthouse.beep.data.repository.gallery.GalleryImageRepositoryImpl
-import com.lighthouse.beep.data.repository.gifticon.GifticonRecognizeRepository
-import com.lighthouse.beep.data.repository.gifticon.GifticonRecognizeRepositoryImpl
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepositoryImpl
 import com.lighthouse.beep.data.repository.user.UserRepository
@@ -29,11 +27,6 @@ internal abstract class DataModule {
     abstract fun bindsGalleryImageRepository(
         repository: GalleryImageRepositoryImpl,
     ): GalleryImageRepository
-
-    @Binds
-    abstract fun bindsGifticonRecognizeRepository(
-        repository: GifticonRecognizeRepositoryImpl,
-    ): GifticonRecognizeRepository
 
     @Binds
     abstract fun binsGifticonRepository(

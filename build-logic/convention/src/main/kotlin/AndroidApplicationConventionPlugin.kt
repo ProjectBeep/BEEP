@@ -30,6 +30,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                         )
                     }
                 }
+
+                viewBinding.enable = true
             }
         }
     }

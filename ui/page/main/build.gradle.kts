@@ -1,5 +1,5 @@
 plugins {
-    id("beep.android.page")
+    id("beep.android.library")
 }
 
 android {

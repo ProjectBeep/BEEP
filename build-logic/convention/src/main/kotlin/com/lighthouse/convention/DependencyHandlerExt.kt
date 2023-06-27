@@ -1,7 +1,6 @@
 package com.lighthouse.convention
 
 import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.provider.Provider
 import java.util.Optional
@@ -11,8 +10,8 @@ internal fun <T> DependencyHandler.implementation(
 ): Dependency? = add("implementation", dependencyNotation.get())
 
 internal fun DependencyHandler.implementation(
-    projectDependency: ProjectDependency,
-): Dependency? = add("implementation", projectDependency)
+    dependencyNotation: Any,
+): Dependency? = add("implementation", dependencyNotation)
 
 internal fun <T> DependencyHandler.kapt(
     dependencyNotation: Optional<Provider<T>>,

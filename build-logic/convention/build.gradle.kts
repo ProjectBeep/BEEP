@@ -21,33 +21,21 @@ gradlePlugin {
             id = "beep.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
+        register("androidApplicationCompose") {
+            id = "beep.android.application.compose"
+            implementationClass = "AndroidApplicationComposeConventionPlugin"
+        }
         register("androidLibrary") {
             id = "beep.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
+        register("androidLibraryCompose") {
+            id = "beep.android.library.compose"
+            implementationClass = "AndroidLibraryComposeConventionPlugin"
+        }
         register("androidHilt") {
             id = "beep.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
-        }
-        register("androidUI") {
-            id = "beep.android.ui"
-            implementationClass = "AndroidUIConventionPlugin"
-        }
-        register("androidDesignSystem") {
-            id = "beep.android.design.system"
-            implementationClass = "AndroidDesignSystemConventionPlugin"
-        }
-        register("androidPage") {
-            id = "beep.android.page"
-            implementationClass = "AndroidPageConventionPlugin"
-        }
-        register("androidDialog") {
-            id = "beep.android.dialog"
-            implementationClass = "AndroidDialogConventionPlugin"
-        }
-        register("androidData") {
-            id = "beep.android.data"
-            implementationClass = "AndroidDataConventionPlugin"
         }
     }
 }

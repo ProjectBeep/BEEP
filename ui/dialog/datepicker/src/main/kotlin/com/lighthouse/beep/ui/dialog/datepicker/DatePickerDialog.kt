@@ -16,7 +16,15 @@ import com.lighthouse.beep.ui.dialog.datepicker.databinding.DialogSpinnerDatePic
 
 class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
 
-    private val binding: DialogSpinnerDatePickerBinding by viewBindings()
+    companion object {
+        fun newInstance(params: DatePickerParams): DatePickerDialog {
+            return DatePickerDialog().apply {
+                arguments = params.buildBundle()
+            }
+        }
+    }
+
+    private val binding by viewBindings<DialogSpinnerDatePickerBinding>()
 
     private val viewModel: DatePickerViewModel by viewModels(
         factoryProducer = {
@@ -117,14 +125,6 @@ class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
             attributes = attributes.apply {
                 width = WindowManager.LayoutParams.MATCH_PARENT
                 height = WindowManager.LayoutParams.MATCH_PARENT
-            }
-        }
-    }
-
-    companion object {
-        fun newInstance(params: DatePickerParams): DatePickerDialog {
-            return DatePickerDialog().apply {
-                arguments = params.buildBundle()
             }
         }
     }

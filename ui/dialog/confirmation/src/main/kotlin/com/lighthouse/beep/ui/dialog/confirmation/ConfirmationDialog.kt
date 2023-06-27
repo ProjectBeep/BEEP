@@ -14,7 +14,15 @@ import com.lighthouse.beep.ui.dialog.confirmation.databinding.DialogConfirmation
 
 class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
-    private val binding: DialogConfirmationBinding by viewBindings()
+    companion object {
+        fun newInstance(params: ConfirmationParams): ConfirmationDialog {
+            return ConfirmationDialog().apply {
+                arguments = params.buildBundle()
+            }
+        }
+    }
+
+    private val binding by viewBindings<DialogConfirmationBinding>()
 
     private var onOkClickListener: OnClickListener? = null
     fun setOnOkClickListener(listener: OnClickListener?) {
@@ -92,14 +100,6 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
             attributes = attributes.apply {
                 width = WindowManager.LayoutParams.MATCH_PARENT
                 height = WindowManager.LayoutParams.MATCH_PARENT
-            }
-        }
-    }
-
-    companion object {
-        fun newInstance(params: ConfirmationParams): ConfirmationDialog {
-            return ConfirmationDialog().apply {
-                arguments = params.buildBundle()
             }
         }
     }

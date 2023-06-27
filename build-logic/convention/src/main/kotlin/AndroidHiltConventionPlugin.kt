@@ -1,10 +1,12 @@
-import com.lighthouse.convention.findVersionCatalog
+
 import com.lighthouse.convention.implementation
 import com.lighthouse.convention.kapt
+import com.lighthouse.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
+@Suppress("UNUSED")
 class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -12,8 +14,6 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
                 apply("kotlin-kapt")
                 apply("dagger.hilt.android.plugin")
             }
-
-            val libs = findVersionCatalog()
 
             dependencies {
                 implementation(libs.findLibrary("dagger-hilt-android"))

@@ -14,6 +14,8 @@ dependencies {
 
     implementation(projects.data.data)
 
+    implementation(projects.library.recognizer)
+
     implementation(libs.kotlin.coroutine.core)
     implementation(libs.androidx.paging.common.ktx)
     implementation(libs.javax.inject)
