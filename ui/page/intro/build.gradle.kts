@@ -1,5 +1,6 @@
 plugins {
     id("beep.android.library")
+    id("beep.android.hilt")
 }
 
 // @Suppress("UnstableApiUsage")
@@ -8,7 +9,7 @@ android {
 }
 
 dependencies {
-//    implementation(projects.uiCommon)
+    implementation(projects.ui.core)
 
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
