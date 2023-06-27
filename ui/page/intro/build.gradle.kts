@@ -10,6 +10,7 @@ android {
 
 dependencies {
     implementation(projects.ui.core)
+    implementation(projects.theme)
 
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
