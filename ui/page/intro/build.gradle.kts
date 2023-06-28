@@ -9,7 +9,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.ui.core)
+    implementation(projects.core.ui)
     implementation(projects.theme)
 
     implementation(projects.auth.google)

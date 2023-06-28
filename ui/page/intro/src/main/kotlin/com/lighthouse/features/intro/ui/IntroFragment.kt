@@ -13,9 +13,9 @@ import com.lighthouse.beep.auth.kakao.KakaoClient
 import com.lighthouse.beep.auth.kakao.KakaoTokenResult
 import com.lighthouse.beep.auth.naver.NaverClient
 import com.lighthouse.beep.auth.naver.NaverTokenResult
-import com.lighthouse.beep.ui.core.binding.viewBindings
-import com.lighthouse.beep.ui.core.exts.repeatOnStarted
-import com.lighthouse.beep.ui.core.utils.throttle.OnThrottleClickListener
+import com.lighthouse.beep.core.ui.binding.viewBindings
+import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.utils.throttle.OnThrottleClickListener
 import com.lighthouse.beep.ui.page.intro.R
 import com.lighthouse.beep.ui.page.intro.databinding.FragmentIntroBinding
 import dagger.hilt.android.AndroidEntryPoint

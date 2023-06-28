@@ -28,7 +28,8 @@ buildCache {
 rootProject.name = "BEEP"
 
 include(":app")
-include(":core")
+include(":core:common")
+include(":core:ui")
 include(":model")
 include(":theme")
 include(":domain")
@@ -41,7 +42,6 @@ include(":auth:auth")
 include(":auth:google")
 include(":auth:kakao")
 include(":auth:naver")
-include(":ui:core")
 // include(":ui:dialog:confirmation")
 // include(":ui:dialog:datepicker")
 // include(":ui:dialog:originimage")

@@ -55,6 +55,7 @@ dependencies {
 //    implementation(projects.worker)
 //    implementation(projects.utilsLocation)
 //    implementation(projects.utilsRecognizer)
+    implementation(projects.core.common)
     implementation(projects.theme)
     implementation(projects.domain)
     implementation(projects.data.data)
@@ -64,7 +65,6 @@ dependencies {
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
-    implementation(projects.ui.core)
 //    implementation(projects.ui.page.intro)
 //    implementation(projects.ui.page.main)
 
@@ -83,7 +83,7 @@ dependencies {
 //    implementation(projects.uiTermsofuse)
 //    implementation(projects.uiUsedgifticon)
 
-    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)

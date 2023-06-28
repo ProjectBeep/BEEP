@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
+    implementation(projects.core.common)
     implementation(projects.model)
     implementation(projects.auth.auth)
 

@@ -2,7 +2,7 @@ package com.lighthouse.beep.domain.usecase.gifticon.edit.recognize
 
 import android.content.Context
 import android.net.Uri
-import com.lighthouse.beep.core.exts.decodeBitmap
+import com.lighthouse.beep.core.common.exts.decodeBitmap
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

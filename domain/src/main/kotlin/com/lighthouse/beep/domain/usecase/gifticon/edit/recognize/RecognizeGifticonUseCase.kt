@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.net.toUri
-import com.lighthouse.beep.core.exts.compressBitmap
-import com.lighthouse.beep.core.exts.decodeBitmap
-import com.lighthouse.beep.core.utils.file.BeepDir
-import com.lighthouse.beep.core.utils.file.BeepFileUtils
+import com.lighthouse.beep.core.common.exts.compressBitmap
+import com.lighthouse.beep.core.common.exts.decodeBitmap
+import com.lighthouse.beep.core.common.utils.file.BeepDir
+import com.lighthouse.beep.core.common.utils.file.BeepFileUtils
 import com.lighthouse.beep.domain.mapper.toGifticonRecognizerResult
 import com.lighthouse.beep.library.recognizer.GifticonRecognizer
 import com.lighthouse.beep.model.gallery.GalleryImage
