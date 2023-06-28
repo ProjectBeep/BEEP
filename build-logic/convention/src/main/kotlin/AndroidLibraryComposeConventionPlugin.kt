@@ -1,5 +1,6 @@
-import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.gradle.LibraryExtension
 import com.lighthouse.convention.configureAndroidCompose
+import com.lighthouse.convention.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -13,8 +14,9 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
             }
 
-            extensions.configure<ApplicationExtension> {
+            extensions.configure<LibraryExtension> {
                 configureAndroidCompose(this)
+                configureKotlinAndroid(this)
             }
         }
     }

@@ -1,5 +1,5 @@
 plugins {
-    id("beep.android.library")
+    id("beep.android.library.compose")
     id("beep.android.hilt")
 }
 
