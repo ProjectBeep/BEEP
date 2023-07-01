@@ -44,10 +44,6 @@ android {
     buildFeatures {
         buildConfig = true
     }
-
-    packaging {
-        resources.excludes.add("META-INF/LICENSE*")
-    }
 }
 
 dependencies {
@@ -65,7 +61,7 @@ dependencies {
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
-//    implementation(projects.ui.page.intro)
+    implementation(projects.ui.page.intro)
 //    implementation(projects.ui.page.main)
 
 //    implementation(projects.navApp)

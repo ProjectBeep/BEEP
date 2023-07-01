@@ -32,6 +32,10 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
                         )
                     }
                 }
+
+                packaging {
+                    resources.excludes.add("META-INF/LICENSE*")
+                }
             }
         }
     }

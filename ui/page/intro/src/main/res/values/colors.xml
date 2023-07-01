@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="google_container">#FFFFFF</color>
-    <color name="google_label">#757575</color>
+    <color name="google_container">#FFEEEEEE</color>
+    <color name="google_label">#FF757575</color>
 
-    <color name="kakao_container">#FEE500</color>
-    <color name="kakao_symbol">#000000</color>
+    <color name="kakao_container">#FFFEE500</color>
+    <color name="kakao_symbol">#FF000000</color>
     <color name="kakao_label">#D8000000</color>
 
     <color name="naver_container">#03C75A</color>

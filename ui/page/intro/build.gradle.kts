@@ -16,7 +16,15 @@ dependencies {
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
 
-    implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+
+    implementation(libs.androidx.navigation.compose)
+
+    implementation(libs.coil)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.compose)
 }

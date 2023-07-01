@@ -18,7 +18,7 @@ accompanist = "0.28.0"
 dagger = "2.46.1"
 ## Kotlin
 kotlin = "1.8.21"
-kotlin-coroutine = "1.6.4"
+kotlin-coroutine = "1.7.1"
 ksp = "1.8.21-1.0.11"
 ## Squareup
 okhttp = "4.11.0"
@@ -68,8 +68,7 @@ androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref =
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
-androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+androidx-navigation-compose = { module="androidx.navigation:navigation-compose", version.ref = "navigation"}
 androidx-room-common = { module = "androidx.room:room-common", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

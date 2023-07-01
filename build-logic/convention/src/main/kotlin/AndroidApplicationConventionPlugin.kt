@@ -32,6 +32,10 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 }
 
                 viewBinding.enable = true
+
+                packaging {
+                    resources.excludes.add("META-INF/LICENSE*")
+                }
             }
         }
     }
