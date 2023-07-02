@@ -35,6 +35,9 @@ firebase-crashlytics-gradle = "2.9.2"
 ## coil
 coil = "2.4.0"
 
+## lottie
+lottie = "5.2.0"
+
 # test
 junit5 = "5.9.2"
 coroutines-test = "1.6.0"
@@ -126,10 +129,9 @@ coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 
-## Facebook
-facebook-shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 ## Airbnb
-airbnb-lottie = "com.airbnb.android:lottie:5.2.0"
+airbnb-lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+airbnb-lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 # Test
 junit4 = "junit:junit:4.13.2"

@@ -46,6 +46,7 @@ include(":auth:naver")
 // include(":ui:dialog:datepicker")
 // include(":ui:dialog:originimage")
 // include(":ui:dialog:progress")
+include(":ui:designsystem:dotindicator")
 include(":ui:page:intro")
 // include(":ui:page:main")
 

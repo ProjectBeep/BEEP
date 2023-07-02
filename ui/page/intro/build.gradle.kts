@@ -3,7 +3,6 @@ plugins {
     id("beep.android.hilt")
 }
 
-// @Suppress("UnstableApiUsage")
 android {
     namespace = "com.lighthouse.beep.ui.page.intro"
 }
@@ -16,6 +15,8 @@ dependencies {
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
 
+    implementation(projects.ui.designsystem.dotindicator)
+
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.foundation)
@@ -27,4 +28,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.svg)
     implementation(libs.coil.compose)
+
+    implementation(libs.airbnb.lottie)
+    implementation(libs.airbnb.lottie.compose)
 }

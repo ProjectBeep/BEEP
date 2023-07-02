@@ -2,8 +2,11 @@ package com.lighthouse.beep.ui.page.intro
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.RawRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,36 +18,64 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.theme.BodyMedium
 import com.lighthouse.beep.theme.BodySmall
 import com.lighthouse.beep.theme.ButtonShape
 import com.lighthouse.beep.theme.Grey30
 import com.lighthouse.beep.theme.Grey50
 import com.lighthouse.beep.theme.Grey70
+import com.lighthouse.beep.theme.Grey95
 import com.lighthouse.beep.theme.TitleLarge
 import com.lighthouse.beep.theme.TitleMedium
 import com.lighthouse.beep.theme.TitleSmall
-import com.lighthouse.beep.ui.page.intro.icon.BeepIcon
-import com.lighthouse.beep.ui.page.intro.icon.Right
+import com.lighthouse.beep.ui.designsystem.dotindicator.DotIndicator
+import com.lighthouse.beep.ui.designsystem.dotindicator.DotShape
+import com.lighthouse.beep.ui.designsystem.dotindicator.type.WormType
 
 @Composable
 internal fun IntroRoute() {
     IntroScreen()
 }
 
+object IntroData {
+    val introduces = listOf(
+        R.raw.lottie_anim1,
+        R.raw.lottie_anim2,
+        R.raw.lottie_anim3,
+    )
+}
+
 @Composable
 fun IntroScreen() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colors.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -60,15 +91,7 @@ fun IntroScreen() {
             color = Grey50,
         )
         Spacer(modifier = Modifier.size(36.dp))
-        Image(
-            modifier = Modifier.size(144.dp),
-            painter = painterResource(id = R.drawable.img_google_logo),
-            contentDescription = null,
-        )
-        Spacer(modifier = Modifier.size(12.dp))
-        Surface {
-            Spacer(modifier = Modifier.size(8.dp))
-        }
+        IntroPager()
         Spacer(modifier = Modifier.size(80.dp))
 
         Text(
@@ -103,7 +126,7 @@ fun IntroScreen() {
             onClick = {
             },
         )
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(10.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -112,13 +135,61 @@ fun IntroScreen() {
                 style = BodySmall,
                 color = Grey70,
             )
-            Spacer(modifier = Modifier.size(12.dp))
+            Spacer(modifier = Modifier.size(8.dp))
             GuestButton(
                 onClick = {
                 },
             )
         }
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+internal fun IntroPager(
+    list: List<Int> = IntroData.introduces,
+) {
+    val pagerState = rememberPagerState()
+    Surface {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            HorizontalPager(
+                modifier = Modifier.width(150.dp),
+                pageCount = list.size,
+                state = pagerState,
+            ) { index ->
+                IntroImage(lottieRes = list[index])
+            }
+            Spacer(modifier = Modifier.size(12.dp))
+            DotIndicator(
+                dotCount = list.size,
+                pagerState = pagerState,
+                dotType = WormType(
+                    dotShape = DotShape(color = Grey95),
+                    wormDotShape = DotShape(color = Color(0xFFFF94B4)),
+                ),
+            )
+        }
+    }
+}
+
+@Composable
+internal fun IntroImage(
+    @RawRes lottieRes: Int,
+) {
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(lottieRes),
+    )
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+    )
+    LottieAnimation(
+        modifier = Modifier.size(150.dp),
+        composition = composition,
+        progress = { progress },
+    )
 }
 
 @Composable
@@ -169,18 +240,29 @@ internal fun GuestButton(
         Row(
             modifier = Modifier
                 .clickable { onClick() }
-                .padding(8.dp),
+                .padding(vertical = 6.dp, horizontal = 12.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.guest_login),
                 style = BodySmall,
                 color = Grey30,
             )
-            Image(
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(R.drawable.icon_right)
+                    .build(),
+                colorFilter = ColorFilter.tint(Grey70),
                 modifier = Modifier.size(18.dp),
-                imageVector = BeepIcon.Right,
                 contentDescription = null,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+internal fun PreviewGuestButton() {
+    BeepTheme {
+        GuestButton()
     }
 }
