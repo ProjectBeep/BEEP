@@ -68,10 +68,12 @@ androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.6.0"
 androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-beta01"
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
+androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-androidx-navigation-compose = { module="androidx.navigation:navigation-compose", version.ref = "navigation"}
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 androidx-room-common = { module = "androidx.room:room-common", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

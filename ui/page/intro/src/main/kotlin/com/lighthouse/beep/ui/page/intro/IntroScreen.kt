@@ -8,6 +8,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,14 +20,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
@@ -57,41 +62,31 @@ import com.lighthouse.beep.theme.TitleSmall
 import com.lighthouse.beep.ui.designsystem.dotindicator.DotIndicator
 import com.lighthouse.beep.ui.designsystem.dotindicator.DotShape
 import com.lighthouse.beep.ui.designsystem.dotindicator.type.WormType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun IntroRoute() {
     IntroScreen()
 }
 
-object IntroData {
-    val introduces = listOf(
-        R.raw.lottie_anim1,
-        R.raw.lottie_anim2,
-        R.raw.lottie_anim3,
-    )
-}
-
 @Composable
-fun IntroScreen() {
+fun IntroScreen(
+    viewModel: IntroViewModel = hiltViewModel(),
+) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(MaterialTheme.colors.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = stringResource(id = R.string.app_name),
-            style = TitleLarge,
-            color = Grey30,
+        IntroPager(
+            list = viewModel.items,
         )
-        Spacer(modifier = Modifier.size(4.dp))
-        Text(
-            text = stringResource(id = R.string.app_description),
-            style = TitleMedium,
-            color = Grey50,
-        )
-        Spacer(modifier = Modifier.size(36.dp))
-        IntroPager()
         Spacer(modifier = Modifier.size(80.dp))
 
         Text(
@@ -147,19 +142,53 @@ fun IntroScreen() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun IntroPager(
-    list: List<Int> = IntroData.introduces,
+    list: List<IntroData> = listOf(),
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
+    LaunchedEffect(Unit) {
+        var autoScrollJob: Job? = startAutoScroll(coroutineScope, pagerState, list.size)
+        pagerState.interactionSource.interactions.collect { interaction ->
+            val interactive = when (interaction) {
+                is PressInteraction.Press -> true
+                is DragInteraction.Start -> true
+                else -> false
+            }
+            autoScrollJob = if (interactive) {
+                autoScrollJob?.cancel()
+                null
+            } else {
+                startAutoScroll(coroutineScope, pagerState, list.size)
+            }
+        }
+    }
+
     Surface {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             HorizontalPager(
-                modifier = Modifier.width(150.dp),
                 pageCount = list.size,
                 state = pagerState,
             ) { index ->
-                IntroImage(lottieRes = list[index])
+                val item = list[index]
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(id = item.titleRes),
+                        style = TitleLarge,
+                        color = Grey30,
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text(
+                        text = stringResource(id = item.descriptionRes),
+                        style = TitleMedium,
+                        color = Grey50,
+                    )
+                    Spacer(modifier = Modifier.size(36.dp))
+                    IntroImage(lottieRes = item.lottieRes)
+                }
             }
             Spacer(modifier = Modifier.size(12.dp))
             DotIndicator(
@@ -170,6 +199,21 @@ internal fun IntroPager(
                     wormDotShape = DotShape(color = Color(0xFFFF94B4)),
                 ),
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+internal fun startAutoScroll(
+    coroutineScope: CoroutineScope,
+    pagerState: PagerState,
+    pagerSize: Int,
+): Job {
+    return coroutineScope.launch {
+        while (isActive) {
+            delay(3000)
+            val nextPage = (pagerState.currentPage + 1) % pagerSize
+            pagerState.animateScrollToPage(nextPage)
         }
     }
 }
@@ -263,6 +307,6 @@ internal fun GuestButton(
 @Composable
 internal fun PreviewGuestButton() {
     BeepTheme {
-        GuestButton()
+        IntroScreen()
     }
 }

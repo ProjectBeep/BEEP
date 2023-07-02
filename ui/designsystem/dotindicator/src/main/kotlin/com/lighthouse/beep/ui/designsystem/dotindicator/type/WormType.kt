@@ -1,6 +1,5 @@
 package com.lighthouse.beep.ui.designsystem.dotindicator.type
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -65,7 +64,8 @@ class WormType(
                         }
                         Dot(
                             dotShape,
-                            dotModifier.clickable {
+                            dotModifier,
+                            onDotClick = {
                                 onDotClick.invoke(index)
                             },
                         )

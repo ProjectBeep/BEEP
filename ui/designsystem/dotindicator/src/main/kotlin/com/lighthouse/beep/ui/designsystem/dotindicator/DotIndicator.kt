@@ -2,6 +2,7 @@ package com.lighthouse.beep.ui.designsystem.dotindicator
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
@@ -89,14 +90,17 @@ private fun computeScrollOffset(totalCount: Int, position: Int, positionOffset: 
 internal fun Dot(
     dotShape: DotShape,
     modifier: Modifier,
+    onDotClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
             .background(
                 color = dotShape.color,
                 shape = dotShape.shape,
-            )
-            .size(dotShape.size),
+            ).size(dotShape.size)
+            .clickable {
+                onDotClick()
+            },
     )
 }
 
