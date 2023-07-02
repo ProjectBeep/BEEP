@@ -29,7 +29,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
@@ -48,6 +48,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.lighthouse.beep.core.ui.compose.rememberLifecycleEvent
 import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.theme.BodyMedium
 import com.lighthouse.beep.theme.BodySmall
@@ -144,21 +145,24 @@ fun IntroScreen(
 internal fun IntroPager(
     list: List<IntroData> = listOf(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val lifecycleEvent = rememberLifecycleEvent()
     val pagerState = rememberPagerState()
-    LaunchedEffect(Unit) {
-        var autoScrollJob: Job? = startAutoScroll(coroutineScope, pagerState, list.size)
-        pagerState.interactionSource.interactions.collect { interaction ->
-            val interactive = when (interaction) {
-                is PressInteraction.Press -> true
-                is DragInteraction.Start -> true
-                else -> false
-            }
-            autoScrollJob = if (interactive) {
-                autoScrollJob?.cancel()
-                null
-            } else {
-                startAutoScroll(coroutineScope, pagerState, list.size)
+
+    LaunchedEffect(lifecycleEvent) {
+        if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
+            var autoScrollJob: Job? = startAutoScroll(this, pagerState, list.size)
+            pagerState.interactionSource.interactions.collect { interaction ->
+                val interactive = when (interaction) {
+                    is PressInteraction.Press -> true
+                    is DragInteraction.Start -> true
+                    else -> false
+                }
+                autoScrollJob = if (interactive) {
+                    autoScrollJob?.cancel()
+                    null
+                } else {
+                    startAutoScroll(this, pagerState, list.size)
+                }
             }
         }
     }
