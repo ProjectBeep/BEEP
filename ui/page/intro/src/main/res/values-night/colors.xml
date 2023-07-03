@@ -2,6 +2,7 @@
 <resources>
     <color name="google_container">#4285F4</color>
     <color name="google_label">#FFFFFF</color>
+    <color name="google_symbol_background">#FFFFFF</color>
 
     <color name="naver_container">#48484B</color>
     <color name="naver_symbol">#03C75A</color>

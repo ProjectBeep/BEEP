@@ -3,6 +3,7 @@
 
     <color name="google_container">#FFEEEEEE</color>
     <color name="google_label">#FF757575</color>
+    <color name="google_symbol_background">#FFEEEEEE</color>
 
     <color name="kakao_container">#FFFEE500</color>
     <color name="kakao_symbol">#FF000000</color>

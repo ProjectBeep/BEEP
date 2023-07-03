@@ -23,7 +23,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         splashScreen.setOnExitAnimationListener { splashScreenProvider ->
             val logo = getDrawable(R.drawable.anim_logo) as? AnimatedVectorDrawable
-            val iconView = splashScreenProvider.iconView as? ImageView
+            val iconView = runCatching {
+                splashScreenProvider.iconView as? ImageView
+            }.getOrNull()
             if (logo == null || iconView == null) {
                 splashScreenProvider.remove()
                 return@setOnExitAnimationListener

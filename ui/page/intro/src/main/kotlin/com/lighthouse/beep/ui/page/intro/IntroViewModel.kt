@@ -10,13 +10,13 @@ class IntroViewModel : ViewModel() {
             lottieRes = R.raw.lottie_anim1,
         ),
         IntroData(
-            titleRes = R.string.app_name,
-            descriptionRes = R.string.app_description,
+            titleRes = R.string.recognize_name,
+            descriptionRes = R.string.recognize_description,
             lottieRes = R.raw.lottie_anim2,
         ),
         IntroData(
-            titleRes = R.string.app_name,
-            descriptionRes = R.string.app_description,
+            titleRes = R.string.map_name,
+            descriptionRes = R.string.map_description,
             lottieRes = R.raw.lottie_anim3,
         ),
     )

@@ -3,6 +3,7 @@ package com.lighthouse.beep.theme
 import androidx.compose.ui.graphics.Color
 
 val Pink = Color(0xFFFF2869)
+val Pink50 = Color(0xFFFF94B4)
 val Black = Color(0xFF090A0D)
 val White = Color(0xFFFFFFFF)
 val Grey10 = Color(0xFF1C1B1F)

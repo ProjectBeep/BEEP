@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">Beep</string>
     <string name="app_description">기프티콘을 한번에 관리해요</string>
+    <string name="recognize_name">자동 입력 기능</string>
+    <string name="recognize_description">쉽고 빠르게 쿠폰을 등록하고</string>
+    <string name="map_name">지도 기반 추천</string>
+    <string name="map_description">가까운 장소에서 쓸 수 있는 쿠폰을 모아보세요</string>
 
     <string name="google_login">Google 계정으로 로그인</string>
     <string name="kakao_login">카카오 계정으로 로그인</string>
