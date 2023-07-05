@@ -1,4 +1,4 @@
-package com.lighthouse.utils.log
+package com.lighthouse.beep.utils.log
 
 import android.app.Activity
 import android.app.Application

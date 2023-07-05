@@ -1,7 +1,7 @@
-package com.lighthouse
+package com.lighthouse.beep
 
 import android.app.Application
-import com.lighthouse.utils.log.ComponentLogger
+import com.lighthouse.beep.utils.log.ComponentLogger
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

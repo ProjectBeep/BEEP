@@ -1,14 +1,14 @@
 package com.lighthouse.beep.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-val LightDefaultColorScheme = lightColors()
+val LightDefaultColorScheme = lightColorScheme()
 
-val DarkDefaultColorScheme = darkColors()
+val DarkDefaultColorScheme = darkColorScheme()
 
 @Composable
 fun BeepTheme(
@@ -16,9 +16,8 @@ fun BeepTheme(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
-
     MaterialTheme(
-        colors = colorScheme,
+        colorScheme = colorScheme,
         content = content,
     )
 }

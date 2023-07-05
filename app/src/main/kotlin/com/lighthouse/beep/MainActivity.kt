@@ -1,4 +1,4 @@
-package com.lighthouse.ui
+package com.lighthouse.beep
 
 import android.graphics.drawable.Animatable2.AnimationCallback
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -7,16 +7,28 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.lighthouse.beep.R
+import androidx.core.view.WindowCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import com.lighthouse.beep.theme.BeepTheme
+import com.lighthouse.beep.ui.BeepApp
 import com.lighthouse.beep.ui.page.intro.IntroScreen
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -46,9 +58,24 @@ class MainActivity : ComponentActivity() {
                 }.start()
         }
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
-            BeepTheme {
-                IntroScreen()
+            val systemUiController = rememberSystemUiController()
+            val darkTheme = isSystemInDarkTheme()
+
+            DisposableEffect(systemUiController, darkTheme) {
+                systemUiController.systemBarsDarkContentEnabled = !darkTheme
+                onDispose { }
+            }
+
+            BeepTheme(
+                darkTheme = darkTheme,
+            ) {
+                BeepApp(
+                    windowSizeClass = calculateWindowSizeClass(activity = this),
+                    networkMonitor = networkMonitor,
+                )
             }
         }
     }

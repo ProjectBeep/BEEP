@@ -54,13 +54,16 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.theme)
     implementation(projects.domain)
+
     implementation(projects.data.data)
     implementation(projects.data.remote)
     implementation(projects.data.local)
+
     implementation(projects.auth.auth)
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
+
     implementation(projects.ui.page.intro)
 //    implementation(projects.ui.page.main)
 
@@ -79,13 +82,20 @@ dependencies {
 //    implementation(projects.uiTermsofuse)
 //    implementation(projects.uiUsedgifticon)
 
-    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.androidx.core.splashscreen)
+
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
+
+    implementation(libs.accompanist.systemuicontroller)
 
 //    implementation(libs.androidx.hilt.work)
 //    implementation(libs.androidx.work.runtime.ktx)

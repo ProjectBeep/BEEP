@@ -24,9 +24,9 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -81,7 +81,7 @@ fun IntroScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.surface),
+            .background(MaterialTheme.colorScheme.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -194,11 +194,11 @@ internal fun IntroPager(
                         style = TitleMedium,
                         color = Grey50,
                     )
-                    Spacer(modifier = Modifier.size(24.dp))
+                    Spacer(modifier = Modifier.size(20.dp))
                     IntroImage(lottieRes = item.lottieRes)
                 }
             }
-            Spacer(modifier = Modifier.size(23.dp))
+            Spacer(modifier = Modifier.size(20.dp))
             DotIndicator(
                 dotCount = list.size,
                 pagerState = pagerState,
@@ -238,7 +238,7 @@ internal fun IntroImage(
         iterations = LottieConstants.IterateForever,
     )
     LottieAnimation(
-        modifier = Modifier.size(144.dp),
+        modifier = Modifier.size(150.dp),
         composition = composition,
         progress = { progress },
     )
