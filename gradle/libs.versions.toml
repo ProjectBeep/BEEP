@@ -10,6 +10,7 @@ room = "2.5.2"
 hilt-work = "1.0.0"
 work = "2.8.1"
 navigation = "2.6.0"
+datastore = "1.0.0"
 
 material3 = "1.1.1"
 
@@ -22,6 +23,8 @@ dagger = "2.46.1"
 kotlin = "1.8.21"
 kotlin-coroutine = "1.7.1"
 ksp = "1.8.21-1.0.11"
+protobuf = "0.9.3"
+
 ## Squareup
 okhttp = "4.11.0"
 retrofit = "2.9.0"
@@ -66,7 +69,8 @@ androidx-biometric = "androidx.biometric:biometric:1.1.0"
 androidx-core-ktx = "androidx.core:core-ktx:1.10.1"
 androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
-androidx-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.0-alpha04"
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore"}
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore"}
 androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.6.0"
 androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-beta01"
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
@@ -109,6 +113,10 @@ kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.
 gms-play-services-auth = "com.google.android.gms:play-services-auth:20.5.0"
 gms-play-services-location = "com.google.android.gms:play-services-location:21.0.1"
 gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.1"
+
+google-protobuf-protoc = "com.google.protobuf:protoc:3.23.0"
+google_protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.23.0"
+
 ## Firebase
 firebase-bom = "com.google.firebase:firebase-bom:32.1.1"
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
@@ -171,3 +179,4 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }

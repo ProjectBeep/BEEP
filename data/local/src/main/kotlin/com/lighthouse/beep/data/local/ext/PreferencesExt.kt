@@ -4,7 +4,6 @@ package com.lighthouse.beep.data.local.ext
 
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.byteArrayPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -42,8 +41,4 @@ internal fun longKey(userId: String, key: String): Preferences.Key<Long> {
 
 internal fun stringSetKey(userId: String, key: String): Preferences.Key<Set<String>> {
     return stringSetPreferencesKey(createKey(userId, key))
-}
-
-internal fun byteArrayKey(userId: String, key: String): Preferences.Key<ByteArray> {
-    return byteArrayPreferencesKey(createKey(userId, key))
 }

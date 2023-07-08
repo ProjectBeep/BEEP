@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.lighthouse.beep.data.local.ext.booleanKey
-import com.lighthouse.beep.data.local.ext.byteArrayKey
 import com.lighthouse.beep.data.local.ext.stringKey
 import com.lighthouse.beep.data.repository.user.LocalUserDataSource
 import com.lighthouse.beep.model.exception.common.NotFoundException
@@ -91,9 +90,9 @@ internal class LocalUserDataSourceImpl @Inject constructor(
 
     private suspend fun clearData(userId: String) {
         dataStore.edit { pref ->
-            pref.remove(byteArrayKey(userId, KEY_NAME_SECURITY_OPTION))
-            pref.remove(byteArrayKey(userId, KEY_NAME_NOTIFICATION_ENABLE))
-            pref.remove(byteArrayKey(userId, KEY_NAME_FILTER_EXPIRED))
+//            pref.remove(byteArrayKey(userId, KEY_NAME_SECURITY_OPTION))
+//            pref.remove(byteArrayKey(userId, KEY_NAME_NOTIFICATION_ENABLE))
+//            pref.remove(byteArrayKey(userId, KEY_NAME_FILTER_EXPIRED))
         }
     }
 

@@ -2,10 +2,15 @@ plugins {
     id("beep.android.library")
     id("beep.android.hilt")
     alias(libs.plugins.ksp)
+    alias(libs.plugins.protobuf)
 }
 
 android {
     namespace = "com.lighthouse.beep.data.local"
+
+    packaging {
+        resources.excludes.add("google/protobuf/field_mask.proto")
+    }
 }
 
 dependencies {
@@ -22,6 +27,25 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
     implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.javax.inject)
+
+    implementation(libs.google.protobuf.javalite)
+}
+
+protobuf {
+    protoc {
+        artifact = libs.google.protobuf.protoc.get().toString()
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
