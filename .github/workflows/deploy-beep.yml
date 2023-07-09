@@ -24,14 +24,6 @@ jobs:
       BUILD_TYPE: ${{ inputs.build-type != '' && inputs.build-type || 'Release' }}
 
     steps:
-      - name: Test
-        run: |
-          buildType=$(echo ${{env.BUILD_TYPE}} | tr '[:upper:]' '[:lower:]')
-          echo $buildType
-      - name: Check Build Type
-        run: exit 1
-        if: ${{env.BUILD_TYPE}} != ${{env.DEBUG}} && ${{env.BUILD_TYPE}} != ${{env.RELEASE}}
-
       - uses: actions/checkout@v3
 
       - name: set up JDK 17
