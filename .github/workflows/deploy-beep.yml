@@ -19,14 +19,13 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DEBUG: "Debug"
-      RELEASE: "Release"
+      DEBUG: 'Debug'
+      RELEASE: 'Release'
       BUILD_TYPE: ${{ inputs.build-type != '' && inputs.build-type || 'Release' }}
 
     steps:
       - name: Check Build Type
         run: |
-          echo ${{env.BUILD_TYPE}}
           if [ env.BUILD_TYPE == env.DEBUG || env.BUILD_TYPE == env.RELEASE ]; then
             echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties  
           else
