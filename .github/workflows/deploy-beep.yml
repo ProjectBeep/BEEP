@@ -30,7 +30,7 @@ jobs:
           echo $buildType
       - name: Check Build Type
         run: exit 1
-        if: ${{env.BUILD_TYPE}} != ${{env.DEBUG}} ] && [ ${{env.BUILD_TYPE}} != ${{env.RELEASE}}
+        if: ${{env.BUILD_TYPE}} != ${{env.DEBUG}} && ${{env.BUILD_TYPE}} != ${{env.RELEASE}}
 
       - uses: actions/checkout@v3
 
