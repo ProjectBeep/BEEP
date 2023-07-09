@@ -1,20 +1,12 @@
-name: Android CD
-on:
-  workflow_dispatch:
-    inputs:
-      buildType:
-        description: "생성할 Build Type 설정"
-        required: true
-        default: 'release'
-        type: choice
-        options:
-          - debug
-          - release
-
+name: Deploy Debug
+on: workflow_dispatch
 jobs:
   build:
     name: Beep CD
     runs-on: ubuntu-latest
+
+    env:
+      BUILD_TYPE: "Debug"
 
     steps:
       - uses: actions/checkout@v3
@@ -27,22 +19,21 @@ jobs:
       - name: Create Keystore
         run: |
           echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties
-          echo '${{ secrets.KEYSTORE_RELEASE_JKS }}' | base64 -d > ./beep-release.jks
+          echo '${{ secrets.KEYSTORE_DEBUG_JKS }}' | base64 -d > ./beep-debug.jks
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Run On Build
         run: |
-          if [ ${{ github.event.inputs.buildType }} == 'debug' ]; then
-            echo 'Build Debug'
-            ./gradlew -Psplit clean -w assembleDebug
-            mv app/build/outputs/apk/debug/app-debug.apk beep.apk
-          else
-            echo 'Build Release'
-            ./gradlew -Psplit clean -w assembleRelease
-            mv app/build/outputs/apk/release/app-release.apk beep.apk
-          fi
+          ./gradlew -Psplit clean -w assemble${{BUILD_TYPE}}
+          mv app/build/outputs/apk/${{BUILD_TYPE}}/app-${{BUILD_TYPE}}.apk beep-${{BUILD_TYPE}}.apk
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{BUILD_TYPE}}
+          path: ./beep-${{BUILD_TYPE}}.apk
 
       - name: Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -50,13 +41,13 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: team
-          file: beep.apk
+          file: beep-${{BUILD_TYPE}}.apk
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          author_name: 안드로이드 Release
+          author_name: 안드로이드 ${{BUILD_TYPE}}
           fields: repo, commit ,message, author, took
           mention: audxo112
           if_mention: failure, cancelled
