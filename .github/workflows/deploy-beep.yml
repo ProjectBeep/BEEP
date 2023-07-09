@@ -51,10 +51,15 @@ jobs:
           fi
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: |
+          pwd
+          ls -al
+          chmod +x gradlew
 
       - name: Run On Build
         run: |
+          pwd
+          ls -al
           ./gradlew -Psplit clean -w assemble${{ env.BUILD_TYPE }}
           mv app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILD_TYPE }}.apk beep.apk
 

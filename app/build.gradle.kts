@@ -26,6 +26,8 @@ android {
         manifestPlaceholders["naver_map_api_id"] = naverMapApiId
     }
 
+    println(rootDir.absolutePath)
+
     signingConfigs {
         getByName("debug") {
             storeFile = File(rootDir, keystoreProperties.getProperty("debug_store_file_name"))
