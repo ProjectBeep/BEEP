@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Check Build Type
         run: |
-          echo ${{inputs['build-type']}}
+          echo ${{toJson(inputs)}}
           if [ contains(fromJson('[${{env.DEBUG}}, ${{env.RELEASE}}]'), ${{ inputs['build-type'] }})]; then
             echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties  
           else
