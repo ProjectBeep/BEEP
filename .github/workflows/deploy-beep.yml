@@ -2,21 +2,35 @@ name: Android CD
 on:
   workflow_dispatch:
     inputs:
-      buildType:
+      build-type:
         description: "생성할 Build Type 설정"
         required: true
-        default: 'release'
+        default: 'Release'
         type: choice
         options:
-          - debug
-          - release
+          - Debug
+          - Release
+  push:
+    branches: [ main ]
 
 jobs:
   build:
     name: Beep CD
     runs-on: ubuntu-latest
 
+    env:
+      DEBUG: "Debug"
+      RELEASE: "Release"
+
     steps:
+      - name: Check Build Type
+        run: |
+          if [ contains(fromJson('["${{env.DEBUG}}", "${{env.RELEASE}}"]'), ${{ github.event.inputs['build-type'] }})]; then
+            echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties  
+          else
+            exit 1
+          fi
+
       - uses: actions/checkout@v3
 
       - name: set up JDK 17
@@ -26,23 +40,19 @@ jobs:
 
       - name: Create Keystore
         run: |
-          echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties
-          echo '${{ secrets.KEYSTORE_RELEASE_JKS }}' | base64 -d > ./beep-release.jks
+          if [ ${{ github.event.inputs['build-type'] }} == ${{env.DEBUG}} ]; then
+            echo '${{ secrets.KEYSTORE_DEBUG_JKS }}' | base64 -d > ./beep-debug.jks
+          elif [ ${{ github.event.inputs['build-type'] }} == ${{env.RELEASE}} ]; then
+            echo '${{ secrets.KEYSTORE_RELEASE_JKS }}' | base64 -d > ./beep-release.jks
+          fi
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Run On Build
         run: |
-          if [ ${{ github.event.inputs.buildType }} == 'debug' ]; then
-            echo 'Build Debug'
-            ./gradlew -Psplit clean -w assembleDebug
-            mv app/build/outputs/apk/debug/app-debug.apk beep.apk
-          else
-            echo 'Build Release'
-            ./gradlew -Psplit clean -w assembleRelease
-            mv app/build/outputs/apk/release/app-release.apk beep.apk
-          fi
+          ./gradlew -Psplit clean -w assemble${{ github.event.inputs['build-type'] }}
+          mv app/build/outputs/apk/${{ github.event.inputs['build-type'] }}/app-${{ github.event.inputs['build-type'] }}.apk beep.apk
 
       - name: Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -56,7 +66,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          author_name: 안드로이드 Release
+          author_name: 안드로이드 ${{ github.event.inputs['build-type'] }}
           fields: repo, commit ,message, author, took
           mention: audxo112
           if_mention: failure, cancelled
