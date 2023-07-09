@@ -25,7 +25,8 @@ jobs:
     steps:
       - name: Check Build Type
         run: |
-          if [ contains(fromJson('[${{env.DEBUG}}, ${{env.RELEASE}}]'), ${{ github.event.inputs['build-type'] }})]; then
+          echo ${{inputs['build-type']}}
+          if [ contains(fromJson('[${{env.DEBUG}}, ${{env.RELEASE}}]'), ${{ inputs['build-type'] }})]; then
             echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties  
           else
             exit 1
@@ -40,9 +41,9 @@ jobs:
 
       - name: Create Keystore
         run: |
-          if [ ${{ github.event.inputs['build-type'] }} == ${{env.DEBUG}} ]; then
+          if [ ${{ inputs['build-type'] }} == ${{env.DEBUG}} ]; then
             echo '${{ secrets.KEYSTORE_DEBUG_JKS }}' | base64 -d > ./beep-debug.jks
-          elif [ ${{ github.event.inputs['build-type'] }} == ${{env.RELEASE}} ]; then
+          elif [ ${{ inputs['build-type'] }} == ${{env.RELEASE}} ]; then
             echo '${{ secrets.KEYSTORE_RELEASE_JKS }}' | base64 -d > ./beep-release.jks
           fi
 
@@ -51,8 +52,8 @@ jobs:
 
       - name: Run On Build
         run: |
-          ./gradlew -Psplit clean -w assemble${{ github.event.inputs['build-type'] }}
-          mv app/build/outputs/apk/${{ github.event.inputs['build-type'] }}/app-${{ github.event.inputs['build-type'] }}.apk beep.apk
+          ./gradlew -Psplit clean -w assemble${{ inputs['build-type'] }}
+          mv app/build/outputs/apk/${{ inputs['build-type'] }}/app-${{ inputs['build-type'] }}.apk beep.apk
 
 #      - name: Firebase App Distribution
 #        uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -66,7 +67,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          author_name: 안드로이드 ${{ github.event.inputs['build-type'] }}
+          author_name: 안드로이드 ${{ inputs['build-type'] }}
           fields: repo, commit ,message, author, took
           mention: audxo112
           if_mention: failure, cancelled
