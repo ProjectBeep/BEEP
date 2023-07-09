@@ -11,3 +11,4 @@ build-cache/
 local.properties
 beep-release.jks
 /credential.json
+/beep-debug.jks

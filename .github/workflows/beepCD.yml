@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: ${{github.workspace}}
       - uses: actions/checkout@v1
 
       - name: set up JDK 17
