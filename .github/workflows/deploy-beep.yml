@@ -32,6 +32,9 @@ jobs:
             exit 1
           fi
 
+      - name: Check
+        run: ls -al
+
       - uses: actions/checkout@v1
 
       - name: set up JDK 17
@@ -55,13 +58,13 @@ jobs:
           ./gradlew -Psplit clean -w assemble${{ env.BUILD_TYPE }}
           mv app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILD_TYPE }}.apk beep.apk
 
-      - name: Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: team
-          file: beep.apk
+#      - name: Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{secrets.FIREBASE_APP_ID}}
+#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+#          groups: team
+#          file: beep.apk
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
