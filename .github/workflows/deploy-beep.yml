@@ -24,6 +24,13 @@ jobs:
       BUILD_TYPE: ${{ inputs.build-type != '' && inputs.build-type || 'Release' }}
 
     steps:
+      - uses: actions/checkout@v3
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
       - name: Check Build Type
         run: |
           if [ ${{env.BUILD_TYPE}} == ${{env.DEBUG}} ] || [ ${{env.BUILD_TYPE}} == ${{env.RELEASE}} ]; then
@@ -31,16 +38,6 @@ jobs:
           else
             exit 1
           fi
-
-      - name: Check
-        run: ls -al
-
-      - uses: actions/checkout@v1
-
-      - name: set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
 
       - name: Create Keystore
         run: |
@@ -51,15 +48,10 @@ jobs:
           fi
 
       - name: Grant execute permission for gradlew
-        run: |
-          pwd
-          ls -al
-          chmod +x gradlew
+        run: chmod +x gradlew
 
       - name: Run On Build
         run: |
-          pwd
-          ls -al
           ./gradlew -Psplit clean -w assemble${{ env.BUILD_TYPE }}
           mv app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILD_TYPE }}.apk beep.apk
 
