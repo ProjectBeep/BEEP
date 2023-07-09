@@ -57,7 +57,7 @@ jobs:
         run: |
           ./gradlew -Psplit clean -w assemble${{ env.BUILD_TYPE }}
           buildType=$(echo ${{env.BUILD_TYPE}} | tr '[:upper:]' '[:lower:]')
-          mv app/build/outputs/apk/${{ buildType }}/app-${{ buildType }}.apk beep.apk
+          mv app/build/outputs/apk/$buildType/app-$buildType.apk beep.apk
 
 #      - name: Firebase App Distribution
 #        uses: wzieba/Firebase-Distribution-Github-Action@v1
