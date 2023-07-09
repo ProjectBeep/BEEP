@@ -21,7 +21,7 @@ jobs:
     env:
       DEBUG: "Debug"
       RELEASE: "Release"
-      BUILD_TYPE: ${{env.BUILD_TYPE != "" && env.BUILD_TYPE || "Release"}}
+      BUILD_TYPE: ${{inputs.build-type != "" && inputs.build-type || RELEASE}}
 
     steps:
       - name: Check Build Type
