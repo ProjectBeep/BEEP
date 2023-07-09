@@ -27,6 +27,12 @@ android {
     }
 
     signingConfigs {
+        getByName("debug") {
+            storeFile = File(rootDir, keystoreProperties.getProperty("debug_store_file_name"))
+            storePassword = keystoreProperties.getProperty("debug_store_password")
+            keyAlias = keystoreProperties.getProperty("debug_key_alias")
+            keyPassword = keystoreProperties.getProperty("debug_key_password")
+        }
         create("release") {
             storeFile = File(rootDir, keystoreProperties.getProperty("release_store_file_name"))
             storePassword = keystoreProperties.getProperty("release_store_password")
@@ -36,6 +42,9 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
         }
