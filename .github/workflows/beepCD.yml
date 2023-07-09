@@ -53,3 +53,15 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: team
           file: beep.apk
+
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: 안드로이드 Release
+          fields: repo, commit ,message, author, took
+          mention: audxo112
+          if_mention: failure, cancelled
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_DEPLOY }}
+        if: always()
