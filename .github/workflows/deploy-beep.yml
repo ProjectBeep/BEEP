@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Check Build Type
         run: |
-          if [ contains(fromJson('["${{env.DEBUG}}", "${{env.RELEASE}}"]'), ${{ github.event.inputs['build-type'] }})]; then
+          if [ contains(fromJson('[${{env.DEBUG}}, ${{env.RELEASE}}]'), ${{ github.event.inputs['build-type'] }})]; then
             echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties  
           else
             exit 1
@@ -54,13 +54,13 @@ jobs:
           ./gradlew -Psplit clean -w assemble${{ github.event.inputs['build-type'] }}
           mv app/build/outputs/apk/${{ github.event.inputs['build-type'] }}/app-${{ github.event.inputs['build-type'] }}.apk beep.apk
 
-      - name: Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: team
-          file: beep.apk
+#      - name: Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{secrets.FIREBASE_APP_ID}}
+#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+#          groups: team
+#          file: beep.apk
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
