@@ -40,6 +40,8 @@ jobs:
             echo '${{ secrets.KEYSTORE_DEBUG_JKS }}' | base64 -d > ./beep-debug.jks
           elif [ ${{ env.BUILD_TYPE }} == ${{env.RELEASE}} ]; then
             echo '${{ secrets.KEYSTORE_RELEASE_JKS }}' | base64 -d > ./beep-release.jks
+          else
+            exit 1
           fi
 
       - name: Grant execute permission for gradlew
@@ -47,17 +49,18 @@ jobs:
 
       - name: Run On Build
         run: |
-          ./gradlew -Psplit clean -w assemble${{ env.BUILD_TYPE }}
           buildType=$(echo ${{env.BUILD_TYPE}} | tr '[:upper:]' '[:lower:]')
+          
+          ./gradlew -Psplit clean -w assemble${{ env.BUILD_TYPE }}
           mv app/build/outputs/apk/$buildType/app-$buildType.apk beep.apk
 
-#      - name: Firebase App Distribution
-#        uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        with:
-#          appId: ${{secrets.FIREBASE_APP_ID}}
-#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-#          groups: team
-#          file: beep.apk
+      - name: Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: team
+          file: beep.apk
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
