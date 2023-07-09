@@ -27,7 +27,7 @@ jobs:
       - name: Check Build Type
         run: |
           echo ${{env.BUILD_TYPE}}
-          if [ env.BUILD_TYPE) == env.DEBUG || env.BUILD_TYPE == env.RELEASE ]; then
+          if [ env.BUILD_TYPE == env.DEBUG || env.BUILD_TYPE == env.RELEASE ]; then
             echo '${{ secrets.KEYSTORE_PROPERTIES }}' > ./keystore.properties  
           else
             exit 1
