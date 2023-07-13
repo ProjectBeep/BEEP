@@ -1,22 +1,36 @@
 package com.lighthouse.beep.data.repository.user
 
-import com.lighthouse.beep.model.user.SecurityOption
+import com.lighthouse.beep.model.deviceconfig.AuthInfo
+import com.lighthouse.beep.model.deviceconfig.DeviceConfig
+import com.lighthouse.beep.model.deviceconfig.RecentHash
+import com.lighthouse.beep.model.deviceconfig.Security
+import com.lighthouse.beep.model.deviceconfig.Subscription
+import com.lighthouse.beep.model.deviceconfig.ThemeOption
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    suspend fun setPinPassword(userId: String, newPin: String): Result<Unit>
-    fun confirmPinPassword(userId: String, pin: String): Result<Boolean>
+    val deviceConfig: Flow<DeviceConfig>
 
-    suspend fun setSecurityOption(userId: String, securityOption: SecurityOption): Result<Unit>
-    fun getSecurityOption(userId: String): Flow<Result<SecurityOption>>
+    suspend fun getAuthInfo(): AuthInfo
 
-    suspend fun setNotificationEnable(userId: String, enable: Boolean): Result<Unit>
-    fun getNotificationEnable(userId: String): Flow<Result<Boolean>>
+    suspend fun setAuthInfo(authInfo: AuthInfo)
 
-    suspend fun setFilterExpired(userId: String, enable: Boolean): Result<Unit>
-    fun getFilterExpired(userId: String): Flow<Result<Boolean>>
+    suspend fun getHash(): RecentHash
 
-    suspend fun transferData(userId: String, newUserId: String): Result<Unit>
-    suspend fun withdrawal(userId: String): Result<Unit>
+    suspend fun setHash(hash: RecentHash)
+
+    suspend fun getSubscription(): Subscription
+
+    suspend fun setSubscription(subscription: Subscription)
+
+    suspend fun getSecurity(): Security
+
+    suspend fun setSecurity(security: Security)
+
+    suspend fun getThemeOption(): ThemeOption
+
+    suspend fun setThemeOption(themeOption: ThemeOption)
+
+    suspend fun logout()
 }

@@ -1,13 +1,10 @@
 package com.lighthouse.beep.data.local.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
+import androidx.datastore.dataStore
+import com.lighthouse.beep.data.local.serializer.DeviceConfigSerializer
+import com.lighthouse.beep.model.deviceconfig.DeviceConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,21 +16,15 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 internal object PreferenceModule {
 
-    private const val ENCRYPTED_SETTINGS = "encrypted_settings"
-    private const val USER_PREFERENCES = "user_preferences"
+    private const val DEVICE_CONFIG_FILE_NAME = "deviceConfig.json"
+
+    private val Context.deviceConfigDataStore by dataStore(
+        DEVICE_CONFIG_FILE_NAME,
+        DeviceConfigSerializer,
+    )
 
     @Provides
-    fun provideEncryptedSharedPreferencesDataStore(
-        @ApplicationContext context: Context,
-    ): SharedPreferences {
-        val masterKey = MasterKey(context = context)
-        return EncryptedSharedPreferences(context, ENCRYPTED_SETTINGS, masterKey)
-    }
-
-    @Provides
-    fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) },
-        )
+    fun provideDeviceConfigDataStore(@ApplicationContext context: Context): DataStore<DeviceConfig> {
+        return context.deviceConfigDataStore
     }
 }

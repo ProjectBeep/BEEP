@@ -108,9 +108,11 @@ javax-inject = "javax.inject:javax.inject:1"
 kotlin-coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutine" }
 kotlin-coroutine-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutine" }
 kotlin-coroutine-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+kotlin-collections-immutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5"
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 ## GMS (google mobile service)
-gms-play-services-auth = "com.google.android.gms:play-services-auth:20.5.0"
+gms-play-services-auth = "com.google.android.gms:play-services-auth:20.6.0"
 gms-play-services-location = "com.google.android.gms:play-services-location:21.0.1"
 gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.1"
 

@@ -1,6 +1,6 @@
 package com.lighthouse.beep.auth.service.signout
 
-import com.lighthouse.beep.auth.model.AuthProvider
+import com.lighthouse.beep.model.deviceconfig.AuthProvider
 import javax.inject.Inject
 
 internal class SignOutServiceProvider @Inject constructor() {
@@ -8,7 +8,7 @@ internal class SignOutServiceProvider @Inject constructor() {
     fun getSignOutService(provider: AuthProvider): SignOutService {
         return when (provider) {
             AuthProvider.NONE -> NoneSignOutService()
-            AuthProvider.ANONYMOUS -> AnonymousSignOutService()
+            AuthProvider.GUEST -> AnonymousSignOutService()
             AuthProvider.GOOGLE,
             AuthProvider.KAKAO,
             AuthProvider.NAVER,

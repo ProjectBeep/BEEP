@@ -1,14 +1,16 @@
 package com.lighthouse.beep.auth.repository
 
 import com.lighthouse.beep.auth.model.OAuthRequest
+import com.lighthouse.beep.model.deviceconfig.AuthInfo
+import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun getCurrentUserId(): String
+    val authInfo: Flow<AuthInfo>
 
-    suspend fun signIn(request: OAuthRequest): Result<Unit>
+    suspend fun signIn(request: OAuthRequest)
 
-    suspend fun signOut(): Result<Unit>
+    suspend fun signOut()
 
-    suspend fun withdrawal(): Result<Unit>
+    suspend fun withdrawal()
 }

@@ -1,58 +1,62 @@
 package com.lighthouse.beep.data.repository.user
 
-import com.lighthouse.beep.model.user.SecurityOption
+import com.lighthouse.beep.model.deviceconfig.AuthInfo
+import com.lighthouse.beep.model.deviceconfig.DeviceConfig
+import com.lighthouse.beep.model.deviceconfig.RecentHash
+import com.lighthouse.beep.model.deviceconfig.Security
+import com.lighthouse.beep.model.deviceconfig.Subscription
+import com.lighthouse.beep.model.deviceconfig.ThemeOption
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
-    private val localUserDataSource: LocalUserDataSource,
-    private val localUserAuthDataSource: LocalUserAuthDataSource,
+    private val localDataSource: LocalUserDataSource,
 ) : UserRepository {
 
-    override suspend fun setPinPassword(userId: String, newPin: String): Result<Unit> =
-        localUserAuthDataSource.setPinPassword(userId, newPin)
+    override val deviceConfig: Flow<DeviceConfig> = localDataSource.deviceConfig
 
-    override fun confirmPinPassword(userId: String, pin: String): Result<Boolean> {
-        return localUserAuthDataSource.confirmPinPassword(userId, pin)
+    override suspend fun getAuthInfo(): AuthInfo {
+        return deviceConfig.first().authInfo
     }
 
-    override suspend fun setSecurityOption(
-        userId: String,
-        securityOption: SecurityOption,
-    ): Result<Unit> {
-        return localUserDataSource.setSecurityOption(userId, securityOption)
+    override suspend fun setAuthInfo(authInfo: AuthInfo) {
+        localDataSource.setAuthInfo(authInfo)
     }
 
-    override fun getSecurityOption(userId: String): Flow<Result<SecurityOption>> {
-        return localUserDataSource.getSecurityOption(userId)
+    override suspend fun getHash(): RecentHash {
+        return deviceConfig.first().hash
     }
 
-    override suspend fun setNotificationEnable(userId: String, enable: Boolean): Result<Unit> {
-        return localUserDataSource.setNotificationEnable(userId, enable)
+    override suspend fun setHash(hash: RecentHash) {
+        localDataSource.setHash(hash)
     }
 
-    override fun getNotificationEnable(userId: String): Flow<Result<Boolean>> {
-        return localUserDataSource.getNotificationEnable(userId)
+    override suspend fun getSubscription(): Subscription {
+        return deviceConfig.first().subscription
     }
 
-    override suspend fun setFilterExpired(userId: String, enable: Boolean): Result<Unit> {
-        return localUserDataSource.setFilterExpired(userId, enable)
+    override suspend fun setSubscription(subscription: Subscription) {
+        localDataSource.setSubscription(subscription)
     }
 
-    override fun getFilterExpired(userId: String): Flow<Result<Boolean>> {
-        return localUserDataSource.getFilterExpired(userId)
+    override suspend fun getSecurity(): Security {
+        return deviceConfig.first().security
     }
 
-    override suspend fun transferData(userId: String, newUserId: String): Result<Unit> =
-        runCatching {
-            localUserDataSource.transferData(userId, newUserId).getOrThrow()
-            localUserAuthDataSource.transferData(userId, newUserId).getOrThrow()
-        }
+    override suspend fun setSecurity(security: Security) {
+        localDataSource.setSecurity(security)
+    }
 
-    override suspend fun withdrawal(userId: String): Result<Unit> {
-        return runCatching {
-            localUserDataSource.withdrawal(userId).getOrThrow()
-            localUserAuthDataSource.clearData(userId)
-        }
+    override suspend fun getThemeOption(): ThemeOption {
+        return deviceConfig.first().themeOption
+    }
+
+    override suspend fun setThemeOption(themeOption: ThemeOption) {
+        localDataSource.setThemeOption(themeOption)
+    }
+
+    override suspend fun logout() {
+        localDataSource.clear()
     }
 }

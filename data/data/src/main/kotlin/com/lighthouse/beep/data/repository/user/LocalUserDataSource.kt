@@ -1,35 +1,26 @@
 package com.lighthouse.beep.data.repository.user
 
-import com.lighthouse.beep.model.user.SecurityOption
+import com.lighthouse.beep.model.deviceconfig.AuthInfo
+import com.lighthouse.beep.model.deviceconfig.DeviceConfig
+import com.lighthouse.beep.model.deviceconfig.RecentHash
+import com.lighthouse.beep.model.deviceconfig.Security
+import com.lighthouse.beep.model.deviceconfig.Subscription
+import com.lighthouse.beep.model.deviceconfig.ThemeOption
 import kotlinx.coroutines.flow.Flow
 
 interface LocalUserDataSource {
 
-    suspend fun setSecurityOption(
-        userId: String,
-        securityOption: SecurityOption,
-    ): Result<Unit>
+    val deviceConfig: Flow<DeviceConfig>
 
-    fun getSecurityOption(userId: String): Flow<Result<SecurityOption>>
+    suspend fun setAuthInfo(authInfo: AuthInfo)
 
-    suspend fun setNotificationEnable(
-        userId: String,
-        enable: Boolean,
-    ): Result<Unit>
+    suspend fun setHash(hash: RecentHash)
 
-    fun getNotificationEnable(userId: String): Flow<Result<Boolean>>
+    suspend fun setSubscription(subscription: Subscription)
 
-    suspend fun setFilterExpired(
-        userId: String,
-        filterExpired: Boolean,
-    ): Result<Unit>
+    suspend fun setSecurity(security: Security)
 
-    fun getFilterExpired(userId: String): Flow<Result<Boolean>>
+    suspend fun setThemeOption(themeOption: ThemeOption)
 
-    suspend fun transferData(
-        oldUserId: String,
-        newUserId: String,
-    ): Result<Unit>
-
-    suspend fun withdrawal(userId: String): Result<Unit>
+    suspend fun clear()
 }

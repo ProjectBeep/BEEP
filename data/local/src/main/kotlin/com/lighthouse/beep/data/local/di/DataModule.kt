@@ -4,13 +4,11 @@ import com.lighthouse.beep.data.local.repository.brand.LocalBrandDataSourceImpl
 import com.lighthouse.beep.data.local.repository.gallery.GalleryImagePagingSourceImpl
 import com.lighthouse.beep.data.local.repository.gifticon.LocalGifticonDataSourceImpl
 import com.lighthouse.beep.data.local.repository.gifticon.LocalGifticonStorageImpl
-import com.lighthouse.beep.data.local.repository.user.LocalUserAuthDataSourceImpl
 import com.lighthouse.beep.data.local.repository.user.LocalUserDataSourceImpl
 import com.lighthouse.beep.data.repository.brand.LocalBrandDataSource
 import com.lighthouse.beep.data.repository.gallery.GalleryImagePagingSource
 import com.lighthouse.beep.data.repository.gifticon.LocalGifticonDataSource
 import com.lighthouse.beep.data.repository.gifticon.LocalGifticonStorage
-import com.lighthouse.beep.data.repository.user.LocalUserAuthDataSource
 import com.lighthouse.beep.data.repository.user.LocalUserDataSource
 import dagger.Binds
 import dagger.Module
@@ -26,11 +24,6 @@ internal abstract class DataModule {
     abstract fun bindsUserPreferenceRepository(
         repository: LocalUserDataSourceImpl,
     ): LocalUserDataSource
-
-    @Binds
-    abstract fun bindsLocalUserAuthRepository(
-        repository: LocalUserAuthDataSourceImpl,
-    ): LocalUserAuthDataSource
 
     @Binds
     abstract fun bindsGalleryImagePagingSource(
