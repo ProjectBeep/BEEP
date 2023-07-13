@@ -12,12 +12,17 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
-import com.lighthouse.beep.ui.page.intro.IntroScreen
+import com.lighthouse.beep.navigation.BeepNavHost
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -29,10 +34,15 @@ fun BeepApp(
         networkMonitor = networkMonitor,
     ),
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    val isOffline by appState.isOffline.collectAsStateWithLifecycle()
+
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { padding ->
         Box(
             modifier = Modifier.fillMaxSize()
@@ -42,7 +52,9 @@ fun BeepApp(
                     WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
                 ),
         ) {
-            IntroScreen()
+            BeepNavHost(
+                navController = appState.navController,
+            )
         }
     }
 }

@@ -1,9 +1,9 @@
-package com.lighthouse.beep.ui.page.intro
+package com.lighthouse.beep.ui.page.intro.page.login
 
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 
-data class IntroData(
+data class LoginData(
     @StringRes val titleRes: Int,
     @StringRes val descriptionRes: Int,
     @RawRes val lottieRes: Int,

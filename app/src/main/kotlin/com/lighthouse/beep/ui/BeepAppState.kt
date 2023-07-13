@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @Stable
@@ -31,7 +32,8 @@ class BeepAppState(
     val shouldShowNavRail: Boolean
         get() = windowSizeClass.widthSizeClass != WindowWidthSizeClass.Compact
 
-    val isNetworkAvailable = networkMonitor.isAvailable
+    val isOffline = networkMonitor.isAvailable
+        .map(Boolean::not)
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
 }
 
