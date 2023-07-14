@@ -1,8 +1,7 @@
 package com.lighthouse.beep.auth.repository
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.lighthouse.beep.auth.model.OAuthRequest
 import com.lighthouse.beep.auth.model.exception.InvalidUserException
 import com.lighthouse.beep.auth.service.oauth.OAuthServiceProvider
@@ -19,6 +18,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 internal class AuthRepositoryImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
     private val oAuthServiceProvider: OAuthServiceProvider,
     private val signOutServiceProvider: SignOutServiceProvider,
 ) : AuthRepository {
@@ -51,9 +51,9 @@ internal class AuthRepositoryImpl @Inject constructor(
             }
         }
 
-        Firebase.auth.addAuthStateListener(authStateListener)
+        firebaseAuth.addAuthStateListener(authStateListener)
         awaitClose {
-            Firebase.auth.removeAuthStateListener(authStateListener)
+            firebaseAuth.removeAuthStateListener(authStateListener)
         }
     }
 
@@ -74,13 +74,13 @@ internal class AuthRepositoryImpl @Inject constructor(
     override suspend fun signOut() {
         val provider = authInfo.first().provider
         signOutServiceProvider.getSignOutService(provider).signOut()
-        Firebase.auth.signOut()
+        firebaseAuth.signOut()
     }
 
     override suspend fun withdrawal() {
         val provider = authInfo.first().provider
         signOutServiceProvider.getSignOutService(provider).signOut()
-        val user = Firebase.auth.currentUser ?: throw InvalidUserException()
+        val user = firebaseAuth.currentUser ?: throw InvalidUserException()
         val task = user.delete()
         suspendCancellableCoroutine { continuation ->
             task.addOnSuccessListener {

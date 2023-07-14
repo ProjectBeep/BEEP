@@ -16,6 +16,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -23,12 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import com.lighthouse.beep.navigation.BeepNavHost
+import com.lighthouse.beep.navigation.TopLevelDestination
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BeepApp(
     windowSizeClass: WindowSizeClass,
     networkMonitor: NetworkMonitor,
+    topDestination: TopLevelDestination,
     appState: BeepAppState = rememberBeepAppState(
         windowSizeClass = windowSizeClass,
         networkMonitor = networkMonitor,
@@ -37,6 +40,10 @@ fun BeepApp(
     val snackBarHostState = remember { SnackbarHostState() }
 
     val isOffline by appState.isOffline.collectAsStateWithLifecycle()
+
+    LaunchedEffect(topDestination) {
+        appState.navigateToTopLevelDestination(topDestination)
+    }
 
     Scaffold(
         containerColor = Color.Transparent,

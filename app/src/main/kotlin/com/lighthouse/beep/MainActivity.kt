@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -15,6 +16,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import com.lighthouse.beep.theme.BeepTheme
@@ -27,15 +29,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val viewModel by viewModels<MainViewModel>()
+
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-//        splashScreen.setKeepOnScreenCondition {
-//            true
-//        }
+        splashScreen.setKeepOnScreenCondition {
+            viewModel.isInit.value
+        }
         splashScreen.setOnExitAnimationListener { splashScreenProvider ->
             val logo = getDrawable(R.drawable.anim_logo) as? AnimatedVectorDrawable
             val iconView = runCatching {
@@ -78,6 +82,7 @@ class MainActivity : ComponentActivity() {
                 BeepApp(
                     windowSizeClass = calculateWindowSizeClass(activity = this),
                     networkMonitor = networkMonitor,
+                    topDestination = viewModel.topDestination.collectAsStateWithLifecycle().value,
                 )
             }
         }

@@ -72,6 +72,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun IntroScreen(
+    navigateToPermission: () -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     Column(

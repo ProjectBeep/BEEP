@@ -2,6 +2,7 @@ package com.lighthouse.beep.navigation
 
 enum class TopLevelDestination {
 
-    INTRO,
+    NONE,
+    LOGIN,
     MAIN,
 }

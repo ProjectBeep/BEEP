@@ -58,11 +58,9 @@ android {
 }
 
 dependencies {
-//    implementation(projects.core)
-//    implementation(projects.worker)
-//    implementation(projects.utilsLocation)
-//    implementation(projects.utilsRecognizer)
     implementation(projects.core.common)
+    implementation(projects.core.ui)
+    implementation(projects.model)
     implementation(projects.theme)
     implementation(projects.domain)
 
@@ -77,21 +75,6 @@ dependencies {
 
     implementation(projects.ui.feature.login)
     implementation(projects.ui.feature.main)
-
-//    implementation(projects.navApp)
-//    implementation(projects.navMain)
-//    implementation(projects.uiCoffee)
-//    implementation(projects.uiCommon)
-//    implementation(projects.uiIntro)
-//    implementation(projects.uiMain)
-//    implementation(projects.uiGifticonlist)
-//    implementation(projects.uiHome)
-//    implementation(projects.uiOpensourcelicense)
-//    implementation(projects.uiPersonalinfopolicy)
-//    implementation(projects.uiSecurity)
-//    implementation(projects.uiSetting)
-//    implementation(projects.uiTermsofuse)
-//    implementation(projects.uiUsedgifticon)
 
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation)
@@ -109,9 +92,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.accompanist.systemuicontroller)
-
-//    implementation(libs.androidx.hilt.work)
-//    implementation(libs.androidx.work.runtime.ktx)
 }
 
 kapt {

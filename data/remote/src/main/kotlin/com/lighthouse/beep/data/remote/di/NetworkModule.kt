@@ -20,20 +20,15 @@ internal object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(HTTPRequestInterceptor())
-            .build()
-    }
-
-    @Provides
-    @Singleton
     fun provideRetrofit(
-        okHttpClient: OkHttpClient,
         moshi: Moshi,
     ): Retrofit {
         return Retrofit.Builder()
-            .client(okHttpClient)
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(HTTPRequestInterceptor())
+                    .build(),
+            )
             .baseUrl(KAKAO_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

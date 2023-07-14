@@ -1,5 +1,6 @@
 package com.lighthouse.beep.auth.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.lighthouse.beep.auth.network.NetworkTask
 import dagger.Module
 import dagger.Provides
@@ -13,9 +14,13 @@ import okhttp3.OkHttpClient
 internal object NetworkModule {
 
     @Provides
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Provides
     fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .build()
+        return OkHttpClient.Builder().build()
     }
 
     @Provides

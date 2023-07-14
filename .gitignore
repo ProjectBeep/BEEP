@@ -10,5 +10,6 @@ keystore.properties
 build-cache/
 local.properties
 beep-release.jks
-/credential.json
-/beep-debug.jks
+credential.json
+beep-debug.jks
+google-services.json
