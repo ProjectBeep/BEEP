@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.page.intro.page.permission
+package com.lighthouse.beep.ui.feature.login.page.permission
 
 import androidx.compose.runtime.Composable
 

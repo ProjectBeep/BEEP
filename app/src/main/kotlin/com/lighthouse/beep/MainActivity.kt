@@ -19,7 +19,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.ui.BeepApp
-import com.lighthouse.beep.ui.page.intro.page.login.IntroScreen
+import com.lighthouse.beep.ui.feature.login.page.login.IntroScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

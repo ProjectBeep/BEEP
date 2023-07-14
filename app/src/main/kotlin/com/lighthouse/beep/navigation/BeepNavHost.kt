@@ -3,8 +3,8 @@ package com.lighthouse.beep.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.lighthouse.beep.ui.page.intro.navigation.GRAPH_INTRO
-import com.lighthouse.beep.ui.page.intro.navigation.introGraph
+import com.lighthouse.beep.ui.feature.login.navigation.GRAPH_INTRO
+import com.lighthouse.beep.ui.feature.login.navigation.introGraph
 
 @Composable
 fun BeepNavHost(

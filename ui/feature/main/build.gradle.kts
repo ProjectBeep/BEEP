@@ -4,18 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.lighthouse.beep.ui.page.intro"
+    namespace = "com.lighthouse.beep.ui.feature.main"
 }
 
 dependencies {
     implementation(projects.core.ui)
     implementation(projects.theme)
-
-    implementation(projects.auth.google)
-    implementation(projects.auth.kakao)
-    implementation(projects.auth.naver)
-
-    implementation(projects.ui.designsystem.dotindicator)
 
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
@@ -30,7 +24,4 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.svg)
     implementation(libs.coil.compose)
-
-    implementation(libs.airbnb.lottie)
-    implementation(libs.airbnb.lottie.compose)
 }

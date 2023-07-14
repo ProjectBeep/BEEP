@@ -75,8 +75,8 @@ dependencies {
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
 
-    implementation(projects.ui.page.intro)
-//    implementation(projects.ui.page.main)
+    implementation(projects.ui.feature.login)
+    implementation(projects.ui.feature.main)
 
 //    implementation(projects.navApp)
 //    implementation(projects.navMain)

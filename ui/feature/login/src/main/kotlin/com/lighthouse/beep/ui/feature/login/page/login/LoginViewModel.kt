@@ -1,7 +1,7 @@
-package com.lighthouse.beep.ui.page.intro.page.login
+package com.lighthouse.beep.ui.feature.login.page.login
 
 import androidx.lifecycle.ViewModel
-import com.lighthouse.beep.ui.page.intro.R
+import com.lighthouse.beep.ui.feature.login.R
 
 class LoginViewModel : ViewModel() {
     val items = listOf(

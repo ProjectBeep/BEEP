@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.page.intro.page.login
+package com.lighthouse.beep.ui.feature.login.page.login
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -63,7 +63,7 @@ import com.lighthouse.beep.theme.TitleSmall
 import com.lighthouse.beep.ui.designsystem.dotindicator.DotIndicator
 import com.lighthouse.beep.ui.designsystem.dotindicator.DotShape
 import com.lighthouse.beep.ui.designsystem.dotindicator.type.WormType
-import com.lighthouse.beep.ui.page.intro.R
+import com.lighthouse.beep.ui.feature.login.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

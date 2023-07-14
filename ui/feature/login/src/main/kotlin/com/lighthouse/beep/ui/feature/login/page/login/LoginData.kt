@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.page.intro.page.login
+package com.lighthouse.beep.ui.feature.login.page.login
 
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes

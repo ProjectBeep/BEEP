@@ -7,10 +7,14 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
+import com.lighthouse.beep.navigation.TopLevelDestination
+import com.lighthouse.beep.ui.feature.login.navigation.navigateToIntro
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -35,6 +39,24 @@ class BeepAppState(
     val isOffline = networkMonitor.isAvailable
         .map(Boolean::not)
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
+
+    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
+        val navOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
+
+        when (topLevelDestination) {
+            TopLevelDestination.INTRO -> navController.navigateToIntro()
+            TopLevelDestination.MAIN -> {}
+        }
+    }
+
+    fun onBackClick() {
+        navController.popBackStack()
+    }
 }
 
 @Composable
