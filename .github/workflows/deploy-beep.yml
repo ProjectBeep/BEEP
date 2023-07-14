@@ -44,6 +44,10 @@ jobs:
             exit 1
           fi
 
+      - name: Create Google Service
+        run: |
+          echo '${{ secrets.GOOGLE_SERVICE_JSON }}' > ./auth/auth/google-services.json
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
