@@ -1,8 +1,8 @@
 package com.lighthouse.beep.navigation
 
-enum class TopLevelDestination {
+enum class TopLevelDestination(val route: String) {
 
-    NONE,
-    LOGIN,
-    MAIN,
+    NONE(""),
+    LOGIN("login"),
+    MAIN("main"),
 }

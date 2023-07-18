@@ -1,5 +1,7 @@
 package com.lighthouse.beep.ui.feature.login.page.login
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
@@ -30,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -47,6 +50,12 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.lighthouse.auth.google.GoogleTokenResult
+import com.lighthouse.auth.google.local.LocalGoogleClient
+import com.lighthouse.beep.auth.kakao.KakaoTokenResult
+import com.lighthouse.beep.auth.kakao.local.LocalKakaoClient
+import com.lighthouse.beep.auth.naver.NaverTokenResult
+import com.lighthouse.beep.auth.naver.local.LocalNaverClient
 import com.lighthouse.beep.core.ui.compose.rememberLifecycleEvent
 import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.theme.BodyMedium
@@ -94,34 +103,14 @@ fun IntroScreen(
             color = Grey50,
         )
         Spacer(modifier = Modifier.size(12.dp))
-        LoginButton(
-            textRes = R.string.naver_login,
-            textColorRes = R.color.naver_label,
-            backgroundColorRes = R.color.naver_container,
-            iconRes = R.drawable.icon_naver,
-            iconTintRes = R.color.naver_label,
-            onClick = {
-            },
-        )
+        NaverLoginButton {
+        }
         Spacer(modifier = Modifier.size(12.dp))
-        LoginButton(
-            textRes = R.string.kakao_login,
-            textColorRes = R.color.kakao_label,
-            backgroundColorRes = R.color.kakao_container,
-            iconRes = R.drawable.icon_kakao,
-            onClick = {
-            },
-        )
+        KakaoLoginButton {
+        }
         Spacer(modifier = Modifier.size(12.dp))
-        LoginButton(
-            textRes = R.string.google_login,
-            textColorRes = R.color.google_label,
-            backgroundColorRes = R.color.google_container,
-            iconRes = R.drawable.icon_google,
-            iconBackgroundColorRes = R.color.google_symbol_background,
-            onClick = {
-            },
-        )
+        GoogleLoginButton {
+        }
         Spacer(modifier = Modifier.size(10.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -132,10 +121,8 @@ fun IntroScreen(
                 color = Grey70,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            GuestButton(
-                onClick = {
-                },
-            )
+            GuestButton {
+            }
         }
         Spacer(modifier = Modifier.height(100.dp))
     }
@@ -268,14 +255,16 @@ internal fun LoginButton(
             ) {
                 Spacer(modifier = Modifier.size(6.dp))
                 Box(
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier
+                        .size(32.dp)
                         .background(colorResource(id = iconBackgroundColorRes), CircleShape),
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(iconRes)
                             .build(),
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier
+                            .size(20.dp)
                             .align(Alignment.Center),
                         colorFilter = iconTintRes?.let { ColorFilter.tint(colorResource(id = it)) },
                         contentDescription = null,
@@ -290,6 +279,80 @@ internal fun LoginButton(
             )
         }
     }
+}
+
+@Composable
+internal fun NaverLoginButton(
+    onAccessTokenResult: (NaverTokenResult) -> Unit = {},
+) {
+    val naverClient = LocalNaverClient.current
+    val requestNaverLogin =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val tokenResult = naverClient.getAccessToken(result)
+            onAccessTokenResult(tokenResult)
+        }
+
+    LoginButton(
+        textRes = R.string.naver_login,
+        textColorRes = R.color.naver_label,
+        backgroundColorRes = R.color.naver_container,
+        iconRes = R.drawable.icon_naver,
+        iconTintRes = R.color.naver_label,
+        onClick = {
+            naverClient.requestAccessToken(requestNaverLogin) { token ->
+                onAccessTokenResult(NaverTokenResult.Success(token))
+            }
+        },
+    )
+}
+
+@Composable
+internal fun KakaoLoginButton(
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    onAccessTokenResult: (KakaoTokenResult) -> Unit = {},
+) {
+    val kakaoClient = LocalKakaoClient.current
+    val context = LocalContext.current
+
+    LoginButton(
+        textRes = R.string.kakao_login,
+        textColorRes = R.color.kakao_label,
+        backgroundColorRes = R.color.kakao_container,
+        iconRes = R.drawable.icon_kakao,
+        onClick = {
+            coroutineScope.launch {
+                val tokenResult = kakaoClient.getAccessToken(context)
+                onAccessTokenResult(tokenResult)
+            }
+        },
+    )
+}
+
+@Composable
+internal fun GoogleLoginButton(
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    onAccessTokenResult: (GoogleTokenResult) -> Unit = {},
+) {
+    val googleClient = LocalGoogleClient.current
+    val requestGoogleLogin =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            coroutineScope.launch {
+                val tokenResult = googleClient.getAccessToken(result)
+                onAccessTokenResult(tokenResult)
+            }
+        }
+
+    LoginButton(
+        textRes = R.string.google_login,
+        textColorRes = R.color.google_label,
+        backgroundColorRes = R.color.google_container,
+        iconRes = R.drawable.icon_google,
+        iconBackgroundColorRes = R.color.google_symbol_background,
+        onClick = {
+            val intent = googleClient.signInIntent
+            requestGoogleLogin.launch(intent)
+        },
+    )
 }
 
 @Composable

@@ -2,8 +2,9 @@ package com.lighthouse.beep.ui.feature.login.page.login
 
 import androidx.lifecycle.ViewModel
 import com.lighthouse.beep.ui.feature.login.R
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel @Inject constructor() : ViewModel() {
     val items = listOf(
         LoginData(
             titleRes = R.string.app_name,

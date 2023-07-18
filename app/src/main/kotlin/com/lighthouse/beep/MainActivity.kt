@@ -12,12 +12,19 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.lighthouse.auth.google.GoogleClient
+import com.lighthouse.auth.google.local.LocalGoogleClient
+import com.lighthouse.beep.auth.kakao.KakaoClient
+import com.lighthouse.beep.auth.kakao.local.LocalKakaoClient
+import com.lighthouse.beep.auth.naver.NaverClient
+import com.lighthouse.beep.auth.naver.local.LocalNaverClient
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.ui.BeepApp
@@ -33,6 +40,15 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var googleClient: GoogleClient
+
+    @Inject
+    lateinit var kakaoClient: KakaoClient
+
+    @Inject
+    lateinit var naverClient: NaverClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -79,11 +95,17 @@ class MainActivity : ComponentActivity() {
             BeepTheme(
                 darkTheme = darkTheme,
             ) {
-                BeepApp(
-                    windowSizeClass = calculateWindowSizeClass(activity = this),
-                    networkMonitor = networkMonitor,
-                    topDestination = viewModel.topDestination.collectAsStateWithLifecycle().value,
-                )
+                CompositionLocalProvider(
+                    LocalGoogleClient provides googleClient,
+                    LocalKakaoClient provides kakaoClient,
+                    LocalNaverClient provides naverClient,
+                ) {
+                    BeepApp(
+                        windowSizeClass = calculateWindowSizeClass(activity = this),
+                        networkMonitor = networkMonitor,
+                        startDestination = viewModel.topDestination.collectAsState().value,
+                    )
+                }
             }
         }
     }

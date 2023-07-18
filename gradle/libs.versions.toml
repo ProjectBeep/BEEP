@@ -121,7 +121,6 @@ google_protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.23.0"
 
 ## Firebase
 firebase-bom = "com.google.firebase:firebase-bom:32.1.1"
-firebase-common = { module = "com.google.firebase:firebase-common" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }

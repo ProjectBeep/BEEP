@@ -3,27 +3,29 @@ package com.lighthouse.beep.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.lighthouse.beep.ui.feature.login.navigation.GRAPH_LOGIN
+import androidx.navigation.compose.composable
+import com.lighthouse.beep.ui.BeepAppState
 import com.lighthouse.beep.ui.feature.login.navigation.loginGraph
 import com.lighthouse.beep.ui.feature.main.navigation.mainGraph
-import com.lighthouse.beep.ui.feature.main.navigation.navigateToMain
 
 @Composable
 fun BeepNavHost(
     navController: NavHostController,
-    startDestination: String = GRAPH_LOGIN,
+    appState: BeepAppState,
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = "none",
     ) {
+        composable("none") { }
         loginGraph(navController, navigateToMain = {
-            navController.navigateToMain()
+            appState.navigateToTopLevelDestination(TopLevelDestination.MAIN)
         })
         mainGraph(
             navigateToMap = {},
             navigateToAdd = {},
             navigateToSetting = {},
+
         ) {
         }
     }
