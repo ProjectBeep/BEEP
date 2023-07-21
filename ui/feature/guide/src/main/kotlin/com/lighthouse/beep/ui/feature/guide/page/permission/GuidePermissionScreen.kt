@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.lighthouse.beep.core.ui.exts.shadow
 import com.lighthouse.beep.theme.BeepColor
 import com.lighthouse.beep.theme.BeepShape
 import com.lighthouse.beep.theme.BeepTextStyle
@@ -108,7 +110,11 @@ internal fun GuidePermissionItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(40.dp)
+                .shadow(
+                    color = BeepColor.Black.copy(alpha = 0.05f),
+                    blur = 10.dp,
+                ),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(permissionData.iconRes)
                 .build(),
