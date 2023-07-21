@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.lighthouse.beep.ui.feature.main.page.MainScreen
+import com.lighthouse.beep.ui.feature.main.page.main.MainScreen
 
 const val GRAPH_MAIN = "graph.main"
 internal const val ROUTE_MAIN = "route.main"

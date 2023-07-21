@@ -26,8 +26,6 @@ android {
         manifestPlaceholders["naver_map_api_id"] = naverMapApiId
     }
 
-    println(rootDir.absolutePath)
-
     signingConfigs {
         getByName("debug") {
             storeFile = File(rootDir, keystoreProperties.getProperty("debug_store_file_name"))
@@ -73,6 +71,7 @@ dependencies {
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
 
+    implementation(projects.ui.feature.guide)
     implementation(projects.ui.feature.login)
     implementation(projects.ui.feature.main)
 

@@ -5,7 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.lighthouse.beep.ui.BeepAppState
-import com.lighthouse.beep.ui.feature.login.navigation.loginGraph
+import com.lighthouse.beep.ui.feature.guide.navigation.guidePermissionScreen
+import com.lighthouse.beep.ui.feature.login.navigation.loginScreen
 import com.lighthouse.beep.ui.feature.main.navigation.mainGraph
 
 @Composable
@@ -18,15 +19,13 @@ fun BeepNavHost(
         startDestination = "none",
     ) {
         composable("none") { }
-        loginGraph(navController, navigateToMain = {
-            appState.navigateToTopLevelDestination(TopLevelDestination.MAIN)
-        })
+        loginScreen()
         mainGraph(
             navigateToMap = {},
             navigateToAdd = {},
             navigateToSetting = {},
-
         ) {
         }
+        guidePermissionScreen()
     }
 }

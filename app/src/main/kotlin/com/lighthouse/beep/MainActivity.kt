@@ -11,13 +11,10 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lighthouse.auth.google.GoogleClient
 import com.lighthouse.auth.google.local.LocalGoogleClient
@@ -26,9 +23,9 @@ import com.lighthouse.beep.auth.kakao.local.LocalKakaoClient
 import com.lighthouse.beep.auth.naver.NaverClient
 import com.lighthouse.beep.auth.naver.local.LocalNaverClient
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
+import com.lighthouse.beep.navigation.TopLevelDestination
 import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.ui.BeepApp
-import com.lighthouse.beep.ui.feature.login.page.login.IntroScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -54,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
-            viewModel.isInit.value
+            viewModel.topDestination.value != TopLevelDestination.NONE
         }
         splashScreen.setOnExitAnimationListener { splashScreenProvider ->
             val logo = getDrawable(R.drawable.anim_logo) as? AnimatedVectorDrawable
@@ -81,8 +78,6 @@ class MainActivity : ComponentActivity() {
                 }.start()
         }
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setContent {
             val systemUiController = rememberSystemUiController()
             val darkTheme = isSystemInDarkTheme()
@@ -103,18 +98,10 @@ class MainActivity : ComponentActivity() {
                     BeepApp(
                         windowSizeClass = calculateWindowSizeClass(activity = this),
                         networkMonitor = networkMonitor,
-                        startDestination = viewModel.topDestination.collectAsState().value,
+                        topDestination = viewModel.topDestination.collectAsState().value,
                     )
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 320)
-@Composable
-fun MainPreview() {
-    BeepTheme {
-        IntroScreen()
     }
 }

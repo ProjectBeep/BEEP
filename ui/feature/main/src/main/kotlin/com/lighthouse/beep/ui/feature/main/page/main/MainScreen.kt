@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.main.page
+package com.lighthouse.beep.ui.feature.main.page.main
 
 import androidx.compose.runtime.Composable
 

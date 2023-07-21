@@ -21,6 +21,9 @@ data class DeviceConfig(
     val hash: RecentHash = RecentHash(
         backup = "",
     ),
+    val shownGuidePage: ShownGuidePage = ShownGuidePage(
+        permission = false,
+    ),
     val subscription: Subscription = Subscription(
         paidDateCount = 0,
         freeDateCount = 0,
@@ -60,7 +63,6 @@ enum class AuthProvider(
 
     @SerialName("guest")
     GUEST(firebaseName = "anonymous"),
-
     ;
 
     companion object {
@@ -75,6 +77,11 @@ enum class AuthProvider(
 @Serializable
 data class RecentHash(
     val backup: String,
+)
+
+@Serializable
+data class ShownGuidePage(
+    val permission: Boolean,
 )
 
 @Serializable

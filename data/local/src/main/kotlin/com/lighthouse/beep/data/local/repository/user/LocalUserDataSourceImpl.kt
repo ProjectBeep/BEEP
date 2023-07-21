@@ -7,6 +7,7 @@ import com.lighthouse.beep.model.deviceconfig.AuthInfo
 import com.lighthouse.beep.model.deviceconfig.DeviceConfig
 import com.lighthouse.beep.model.deviceconfig.RecentHash
 import com.lighthouse.beep.model.deviceconfig.Security
+import com.lighthouse.beep.model.deviceconfig.ShownGuidePage
 import com.lighthouse.beep.model.deviceconfig.Subscription
 import com.lighthouse.beep.model.deviceconfig.ThemeOption
 import javax.inject.Inject
@@ -26,6 +27,12 @@ internal class LocalUserDataSourceImpl @Inject constructor(
     override suspend fun setHash(hash: RecentHash) {
         dataStore.updateData {
             it.copy(hash = hash)
+        }
+    }
+
+    override suspend fun setShownGuidePage(shownGuidePage: ShownGuidePage) {
+        dataStore.updateData {
+            it.copy(shownGuidePage = shownGuidePage)
         }
     }
 

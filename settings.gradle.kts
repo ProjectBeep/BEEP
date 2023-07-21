@@ -47,6 +47,7 @@ include(":auth:naver")
 // include(":ui:dialog:originimage")
 // include(":ui:dialog:progress")
 include(":ui:designsystem:dotindicator")
+include(":ui:feature:guide")
 include(":ui:feature:login")
 include(":ui:feature:main")
 

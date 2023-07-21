@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import com.lighthouse.beep.navigation.TopLevelDestination
+import com.lighthouse.beep.ui.feature.guide.navigation.navigateToGuidePermission
 import com.lighthouse.beep.ui.feature.login.navigation.navigateToLogin
 import com.lighthouse.beep.ui.feature.main.navigation.navigateToMain
 import kotlinx.coroutines.CoroutineScope
@@ -52,6 +53,9 @@ class BeepAppState(
         when (topLevelDestination) {
             TopLevelDestination.LOGIN -> navController.navigateToLogin(navOptions)
             TopLevelDestination.MAIN -> navController.navigateToMain(navOptions)
+            TopLevelDestination.GUIDE_PERMISSION ->
+                navController.navigateToGuidePermission(navOptions)
+
             TopLevelDestination.NONE -> {}
         }
     }
