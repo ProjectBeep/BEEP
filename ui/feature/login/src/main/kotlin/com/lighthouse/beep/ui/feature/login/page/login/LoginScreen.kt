@@ -57,18 +57,10 @@ import com.lighthouse.beep.auth.kakao.local.LocalKakaoClient
 import com.lighthouse.beep.auth.naver.NaverTokenResult
 import com.lighthouse.beep.auth.naver.local.LocalNaverClient
 import com.lighthouse.beep.core.ui.compose.rememberLifecycleEvent
+import com.lighthouse.beep.theme.BeepColor
+import com.lighthouse.beep.theme.BeepShape
+import com.lighthouse.beep.theme.BeepTextStyle
 import com.lighthouse.beep.theme.BeepTheme
-import com.lighthouse.beep.theme.BodyMedium
-import com.lighthouse.beep.theme.BodySmall
-import com.lighthouse.beep.theme.ButtonShape
-import com.lighthouse.beep.theme.Grey30
-import com.lighthouse.beep.theme.Grey50
-import com.lighthouse.beep.theme.Grey70
-import com.lighthouse.beep.theme.Grey95
-import com.lighthouse.beep.theme.Pink50
-import com.lighthouse.beep.theme.TitleLarge
-import com.lighthouse.beep.theme.TitleMedium
-import com.lighthouse.beep.theme.TitleSmall
 import com.lighthouse.beep.ui.designsystem.dotindicator.DotIndicator
 import com.lighthouse.beep.ui.designsystem.dotindicator.DotShape
 import com.lighthouse.beep.ui.designsystem.dotindicator.type.WormType
@@ -98,8 +90,8 @@ internal fun IntroScreen(
 
         Text(
             text = stringResource(id = R.string.login_method),
-            style = BodyMedium,
-            color = Grey50,
+            style = BeepTextStyle.BodyMedium,
+            color = BeepColor.Grey50,
         )
         Spacer(modifier = Modifier.size(12.dp))
         NaverLoginButton {
@@ -116,8 +108,8 @@ internal fun IntroScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.login_description),
-                style = BodySmall,
-                color = Grey70,
+                style = BeepTextStyle.BodySmall,
+                color = BeepColor.Grey70,
             )
             Spacer(modifier = Modifier.size(8.dp))
             GuestButton {
@@ -168,14 +160,14 @@ internal fun IntroPager(
                 ) {
                     Text(
                         text = stringResource(id = item.titleRes),
-                        style = TitleLarge,
-                        color = Grey30,
+                        style = BeepTextStyle.TitleLarge,
+                        color = BeepColor.Grey30,
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
                         text = stringResource(id = item.descriptionRes),
-                        style = TitleMedium,
-                        color = Grey50,
+                        style = BeepTextStyle.TitleMedium,
+                        color = BeepColor.Grey50,
                     )
                     Spacer(modifier = Modifier.size(20.dp))
                     IntroImage(lottieRes = item.lottieRes)
@@ -186,8 +178,8 @@ internal fun IntroPager(
                 dotCount = list.size,
                 pagerState = pagerState,
                 dotType = WormType(
-                    dotShape = DotShape(color = Grey95),
-                    wormDotShape = DotShape(color = Pink50),
+                    dotShape = DotShape(color = BeepColor.Grey95),
+                    wormDotShape = DotShape(color = BeepColor.Pink50),
                 ),
             )
         }
@@ -243,7 +235,7 @@ internal fun LoginButton(
             .height(40.dp)
             .padding(horizontal = 16.dp),
         color = colorResource(id = backgroundColorRes),
-        shape = ButtonShape,
+        shape = BeepShape.ButtonShape,
     ) {
         Box(
             modifier = Modifier
@@ -274,7 +266,7 @@ internal fun LoginButton(
                 modifier = Modifier.align(Alignment.Center),
                 text = stringResource(id = textRes),
                 color = colorResource(id = textColorRes),
-                style = TitleSmall,
+                style = BeepTextStyle.TitleSmall,
             )
         }
     }
@@ -368,14 +360,14 @@ internal fun GuestButton(
         ) {
             Text(
                 text = stringResource(id = R.string.guest_login),
-                style = BodySmall,
-                color = Grey30,
+                style = BeepTextStyle.BodySmall,
+                color = BeepColor.Grey30,
             )
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(R.drawable.icon_right)
                     .build(),
-                colorFilter = ColorFilter.tint(Grey70),
+                colorFilter = ColorFilter.tint(BeepColor.Grey70),
                 modifier = Modifier.size(16.dp),
                 contentDescription = null,
             )

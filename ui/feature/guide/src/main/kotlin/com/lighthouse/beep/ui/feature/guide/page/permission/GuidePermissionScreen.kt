@@ -25,17 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.lighthouse.beep.theme.BeepColor
+import com.lighthouse.beep.theme.BeepShape
+import com.lighthouse.beep.theme.BeepTextStyle
 import com.lighthouse.beep.theme.BeepTheme
-import com.lighthouse.beep.theme.BodySmall
-import com.lighthouse.beep.theme.ButtonShape
-import com.lighthouse.beep.theme.Grey30
-import com.lighthouse.beep.theme.Grey70
-import com.lighthouse.beep.theme.Grey95
-import com.lighthouse.beep.theme.Pink
-import com.lighthouse.beep.theme.TitleLarge
-import com.lighthouse.beep.theme.TitleMedium
-import com.lighthouse.beep.theme.TitleSmall
-import com.lighthouse.beep.theme.White
 import com.lighthouse.beep.ui.feature.guide.R
 
 @Composable
@@ -48,21 +41,21 @@ internal fun GuidePermissionScreen(
         Spacer(modifier = Modifier.height(100.dp))
         Text(
             text = stringResource(id = R.string.guide_permission_title),
-            color = Grey30,
-            style = TitleLarge,
+            color = BeepColor.Grey30,
+            style = BeepTextStyle.TitleLarge,
         )
         Text(
             text = stringResource(id = R.string.guide_permission_description),
-            color = Grey30,
-            style = TitleSmall,
+            color = BeepColor.Grey30,
+            style = BeepTextStyle.TitleSmall,
         )
         Spacer(modifier = Modifier.height(48.dp))
         GuidePermissionList(permissionList = viewModel.items)
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = stringResource(id = R.string.guide_permission_caution),
-            color = Grey70,
-            style = BodySmall,
+            color = BeepColor.Grey70,
+            style = BeepTextStyle.BodySmall,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(28.dp))
@@ -81,7 +74,7 @@ internal fun GuidePermissionList(
 ) {
     Surface(
         modifier = Modifier.width(246.dp),
-        color = Grey95,
+        color = BeepColor.Grey95,
         shape = RoundedCornerShape(10.dp),
     ) {
         Column(
@@ -91,8 +84,8 @@ internal fun GuidePermissionList(
         ) {
             Text(
                 text = stringResource(id = R.string.guide_permission_list),
-                color = Grey30,
-                style = TitleMedium,
+                color = BeepColor.Grey30,
+                style = BeepTextStyle.TitleMedium,
             )
             Spacer(modifier = Modifier.size(20.dp))
             val iterator = permissionList.iterator()
@@ -110,7 +103,10 @@ internal fun GuidePermissionList(
 internal fun GuidePermissionItem(
     permissionData: GuidePermissionData,
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         AsyncImage(
             modifier = Modifier.size(40.dp),
             model = ImageRequest.Builder(LocalContext.current)
@@ -124,14 +120,14 @@ internal fun GuidePermissionItem(
         ) {
             Text(
                 text = stringResource(id = permissionData.titleRes),
-                color = Grey30,
-                style = TitleSmall,
+                color = BeepColor.Grey30,
+                style = BeepTextStyle.TitleSmall,
             )
             Spacer(modifier = Modifier.size(4.dp))
             Text(
                 text = stringResource(id = permissionData.descriptionRes),
-                color = Grey30,
-                style = BodySmall,
+                color = BeepColor.Grey30,
+                style = BeepTextStyle.BodySmall,
             )
         }
     }
@@ -144,8 +140,8 @@ internal fun GuidePermissionAgreeButton(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = Pink,
-        shape = ButtonShape,
+        color = BeepColor.Pink,
+        shape = BeepShape.ButtonShape,
     ) {
         Box(
             modifier = Modifier.clickable { onClick() }
@@ -154,8 +150,8 @@ internal fun GuidePermissionAgreeButton(
             Text(
                 modifier = Modifier.align(Alignment.Center),
                 text = stringResource(id = R.string.guide_permission_agree),
-                color = White,
-                style = TitleMedium,
+                color = BeepColor.White,
+                style = BeepTextStyle.TitleMedium,
             )
         }
     }
