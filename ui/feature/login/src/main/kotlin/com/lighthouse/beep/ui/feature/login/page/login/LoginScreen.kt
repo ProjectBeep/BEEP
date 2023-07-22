@@ -26,6 +26,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -43,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
@@ -57,6 +60,7 @@ import com.lighthouse.beep.auth.kakao.local.LocalKakaoClient
 import com.lighthouse.beep.auth.naver.NaverTokenResult
 import com.lighthouse.beep.auth.naver.local.LocalNaverClient
 import com.lighthouse.beep.core.ui.compose.rememberLifecycleEvent
+import com.lighthouse.beep.model.deviceconfig.AuthProvider
 import com.lighthouse.beep.theme.BeepColor
 import com.lighthouse.beep.theme.BeepShape
 import com.lighthouse.beep.theme.BeepTextStyle
@@ -73,7 +77,36 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun IntroScreen(
+    onNavigatePermission: () -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel(),
+) {
+    val isLoading = viewModel.loadingState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.loginEvent.collect {
+            if (it.isSuccess) {
+                onNavigatePermission()
+            }
+        }
+    }
+
+    Box {
+        LoginContentScreen(
+            list = viewModel.items,
+            onLoginSuccess = { provider, accessToken ->
+                viewModel.requestLogin(provider, accessToken)
+            },
+        )
+        if (isLoading.value) {
+            LoadingScreen()
+        }
+    }
+}
+
+@Composable
+internal fun LoginContentScreen(
+    list: List<LoginData> = listOf(),
+    onLoginSuccess: (provider: AuthProvider, accessToken: String) -> Unit = { _, _ -> },
 ) {
     Column(
         modifier = Modifier
@@ -83,9 +116,7 @@ internal fun IntroScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.height(100.dp))
-        IntroPager(
-            list = viewModel.items,
-        )
+        IntroPager(list = list)
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
@@ -94,13 +125,46 @@ internal fun IntroScreen(
             color = BeepColor.Grey50,
         )
         Spacer(modifier = Modifier.size(12.dp))
-        NaverLoginButton {
+        NaverLoginButton { result ->
+            when (result) {
+                is NaverTokenResult.Success -> {
+                    onLoginSuccess(AuthProvider.NAVER, result.accessToken)
+                }
+
+                is NaverTokenResult.Failed -> {
+                }
+
+                is NaverTokenResult.Canceled -> {
+                }
+            }
         }
         Spacer(modifier = Modifier.size(12.dp))
-        KakaoLoginButton {
+        KakaoLoginButton { result ->
+            when (result) {
+                is KakaoTokenResult.Success -> {
+                    onLoginSuccess(AuthProvider.KAKAO, result.accessToken)
+                }
+
+                is KakaoTokenResult.Failed -> {
+                }
+
+                is KakaoTokenResult.Canceled -> {
+                }
+            }
         }
         Spacer(modifier = Modifier.size(12.dp))
-        GoogleLoginButton {
+        GoogleLoginButton { result ->
+            when (result) {
+                is GoogleTokenResult.Success -> {
+                    onLoginSuccess(AuthProvider.GOOGLE, result.idToken)
+                }
+
+                is GoogleTokenResult.Failed -> {
+                }
+
+                is GoogleTokenResult.Canceled -> {
+                }
+            }
         }
         Spacer(modifier = Modifier.size(10.dp))
         Row(
@@ -113,9 +177,23 @@ internal fun IntroScreen(
             )
             Spacer(modifier = Modifier.size(8.dp))
             GuestButton {
+                onLoginSuccess(AuthProvider.GUEST, "")
             }
         }
         Spacer(modifier = Modifier.height(100.dp))
+    }
+}
+
+@Composable
+internal fun LoadingScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.3f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(
+            color = BeepColor.Pink,
+        )
     }
 }
 

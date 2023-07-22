@@ -8,7 +8,7 @@ interface AuthRepository {
 
     val authInfo: Flow<AuthInfo>
 
-    suspend fun signIn(request: OAuthRequest)
+    suspend fun signIn(request: OAuthRequest): AuthInfo
 
     suspend fun signOut()
 

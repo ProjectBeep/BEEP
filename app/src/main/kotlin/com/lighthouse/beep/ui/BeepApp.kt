@@ -31,7 +31,8 @@ import com.lighthouse.beep.navigation.TopLevelDestination
 fun BeepApp(
     windowSizeClass: WindowSizeClass,
     networkMonitor: NetworkMonitor,
-    topDestination: TopLevelDestination,
+    isLogin: Boolean?,
+    startDestination: TopLevelDestination,
     appState: BeepAppState = rememberBeepAppState(
         windowSizeClass = windowSizeClass,
         networkMonitor = networkMonitor,
@@ -41,8 +42,14 @@ fun BeepApp(
 
     val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
-    LaunchedEffect(topDestination) {
-        appState.navigateToTopLevelDestination(topDestination)
+    LaunchedEffect(isLogin) {
+        if (isLogin == false) {
+            appState.navigateToTopLevelDestination(TopLevelDestination.LOGIN)
+        }
+    }
+
+    LaunchedEffect(startDestination) {
+        appState.navigateToTopLevelDestination(startDestination)
     }
 
     Scaffold(

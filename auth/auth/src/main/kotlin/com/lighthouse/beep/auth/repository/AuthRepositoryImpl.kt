@@ -2,6 +2,7 @@ package com.lighthouse.beep.auth.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseUser
 import com.lighthouse.beep.auth.model.OAuthRequest
 import com.lighthouse.beep.auth.model.exception.InvalidUserException
 import com.lighthouse.beep.auth.service.oauth.OAuthServiceProvider
@@ -23,32 +24,32 @@ internal class AuthRepositoryImpl @Inject constructor(
     private val signOutServiceProvider: SignOutServiceProvider,
 ) : AuthRepository {
 
+    private fun FirebaseUser?.toAuthInfo(): AuthInfo {
+        this ?: return AuthInfo(provider = AuthProvider.NONE)
+
+        val provider = runCatching {
+            if (isAnonymous) {
+                AuthProvider.GUEST
+            } else {
+                val result = getIdToken(true).result
+                val providerName = result.claims["provider"] as? String ?: ""
+
+                AuthProvider.of(providerName)
+            }
+        }.getOrDefault(AuthProvider.NONE)
+
+        return AuthInfo(
+            userUid = uid,
+            provider = provider,
+            displayName = displayName ?: "",
+            email = email ?: "",
+            photoUrl = photoUrl,
+        )
+    }
+
     override val authInfo: Flow<AuthInfo> = callbackFlow {
         val authStateListener = AuthStateListener {
-            val user = it.currentUser
-            if (user == null) {
-                trySend(AuthInfo(provider = AuthProvider.NONE))
-            } else {
-                val provider = runCatching {
-                    if (user.isAnonymous) {
-                        AuthProvider.GUEST
-                    } else {
-                        val result = user.getIdToken(true).result
-                        val providerName = result.claims["provider"] as? String ?: ""
-
-                        AuthProvider.of(providerName)
-                    }
-                }.getOrDefault(AuthProvider.NONE)
-
-                val info = AuthInfo(
-                    userUid = user.uid,
-                    provider = provider,
-                    displayName = user.displayName ?: "",
-                    email = user.email ?: "",
-                    photoUrl = user.photoUrl,
-                )
-                trySend(info)
-            }
+            trySend(it.currentUser.toAuthInfo())
         }
 
         firebaseAuth.addAuthStateListener(authStateListener)
@@ -57,13 +58,13 @@ internal class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signIn(request: OAuthRequest) {
+    override suspend fun signIn(request: OAuthRequest): AuthInfo {
         val service = oAuthServiceProvider.getOAuthService(request.provider)
         val task = service.signIn(request)
 
-        suspendCancellableCoroutine { continuation ->
+        return suspendCancellableCoroutine { continuation ->
             task.addOnSuccessListener {
-                continuation.resume(Unit)
+                continuation.resume(it.user.toAuthInfo())
             }
             task.addOnFailureListener {
                 continuation.resumeWithException(it)

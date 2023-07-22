@@ -8,8 +8,10 @@ android {
 }
 
 dependencies {
+    implementation(projects.model)
     implementation(projects.core.ui)
     implementation(projects.theme)
+    implementation(projects.domain)
 
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)

@@ -1,5 +1,6 @@
 package com.lighthouse.beep
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.domain.usecase.auth.GetAuthInfoUseCase
@@ -9,6 +10,8 @@ import com.lighthouse.beep.navigation.TopLevelDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -23,27 +26,25 @@ internal class MainViewModel @Inject constructor(
 
     private val deviceConfig = getDeviceConfigUseCase()
 
-    val topDestination = combine(
+    val isLogin = combine(
         authInfo,
         deviceConfig,
     ) { authInfo, deviceConfig ->
-        when {
-            authInfo.userUid == "" ||
-                authInfo.userUid != deviceConfig.authInfo.userUid -> {
-                clearDeviceConfigUseCase()
-                TopLevelDestination.LOGIN
-            }
+        authInfo.userUid != "" && authInfo.userUid == deviceConfig.authInfo.userUid
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-            !deviceConfig.shownGuidePage.permission -> {
-                TopLevelDestination.GUIDE_PERMISSION
-            }
-
-            authInfo.userUid == deviceConfig.authInfo.userUid -> {
+    val startDestination = flow {
+        Log.d("TEST", "call startDestination")
+        val authInfo = authInfo.first()
+        val deviceConfig = deviceConfig.first()
+        val destination = when {
+            authInfo.userUid != "" &&
+                authInfo.userUid == deviceConfig.authInfo.userUid -> {
                 TopLevelDestination.MAIN
             }
 
             else -> TopLevelDestination.LOGIN
         }
-        TopLevelDestination.GUIDE_PERMISSION
+        emit(destination)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, TopLevelDestination.NONE)
 }

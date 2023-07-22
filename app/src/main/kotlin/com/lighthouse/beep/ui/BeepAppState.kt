@@ -7,14 +7,12 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
 import com.lighthouse.beep.navigation.TopLevelDestination
-import com.lighthouse.beep.ui.feature.guide.navigation.navigateToGuidePermission
 import com.lighthouse.beep.ui.feature.login.navigation.navigateToLogin
 import com.lighthouse.beep.ui.feature.main.navigation.navigateToMain
 import kotlinx.coroutines.CoroutineScope
@@ -44,18 +42,13 @@ class BeepAppState(
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         val navOptions = navOptions {
-            popUpTo(navController.graph.findStartDestination().id) {
-                inclusive = true
-            }
+            popUpTo(0)
             launchSingleTop = true
         }
 
         when (topLevelDestination) {
             TopLevelDestination.LOGIN -> navController.navigateToLogin(navOptions)
             TopLevelDestination.MAIN -> navController.navigateToMain(navOptions)
-            TopLevelDestination.GUIDE_PERMISSION ->
-                navController.navigateToGuidePermission(navOptions)
-
             TopLevelDestination.NONE -> {}
         }
     }

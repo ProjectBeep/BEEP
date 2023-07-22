@@ -13,8 +13,8 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lighthouse.auth.google.GoogleClient
 import com.lighthouse.auth.google.local.LocalGoogleClient
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
-            viewModel.topDestination.value != TopLevelDestination.NONE
+            viewModel.startDestination.value != TopLevelDestination.NONE
         }
         splashScreen.setOnExitAnimationListener { splashScreenProvider ->
             val logo = getDrawable(R.drawable.anim_logo) as? AnimatedVectorDrawable
@@ -98,7 +98,8 @@ class MainActivity : ComponentActivity() {
                     BeepApp(
                         windowSizeClass = calculateWindowSizeClass(activity = this),
                         networkMonitor = networkMonitor,
-                        topDestination = viewModel.topDestination.collectAsState().value,
+                        isLogin = viewModel.isLogin.collectAsStateWithLifecycle().value,
+                        startDestination = viewModel.startDestination.collectAsStateWithLifecycle().value,
                     )
                 }
             }

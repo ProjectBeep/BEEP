@@ -1,9 +1,9 @@
-package com.lighthouse.beep.ui.feature.guide.page.permission
+package com.lighthouse.beep.ui.feature.login.page.permission
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.domain.usecase.setting.guide.SetShownGuidePermission
-import com.lighthouse.beep.ui.feature.guide.R
+import com.lighthouse.beep.ui.feature.login.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

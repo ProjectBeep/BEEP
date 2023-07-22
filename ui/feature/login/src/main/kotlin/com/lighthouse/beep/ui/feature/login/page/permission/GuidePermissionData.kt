@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.guide.page.permission
+package com.lighthouse.beep.ui.feature.login.page.permission
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

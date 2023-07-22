@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.guide.page.permission
+package com.lighthouse.beep.ui.feature.login.page.permission
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +15,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,12 +32,17 @@ import com.lighthouse.beep.theme.BeepColor
 import com.lighthouse.beep.theme.BeepShape
 import com.lighthouse.beep.theme.BeepTextStyle
 import com.lighthouse.beep.theme.BeepTheme
-import com.lighthouse.beep.ui.feature.guide.R
+import com.lighthouse.beep.ui.feature.login.R
 
 @Composable
 internal fun GuidePermissionScreen(
+    onNavigateMain: () -> Unit = {},
     viewModel: GuidePermissionViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.shownGuidePermission()
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -64,7 +70,7 @@ internal fun GuidePermissionScreen(
         GuidePermissionAgreeButton(
             modifier = Modifier.padding(horizontal = 20.dp),
         ) {
-            viewModel.shownGuidePermission()
+            onNavigateMain()
         }
         Spacer(modifier = Modifier.size(44.dp))
     }
@@ -112,7 +118,7 @@ internal fun GuidePermissionItem(
         AsyncImage(
             modifier = Modifier.size(40.dp)
                 .shadow(
-                    color = BeepColor.Black.copy(alpha = 0.05f),
+                    color = Color.Black.copy(alpha = 0.05f),
                     blur = 10.dp,
                 ),
             model = ImageRequest.Builder(LocalContext.current)

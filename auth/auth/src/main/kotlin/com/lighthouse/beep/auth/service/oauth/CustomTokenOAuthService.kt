@@ -19,7 +19,6 @@ internal class CustomTokenOAuthService(
         private const val PARAM_PROVIDER = "provider"
         private const val PARAM_ACCESS_TOKEN = "token"
 
-        private const val RESPONSE_RESULT = "result"
         private const val RESPONSE_TOKEN = "token"
     }
 
@@ -33,10 +32,11 @@ internal class CustomTokenOAuthService(
             ),
         )
 
-        val firebaseToken = task.requestApi(request)
+        val json = task.requestApi(request)
             .mapJson()
             .getOrThrow()
-            .getJSONObject(RESPONSE_RESULT)
+
+        val firebaseToken = json
             .getString(RESPONSE_TOKEN)
 
         return Firebase.auth.signInWithCustomToken(firebaseToken)
