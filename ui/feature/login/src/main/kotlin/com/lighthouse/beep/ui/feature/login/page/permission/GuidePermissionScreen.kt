@@ -1,5 +1,8 @@
 package com.lighthouse.beep.ui.feature.login.page.permission
 
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,10 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lighthouse.beep.core.ui.exts.shadow
+import com.lighthouse.beep.library.permission.BeepPermission
 import com.lighthouse.beep.theme.BeepColor
 import com.lighthouse.beep.theme.BeepShape
 import com.lighthouse.beep.theme.BeepTextStyle
@@ -39,6 +44,13 @@ internal fun GuidePermissionScreen(
     onNavigateMain: () -> Unit = {},
     viewModel: GuidePermissionViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),
+    ) {
+        onNavigateMain()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.shownGuidePermission()
     }
@@ -70,7 +82,18 @@ internal fun GuidePermissionScreen(
         GuidePermissionAgreeButton(
             modifier = Modifier.padding(horizontal = 20.dp),
         ) {
-            onNavigateMain()
+            val permissions = BeepPermission.all.filter { permission ->
+                ContextCompat.checkSelfPermission(
+                    context,
+                    permission,
+                ) != PackageManager.PERMISSION_GRANTED
+            }.toTypedArray()
+
+            if (permissions.isEmpty()) {
+                onNavigateMain()
+            } else {
+                permissionLauncher.launch(permissions)
+            }
         }
         Spacer(modifier = Modifier.size(44.dp))
     }

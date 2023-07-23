@@ -13,6 +13,8 @@ dependencies {
     implementation(projects.theme)
     implementation(projects.domain)
 
+    implementation(projects.library.permission)
+
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)

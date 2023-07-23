@@ -43,6 +43,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -186,14 +187,14 @@ internal fun LoginContentScreen(
 
 @Composable
 internal fun LoadingScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.3f)),
-        contentAlignment = Alignment.Center,
+    Dialog(
+        onDismissRequest = {},
     ) {
-        CircularProgressIndicator(
-            color = BeepColor.Pink,
-        )
+        Surface(color = Color.Transparent) {
+            CircularProgressIndicator(
+                color = BeepColor.Pink,
+            )
+        }
     }
 }
 
