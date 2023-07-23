@@ -1,13 +1,11 @@
 package com.lighthouse.beep.auth.kakao
 
 import android.content.Context
-import android.util.Log
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellableContinuation
@@ -27,8 +25,6 @@ class KakaoClient @Inject constructor(
     }
 
     suspend fun getAccessToken(context: Context): KakaoTokenResult {
-        Log.d("TEST", "${Utility.getKeyHash(context)}")
-
         return withContext(Dispatchers.IO) {
             if (AuthApiClient.instance.hasToken()) {
                 runCatching {
