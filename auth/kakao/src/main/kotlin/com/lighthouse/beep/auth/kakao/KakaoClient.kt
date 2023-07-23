@@ -1,15 +1,19 @@
 package com.lighthouse.beep.auth.kakao
 
 import android.content.Context
+import android.util.Log
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -23,31 +27,35 @@ class KakaoClient @Inject constructor(
     }
 
     suspend fun getAccessToken(context: Context): KakaoTokenResult {
-        return if (AuthApiClient.instance.hasToken()) {
-            runCatching {
-                suspendCancellableCoroutine { continuation ->
-                    UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                        if (error != null) {
-                            continuation.resumeWithException(error)
-                        } else {
-                            val manager = AuthApiClient.instance.tokenManagerProvider.manager
-                            val accessToken = manager.getToken()?.accessToken
-                            if (accessToken != null) {
-                                continuation.resume(KakaoTokenResult.Success(accessToken))
+        Log.d("TEST", "${Utility.getKeyHash(context)}")
+
+        return withContext(Dispatchers.IO) {
+            if (AuthApiClient.instance.hasToken()) {
+                runCatching {
+                    suspendCancellableCoroutine { continuation ->
+                        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+                            if (error != null) {
+                                continuation.resumeWithException(error)
                             } else {
-                                continuation.resumeWithException(NullPointerException("Token is Null!"))
+                                val manager = AuthApiClient.instance.tokenManagerProvider.manager
+                                val accessToken = manager.getToken()?.accessToken
+                                if (accessToken != null) {
+                                    continuation.resume(KakaoTokenResult.Success(accessToken))
+                                } else {
+                                    continuation.resumeWithException(NullPointerException("Token is Null!"))
+                                }
                             }
                         }
                     }
+                }.getOrElse {
+                    KakaoTokenResult.Failed(it)
                 }
-            }.getOrElse {
-                KakaoTokenResult.Failed(it)
-            }
-        } else {
-            if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                getAccessTokenWithKakaoTalk(context)
             } else {
-                getAccessTokenWithKakaoAccount(context)
+                if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+                    getAccessTokenWithKakaoTalk(context)
+                } else {
+                    getAccessTokenWithKakaoAccount(context)
+                }
             }
         }
     }

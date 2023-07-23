@@ -48,7 +48,10 @@ class NaverClient @Inject constructor(
             }
 
             Activity.RESULT_CANCELED -> {
-                NaverTokenResult.Canceled
+                NaverTokenResult.Canceled(
+                    NaverIdLoginSDK.getLastErrorCode().code,
+                    NaverIdLoginSDK.getLastErrorDescription() ?: "",
+                )
             }
 
             else -> {

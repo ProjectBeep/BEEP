@@ -4,7 +4,7 @@ sealed interface NaverTokenResult {
 
     data class Success(val accessToken: String) : NaverTokenResult
 
-    object Canceled : NaverTokenResult
+    data class Canceled(val code: String, val description: String) : NaverTokenResult
 
     data class Failed(val throwable: Throwable) : NaverTokenResult
 }
