@@ -1,6 +1,6 @@
 [versions]
-androidStudioGradlePlugin = "8.0.2"
-androidxComposeCompiler = "1.4.7"
+androidStudioGradlePlugin = "8.1.0"
+androidxComposeCompiler = "1.5.1"
 
 # AndroidX
 activity = "1.7.2"
@@ -20,9 +20,9 @@ accompanist = "0.30.1"
 ## Dagger
 dagger = "2.46.1"
 ## Kotlin
-kotlin = "1.8.21"
+kotlin = "1.9.0"
 kotlin-coroutine = "1.7.1"
-ksp = "1.8.21-1.0.11"
+ksp = "1.9.0-1.0.12"
 protobuf = "0.9.3"
 
 ## Squareup
@@ -71,8 +71,8 @@ androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore"}
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore"}
-androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.6.0"
-androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-beta01"
+androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.6.1"
+androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-rc01"
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
 androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
@@ -120,7 +120,7 @@ google-protobuf-protoc = "com.google.protobuf:protoc:3.23.0"
 google_protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.23.0"
 
 ## Firebase
-firebase-bom = "com.google.firebase:firebase-bom:32.1.1"
+firebase-bom = "com.google.firebase:firebase-bom:32.2.0"
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
