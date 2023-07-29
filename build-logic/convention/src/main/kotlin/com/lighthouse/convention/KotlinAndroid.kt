@@ -1,10 +1,11 @@
 package com.lighthouse.convention
 
 import com.android.build.api.dsl.CommonExtension
-import org.gradle.api.plugins.ExtensionAware
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-internal fun configureKotlinAndroid(
+internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *, *>,
 ) {
     commonExtension.apply {
@@ -13,22 +14,33 @@ internal fun configureKotlinAndroid(
         defaultConfig {
             minSdk = ProjectConfigurations.minSdk
 
-            vectorDrawables.useSupportLibrary = true
+            // Vector Drawable 을 사용하기 위한 설정
+            // vectorDrawables.useSupportLibrary = true
         }
 
         compileOptions {
             sourceCompatibility = ProjectConfigurations.javaVer
             targetCompatibility = ProjectConfigurations.javaVer
-        }
 
-        kotlinOptions {
-            jvmTarget = ProjectConfigurations.javaVer.toString()
+            // Java 에서 지원하는 라이브러리를 Android API 버전때문에 사용하지 못하는 경우
+            // 사용하기 위한 설정
+            // isCoreLibraryDesugaringEnabled = true
         }
     }
+
+    configureKotlin()
 }
 
-internal fun CommonExtension<*, *, *, *, *>.kotlinOptions(
-    block: KotlinJvmOptions.() -> Unit,
-) {
-    (this as ExtensionAware).extensions.configure("kotlinOptions", block)
+private fun Project.configureKotlin() {
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = ProjectConfigurations.javaVer.toString()
+
+            freeCompilerArgs = freeCompilerArgs + listOf(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+            )
+        }
+    }
 }
