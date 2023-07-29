@@ -3,7 +3,6 @@
 import java.io.FileInputStream
 import java.util.Properties
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("beep.android.application")
     id("beep.android.application.compose")
@@ -48,11 +47,23 @@ android {
         }
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
+
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 
     buildFeatures {
         buildConfig = true
+    }
+
+    packaging {
+        resources.excludes.add("META-INF/LICENSE*")
     }
 }
 

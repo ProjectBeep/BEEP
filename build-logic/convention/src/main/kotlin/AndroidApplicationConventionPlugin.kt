@@ -1,6 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.lighthouse.convention.ProjectConfigurations
-import com.lighthouse.convention.configureKotlinAndroid
+import com.lighthouse.beep.convention.ProjectConfigurations
+import com.lighthouse.beep.convention.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -16,26 +16,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig {
-                    targetSdk = ProjectConfigurations.targetSdk
-                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                }
-
-                buildTypes {
-                    release {
-                        isMinifyEnabled = true
-                        proguardFiles(
-                            getDefaultProguardFile("proguard-android-optimize.txt"),
-                            "proguard-rules.pro",
-                        )
-                    }
-                }
-
-                viewBinding.enable = true
-
-                packaging {
-                    resources.excludes.add("META-INF/LICENSE*")
-                }
+                defaultConfig.targetSdk = ProjectConfigurations.targetSdk
             }
         }
     }

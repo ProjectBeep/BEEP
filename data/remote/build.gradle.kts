@@ -9,7 +9,6 @@ plugins {
 android {
     namespace = "com.lighthouse.beep.data.remote"
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         buildConfig = true
     }

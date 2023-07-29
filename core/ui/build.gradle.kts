@@ -5,6 +5,8 @@ plugins {
 
 android {
     namespace = "com.lighthouse.beep.core.ui"
+
+    viewBinding.enable = true
 }
 
 dependencies {

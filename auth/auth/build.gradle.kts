@@ -1,10 +1,9 @@
 plugins {
-    id("com.google.gms.google-services")
     id("beep.android.library")
     id("beep.android.hilt")
+    id("com.google.gms.google-services")
 }
 
-@Suppress("UnstableApiUsage")
 android {
     namespace = "com.lighthouse.beep.auth"
 

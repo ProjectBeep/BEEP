@@ -1,10 +1,9 @@
-
-import com.lighthouse.convention.implementation
-import com.lighthouse.convention.kapt
-import com.lighthouse.convention.libs
+import com.lighthouse.beep.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 
 @Suppress("UNUSED")
 class AndroidHiltConventionPlugin : Plugin<Project> {
@@ -16,11 +15,11 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                implementation(libs.findLibrary("dagger-hilt-android"))
-                kapt(libs.findLibrary("dagger-hilt-android-compiler"))
+                "implementation"(libs.findLibrary("dagger-hilt-android").get())
+                "kapt"(libs.findLibrary("dagger-hilt-android-compiler").get())
             }
 
-            kapt {
+            extensions.configure<KaptExtension> {
                 correctErrorTypes = true
             }
         }

@@ -1,4 +1,4 @@
-package com.lighthouse.convention
+package com.lighthouse.beep.convention
 
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Project

@@ -1,4 +1,4 @@
-package com.lighthouse.convention
+package com.lighthouse.beep.convention
 
 import org.gradle.api.JavaVersion
 
