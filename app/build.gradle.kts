@@ -5,6 +5,7 @@ import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
+    id("beep.android.application")
     id("beep.android.application.compose")
     id("beep.android.hilt")
     alias(libs.plugins.ksp)
