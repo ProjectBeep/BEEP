@@ -31,6 +31,5 @@ dependencies {
     implementation(libs.kotlin.collections.immutable)
     implementation(libs.kotlin.datetime)
 
-    implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.javax.inject)
 }

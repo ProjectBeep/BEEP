@@ -61,6 +61,8 @@ androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
 
 # AndroidX
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
@@ -69,26 +71,27 @@ androidx-biometric = "androidx.biometric:biometric:1.1.0"
 androidx-core-ktx = "androidx.core:core-ktx:1.10.1"
 androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
-androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore"}
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore"}
+
 androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.6.1"
 androidx-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-rc01"
+
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
-androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
+
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+
 androidx-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+
 androidx-room-common = { module = "androidx.room:room-common", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
 androidx-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
-androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
-androidx-security-crypto-ktx = "androidx.security:security-crypto-ktx:1.1.0-alpha06"
 
 ## Accompanist
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
@@ -99,11 +102,11 @@ kakao-sdk-user = "com.kakao.sdk:v2-user:2.13.0"
 ## Naver
 naver-oauth = "com.navercorp.nid:oauth:5.6.0"
 
-# 3rd-party
 ## Dagger
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 javax-inject = "javax.inject:javax.inject:1"
+
 ## kotlin
 kotlin-coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutine" }
 kotlin-coroutine-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutine" }
@@ -111,13 +114,11 @@ kotlin-coroutine-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 kotlin-collections-immutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5"
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
+
 ## GMS (google mobile service)
 gms-play-services-auth = "com.google.android.gms:play-services-auth:20.6.0"
 gms-play-services-location = "com.google.android.gms:play-services-location:21.0.1"
 gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.1"
-
-google-protobuf-protoc = "com.google.protobuf:protoc:3.23.0"
-google_protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.23.0"
 
 ## Firebase
 firebase-bom = "com.google.firebase:firebase-bom:32.2.0"

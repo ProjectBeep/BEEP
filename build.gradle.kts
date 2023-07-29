@@ -16,7 +16,3 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
 }
-
-task("clean", Delete::class) {
-    delete(rootProject.buildDir)
-}
