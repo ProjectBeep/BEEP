@@ -18,11 +18,11 @@ internal class MainViewModel @Inject constructor(
     getAuthInfoUseCase: GetAuthInfoUseCase,
     getUserConfigUseCase: GetUserConfigUseCase,
     getDeviceConfigUseCase: GetDeviceConfigUseCase,
-    setAuthInfoUseCase: UpdateAuthInfoUseCase,
+    updateAuthInfoUseCase: UpdateAuthInfoUseCase,
 ) : ViewModel() {
 
     val uiState = getAuthInfoUseCase().flatMapLatest {
-        setAuthInfoUseCase(it)
+        updateAuthInfoUseCase(it)
         combine(
             getUserConfigUseCase(),
             getDeviceConfigUseCase(),

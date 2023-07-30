@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -22,9 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lighthouse.beep.MainUiState
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
-import com.lighthouse.beep.model.user.AuthProvider
 import com.lighthouse.beep.navigation.BeepNavHost
 import com.lighthouse.beep.navigation.TopLevelDestination
 
@@ -33,7 +30,8 @@ import com.lighthouse.beep.navigation.TopLevelDestination
 fun BeepApp(
     windowSizeClass: WindowSizeClass,
     networkMonitor: NetworkMonitor,
-    uiState: MainUiState,
+    startDestination: TopLevelDestination,
+    needLogin: Boolean,
     appState: BeepAppState = rememberBeepAppState(
         windowSizeClass = windowSizeClass,
         networkMonitor = networkMonitor,
@@ -43,13 +41,9 @@ fun BeepApp(
 
     val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
-    LaunchedEffect(uiState) {
-        if (uiState is MainUiState.Success) {
-            if (uiState.userConfig.authInfo.provider == AuthProvider.NONE) {
-                appState.navigateToTopLevelDestination(TopLevelDestination.LOGIN)
-            } else {
-                appState.navigateToTopLevelDestination(TopLevelDestination.MAIN)
-            }
+    LaunchedEffect(needLogin) {
+        if (needLogin) {
+            appState.navigateToTopLevelDestination(TopLevelDestination.LOGIN)
         }
     }
 
@@ -57,7 +51,7 @@ fun BeepApp(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        snackbarHost = { SnackbarHost(snackBarHostState) },
+        snackbarHost = { BeepSnackBarHost(snackBarHostState) },
     ) { padding ->
         Box(
             modifier = Modifier.fillMaxSize()
@@ -67,10 +61,13 @@ fun BeepApp(
                     WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
                 ),
         ) {
-            BeepNavHost(
-                navController = appState.navController,
-                appState = appState,
-            )
+            if (startDestination != TopLevelDestination.NONE) {
+                BeepNavHost(
+                    navController = appState.navController,
+                    appState = appState,
+                    startDestination = startDestination,
+                )
+            }
         }
     }
 }

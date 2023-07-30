@@ -41,14 +41,14 @@ import com.lighthouse.beep.ui.feature.login.R
 
 @Composable
 internal fun GuidePermissionScreen(
-    onNavigateMain: () -> Unit = {},
+    navigateToMain: () -> Unit = {},
     viewModel: GuidePermissionViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) {
-        onNavigateMain()
+        navigateToMain()
     }
 
     LaunchedEffect(Unit) {
@@ -90,7 +90,7 @@ internal fun GuidePermissionScreen(
             }.toTypedArray()
 
             if (permissions.isEmpty()) {
-                onNavigateMain()
+                navigateToMain()
             } else {
                 permissionLauncher.launch(permissions)
             }
