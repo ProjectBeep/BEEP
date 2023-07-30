@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.lighthouse.beep.ui.feature.login.page.login.IntroScreen
-import com.lighthouse.beep.ui.feature.login.page.permission.GuidePermissionScreen
+import com.lighthouse.beep.ui.feature.login.page.login.LoginRoute
+import com.lighthouse.beep.ui.feature.login.page.permission.GuidePermissionRoute
 
 internal const val ROUTE_LOGIN = "route.login"
 internal const val ROUTE_PERMISSION = "route.permission"
@@ -30,14 +30,14 @@ fun NavGraphBuilder.loginScreen(
         startDestination = ROUTE_LOGIN,
     ) {
         composable(route = ROUTE_LOGIN) {
-            IntroScreen(
+            LoginRoute(
                 onNavigatePermission = {
                     navController.navigateToPermission()
                 },
             )
         }
         composable(route = ROUTE_PERMISSION) {
-            GuidePermissionScreen(
+            GuidePermissionRoute(
                 navigateToMain = navigateToMain,
             )
         }

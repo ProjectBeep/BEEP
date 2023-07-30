@@ -16,6 +16,7 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
 
             dependencies {
                 "implementation"(libs.findLibrary("dagger-hilt-android").get())
+                "implementation"(libs.findLibrary("javax-inject").get())
                 "kapt"(libs.findLibrary("dagger-hilt-android-compiler").get())
             }
 

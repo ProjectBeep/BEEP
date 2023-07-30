@@ -3,6 +3,8 @@ package com.lighthouse.beep.ui.feature.login.page.permission
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,15 +24,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.lighthouse.beep.core.ui.exts.shadow
 import com.lighthouse.beep.library.permission.BeepPermission
 import com.lighthouse.beep.theme.BeepColor
@@ -40,19 +42,31 @@ import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.ui.feature.login.R
 
 @Composable
-internal fun GuidePermissionScreen(
+internal fun GuidePermissionRoute(
     navigateToMain: () -> Unit = {},
     viewModel: GuidePermissionViewModel = hiltViewModel(),
+) {
+    LaunchedEffect(Unit) {
+        viewModel.shownGuidePermission()
+    }
+
+    GuidePermissionScreen(
+        items = viewModel.items,
+        navigateToMain = navigateToMain,
+    )
+}
+
+@Composable
+internal fun GuidePermissionScreen(
+    items: List<GuidePermissionData> = listOf(),
+    navigateToMain: () -> Unit = {},
+
 ) {
     val context = LocalContext.current
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) {
         navigateToMain()
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.shownGuidePermission()
     }
 
     Column(
@@ -70,7 +84,7 @@ internal fun GuidePermissionScreen(
             style = BeepTextStyle.TitleSmall,
         )
         Spacer(modifier = Modifier.height(48.dp))
-        GuidePermissionList(permissionList = viewModel.items)
+        GuidePermissionList(permissionList = items)
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = stringResource(id = R.string.guide_permission_caution),
@@ -121,7 +135,12 @@ internal fun GuidePermissionList(
             Spacer(modifier = Modifier.size(20.dp))
             val iterator = permissionList.iterator()
             while (iterator.hasNext()) {
-                GuidePermissionItem(iterator.next())
+                val permissionData = iterator.next()
+                GuidePermissionItem(
+                    painter = painterResource(id = permissionData.iconRes),
+                    titleRes = permissionData.titleRes,
+                    descriptionRes = permissionData.descriptionRes,
+                )
                 if (iterator.hasNext()) {
                     Spacer(modifier = Modifier.size(16.dp))
                 }
@@ -132,21 +151,22 @@ internal fun GuidePermissionList(
 
 @Composable
 internal fun GuidePermissionItem(
-    permissionData: GuidePermissionData,
+    painter: Painter,
+    @StringRes titleRes: Int,
+    @StringRes descriptionRes: Int,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AsyncImage(
-            modifier = Modifier.size(40.dp)
+        Image(
+            modifier = Modifier
+                .size(40.dp)
                 .shadow(
                     color = Color.Black.copy(alpha = 0.05f),
                     blur = 10.dp,
                 ),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(permissionData.iconRes)
-                .build(),
+            painter = painter,
             contentDescription = null,
         )
         Spacer(modifier = Modifier.size(13.dp))
@@ -154,13 +174,13 @@ internal fun GuidePermissionItem(
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = stringResource(id = permissionData.titleRes),
+                text = stringResource(id = titleRes),
                 color = BeepColor.Grey30,
                 style = BeepTextStyle.TitleSmall,
             )
             Spacer(modifier = Modifier.size(4.dp))
             Text(
-                text = stringResource(id = permissionData.descriptionRes),
+                text = stringResource(id = descriptionRes),
                 color = BeepColor.Grey30,
                 style = BeepTextStyle.BodySmall,
             )
@@ -179,7 +199,8 @@ internal fun GuidePermissionAgreeButton(
         shape = BeepShape.ButtonShape,
     ) {
         Box(
-            modifier = Modifier.clickable { onClick() }
+            modifier = Modifier
+                .clickable { onClick() }
                 .padding(10.dp),
         ) {
             Text(
@@ -192,10 +213,30 @@ internal fun GuidePermissionAgreeButton(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun PermissionItemPreview() {
+internal fun GuidePermissionScreenPreview() {
+    val items = listOf(
+        GuidePermissionData(
+            iconRes = R.drawable.icon_permission_notification,
+            titleRes = R.string.guide_permission_notification,
+            descriptionRes = R.string.guide_permission_notification_description,
+        ),
+        GuidePermissionData(
+            iconRes = R.drawable.icon_permission_picture,
+            titleRes = R.string.guide_permission_picture,
+            descriptionRes = R.string.guide_permission_picture_description,
+        ),
+        GuidePermissionData(
+            iconRes = R.drawable.icon_permission_location,
+            titleRes = R.string.guide_permission_location,
+            descriptionRes = R.string.guide_permission_location_description,
+        ),
+    )
+
     BeepTheme {
-        GuidePermissionAgreeButton()
+        GuidePermissionScreen(
+            items = items,
+        )
     }
 }

@@ -6,7 +6,6 @@ plugins {
     id("beep.android.hilt")
 }
 
-@Suppress("UnstableApiUsage")
 android {
     namespace = "com.lighthouse.beep.auth.kakao"
 

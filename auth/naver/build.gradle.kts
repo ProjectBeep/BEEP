@@ -6,7 +6,6 @@ plugins {
     id("beep.android.hilt")
 }
 
-@Suppress("UnstableApiUsage")
 android {
     namespace = "com.lighthouse.beep.auth.naver"
 
@@ -14,6 +13,7 @@ android {
         val keystorePropertiesFile = rootProject.file("keystore.properties")
         val keystoreProperties = Properties()
         keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
         buildConfigField(
             "String",
             "NAVER_LOGIN_CLIENT_ID",
@@ -31,8 +31,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.naver.oauth)
+
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
-
-    implementation(libs.naver.oauth)
 }
