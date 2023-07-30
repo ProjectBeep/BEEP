@@ -1,12 +1,10 @@
 package com.lighthouse.beep.data.repository.user
 
-import com.lighthouse.beep.model.deviceconfig.AuthInfo
-import com.lighthouse.beep.model.deviceconfig.DeviceConfig
-import com.lighthouse.beep.model.deviceconfig.RecentHash
-import com.lighthouse.beep.model.deviceconfig.Security
-import com.lighthouse.beep.model.deviceconfig.ShownGuidePage
-import com.lighthouse.beep.model.deviceconfig.Subscription
-import com.lighthouse.beep.model.deviceconfig.ThemeOption
+import com.lighthouse.beep.model.user.AuthInfo
+import com.lighthouse.beep.model.user.Security
+import com.lighthouse.beep.model.user.Subscription
+import com.lighthouse.beep.model.user.ThemeOption
+import com.lighthouse.beep.model.user.UserConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -15,34 +13,18 @@ internal class UserRepositoryImpl @Inject constructor(
     private val localDataSource: LocalUserDataSource,
 ) : UserRepository {
 
-    override val deviceConfig: Flow<DeviceConfig> = localDataSource.deviceConfig
+    override val userConfig: Flow<UserConfig> = localDataSource.userConfig
 
     override suspend fun getAuthInfo(): AuthInfo {
-        return deviceConfig.first().authInfo
+        return userConfig.first().authInfo
     }
 
     override suspend fun setAuthInfo(authInfo: AuthInfo) {
         localDataSource.setAuthInfo(authInfo)
     }
 
-    override suspend fun getHash(): RecentHash {
-        return deviceConfig.first().hash
-    }
-
-    override suspend fun setHash(hash: RecentHash) {
-        localDataSource.setHash(hash)
-    }
-
-    override suspend fun getShownGuidePage(): ShownGuidePage {
-        return deviceConfig.first().shownGuidePage
-    }
-
-    override suspend fun setShownGuidePage(shownGuidePage: ShownGuidePage) {
-        localDataSource.setShownGuidePage(shownGuidePage)
-    }
-
     override suspend fun getSubscription(): Subscription {
-        return deviceConfig.first().subscription
+        return userConfig.first().subscription
     }
 
     override suspend fun setSubscription(subscription: Subscription) {
@@ -50,7 +32,7 @@ internal class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSecurity(): Security {
-        return deviceConfig.first().security
+        return userConfig.first().security
     }
 
     override suspend fun setSecurity(security: Security) {
@@ -58,7 +40,7 @@ internal class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getThemeOption(): ThemeOption {
-        return deviceConfig.first().themeOption
+        return userConfig.first().themeOption
     }
 
     override suspend fun setThemeOption(themeOption: ThemeOption) {

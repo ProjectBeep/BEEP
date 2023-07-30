@@ -3,7 +3,7 @@ androidStudioGradlePlugin = "8.1.0"
 androidxComposeCompiler = "1.5.1"
 
 # AndroidX
-activity = "1.7.2"
+activity = "1.8.0-alpha06"
 lifecycle = "2.6.1"
 paging = "3.2.0"
 room = "2.5.2"
@@ -14,9 +14,6 @@ datastore = "1.0.0"
 
 material3 = "1.1.1"
 
-# 3rd-party
-## Accompanist
-accompanist = "0.30.1"
 ## Dagger
 dagger = "2.47"
 ## Kotlin
@@ -92,9 +89,6 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 
 androidx-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
-
-## Accompanist
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
 ## Kakao
 kakao-sdk-user = "com.kakao.sdk:v2-user:2.13.0"

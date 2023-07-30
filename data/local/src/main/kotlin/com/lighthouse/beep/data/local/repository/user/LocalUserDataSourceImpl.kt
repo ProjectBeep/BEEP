@@ -1,38 +1,24 @@
 package com.lighthouse.beep.data.local.repository.user
 
 import androidx.datastore.core.DataStore
-import com.lighthouse.beep.data.local.serializer.DeviceConfigSerializer
+import com.lighthouse.beep.data.local.serializer.UserConfigSerializer
 import com.lighthouse.beep.data.repository.user.LocalUserDataSource
-import com.lighthouse.beep.model.deviceconfig.AuthInfo
-import com.lighthouse.beep.model.deviceconfig.DeviceConfig
-import com.lighthouse.beep.model.deviceconfig.RecentHash
-import com.lighthouse.beep.model.deviceconfig.Security
-import com.lighthouse.beep.model.deviceconfig.ShownGuidePage
-import com.lighthouse.beep.model.deviceconfig.Subscription
-import com.lighthouse.beep.model.deviceconfig.ThemeOption
+import com.lighthouse.beep.model.user.AuthInfo
+import com.lighthouse.beep.model.user.Security
+import com.lighthouse.beep.model.user.Subscription
+import com.lighthouse.beep.model.user.ThemeOption
+import com.lighthouse.beep.model.user.UserConfig
 import javax.inject.Inject
 
 internal class LocalUserDataSourceImpl @Inject constructor(
-    private val dataStore: DataStore<DeviceConfig>,
+    private val dataStore: DataStore<UserConfig>,
 ) : LocalUserDataSource {
 
-    override val deviceConfig = dataStore.data
+    override val userConfig = dataStore.data
 
     override suspend fun setAuthInfo(authInfo: AuthInfo) {
         dataStore.updateData {
             it.copy(authInfo = authInfo)
-        }
-    }
-
-    override suspend fun setHash(hash: RecentHash) {
-        dataStore.updateData {
-            it.copy(hash = hash)
-        }
-    }
-
-    override suspend fun setShownGuidePage(shownGuidePage: ShownGuidePage) {
-        dataStore.updateData {
-            it.copy(shownGuidePage = shownGuidePage)
         }
     }
 
@@ -56,7 +42,7 @@ internal class LocalUserDataSourceImpl @Inject constructor(
 
     override suspend fun clear() {
         dataStore.updateData {
-            DeviceConfigSerializer.defaultValue
+            UserConfigSerializer.defaultValue
         }
     }
 }

@@ -6,24 +6,29 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lighthouse.auth.google.GoogleClient
 import com.lighthouse.auth.google.local.LocalGoogleClient
 import com.lighthouse.beep.auth.kakao.KakaoClient
 import com.lighthouse.beep.auth.kakao.local.LocalKakaoClient
 import com.lighthouse.beep.auth.naver.NaverClient
 import com.lighthouse.beep.auth.naver.local.LocalNaverClient
+import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
-import com.lighthouse.beep.navigation.TopLevelDestination
+import com.lighthouse.beep.model.user.ThemeOption
 import com.lighthouse.beep.theme.BeepTheme
 import com.lighthouse.beep.ui.BeepApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,8 +55,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        var uiState by mutableStateOf<MainUiState>(MainUiState.Loading)
+
+        repeatOnStarted {
+            viewModel.uiState.collect { uiState = it }
+        }
+
         splashScreen.setKeepOnScreenCondition {
-            viewModel.startDestination.value != TopLevelDestination.NONE
+            uiState == MainUiState.Loading
         }
         splashScreen.setOnExitAnimationListener { splashScreenProvider ->
             val logo = getDrawable(R.drawable.anim_logo) as? AnimatedVectorDrawable
@@ -78,12 +90,22 @@ class MainActivity : ComponentActivity() {
                 }.start()
         }
 
-        setContent {
-            val systemUiController = rememberSystemUiController()
-            val darkTheme = isSystemInDarkTheme()
+        enableEdgeToEdge()
 
-            DisposableEffect(systemUiController, darkTheme) {
-                systemUiController.systemBarsDarkContentEnabled = !darkTheme
+        setContent {
+            val darkTheme = shouldUseDarkTheme(uiState = uiState)
+
+            DisposableEffect(darkTheme) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(
+                        android.graphics.Color.TRANSPARENT,
+                        android.graphics.Color.TRANSPARENT,
+                    ) { darkTheme },
+                    navigationBarStyle = SystemBarStyle.auto(
+                        android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF),
+                        android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b),
+                    ) { darkTheme },
+                )
                 onDispose { }
             }
 
@@ -98,11 +120,22 @@ class MainActivity : ComponentActivity() {
                     BeepApp(
                         windowSizeClass = calculateWindowSizeClass(activity = this),
                         networkMonitor = networkMonitor,
-                        isLogin = viewModel.isLogin.collectAsStateWithLifecycle().value,
-                        startDestination = viewModel.startDestination.collectAsStateWithLifecycle().value,
+                        uiState = uiState,
                     )
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun shouldUseDarkTheme(
+        uiState: MainUiState,
+    ): Boolean = when (uiState) {
+        is MainUiState.Loading -> isSystemInDarkTheme()
+        is MainUiState.Success -> when (uiState.userConfig.themeOption) {
+            ThemeOption.SYSTEM -> isSystemInDarkTheme()
+            ThemeOption.LIGHT -> false
+            ThemeOption.DARK -> true
         }
     }
 }

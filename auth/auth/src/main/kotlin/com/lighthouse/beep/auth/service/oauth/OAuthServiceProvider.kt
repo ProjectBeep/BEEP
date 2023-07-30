@@ -1,7 +1,7 @@
 package com.lighthouse.beep.auth.service.oauth
 
 import com.lighthouse.beep.auth.network.NetworkTask
-import com.lighthouse.beep.model.deviceconfig.AuthProvider
+import com.lighthouse.beep.model.user.AuthProvider
 import javax.inject.Inject
 
 internal class OAuthServiceProvider @Inject constructor(

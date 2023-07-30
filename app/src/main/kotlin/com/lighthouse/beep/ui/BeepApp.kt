@@ -22,7 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lighthouse.beep.MainUiState
 import com.lighthouse.beep.domain.monitor.NetworkMonitor
+import com.lighthouse.beep.model.user.AuthProvider
 import com.lighthouse.beep.navigation.BeepNavHost
 import com.lighthouse.beep.navigation.TopLevelDestination
 
@@ -31,8 +33,7 @@ import com.lighthouse.beep.navigation.TopLevelDestination
 fun BeepApp(
     windowSizeClass: WindowSizeClass,
     networkMonitor: NetworkMonitor,
-    isLogin: Boolean?,
-    startDestination: TopLevelDestination,
+    uiState: MainUiState,
     appState: BeepAppState = rememberBeepAppState(
         windowSizeClass = windowSizeClass,
         networkMonitor = networkMonitor,
@@ -42,14 +43,14 @@ fun BeepApp(
 
     val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
-    LaunchedEffect(isLogin) {
-        if (isLogin == false) {
-            appState.navigateToTopLevelDestination(TopLevelDestination.LOGIN)
+    LaunchedEffect(uiState) {
+        if (uiState is MainUiState.Success) {
+            if (uiState.userConfig.authInfo.provider == AuthProvider.NONE) {
+                appState.navigateToTopLevelDestination(TopLevelDestination.LOGIN)
+            } else {
+                appState.navigateToTopLevelDestination(TopLevelDestination.MAIN)
+            }
         }
-    }
-
-    LaunchedEffect(startDestination) {
-        appState.navigateToTopLevelDestination(startDestination)
     }
 
     Scaffold(

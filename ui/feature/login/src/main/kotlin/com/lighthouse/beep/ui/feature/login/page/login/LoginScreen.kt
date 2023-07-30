@@ -61,7 +61,7 @@ import com.lighthouse.beep.auth.kakao.local.LocalKakaoClient
 import com.lighthouse.beep.auth.naver.NaverTokenResult
 import com.lighthouse.beep.auth.naver.local.LocalNaverClient
 import com.lighthouse.beep.core.ui.compose.rememberLifecycleEvent
-import com.lighthouse.beep.model.deviceconfig.AuthProvider
+import com.lighthouse.beep.model.user.AuthProvider
 import com.lighthouse.beep.theme.BeepColor
 import com.lighthouse.beep.theme.BeepShape
 import com.lighthouse.beep.theme.BeepTextStyle

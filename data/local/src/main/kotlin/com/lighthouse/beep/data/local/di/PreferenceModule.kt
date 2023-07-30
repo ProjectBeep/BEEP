@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.lighthouse.beep.data.local.serializer.DeviceConfigSerializer
+import com.lighthouse.beep.data.local.serializer.UserConfigSerializer
 import com.lighthouse.beep.model.deviceconfig.DeviceConfig
+import com.lighthouse.beep.model.user.UserConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +28,17 @@ internal object PreferenceModule {
     @Provides
     fun provideDeviceConfigDataStore(@ApplicationContext context: Context): DataStore<DeviceConfig> {
         return context.deviceConfigDataStore
+    }
+
+    private const val USER_CONFIG_FILE_NAME = "userConfig.json"
+
+    private val Context.userConfigDataStore by dataStore(
+        USER_CONFIG_FILE_NAME,
+        UserConfigSerializer,
+    )
+
+    @Provides
+    fun provideUserConfigDataStore(@ApplicationContext context: Context): DataStore<UserConfig> {
+        return context.userConfigDataStore
     }
 }

@@ -3,7 +3,7 @@ package com.lighthouse.beep.ui.feature.login.page.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.domain.usecase.user.SignInUseCase
-import com.lighthouse.beep.model.deviceconfig.AuthProvider
+import com.lighthouse.beep.model.user.AuthProvider
 import com.lighthouse.beep.ui.feature.login.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

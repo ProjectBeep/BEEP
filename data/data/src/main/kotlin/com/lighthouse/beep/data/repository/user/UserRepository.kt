@@ -1,29 +1,19 @@
 package com.lighthouse.beep.data.repository.user
 
-import com.lighthouse.beep.model.deviceconfig.AuthInfo
-import com.lighthouse.beep.model.deviceconfig.DeviceConfig
-import com.lighthouse.beep.model.deviceconfig.RecentHash
-import com.lighthouse.beep.model.deviceconfig.Security
-import com.lighthouse.beep.model.deviceconfig.ShownGuidePage
-import com.lighthouse.beep.model.deviceconfig.Subscription
-import com.lighthouse.beep.model.deviceconfig.ThemeOption
+import com.lighthouse.beep.model.user.AuthInfo
+import com.lighthouse.beep.model.user.Security
+import com.lighthouse.beep.model.user.Subscription
+import com.lighthouse.beep.model.user.ThemeOption
+import com.lighthouse.beep.model.user.UserConfig
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    val deviceConfig: Flow<DeviceConfig>
+    val userConfig: Flow<UserConfig>
 
     suspend fun getAuthInfo(): AuthInfo
 
     suspend fun setAuthInfo(authInfo: AuthInfo)
-
-    suspend fun getHash(): RecentHash
-
-    suspend fun setHash(hash: RecentHash)
-
-    suspend fun getShownGuidePage(): ShownGuidePage
-
-    suspend fun setShownGuidePage(shownGuidePage: ShownGuidePage)
 
     suspend fun getSubscription(): Subscription
 

@@ -7,8 +7,8 @@ import com.lighthouse.beep.auth.model.OAuthRequest
 import com.lighthouse.beep.auth.model.exception.InvalidUserException
 import com.lighthouse.beep.auth.service.oauth.OAuthServiceProvider
 import com.lighthouse.beep.auth.service.signout.SignOutServiceProvider
-import com.lighthouse.beep.model.deviceconfig.AuthInfo
-import com.lighthouse.beep.model.deviceconfig.AuthProvider
+import com.lighthouse.beep.model.user.AuthInfo
+import com.lighthouse.beep.model.user.AuthProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

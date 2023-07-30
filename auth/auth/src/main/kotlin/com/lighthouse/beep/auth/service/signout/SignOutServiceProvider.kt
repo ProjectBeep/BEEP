@@ -1,6 +1,6 @@
 package com.lighthouse.beep.auth.service.signout
 
-import com.lighthouse.beep.model.deviceconfig.AuthProvider
+import com.lighthouse.beep.model.user.AuthProvider
 import javax.inject.Inject
 
 internal class SignOutServiceProvider @Inject constructor() {

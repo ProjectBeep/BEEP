@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="menu_list">목록</string>
-    <string name="menu_home">홈</string>
-    <string name="menu_setting">설정</string>
+    <string name="main_title">Beep</string>
+    <string name="location_title">근처에서 사용할 수 있어요</string>
+    <string name="location_description">가까운 순으로 모아보세요</string>
 
-    <string name="order_recent">최신순</string>
-    <string name="order_d_day">디데이순</string>
+    <string name="goto_profile_description">내정보 가기</string>
+    <string name="goto_setting_description">설정 가기</string>
 
-    <string name="add_gifticon_description">기프티콘 추가하기 버튼</string>
-    <string name="registration_completed">기프티콘 등록이 완료 되었습니다.</string>
+    <string name="goto_map">지도 보러가기</string>
+
+    <string name="date_title">사용 기한이 임박했어요</string>
+    <string name="date_description">30일 이내 기한이 종료돼요</string>
+
+    <string name="dday_order">디데이순</string>
+    <string name="recent_order">최신순</string>
+
+    <string name="edit_gifticon">편집</string>
+    <string name="edit_cancel">취소</string>
+    <string name="goto_add_description">기프티콘 등록 가기</string>
+
+    <string name="delete_gifticon">삭제하기</string>
+    <string name="use_gifticon">사용완료</string>
 </resources>

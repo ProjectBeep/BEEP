@@ -1,7 +1,7 @@
 package com.lighthouse.beep.auth.repository
 
 import com.lighthouse.beep.auth.model.OAuthRequest
-import com.lighthouse.beep.model.deviceconfig.AuthInfo
+import com.lighthouse.beep.model.user.AuthInfo
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
