@@ -2,14 +2,30 @@ package com.lighthouse.beep.core.common.exts
 
 import android.content.res.Resources
 import android.util.TypedValue
+import kotlin.math.roundToInt
 
 val Int.dp
-    get() = Resources.getSystem().displayMetrics?.let { dm ->
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), dm)
-    } ?: 0f
+    get() = Resources.getSystem().displayMetrics.density.let{ density ->
+        (this * density).roundToInt()
+    }
 
-val screenWidth: Int
-    get() = Resources.getSystem().displayMetrics?.widthPixels ?: 0
+val Float.dp
+    get() = Resources.getSystem().displayMetrics.density.let{ density ->
+        this * density
+    }
 
-val screenHeight: Int
-    get() = Resources.getSystem().displayMetrics?.heightPixels ?: 0
+val Int.sp
+    get() = Resources.getSystem().displayMetrics.let{ metrics ->
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this.toFloat(), metrics)
+    }
+
+val Float.sp
+    get() = Resources.getSystem().displayMetrics.let{ metrics ->
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this, metrics)
+    }
+
+val displayWidth: Int
+    get() = Resources.getSystem().displayMetrics.widthPixels
+
+val displayHeight: Int
+    get() = Resources.getSystem().displayMetrics.heightPixels
