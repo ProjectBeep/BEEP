@@ -85,7 +85,7 @@ dependencies {
     implementation(projects.ui.feature.login)
     implementation(projects.ui.feature.main)
 
-    implementation(libs.android.material)
+
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.splashscreen)

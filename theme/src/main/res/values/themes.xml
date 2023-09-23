@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="NightAdjusted.Theme.Beep" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+    </style>
+
+    <style name="PlatformAdjusted.Theme.Beep" parent="NightAdjusted.Theme.Beep">
+        <item name="android:statusBarColor">@color/bg</item>
+    </style>
+
+    <style name="Theme.BEEP" parent="PlatformAdjusted.Theme.Beep" />
+</resources>

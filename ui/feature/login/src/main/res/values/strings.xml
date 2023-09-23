@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Beep</string>
+    <string name="app_name">BEEP</string>
     <string name="app_description">기프티콘을 한번에 관리해요</string>
-    <string name="recognize_name">자동 입력 기능</string>
-    <string name="recognize_description">쉽고 빠르게 쿠폰을 등록하고</string>
-    <string name="map_name">지도 기반 추천</string>
-    <string name="map_description">가까운 장소에서 쓸 수 있는 쿠폰을 모아보세요</string>
+    <string name="recognize_description">자동 인식 기술로 쉽고 편하게 등록하고</string>
+    <string name="map_description">가까운 곳에서 쓸 수 있는 쿠폰을 알려줘요</string>
 
-    <string name="google_login">Google 계정으로 로그인</string>
-    <string name="kakao_login">카카오 계정으로 로그인</string>
-    <string name="naver_login">네이버 계정으로 로그인</string>
     <string name="login_method">로그인 방법 선택</string>
-    <string name="login_description">계정 연동없이 이용할 수 있어요</string>
+    <string name="naver_login">네이버 로그인</string>
+    <string name="kakao_login">카카오 로그인</string>
+    <string name="google_login">Google 로그인</string>
+    <string name="login_description">계정 연동없이 이용할 수 있어요.</string>
     <string name="guest_login">비회원 로그인</string>
 
     <string name="guide_permission_title">접근 권한 안내</string>

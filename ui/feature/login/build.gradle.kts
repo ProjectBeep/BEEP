@@ -1,5 +1,5 @@
 plugins {
-    id("beep.android.library")
+    id("beep.android.feature")
     id("beep.android.hilt")
 }
 
@@ -18,10 +18,6 @@ dependencies {
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
-
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
 
     implementation(libs.coil)
     implementation(libs.coil.svg)

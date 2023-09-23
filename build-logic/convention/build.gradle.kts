@@ -31,6 +31,10 @@ gradlePlugin {
             id = "beep.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
+        register("androidFeature") {
+            id = "beep.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
         register("androidHilt") {
             id = "beep.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"

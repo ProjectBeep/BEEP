@@ -3,6 +3,220 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/bg">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_start"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintGuide_begin="24dp"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_end"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintGuide_end="24dp"/>
+
+    <TextView
+        android:id="@+id/text_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guide_start"
+        app:layout_constraintEnd_toEndOf="@id/guide_end"
+        android:textAppearance="@style/Text.LargeText"
+        android:textColor="@color/font_dark_gray"
+        android:text="@string/app_name"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_description"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="232dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintTop_toBottomOf="@id/text_app_name"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_app_description"/>
+
+    <View
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        app:layout_constraintStart_toStartOf="@id/guide_start"
+        app:layout_constraintEnd_toEndOf="@id/guide_end"
+        app:layout_constraintTop_toBottomOf="@id/list_description"/>
+
+    <TextView
+        android:id="@+id/text_login_method"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="@id/guide_start"
+        app:layout_constraintEnd_toEndOf="@id/guide_end"
+        app:layout_constraintBottom_toTopOf="@id/btn_login_naver"
+        android:textAppearance="@style/Text.Body5"
+        android:textColor="@color/font_medium_gray"
+        android:text="@string/login_method"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_login_naver"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_login_kakao"
+        app:layout_constraintStart_toStartOf="@id/guide_start"
+        app:layout_constraintEnd_toEndOf="@id/guide_end"
+        android:background="@drawable/bg_rect_r40"
+        android:backgroundTint="@color/naver_container">
+
+        <ImageView
+            android:id="@+id/icon_naver_login"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@null"
+            app:tint="@color/naver_symbol"
+            android:src="@drawable/icon_naver"/>
+
+        <TextView
+            android:id="@+id/text_naver_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/naver_label"
+            android:textAppearance="@style/Text.Title5"
+            android:text="@string/naver_login"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_login_kakao"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_login_google"
+        app:layout_constraintStart_toStartOf="@id/guide_start"
+        app:layout_constraintEnd_toEndOf="@id/guide_end"
+        android:background="@drawable/bg_rect_r40"
+        android:backgroundTint="@color/kakao_container">
+
+        <ImageView
+            android:id="@+id/icon_kakao_login"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@null"
+            app:tint="@color/kakao_symbol"
+            android:src="@drawable/icon_kakao"/>
+
+        <TextView
+            android:id="@+id/text_kakao_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/kakao_label"
+            android:textAppearance="@style/Text.Title5"
+            android:text="@string/kakao_login"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_login_google"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/text_login_description"
+        app:layout_constraintStart_toStartOf="@id/guide_start"
+        app:layout_constraintEnd_toEndOf="@id/guide_end"
+        android:background="@drawable/bg_rect_r40"
+        android:backgroundTint="@color/google_container">
+
+        <ImageView
+            android:id="@+id/icon_google_login"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_google"
+            android:backgroundTint="@color/google_symbol_background"
+            android:background="@drawable/bg_oval"/>
+
+        <TextView
+            android:id="@+id/text_google_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/google_label"
+            android:textAppearance="@style/Text.Title5"
+            android:text="@string/google_login" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/text_login_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/btn_login_guest"
+        app:layout_constraintBottom_toBottomOf="@id/btn_login_guest"
+        app:layout_constraintStart_toStartOf="@id/guide_start"
+        android:textAppearance="@style/Text.Body3"
+        android:textColor="@color/font_medium_gray"
+        android:text="@string/login_description" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_login_guest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="58dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guide_end">
+
+        <TextView
+            android:id="@+id/text_login_guest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/icon_arrow_right"
+            android:textAppearance="@style/Text.Body3"
+            android:textColor="@color/font_medium_gray"
+            android:text="@string/guest_login"/>
+
+        <ImageView
+            android:id="@+id/icon_arrow_right"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/text_login_guest"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@null"
+            android:scaleType="center"
+            app:tint="@color/font_medium_gray"
+            android:src="@drawable/icon_right"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

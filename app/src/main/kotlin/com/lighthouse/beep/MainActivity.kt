@@ -1,5 +1,6 @@
 package com.lighthouse.beep
 
+import android.content.Intent
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
@@ -12,6 +13,7 @@ import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.lighthouse.beep.model.user.AuthProvider
+import com.lighthouse.beep.ui.feature.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -71,7 +73,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun gotoLoginPage() {
-//        finish()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun gotoHomePage() {
