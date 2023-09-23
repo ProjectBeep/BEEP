@@ -19,6 +19,10 @@ dependencies {
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
 
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+
     implementation(libs.coil)
     implementation(libs.coil.svg)
 }
