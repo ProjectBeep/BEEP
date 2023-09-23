@@ -7,6 +7,7 @@ import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.lighthouse.beep.auth.model.OAuthTokenResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ class KakaoClient @Inject constructor(
         KakaoSdk.init(context, BuildConfig.KAKAO_NATIVE_APP_KEY)
     }
 
-    suspend fun getAccessToken(context: Context): KakaoTokenResult {
+    suspend fun getAccessToken(context: Context): OAuthTokenResult {
         return withContext(Dispatchers.IO) {
             if (AuthApiClient.instance.hasToken()) {
                 runCatching {
@@ -36,7 +37,7 @@ class KakaoClient @Inject constructor(
                                 val manager = AuthApiClient.instance.tokenManagerProvider.manager
                                 val accessToken = manager.getToken()?.accessToken
                                 if (accessToken != null) {
-                                    continuation.resume(KakaoTokenResult.Success(accessToken))
+                                    continuation.resume(OAuthTokenResult.Success(accessToken))
                                 } else {
                                     continuation.resumeWithException(NullPointerException("Token is Null!"))
                                 }
@@ -44,7 +45,7 @@ class KakaoClient @Inject constructor(
                         }
                     }
                 }.getOrElse {
-                    KakaoTokenResult.Failed(it)
+                    OAuthTokenResult.Failed(it)
                 }
             } else {
                 if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
@@ -57,27 +58,27 @@ class KakaoClient @Inject constructor(
     }
 
     private fun getAccessTokenWithLogin(
-        continuation: CancellableContinuation<KakaoTokenResult>,
+        continuation: CancellableContinuation<OAuthTokenResult>,
         token: OAuthToken?,
         error: Throwable?,
     ) {
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                continuation.resume(KakaoTokenResult.Canceled)
+                continuation.resume(OAuthTokenResult.Canceled())
             } else {
                 continuation.resumeWithException(error)
             }
         } else {
             val accessToken = token?.accessToken
             if (accessToken != null) {
-                continuation.resume(KakaoTokenResult.Success(accessToken))
+                continuation.resume(OAuthTokenResult.Success(accessToken))
             } else {
                 continuation.resumeWithException(NullPointerException("Token is Null!"))
             }
         }
     }
 
-    private suspend fun getAccessTokenWithKakaoTalk(context: Context): KakaoTokenResult {
+    private suspend fun getAccessTokenWithKakaoTalk(context: Context): OAuthTokenResult {
         return runCatching {
             suspendCancellableCoroutine { continuation ->
                 UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
@@ -85,11 +86,11 @@ class KakaoClient @Inject constructor(
                 }
             }
         }.getOrElse {
-            KakaoTokenResult.Failed(it)
+            OAuthTokenResult.Failed(it)
         }
     }
 
-    private suspend fun getAccessTokenWithKakaoAccount(context: Context): KakaoTokenResult {
+    private suspend fun getAccessTokenWithKakaoAccount(context: Context): OAuthTokenResult {
         return runCatching {
             suspendCancellableCoroutine { continuation ->
                 UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
@@ -97,7 +98,7 @@ class KakaoClient @Inject constructor(
                 }
             }
         }.getOrElse {
-            KakaoTokenResult.Failed(it)
+            OAuthTokenResult.Failed(it)
         }
     }
 

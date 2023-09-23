@@ -28,7 +28,7 @@ fun Context.calculateSampleSize(uri: Uri): Int {
     val imageHeight = options.outHeight
     var inSampleSize = 1
 
-    while (imageHeight / inSampleSize > screenHeight || imageWidth / inSampleSize > screenWidth) {
+    while (imageHeight / inSampleSize > displayHeight || imageWidth / inSampleSize > displayWidth) {
         inSampleSize *= 2
     }
     return inSampleSize

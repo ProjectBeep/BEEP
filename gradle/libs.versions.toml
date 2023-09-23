@@ -11,8 +11,6 @@ work = "2.8.1"
 navigation = "2.6.0"
 datastore = "1.0.0"
 
-material3 = "1.1.1"
-
 ## Dagger
 dagger = "2.47"
 ## Kotlin
@@ -76,6 +74,8 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 
 androidx-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+
+android-material = "com.google.android.material:material:1.9.0"
 
 ## Kakao
 kakao-sdk-user = "com.kakao.sdk:v2-user:2.13.0"

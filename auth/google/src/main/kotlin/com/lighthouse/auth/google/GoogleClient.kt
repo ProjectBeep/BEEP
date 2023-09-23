@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.lighthouse.beep.auth.google.BuildConfig
+import com.lighthouse.beep.auth.model.OAuthTokenResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
@@ -26,16 +27,16 @@ class GoogleClient @Inject constructor(
     val signInIntent
         get() = client.signInIntent
 
-    suspend fun getAccessToken(result: ActivityResult): GoogleTokenResult {
+    suspend fun getAccessToken(result: ActivityResult): OAuthTokenResult {
         return when (result.resultCode) {
             Activity.RESULT_OK -> {
                 runCatching {
-                    suspendCancellableCoroutine<GoogleTokenResult> { continuation ->
+                    suspendCancellableCoroutine<OAuthTokenResult> { continuation ->
                         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                         task.addOnSuccessListener {
                             val token = it.idToken
                             if (token != null) {
-                                continuation.resume(GoogleTokenResult.Success(token))
+                                continuation.resume(OAuthTokenResult.Success(token))
                             } else {
                                 continuation.resumeWithException(NullPointerException("Token is Null!"))
                             }
@@ -45,13 +46,13 @@ class GoogleClient @Inject constructor(
                         }
                     }
                 }.getOrElse {
-                    GoogleTokenResult.Failed(it)
+                    OAuthTokenResult.Failed(it)
                 }
             }
 
-            Activity.RESULT_CANCELED -> GoogleTokenResult.Canceled
+            Activity.RESULT_CANCELED -> OAuthTokenResult.Canceled()
             else -> {
-                GoogleTokenResult.Failed(IllegalStateException("구글 로그인에 실패 했습니다."))
+                OAuthTokenResult.Failed(IllegalStateException("구글 로그인에 실패 했습니다."))
             }
         }
     }

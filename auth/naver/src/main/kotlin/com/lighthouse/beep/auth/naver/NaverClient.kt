@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import com.lighthouse.beep.auth.model.OAuthTokenResult
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLoginState
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,26 +37,26 @@ class NaverClient @Inject constructor(
         }
     }
 
-    fun getAccessToken(result: ActivityResult): NaverTokenResult {
+    fun getAccessToken(result: ActivityResult): OAuthTokenResult {
         return when (result.resultCode) {
             Activity.RESULT_OK -> {
                 val token = NaverIdLoginSDK.getAccessToken()
                 if (token != null) {
-                    NaverTokenResult.Success(token)
+                    OAuthTokenResult.Success(token)
                 } else {
-                    NaverTokenResult.Failed(NullPointerException("Token is Null!"))
+                    OAuthTokenResult.Failed(NullPointerException("Token is Null!"))
                 }
             }
 
             Activity.RESULT_CANCELED -> {
-                NaverTokenResult.Canceled(
+                OAuthTokenResult.Canceled(
                     NaverIdLoginSDK.getLastErrorCode().code,
                     NaverIdLoginSDK.getLastErrorDescription() ?: "",
                 )
             }
 
             else -> {
-                NaverTokenResult.Failed(IllegalStateException("네이버 로그인에 실패 했습니다."))
+                OAuthTokenResult.Failed(IllegalStateException("네이버 로그인에 실패 했습니다."))
             }
         }
     }

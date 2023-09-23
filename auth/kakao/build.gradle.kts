@@ -28,6 +28,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.auth.auth)
+
     implementation(libs.kakao.sdk.user)
 
     implementation(libs.androidx.fragment.ktx)

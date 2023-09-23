@@ -31,6 +31,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.auth.auth)
+
     implementation(libs.naver.oauth)
 
     implementation(libs.androidx.fragment.ktx)
