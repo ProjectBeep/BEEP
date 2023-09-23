@@ -13,7 +13,7 @@ import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.lighthouse.beep.model.user.AuthProvider
-import com.lighthouse.beep.ui.feature.login.LoginActivity
+import com.lighthouse.beep.ui.feature.login.page.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first

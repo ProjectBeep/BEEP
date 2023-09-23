@@ -11,6 +11,8 @@ import com.lighthouse.beep.core.common.exts.calculateSampleSize
 import com.lighthouse.beep.core.common.exts.centerCrop
 import com.lighthouse.beep.core.common.exts.compressBitmap
 import com.lighthouse.beep.core.common.exts.decodeSampledBitmap
+import com.lighthouse.beep.core.common.exts.displayHeight
+import com.lighthouse.beep.core.common.exts.displayWidth
 import com.lighthouse.beep.core.common.exts.exists
 import com.lighthouse.beep.core.common.exts.scale
 import com.lighthouse.beep.core.common.utils.file.BeepDir
@@ -35,9 +37,9 @@ internal class LocalGifticonStorageImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             val outputOriginFile =
                 BeepFileUtils.createFile(context, BeepDir.DIRECTORY_ORIGIN).getOrThrow()
-            val sampleSize = context.calculateSampleSize(inputOriginUri)
+            val sampleSize = context.calculateSampleSize(inputOriginUri, displayWidth, displayHeight)
             val sampledOriginBitmap = context.decodeSampledBitmap(inputOriginUri, sampleSize)
-            outputOriginFile.compressBitmap(sampledOriginBitmap, Bitmap.CompressFormat.JPEG, 100)
+            outputOriginFile.compressBitmap(sampledOriginBitmap, Bitmap.CompressFormat.JPEG, 90)
 
             val outputCroppedFile =
                 BeepFileUtils.createFile(context, BeepDir.DIRECTORY_CROPPED).getOrThrow()
@@ -51,7 +53,7 @@ internal class LocalGifticonStorageImpl @Inject constructor(
                 cropped = sampledOriginBitmap.centerCrop(croppedRect)
             }
 
-            outputCroppedFile.compressBitmap(cropped, Bitmap.CompressFormat.JPEG, 100)
+            outputCroppedFile.compressBitmap(cropped, Bitmap.CompressFormat.JPEG, 90)
             GifticonImageCreateResult(
                 outputOriginFile.toUri(),
                 outputCroppedFile.toUri(),

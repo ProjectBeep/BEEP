@@ -9,13 +9,13 @@
         <item name="android:fontFamily">@font/pretendard_bold</item>
     </style>
 
-    <style name="Text.HighlightTextBold" parent="">
+    <style name="Text.HighlightText1" parent="">
         <item name="android:textSize">24dp</item>
         <item name="android:lineHeight">30dp</item>
         <item name="android:fontFamily">@font/pretendard_bold</item>
     </style>
 
-    <style name="Text.HighlightTextMedium" parent="">
+    <style name="Text.HighlightText2" parent="">
         <item name="android:textSize">24dp</item>
         <item name="android:lineHeight">30dp</item>
         <item name="android:fontFamily">@font/pretendard_medium</item>

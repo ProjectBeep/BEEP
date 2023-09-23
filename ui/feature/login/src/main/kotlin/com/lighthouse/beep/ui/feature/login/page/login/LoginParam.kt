@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.login
+package com.lighthouse.beep.ui.feature.login.page.login
 
 import android.content.Context
 import android.content.Intent

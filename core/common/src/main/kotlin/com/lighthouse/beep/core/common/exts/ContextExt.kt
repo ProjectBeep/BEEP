@@ -18,7 +18,7 @@ fun Context.openInputStream(uri: Uri): InputStream {
         ?: throw FileNotFoundException("파일을 찾을 수 없어 InputStream 을 열 수 없습니다.")
 }
 
-fun Context.calculateSampleSize(uri: Uri): Int {
+fun Context.calculateSampleSize(uri: Uri, maxWidth: Int, maxHeight: Int): Int {
     val stream = openInputStream(uri)
     val options = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
@@ -28,7 +28,7 @@ fun Context.calculateSampleSize(uri: Uri): Int {
     val imageHeight = options.outHeight
     var inSampleSize = 1
 
-    while (imageHeight / inSampleSize > displayHeight || imageWidth / inSampleSize > displayWidth) {
+    while (imageHeight / inSampleSize > maxHeight || imageWidth / inSampleSize > maxWidth) {
         inSampleSize *= 2
     }
     return inSampleSize

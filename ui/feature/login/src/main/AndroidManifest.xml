@@ -3,7 +3,11 @@
 
     <application>
         <activity
-            android:name=".LoginActivity"
+            android:name=".page.login.LoginActivity"
+            android:theme="@style/Theme.BEEP"/>
+
+        <activity
+            android:name=".page.permission.RequestPermissionActivity"
             android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>

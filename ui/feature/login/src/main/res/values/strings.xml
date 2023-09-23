@@ -13,12 +13,11 @@
     <string name="guest_login">비회원 로그인</string>
 
     <string name="guide_permission_title">접근 권한 안내</string>
-    <string name="guide_permission_description">이용을 위해 접근 권한을 허용해 주세요</string>
     <string name="guide_permission_list">선택 권한 목록</string>
     <string name="guide_permission_notification">알림</string>
     <string name="guide_permission_notification_description">알림 메시지 발송</string>
-    <string name="guide_permission_picture">사진</string>
-    <string name="guide_permission_picture_description">쿠폰 이미지 첨부</string>
+    <string name="guide_permission_storage">사진</string>
+    <string name="guide_permission_storage_description">쿠폰 이미지 첨부</string>
     <string name="guide_permission_location">위치</string>
     <string name="guide_permission_location_description">위치기반 서비스 이용</string>
     <string name="guide_permission_caution">허용하지 않아도 서비스를 이용할 수 있으나\n일부 서비스의 이용이 제한 될 수 있습니다.</string>
