@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RequestPermissionActivity : AppCompatActivity(){
+internal class RequestPermissionActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityRequestPermissionBinding
 

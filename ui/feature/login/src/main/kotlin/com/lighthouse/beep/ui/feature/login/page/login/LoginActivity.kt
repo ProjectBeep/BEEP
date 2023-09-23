@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
+internal class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
