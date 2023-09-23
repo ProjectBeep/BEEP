@@ -1,6 +1,5 @@
 plugins {
     id("beep.android.library")
-    id("beep.android.library.compose")
 }
 
 android {
@@ -8,6 +7,4 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.material3)
 }

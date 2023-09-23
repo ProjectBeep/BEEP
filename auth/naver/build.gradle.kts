@@ -34,5 +34,4 @@ dependencies {
     implementation(libs.naver.oauth)
 
     implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.lifecycle.runtime.compose)
 }

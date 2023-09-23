@@ -5,7 +5,6 @@ import java.util.Properties
 
 plugins {
     id("beep.android.application")
-    id("beep.android.application.compose")
     id("beep.android.hilt")
     alias(libs.plugins.ksp)
 }
@@ -86,20 +85,7 @@ dependencies {
     implementation(projects.ui.feature.login)
     implementation(projects.ui.feature.main)
 
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    implementation(libs.androidx.activity.compose)
-
     implementation(libs.androidx.core.splashscreen)
-
-    implementation(libs.androidx.compose.material3.windowSizeClass)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.navigation.compose)
 }
 
 kapt {
