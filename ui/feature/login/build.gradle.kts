@@ -19,6 +19,8 @@ dependencies {
     implementation(projects.auth.kakao)
     implementation(projects.auth.naver)
 
+    implementation(projects.navs)
+
     implementation(libs.coil)
     implementation(libs.coil.svg)
 }

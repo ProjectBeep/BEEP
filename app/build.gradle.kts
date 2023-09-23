@@ -83,8 +83,9 @@ dependencies {
     implementation(projects.auth.naver)
 
     implementation(projects.ui.feature.login)
-    implementation(projects.ui.feature.main)
+    implementation(projects.ui.feature.home)
 
+    implementation(projects.navs)
 
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
