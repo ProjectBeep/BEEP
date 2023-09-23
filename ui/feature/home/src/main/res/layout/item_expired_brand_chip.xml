@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingVertical="6dp"
+    android:paddingHorizontal="13dp"
+    android:background="@drawable/chip"
+    android:textColor="@color/chip_text"
+    android:textAppearance="@style/Text.Body1"
+    tools:text="전체"/>

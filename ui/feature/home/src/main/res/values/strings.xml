@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="main_title">Beep</string>
-    <string name="location_title">근처에서 사용할 수 있어요</string>
-    <string name="location_description">가까운 순으로 모아보세요</string>
+    <string name="map_title">근처에서 사용할 수 있어요</string>
 
     <string name="goto_profile_description">내정보 가기</string>
     <string name="goto_setting_description">설정 가기</string>
 
     <string name="goto_map">지도 보러가기</string>
 
-    <string name="date_title">사용 기한이 임박했어요</string>
+    <string name="expired_title">사용 기한이 임박했어요</string>
     <string name="date_description">30일 이내 기한이 종료돼요</string>
 
     <string name="dday_order">디데이순</string>
