@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.home
+package com.lighthouse.beep.ui.feature.home.page.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,11 +8,13 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.ui.feature.home.adapter.expired.ExpiredGifticonTabAdapter
-import com.lighthouse.beep.ui.feature.home.adapter.expired.ExpiredOrder
+import com.lighthouse.beep.ui.feature.home.page.expired.ExpiredOrder
 import com.lighthouse.beep.ui.feature.home.databinding.ActivityHomeBinding
 import com.lighthouse.beep.ui.feature.home.databinding.TabExpiredBinding
+import dagger.hilt.android.AndroidEntryPoint
 import com.lighthouse.beep.theme.R as ThemeR
 
+@AndroidEntryPoint
 class HomeActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding

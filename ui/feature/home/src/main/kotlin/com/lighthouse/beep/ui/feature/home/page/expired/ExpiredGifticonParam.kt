@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.home.adapter.expired
+package com.lighthouse.beep.ui.feature.home.page.expired
 
 import android.os.Bundle
 import androidx.annotation.StringRes

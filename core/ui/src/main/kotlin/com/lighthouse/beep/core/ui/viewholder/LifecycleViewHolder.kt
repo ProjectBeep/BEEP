@@ -16,6 +16,12 @@ import kotlinx.coroutines.launch
 
 abstract class LifecycleViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
 
+    protected val context
+        get() = itemView.context
+
+    protected val resources
+        get() = itemView.context.resources
+
     private var lifecycleOwner: LifecycleOwner? = null
     private var boundItem: T? = null
 

@@ -14,6 +14,8 @@
     <string name="dday_order">디데이순</string>
     <string name="recent_order">최신순</string>
 
+    <string name="brand_all">전체</string>
+
     <string name="edit_gifticon">편집</string>
     <string name="edit_cancel">취소</string>
     <string name="goto_add_description">기프티콘 등록 가기</string>

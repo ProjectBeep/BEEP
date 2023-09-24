@@ -4,6 +4,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.lighthouse.beep.core.ui.utils.throttle.OnLifecycleThrottleClickListener
 import com.lighthouse.beep.core.ui.utils.throttle.OnThrottleClickListener
 
 fun Fragment.onBackPressDelegate() {
@@ -18,4 +19,4 @@ fun Fragment.createThrottleClickListener(
     lifecycleOwner: LifecycleOwner = viewLifecycleOwner,
     throttleTime: Long = OnThrottleClickListener.DEFAULT_THROTTLE_TIME,
     listener: suspend () -> Unit,
-) : View.OnClickListener = OnThrottleClickListener(lifecycleOwner, throttleTime, listener)
+) : View.OnClickListener = OnLifecycleThrottleClickListener(lifecycleOwner, throttleTime, listener)

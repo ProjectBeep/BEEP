@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".HomeActivity"
+            android:name=".page.home.HomeActivity"
             android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>

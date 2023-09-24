@@ -9,13 +9,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.doOnAttach
 import androidx.core.view.updatePadding
 import androidx.lifecycle.LifecycleOwner
+import com.lighthouse.beep.core.ui.utils.throttle.OnLifecycleThrottleClickListener
 import com.lighthouse.beep.core.ui.utils.throttle.OnThrottleClickListener
 
 fun ComponentActivity.createThrottleClickListener(
     lifecycleOwner: LifecycleOwner = this,
     throttleTime: Long = OnThrottleClickListener.DEFAULT_THROTTLE_TIME,
     listener: suspend () -> Unit,
-): View.OnClickListener = OnThrottleClickListener(lifecycleOwner, throttleTime, listener)
+): View.OnClickListener = OnLifecycleThrottleClickListener(lifecycleOwner, throttleTime, listener)
 
 fun ComponentActivity.setUpSystemInsetsPadding(root: View) {
     WindowCompat.setDecorFitsSystemWindows(window, false)
