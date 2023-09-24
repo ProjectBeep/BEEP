@@ -38,15 +38,14 @@ internal class ExpiredGifticonViewModel @Inject constructor(): ViewModel() {
 
     private fun loadGifticonList(): List<ExpiredGifticonItem> {
         val random = Random(System.currentTimeMillis())
-        val oneDay = 24 * 60 * 60 * 1000
+        val oneDay = 24 * 60 * 60 * 1000L
         val brandList = brandList.value
         return IntRange(0, 10).map {
-
             val brand = brandList[random.nextInt(brandList.size - 1) + 1] as ExpiredBrandItem.Item
             val date = random.nextInt(100)
-            val created = Date(System.currentTimeMillis() - oneDay * date)
             val expired = Date(System.currentTimeMillis() + oneDay * date)
-            ExpiredGifticonItem(it.toLong(), Uri.parse(""), brand.name, "기프티콘 이름", created, expired)
+            val created = Date(System.currentTimeMillis() - oneDay * date)
+            ExpiredGifticonItem(it.toLong(), Uri.parse(""), brand.name, "기프티콘 이름", expired, created)
         }.toList()
     }
 }

@@ -5,6 +5,7 @@
     android:id="@+id/text_title"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:includeFontPadding="false"
     android:gravity="center"
     android:lines="1"
     android:textAppearance="@style/Text.Body2"

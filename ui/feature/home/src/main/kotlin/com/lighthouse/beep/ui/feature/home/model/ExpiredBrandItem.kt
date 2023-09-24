@@ -2,14 +2,14 @@ package com.lighthouse.beep.ui.feature.home.model
 
 import androidx.recyclerview.widget.DiffUtil
 
-sealed interface ExpiredBrandItem {
+internal sealed interface ExpiredBrandItem {
 
     data object All : ExpiredBrandItem
 
     data class Item(val name: String) : ExpiredBrandItem
 }
 
-class ExpiredBrandDiff : DiffUtil.ItemCallback<ExpiredBrandItem>() {
+internal class ExpiredBrandDiff : DiffUtil.ItemCallback<ExpiredBrandItem>() {
     override fun areItemsTheSame(oldItem: ExpiredBrandItem, newItem: ExpiredBrandItem): Boolean {
         return when {
             oldItem === newItem -> true

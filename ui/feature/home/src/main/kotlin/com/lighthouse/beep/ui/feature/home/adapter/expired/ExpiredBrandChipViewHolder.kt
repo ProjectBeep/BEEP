@@ -9,11 +9,11 @@ import com.lighthouse.beep.ui.feature.home.R
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredBrandChipBinding
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 
-class ExpiredBrandChipViewHolder(
+internal class ExpiredBrandChipViewHolder(
     parent: ViewGroup,
     private val listener: OnExpiredBrandListener,
     private val binding: ItemExpiredBrandChipBinding = ItemExpiredBrandChipBinding.inflate(
-        LayoutInflater.from(parent.context)
+        LayoutInflater.from(parent.context), parent, false
     ),
 ) : LifecycleViewHolder<ExpiredBrandItem>(binding.root) {
 

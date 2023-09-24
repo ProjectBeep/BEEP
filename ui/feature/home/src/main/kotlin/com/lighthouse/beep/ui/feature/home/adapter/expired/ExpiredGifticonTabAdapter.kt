@@ -7,7 +7,7 @@ import com.lighthouse.beep.ui.feature.home.page.expired.ExpiredGifticonFragment
 import com.lighthouse.beep.ui.feature.home.page.expired.ExpiredGifticonParam
 import com.lighthouse.beep.ui.feature.home.page.expired.ExpiredOrder
 
-class ExpiredGifticonTabAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+internal class ExpiredGifticonTabAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
     override fun getItemCount(): Int {
         return ExpiredOrder.entries.size

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandDiff
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 
-class ExpiredBrandChipAdapter(
+internal class ExpiredBrandChipAdapter(
     private val onExpiredBrandListener: OnExpiredBrandListener,
 ) : ListAdapter<ExpiredBrandItem, ExpiredBrandChipViewHolder>(ExpiredBrandDiff()) {
 

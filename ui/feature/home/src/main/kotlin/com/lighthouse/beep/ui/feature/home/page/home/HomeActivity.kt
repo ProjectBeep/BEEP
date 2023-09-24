@@ -15,7 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-class HomeActivity: AppCompatActivity() {
+internal class HomeActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
 
