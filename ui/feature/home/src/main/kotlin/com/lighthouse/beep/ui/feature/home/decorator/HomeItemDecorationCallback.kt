@@ -4,9 +4,9 @@ import com.lighthouse.beep.ui.feature.home.adapter.expired.ExpiredHeaderViewHold
 
 internal interface HomeItemDecorationCallback {
 
-    fun isShowExpiredHeader(position: Int): Boolean
+    fun onTopItemPosition(position: Int)
+
+    fun getExpiredGifticonFirstIndex(): Int
 
     fun getHeaderViewHolder(): ExpiredHeaderViewHolder
-
-    fun isExpiredGifticonFirst(position: Int) : Boolean
 }

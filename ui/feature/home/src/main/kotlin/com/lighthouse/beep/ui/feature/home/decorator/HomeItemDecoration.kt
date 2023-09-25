@@ -1,16 +1,15 @@
 package com.lighthouse.beep.ui.feature.home.decorator
 
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.lighthouse.beep.core.ui.exts.dp
 
 internal class HomeItemDecoration(
     private val callback: HomeItemDecorationCallback,
 ) : ItemDecoration() {
-
-//    private val expiredHeader = callback.getHeaderViewHolder()
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val topChild = parent.getChildAt(0) ?: return
@@ -20,34 +19,30 @@ internal class HomeItemDecoration(
             return
         }
 
-        if (callback.isShowExpiredHeader(topChildPosition)) {
-//            layoutExpiredHeader(parent, expiredHeader.itemView)
-//            expiredHeader.itemView.draw(c)
-        } else {
-
-        }
+        callback.onTopItemPosition(topChildPosition)
     }
 
-    private fun layoutExpiredHeader(parent: ViewGroup, view: View) {
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(
-            parent.width,
-            View.MeasureSpec.EXACTLY
-        )
-        val heightSpec = View.MeasureSpec.makeMeasureSpec(
-            parent.height,
-            View.MeasureSpec.EXACTLY
-        )
-        val childWidth: Int = ViewGroup.getChildMeasureSpec(
-            widthSpec,
-            parent.paddingLeft + parent.paddingRight,
-            view.layoutParams.width
-        )
-        val childHeight: Int = ViewGroup.getChildMeasureSpec(
-            heightSpec,
-            parent.paddingTop + parent.paddingBottom,
-            view.layoutParams.height
-        )
-        view.measure(childWidth, childHeight)
-        view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        val itemCount = parent.adapter?.itemCount ?: 0
+        val adapterPosition = parent.getChildAdapterPosition(view)
+        if (adapterPosition < callback.getExpiredGifticonFirstIndex()) {
+            return
+        }
+
+        outRect.left = 20.dp
+        outRect.top = when (adapterPosition) {
+            callback.getExpiredGifticonFirstIndex() -> 0.dp
+            else -> 4.dp
+        }
+        outRect.right = 20.dp
+        outRect.bottom = when(adapterPosition) {
+            itemCount - 1 -> 0.dp
+            else -> 4.dp
+        }
     }
 }

@@ -119,18 +119,17 @@ internal class HomeActivity: AppCompatActivity() {
     }
 
     private val homeItemDecorationCallback = object: HomeItemDecorationCallback {
-        override fun isShowExpiredHeader(position: Int): Boolean {
+        override fun onTopItemPosition(position: Int) {
             val isShow = viewModel.expiredHeaderIndex <= position
             binding.containerStickyHeader.isVisible = isShow
-            return isShow
+        }
+
+        override fun getExpiredGifticonFirstIndex(): Int {
+            return viewModel.expiredGifticonFirstIndex
         }
 
         override fun getHeaderViewHolder(): ExpiredHeaderViewHolder {
             return ExpiredHeaderViewHolder(binding.list, onExpiredHeaderListener, onExpiredBrandListener)
-        }
-
-        override fun isExpiredGifticonFirst(position: Int): Boolean {
-            return viewModel.expiredGifticonFirstIndex == position
         }
     }
 
