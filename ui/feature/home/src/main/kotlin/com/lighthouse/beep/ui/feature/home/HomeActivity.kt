@@ -127,10 +127,6 @@ internal class HomeActivity: AppCompatActivity() {
         override fun getExpiredGifticonFirstIndex(): Int {
             return viewModel.expiredGifticonFirstIndex
         }
-
-        override fun getHeaderViewHolder(): ExpiredHeaderViewHolder {
-            return ExpiredHeaderViewHolder(binding.list, onExpiredHeaderListener, onExpiredBrandListener)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,15 +135,16 @@ internal class HomeActivity: AppCompatActivity() {
         setContentView(binding.root)
 
         setUpSystemInsetsPadding(binding.root)
+        setUpExpiredStickyHeader()
         setUpHomeList()
         setUpCollectState()
         setUpClickEvent()
+    }
 
-        val header = homeItemDecorationCallback.getHeaderViewHolder()
+    private fun setUpExpiredStickyHeader() {
+        val header = ExpiredHeaderViewHolder(binding.list, onExpiredHeaderListener, onExpiredBrandListener)
         header.bind(HomeItem.ExpiredHeader)
-        binding.containerStickyHeader.addView(
-            header.itemView
-        )
+        binding.containerStickyHeader.addView(header.itemView)
         binding.containerStickyHeader.preventTouchPropagation()
     }
 
