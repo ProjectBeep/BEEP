@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
@@ -154,6 +155,12 @@ internal class HomeActivity: AppCompatActivity() {
     }
 
     private fun setUpClickEvent() {
+        binding.btnGotoSetting.setOnClickListener(createThrottleClickListener {
 
+        })
+
+        binding.btnGotoGifticonAdd.setOnClickListener(createThrottleClickListener {
+
+        })
     }
 }

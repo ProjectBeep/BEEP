@@ -11,9 +11,7 @@ import com.lighthouse.beep.core.ui.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
-import com.lighthouse.beep.theme.R as ThemeR
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredHeaderBinding
-import com.lighthouse.beep.ui.feature.home.databinding.TabExpiredBinding
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
@@ -72,28 +70,16 @@ internal class ExpiredHeaderViewHolder(
 
         binding.tabExpired.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val tabBinding = tab?.tag as? TabExpiredBinding ?: return
-                tabBinding.textTitle.setTextAppearance(ThemeR.style.Text_Body1)
-                tabBinding.textTitle.setTextColor(context.getColor(ThemeR.color.black))
-
+                tab ?: return
                 listener.onOrderClick(ExpiredOrder.entries[tab.position])
             }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                val tabBinding = tab?.tag as? TabExpiredBinding ?: return
-                tabBinding.textTitle.setTextAppearance(ThemeR.style.Text_Body2)
-                tabBinding.textTitle.setTextColor(context.getColor(ThemeR.color.font_medium_gray))
-            }
-
+            override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
             override fun onTabReselected(tab: TabLayout.Tab?) = Unit
         })
 
         ExpiredOrder.entries.forEach {
             val tab = binding.tabExpired.newTab().apply {
-                val tabBinding = TabExpiredBinding.inflate(LayoutInflater.from(context))
-                tabBinding.textTitle.setText(it.titleRes)
-                tag = tabBinding
-                customView = tabBinding.root
+                setText(it.titleRes)
             }
             binding.tabExpired.addTab(tab)
         }
