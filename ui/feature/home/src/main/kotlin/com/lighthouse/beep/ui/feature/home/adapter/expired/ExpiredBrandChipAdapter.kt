@@ -7,10 +7,11 @@ import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 
 internal class ExpiredBrandChipAdapter(
     private val onExpiredBrandListener: OnExpiredBrandListener,
+    private val onExpiredBrandClickListener: OnExpiredBrandClickListener,
 ) : ListAdapter<ExpiredBrandItem, ExpiredBrandChipViewHolder>(ExpiredBrandDiff()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpiredBrandChipViewHolder {
-        return ExpiredBrandChipViewHolder(parent, onExpiredBrandListener)
+        return ExpiredBrandChipViewHolder(parent, onExpiredBrandListener, onExpiredBrandClickListener)
     }
 
     override fun onBindViewHolder(holder: ExpiredBrandChipViewHolder, position: Int) {

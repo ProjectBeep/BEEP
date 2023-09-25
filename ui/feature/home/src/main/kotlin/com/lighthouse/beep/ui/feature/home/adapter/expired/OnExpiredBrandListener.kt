@@ -6,6 +6,4 @@ import kotlinx.coroutines.flow.Flow
 internal interface OnExpiredBrandListener {
 
     fun getSelectedFlow(): Flow<ExpiredBrandItem>
-
-    fun onClick(item: ExpiredBrandItem)
 }

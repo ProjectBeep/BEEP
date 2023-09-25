@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.home.page.home
+package com.lighthouse.beep.ui.feature.home
 
 import android.content.Context
 import android.content.Intent

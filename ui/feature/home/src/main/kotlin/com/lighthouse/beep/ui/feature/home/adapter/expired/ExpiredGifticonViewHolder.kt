@@ -7,7 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredGifticonBinding
-import com.lighthouse.beep.ui.feature.home.model.ExpiredGifticonItem
+import com.lighthouse.beep.ui.feature.home.model.HomeItem
 
 @SuppressLint("SetTextI18n")
 internal class ExpiredGifticonViewHolder(
@@ -16,9 +16,9 @@ internal class ExpiredGifticonViewHolder(
     private val binding: ItemExpiredGifticonBinding = ItemExpiredGifticonBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
     )
-): LifecycleViewHolder<ExpiredGifticonItem>(binding.root) {
+): LifecycleViewHolder<HomeItem.ExpiredGifticonItem>(binding.root) {
 
-    override fun bind(item: ExpiredGifticonItem) {
+    override fun bind(item: HomeItem.ExpiredGifticonItem) {
         super.bind(item)
 
         binding.textBrand.text = item.brand
@@ -27,13 +27,13 @@ internal class ExpiredGifticonViewHolder(
         binding.textDday.text = "D-${item.dday}"
     }
 
-    override fun onSetUpClickEvent(item: ExpiredGifticonItem) {
+    override fun onSetUpClickEvent(item: HomeItem.ExpiredGifticonItem) {
         binding.root.setOnThrottleClickListener {
             listener.onClick(item)
         }
     }
 
-    override fun onCollectState(lifecycleOwner: LifecycleOwner, item: ExpiredGifticonItem) {
+    override fun onCollectState(lifecycleOwner: LifecycleOwner, item: HomeItem.ExpiredGifticonItem) {
         listener.getNextDayEventFlow().collect(lifecycleOwner) { _ ->
             binding.textDday.text = "D-${item.dday}"
         }

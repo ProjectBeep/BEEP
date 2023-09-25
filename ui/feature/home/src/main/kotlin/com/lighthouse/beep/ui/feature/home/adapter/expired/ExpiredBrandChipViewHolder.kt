@@ -12,6 +12,7 @@ import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 internal class ExpiredBrandChipViewHolder(
     parent: ViewGroup,
     private val listener: OnExpiredBrandListener,
+    private val onExpiredBrandClickListener: OnExpiredBrandClickListener,
     private val binding: ItemExpiredBrandChipBinding = ItemExpiredBrandChipBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
     ),
@@ -28,7 +29,7 @@ internal class ExpiredBrandChipViewHolder(
 
     override fun onSetUpClickEvent(item: ExpiredBrandItem) {
         binding.chip.setOnThrottleClickListener {
-            listener.onClick(item)
+            onExpiredBrandClickListener.onClick(item, absoluteAdapterPosition)
         }
     }
 
