@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.lighthouse.beep.core.common.exts.calculateNextDayRemainingTime
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
@@ -26,10 +25,8 @@ import com.lighthouse.beep.ui.feature.home.model.HomeItem
 import com.lighthouse.beep.ui.feature.home.model.MapGifticonItem
 import com.lighthouse.beep.ui.feature.home.model.BrandScrollInfo
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.util.Date
 
 @AndroidEntryPoint
 internal class HomeActivity: AppCompatActivity() {
@@ -105,12 +102,7 @@ internal class HomeActivity: AppCompatActivity() {
 
     private val onExpiredGifticonListener = object: OnExpiredGifticonListener{
         override fun getNextDayEventFlow(): Flow<Unit> {
-            return flow {
-                while (true) {
-                    delay(Date().calculateNextDayRemainingTime())
-                    emit(Unit)
-                }
-            }
+            return viewModel.nextDayRemainingTimeFlow
         }
 
         override fun onClick(item: HomeItem.ExpiredGifticonItem) {
