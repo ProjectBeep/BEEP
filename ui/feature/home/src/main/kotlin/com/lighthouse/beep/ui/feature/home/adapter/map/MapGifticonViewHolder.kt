@@ -32,7 +32,7 @@ internal class MapGifticonViewHolder(
 
     @SuppressLint("SetTextI18n")
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: MapGifticonItem) {
-        listener.getCurrentDmsPos().collect(lifecycleOwner) { current ->
+        listener.getCurrentDmsPosFlow().collect(lifecycleOwner) { current ->
             binding.textDistance.text = "${item.getDistance(current)}m"
         }
     }

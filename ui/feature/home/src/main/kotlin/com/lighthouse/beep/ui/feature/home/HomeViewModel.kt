@@ -7,6 +7,7 @@ import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
 import com.lighthouse.beep.ui.feature.home.model.MapGifticonItem
+import com.lighthouse.beep.ui.feature.home.model.BrandScrollInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
@@ -28,7 +29,14 @@ internal class HomeViewModel : ViewModel() {
         _selectedBrand.value = item
     }
 
-    private val brandList = MutableStateFlow(
+    private val _brandScrollInfo = MutableStateFlow(BrandScrollInfo.None)
+    val brandScrollInfo = _brandScrollInfo.asStateFlow()
+
+    fun setBrandScrollInfo(info: BrandScrollInfo) {
+        _brandScrollInfo.value = info
+    }
+
+    val brandList = MutableStateFlow(
         listOf(
             ExpiredBrandItem.All,
             ExpiredBrandItem.Item("스타벅스"),
@@ -40,6 +48,9 @@ internal class HomeViewModel : ViewModel() {
             ExpiredBrandItem.Item("롯데리아"),
         )
     )
+
+    val mapGifticonList = MutableStateFlow(loadMapGifticonList())
+
     private fun loadMapGifticonList(): List<MapGifticonItem> {
         val random = Random(System.currentTimeMillis())
         val brandList = brandList.value
@@ -66,10 +77,18 @@ internal class HomeViewModel : ViewModel() {
 
     val homeList = MutableStateFlow(
         mutableListOf<HomeItem>().apply {
-            add(HomeItem.MapGifticon(loadMapGifticonList()))
+            add(HomeItem.MapGifticon)
             add(HomeItem.ExpiredTitle)
-            add(HomeItem.ExpiredHeader(brandList.value))
+            add(HomeItem.ExpiredHeader)
             addAll(loadExpiredGifticonList())
         }
     )
+
+    val expiredHeaderIndex = homeList.value.indexOfFirst {
+        it is HomeItem.ExpiredHeader
+    }
+
+    val expiredGifticonFirstIndex = homeList.value.indexOfFirst {
+        it is HomeItem.ExpiredGifticonItem
+    }
 }

@@ -73,4 +73,10 @@
         app:layout_constraintTop_toBottomOf="@id/container_header"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <FrameLayout
+        android:id="@+id/container_sticky_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/container_header"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,10 +11,12 @@ import com.lighthouse.beep.ui.feature.home.adapter.expired.OnExpiredGifticonList
 import com.lighthouse.beep.ui.feature.home.adapter.expired.OnExpiredHeaderListener
 import com.lighthouse.beep.ui.feature.home.adapter.map.MapGifticonSection
 import com.lighthouse.beep.ui.feature.home.adapter.map.OnMapGifticonListener
+import com.lighthouse.beep.ui.feature.home.adapter.map.OnMapGifticonSectionListener
 import com.lighthouse.beep.ui.feature.home.model.HomeDiff
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
 
 internal class HomeAdapter(
+    private val onMapGifticonSectionListener: OnMapGifticonSectionListener,
     private val onMapGifticonListener: OnMapGifticonListener,
     private val onExpiredHeaderListener: OnExpiredHeaderListener,
     private val onExpiredBrandListener: OnExpiredBrandListener,
@@ -33,7 +35,7 @@ internal class HomeAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_MAP_SECTION -> MapGifticonSection(parent, onMapGifticonListener)
+            TYPE_MAP_SECTION -> MapGifticonSection(parent, onMapGifticonSectionListener, onMapGifticonListener)
             TYPE_EXPIRED_TITLE -> ExpiredTitleViewHolder(parent)
             TYPE_EXPIRED_HEADER -> ExpiredHeaderViewHolder(parent, onExpiredHeaderListener, onExpiredBrandListener)
             TYPE_EXPIRED_GIFTICON_ITEM -> ExpiredGifticonViewHolder(parent, onExpiredGifticonListener)

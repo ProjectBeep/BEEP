@@ -10,11 +10,11 @@ import java.util.Locale
 
 internal interface HomeItem {
 
-    data class MapGifticon(val list: List<MapGifticonItem>): HomeItem
+    data object MapGifticon: HomeItem
 
     data object ExpiredTitle : HomeItem
 
-    data class ExpiredHeader(val list: List<ExpiredBrandItem>) : HomeItem
+    data object ExpiredHeader : HomeItem
 
     data class ExpiredGifticonItem(
         val id: Long,
@@ -39,8 +39,6 @@ internal class HomeDiff : ItemCallback<HomeItem>() {
     override fun areItemsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
         return when {
             oldItem === newItem -> true
-            oldItem is HomeItem.MapGifticon && newItem is HomeItem.MapGifticon -> true
-            oldItem is HomeItem.ExpiredHeader && newItem is HomeItem.ExpiredHeader -> true
             oldItem is HomeItem.ExpiredGifticonItem && newItem is HomeItem.ExpiredGifticonItem && oldItem.id == newItem.id -> true
             else -> false
         }
@@ -49,8 +47,6 @@ internal class HomeDiff : ItemCallback<HomeItem>() {
     @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
         return when {
-            oldItem is HomeItem.MapGifticon && newItem is HomeItem.MapGifticon -> oldItem.list == newItem.list
-            oldItem is HomeItem.ExpiredHeader && newItem is HomeItem.ExpiredHeader -> oldItem.list == newItem.list
             oldItem is HomeItem.ExpiredGifticonItem && newItem is HomeItem.ExpiredGifticonItem -> oldItem == newItem
             else -> false
         }

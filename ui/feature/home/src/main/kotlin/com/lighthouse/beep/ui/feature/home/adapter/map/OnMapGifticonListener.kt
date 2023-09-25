@@ -6,9 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface OnMapGifticonListener {
 
-    fun getCurrentDmsPos(): Flow<DmsPos>
+    fun getCurrentDmsPosFlow(): Flow<DmsPos>
 
     fun onClick(item: MapGifticonItem)
-
-    fun onGotoMapClick()
 }
