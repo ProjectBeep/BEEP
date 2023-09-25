@@ -31,24 +31,24 @@ internal class ExpiredHeaderViewHolder(
     private val brandAdapter = ExpiredBrandChipAdapter(onExpiredBrandListener, ::onBrandItemClick)
     private val brandLayoutManager = CenterScrollLayoutManager(context, RecyclerView.HORIZONTAL, false)
     private val brandScrollListener = object: RecyclerView.OnScrollListener() {
-        var isSyncScroll = false
+        var isScrollSyncActivated = false
             private set
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 onBrandScroll(recyclerView)
-                isSyncScroll = false
+                isScrollSyncActivated = false
             }
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (isSyncScroll) {
+            if (isScrollSyncActivated) {
                 onBrandScroll(recyclerView)
             }
         }
 
-        fun syncScroll() {
-            isSyncScroll = true
+        fun syncScrollActive() {
+            isScrollSyncActivated = true
         }
 
         private fun onBrandScroll(recyclerView: RecyclerView) {
@@ -113,7 +113,7 @@ internal class ExpiredHeaderViewHolder(
         }
 
         listener.getBrandScrollInfo().collect(lifecycleOwner) { info ->
-            if (brandScrollListener.isSyncScroll){
+            if (brandScrollListener.isScrollSyncActivated){
                 return@collect
             }
             brandLayoutManager.scrollToPositionWithOffset(info.position, info.offset)
@@ -121,7 +121,7 @@ internal class ExpiredHeaderViewHolder(
     }
 
     private fun onBrandItemClick(item: ExpiredBrandItem, position: Int) {
-        brandScrollListener.syncScroll()
+        brandScrollListener.syncScrollActive()
         listener.onBrandClick(item)
         binding.listBrand.smoothScrollToPosition(position)
     }
