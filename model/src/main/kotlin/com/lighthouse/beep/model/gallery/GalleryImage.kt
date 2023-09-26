@@ -6,5 +6,6 @@ import java.util.Date
 data class GalleryImage(
     val id: Long,
     val contentUri: Uri,
+    val imagePath: String,
     val date: Date,
 )

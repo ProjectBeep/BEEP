@@ -23,6 +23,7 @@
         app:tabSelectedTextColor="@color/black"
         app:tabTextAppearance="@style/Text.Body2"
         app:tabTextColor="@color/font_medium_gray"
+        app:tabRippleColor="@color/light_gray"
         app:tabIndicatorColor="@color/black"
         android:background="@drawable/bg_tab"/>
 

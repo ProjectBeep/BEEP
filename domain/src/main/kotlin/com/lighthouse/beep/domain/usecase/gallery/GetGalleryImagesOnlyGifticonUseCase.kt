@@ -9,27 +9,28 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
+import kotlin.time.measureTime
 
 class GetGalleryImagesOnlyGifticonUseCase @Inject constructor(
     private val galleryRepository: GalleryImageRepository,
     private val recognizeBarcodeUseCase: RecognizeBarcodeUseCase,
 ) {
 
-    suspend operator fun invoke(page: Int, limit: Int): List<GalleryImage> = withContext(Dispatchers.Default){
+    suspend operator fun invoke(page: Int, limit: Int): List<GalleryImage> = withContext(Dispatchers.Default) {
         val images = galleryRepository.getImages(page, limit)
         val list = mutableListOf<GalleryImage>()
-        images.map {
-            Log.d("Recognize", "recognize : ${it.id}")
-            launch {
-
-                val barcode = recognizeBarcodeUseCase(it.contentUri).getOrDefault("")
-                if (barcode.isNotEmpty()) {
-                    list.add(it)
+        val duration = measureTimeMillis {
+            images.map {
+                launch {
+                    val barcode = recognizeBarcodeUseCase(it.contentUri).getOrDefault("")
+                    if (barcode.isNotEmpty()) {
+                        list.add(it)
+                    }
                 }
-            }
-        }.joinAll()
-        list.apply {
-            sortBy { it.date }
+            }.joinAll()
         }
+        Log.d("Recognize", "page : $page duration : ${duration}")
+        list.apply { sortBy { it.date } }
     }
 }

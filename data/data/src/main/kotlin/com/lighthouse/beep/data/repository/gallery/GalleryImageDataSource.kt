@@ -14,4 +14,6 @@ interface GalleryImageDataSource {
     fun getImages(bucketId: Long, pageSize: Int): Flow<PagingData<GalleryImage>>
 
     suspend fun getImages(page: Int, limit: Int): List<GalleryImage>
+
+    fun getImageSize(): Int
 }

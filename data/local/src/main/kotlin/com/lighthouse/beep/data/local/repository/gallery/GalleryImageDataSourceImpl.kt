@@ -38,4 +38,8 @@ internal class GalleryImageDataSourceImpl @Inject constructor(
     override suspend fun getImages(page: Int, limit: Int): List<GalleryImage> {
         return dataSource.getImages(page, limit)
     }
+
+    override fun getImageSize(): Int {
+        return dataSource.getImageSize()
+    }
 }

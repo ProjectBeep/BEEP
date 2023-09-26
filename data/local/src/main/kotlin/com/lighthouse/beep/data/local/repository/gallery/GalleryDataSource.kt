@@ -5,6 +5,7 @@ import android.content.ContentUris
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gallery.GalleryImageBucket
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +76,7 @@ internal class GalleryDataSource @Inject constructor(
         val projection = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATE_ADDED,
+            MediaStore.Images.Media.DATA,
         )
 //        val selection = "${MediaStore.Images.Media.BUCKET_ID}=$bucketId AND ${MediaStore.Images.Media.MIME_TYPE} in (?,?)"
 //        val mimeTypeMap = MimeTypeMap.getSingleton()
@@ -119,6 +121,7 @@ internal class GalleryDataSource @Inject constructor(
         cursor?.use {
             val idColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             val dateAddedColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
+            val imagePathColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
 
             while (it.moveToNext()) {
                 val id = it.getLong(idColumn)
@@ -126,9 +129,22 @@ internal class GalleryDataSource @Inject constructor(
                     ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                 val dateAdded = it.getLong(dateAddedColumn)
                 val date = Date(dateAdded * 1000)
-                list.add(GalleryImage(id, contentUri, date))
+                val imagePath = it.getString(imagePathColumn)
+                list.add(GalleryImage(id, contentUri, imagePath, date))
             }
         }
         return@withContext list
+    }
+
+    fun getImageSize(): Int {
+        return contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            null,
+            null,
+            null,
+            null,
+        )?.use {
+            it.count
+        } ?: 0
     }
 }

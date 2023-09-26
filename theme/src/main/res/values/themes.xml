@@ -9,6 +9,7 @@
     <style name="PlatformAdjusted.Theme.Beep" parent="NightAdjusted.Theme.Beep">
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorPrimary">@color/beep_pink</item>
     </style>
 
     <style name="Theme.BEEP" parent="PlatformAdjusted.Theme.Beep" />
