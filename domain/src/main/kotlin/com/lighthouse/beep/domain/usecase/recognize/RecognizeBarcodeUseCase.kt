@@ -2,9 +2,7 @@ package com.lighthouse.beep.domain.usecase.recognize
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.lighthouse.beep.core.common.exts.calculateSampleSize
-import com.lighthouse.beep.core.common.exts.decodeBitmap
 import com.lighthouse.beep.core.common.exts.decodeSampledBitmap
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
 import dagger.hilt.android.qualifiers.ApplicationContext

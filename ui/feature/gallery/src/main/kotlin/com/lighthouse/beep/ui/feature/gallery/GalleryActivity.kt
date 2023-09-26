@@ -4,8 +4,6 @@ import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewPropertyAnimator
-import android.view.animation.Animation
-import android.view.animation.DecelerateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -38,7 +36,7 @@ internal class GalleryActivity : AppCompatActivity() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val manager = recyclerView.layoutManager as? GridLayoutManager ?: return
             val lastVisible = manager.findLastVisibleItemPosition()
-            viewModel.requestNext(lastVisible)
+            viewModel.requestRecommendNext(lastVisible)
         }
     }
 
@@ -50,6 +48,12 @@ internal class GalleryActivity : AppCompatActivity() {
         setUpBucketTypeTab()
         setUpGalleryList()
         setUpCollectState()
+    }
+
+    override fun onStop() {
+        viewModel.cancelRecommendNext()
+
+        super.onStop()
     }
 
     private fun setUpBucketTypeTab() {
@@ -85,10 +89,11 @@ internal class GalleryActivity : AppCompatActivity() {
                     BucketType.RECOMMEND -> {
                         binding.listGallery.adapter = galleryRecommendAdapter
                         binding.listGallery.addOnScrollListener(recommendScrollListener)
-                        viewModel.requestNext()
+                        viewModel.requestRecommendNext()
                     }
                     BucketType.ALL -> {
                         binding.listGallery.adapter = galleryAllAdapter
+                        viewModel.cancelRecommendNext()
                     }
                 }
             }

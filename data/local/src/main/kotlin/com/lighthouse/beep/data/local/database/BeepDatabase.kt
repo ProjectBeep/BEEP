@@ -8,9 +8,11 @@ import com.lighthouse.beep.data.local.database.converter.DmsConverter
 import com.lighthouse.beep.data.local.database.converter.RectConverter
 import com.lighthouse.beep.data.local.database.converter.UriConverter
 import com.lighthouse.beep.data.local.database.dao.BrandLocationDao
+import com.lighthouse.beep.data.local.database.dao.GalleryRecognizeDao
 import com.lighthouse.beep.data.local.database.dao.GifticonDao
 import com.lighthouse.beep.data.local.database.entity.DBBrandLocationEntity
 import com.lighthouse.beep.data.local.database.entity.DBBrandSectionEntity
+import com.lighthouse.beep.data.local.database.entity.DBGalleryRecognizeEntity
 import com.lighthouse.beep.data.local.database.entity.DBGifticonEntity
 import com.lighthouse.beep.data.local.database.entity.DBUsageHistoryEntity
 
@@ -20,6 +22,7 @@ import com.lighthouse.beep.data.local.database.entity.DBUsageHistoryEntity
         DBBrandSectionEntity::class,
         DBBrandLocationEntity::class,
         DBUsageHistoryEntity::class,
+        DBGalleryRecognizeEntity::class,
     ],
     version = 1,
 )
@@ -34,6 +37,8 @@ internal abstract class BeepDatabase : RoomDatabase() {
     abstract fun gifticonDao(): GifticonDao
 
     abstract fun brandLocationDao(): BrandLocationDao
+
+    abstract fun galleryRecognizeDao(): GalleryRecognizeDao
 
     companion object {
         const val DATABASE_NAME = "beep_database"

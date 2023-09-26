@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.lighthouse.beep.data.local.database.BeepDatabase
 import com.lighthouse.beep.data.local.database.dao.BrandLocationDao
+import com.lighthouse.beep.data.local.database.dao.GalleryRecognizeDao
 import com.lighthouse.beep.data.local.database.dao.GifticonDao
 import dagger.Module
 import dagger.Provides
@@ -36,4 +37,9 @@ internal object DatabaseModule {
     fun provideBrandLocationDao(
         database: BeepDatabase,
     ): BrandLocationDao = database.brandLocationDao()
+
+    @Provides
+    fun provideGalleryRecognizeDao(
+        database: BeepDatabase
+    ): GalleryRecognizeDao = database.galleryRecognizeDao()
 }

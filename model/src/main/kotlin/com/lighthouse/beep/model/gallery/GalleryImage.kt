@@ -7,5 +7,5 @@ data class GalleryImage(
     val id: Long,
     val contentUri: Uri,
     val imagePath: String,
-    val date: Date,
+    val dateAdded: Date,
 )
