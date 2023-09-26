@@ -31,7 +31,7 @@ internal class GalleryViewModel @Inject constructor(
         private val imageWidth = 117.dp
         private val imageHeight = 117.dp
         private val space = 4.dp
-        private const val limit = 20
+        private const val limit = 5
 
         val spanCount = displayWidth / (imageWidth + space)
         val pageCount: Int = spanCount * displayHeight / (imageHeight + space)
@@ -66,22 +66,18 @@ internal class GalleryViewModel @Inject constructor(
 
     fun requestRecommendNext(lastVisiblePosition: Int = lastVisible) {
         if (
-            recognizing.value ||
+            requestNextJob?.isActive == true ||
             currentPage >= maxPage ||
             lastVisiblePosition < recommendList.value.size - pageFetchCount) {
             return
         }
         lastVisible = lastVisiblePosition
-
-        val targetSize = recommendList.value.size + pageCount
         requestNextJob = viewModelScope.launch {
             launch {
                 delay(100)
                 recognizing.value = true
-            }.invokeOnCompletion {
-                recognizing.value = false
             }
-
+            val targetSize = recommendList.value.size + pageCount
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
                 val items = getGalleryImagesOnlyGifticonUseCase(currentPage, limit)
                 _recommendList.value += items
