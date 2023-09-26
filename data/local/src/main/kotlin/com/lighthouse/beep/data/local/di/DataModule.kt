@@ -2,13 +2,13 @@ package com.lighthouse.beep.data.local.di
 
 import com.lighthouse.beep.data.local.repository.brand.LocalBrandDataSourceImpl
 import com.lighthouse.beep.data.local.repository.device.LocalDeviceDataSourceImpl
-import com.lighthouse.beep.data.local.repository.gallery.GalleryImagePagingSourceImpl
+import com.lighthouse.beep.data.local.repository.gallery.GalleryImageDataSourceImpl
 import com.lighthouse.beep.data.local.repository.gifticon.LocalGifticonDataSourceImpl
 import com.lighthouse.beep.data.local.repository.gifticon.LocalGifticonStorageImpl
 import com.lighthouse.beep.data.local.repository.user.LocalUserDataSourceImpl
 import com.lighthouse.beep.data.repository.brand.LocalBrandDataSource
 import com.lighthouse.beep.data.repository.device.LocalDeviceDataSource
-import com.lighthouse.beep.data.repository.gallery.GalleryImagePagingSource
+import com.lighthouse.beep.data.repository.gallery.GalleryImageDataSource
 import com.lighthouse.beep.data.repository.gifticon.LocalGifticonDataSource
 import com.lighthouse.beep.data.repository.gifticon.LocalGifticonStorage
 import com.lighthouse.beep.data.repository.user.LocalUserDataSource
@@ -33,9 +33,9 @@ internal abstract class DataModule {
     ): LocalUserDataSource
 
     @Binds
-    abstract fun bindsGalleryImagePagingSource(
-        pagingSource: GalleryImagePagingSourceImpl,
-    ): GalleryImagePagingSource
+    abstract fun bindsGalleryImageDataSource(
+        pagingSource: GalleryImageDataSourceImpl,
+    ): GalleryImageDataSource
 
     @Binds
     abstract fun bindsLocalGifticonStorage(

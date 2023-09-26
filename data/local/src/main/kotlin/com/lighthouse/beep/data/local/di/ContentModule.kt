@@ -2,7 +2,7 @@ package com.lighthouse.beep.data.local.di
 
 import android.content.ContentResolver
 import android.content.Context
-import com.lighthouse.beep.data.local.repository.gallery.GalleryImageDataSource
+import com.lighthouse.beep.data.local.repository.gallery.GalleryDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,5 +24,5 @@ internal object ContentModule {
     @Provides
     fun providesGalleryImageDataSource(
         contentResolver: ContentResolver,
-    ): GalleryImageDataSource = GalleryImageDataSource(contentResolver)
+    ): GalleryDataSource = GalleryDataSource(contentResolver)
 }
