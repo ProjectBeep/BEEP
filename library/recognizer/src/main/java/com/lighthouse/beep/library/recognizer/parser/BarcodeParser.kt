@@ -20,14 +20,18 @@ internal class BarcodeParser {
         var barcode = ""
         val barcodeFiltered = mutableListOf<String>()
         inputs.forEach { text ->
-            val find = barcodeFilterRegex.firstNotNullOfOrNull { regex ->
-                regex.find(text)
-            }
-            if (find == null) {
+            if (barcode.isNotEmpty()) {
                 barcodeFiltered.add(text)
             } else {
-                if (barcode == "") {
-                    barcode = find.groupValues.getOrNull(1)?.filter { it.isDigit() } ?: ""
+                val find = barcodeFilterRegex.firstNotNullOfOrNull { regex ->
+                    regex.find(text)
+                }
+                if (find == null) {
+                    barcodeFiltered.add(text)
+                } else {
+                    if (barcode == "") {
+                        barcode = find.groupValues.getOrNull(1)?.filter { it.isDigit() } ?: ""
+                    }
                 }
             }
         }

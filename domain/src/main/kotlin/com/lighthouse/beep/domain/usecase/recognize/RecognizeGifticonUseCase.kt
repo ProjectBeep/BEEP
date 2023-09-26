@@ -1,4 +1,4 @@
-package com.lighthouse.beep.domain.usecase.gifticon.edit.recognize
+package com.lighthouse.beep.domain.usecase.recognize
 
 import android.content.Context
 import android.graphics.Bitmap

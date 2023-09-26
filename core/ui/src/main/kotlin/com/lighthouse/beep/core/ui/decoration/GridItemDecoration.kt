@@ -18,8 +18,8 @@ class GridItemDecoration(
         val position = parent.getChildAdapterPosition(view).takeIf { it != RecyclerView.NO_POSITION } ?: return
 
         val manager = parent.layoutManager as? GridLayoutManager ?: return
-        val n = getGroupSize(manager, position)
-        val i = getGroupIndex(manager, position)
+        val n = manager.spanCount
+        val i = getSpanIndex(manager, position)
 
         val isVertical = manager.orientation == GridLayoutManager.VERTICAL
         if (isVertical) {
@@ -37,11 +37,7 @@ class GridItemDecoration(
         }
     }
 
-    private fun getGroupSize(manager: GridLayoutManager, position: Int): Int {
-        return manager.spanSizeLookup.getSpanSize(position)
-    }
-
-    private fun getGroupIndex(manager: GridLayoutManager, position: Int): Int {
-        return manager.spanSizeLookup.getSpanGroupIndex(position, manager.spanCount)
+    private fun getSpanIndex(manager: GridLayoutManager, position: Int): Int {
+        return manager.spanSizeLookup.getSpanIndex(position, manager.spanCount)
     }
 }

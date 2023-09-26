@@ -21,4 +21,8 @@ internal class GalleryImageRepositoryImpl @Inject constructor(
     override fun getImages(bucketId: Long, pageSize: Int): Flow<PagingData<GalleryImage>> {
         return dataSource.getImages(bucketId, pageSize)
     }
+
+    override suspend fun getImages(page: Int, limit: Int): List<GalleryImage> {
+        return dataSource.getImages(page, limit)
+    }
 }

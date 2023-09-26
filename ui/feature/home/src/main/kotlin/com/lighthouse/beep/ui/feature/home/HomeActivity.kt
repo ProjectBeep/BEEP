@@ -10,6 +10,8 @@ import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.model.location.DmsPos
+import com.lighthouse.beep.navs.ActivityNavItem
+import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.ui.feature.home.adapter.HomeAdapter
 import com.lighthouse.beep.ui.feature.home.adapter.expired.ExpiredHeaderViewHolder
 import com.lighthouse.beep.ui.feature.home.adapter.expired.OnExpiredBrandListener
@@ -28,6 +30,7 @@ import com.lighthouse.beep.ui.feature.home.model.BrandScrollInfo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 @AndroidEntryPoint
 internal class HomeActivity: AppCompatActivity() {
@@ -45,6 +48,9 @@ internal class HomeActivity: AppCompatActivity() {
             onExpiredGifticonListener = onExpiredGifticonListener,
         )
     }
+
+    @Inject
+    lateinit var navigator: AppNavigator
 
     private val onMapGifticonSectionListener = object: OnMapGifticonSectionListener {
         override fun getMapGifticonListFlow(): Flow<List<MapGifticonItem>> {
@@ -160,7 +166,8 @@ internal class HomeActivity: AppCompatActivity() {
         })
 
         binding.btnGotoGifticonAdd.setOnClickListener(createThrottleClickListener {
-
+            val intent = navigator.getIntent(this, ActivityNavItem.Gallery)
+            startActivity(intent)
         })
     }
 }

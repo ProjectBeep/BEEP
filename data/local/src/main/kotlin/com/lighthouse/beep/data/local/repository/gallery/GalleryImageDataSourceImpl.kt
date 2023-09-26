@@ -34,4 +34,8 @@ internal class GalleryImageDataSourceImpl @Inject constructor(
             },
         ).flow
     }
+
+    override suspend fun getImages(page: Int, limit: Int): List<GalleryImage> {
+        return dataSource.getImages(page, limit)
+    }
 }

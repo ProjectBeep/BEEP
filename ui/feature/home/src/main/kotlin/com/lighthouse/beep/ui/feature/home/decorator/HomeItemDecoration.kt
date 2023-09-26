@@ -5,7 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.lighthouse.beep.core.ui.exts.dp
+import com.lighthouse.beep.core.common.exts.dp
 
 internal class HomeItemDecoration(
     private val callback: HomeItemDecorationCallback,

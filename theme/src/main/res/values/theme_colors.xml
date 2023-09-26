@@ -17,6 +17,7 @@
     <color name="deep_gray">#525354</color>
     <color name="black_gray">#2C2C2E</color>
 
+    <color name="temp_black_30">#4D000000</color>
     <color name="black">#191919</color>
     <color name="white">#FFFFFF</color>
 </resources>

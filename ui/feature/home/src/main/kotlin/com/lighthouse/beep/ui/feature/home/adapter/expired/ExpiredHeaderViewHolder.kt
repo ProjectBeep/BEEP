@@ -6,8 +6,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
-import com.lighthouse.beep.core.ui.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
