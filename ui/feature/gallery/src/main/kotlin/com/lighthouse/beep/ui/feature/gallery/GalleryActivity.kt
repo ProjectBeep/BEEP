@@ -19,6 +19,7 @@ import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
 import com.lighthouse.beep.core.ui.decoration.GridItemDecoration
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.ActivityNavItem
@@ -31,7 +32,6 @@ import com.lighthouse.beep.ui.feature.gallery.adapter.selected.OnSelectedGallery
 import com.lighthouse.beep.ui.feature.gallery.adapter.selected.SelectedGalleryAdapter
 import com.lighthouse.beep.ui.feature.gallery.databinding.ActivityGalleryBinding
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
-import com.lighthouse.beep.ui.feature.gallery.model.GalleryScrollInfo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -131,13 +131,10 @@ internal class GalleryActivity : AppCompatActivity() {
     }
 
     private fun saveBucketScroll() {
-        val manager = binding.listGallery.layoutManager as? GridLayoutManager ?: return
-        val position = manager.findFirstVisibleItemPosition()
-        val viewOffset = manager.findViewByPosition(position)?.top ?: 0
-        val viewSpace = if(position > 0) 4.dp else 0
-        val offset = viewOffset - viewSpace - binding.listGallery.paddingTop
-
-        viewModel.setBucketScroll(scrollInfo = GalleryScrollInfo(position, offset))
+        val scrollInfo = binding.listGallery.getScrollInfo { position ->
+            if(position > 0) 4.dp else 0
+        }
+        viewModel.setBucketScroll(scrollInfo = scrollInfo)
     }
 
     private fun setUpSelectedGalleryList() {
@@ -148,6 +145,7 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private fun setUpGalleryList() {
         binding.listGallery.layoutManager = GridLayoutManager(this, GalleryViewModel.spanCount)
+        binding.listGallery.setHasFixedSize(true)
         binding.listGallery.addItemDecoration(GridItemDecoration(4f.dp))
     }
 

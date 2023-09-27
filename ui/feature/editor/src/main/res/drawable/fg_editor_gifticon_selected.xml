@@ -5,14 +5,15 @@
     <item
         android:state_selected="true">
         <shape
+
             android:shape="rectangle">
 
-            <solid
-                android:color="@color/black_30"/>
+            <corners
+                android:radius="8dp"/>
 
             <stroke
                 android:color="@color/medium_pink"
-                android:width="4dp"/>
+                android:width="2dp"/>
         </shape>
     </item>
 </selector>

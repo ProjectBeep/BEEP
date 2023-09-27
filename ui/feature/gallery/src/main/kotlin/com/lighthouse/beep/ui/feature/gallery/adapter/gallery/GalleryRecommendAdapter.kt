@@ -3,7 +3,7 @@ package com.lighthouse.beep.ui.feature.gallery.adapter.gallery
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.ui.feature.gallery.model.GalleryImageDiff
+import com.lighthouse.beep.model.gallery.GalleryImageDiff
 
 internal class GalleryRecommendAdapter(
     private val onGalleryListener: OnGalleryListener,

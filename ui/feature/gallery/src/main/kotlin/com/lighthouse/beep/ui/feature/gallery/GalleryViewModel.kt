@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.core.common.exts.displayHeight
 import com.lighthouse.beep.core.common.exts.displayWidth
 import com.lighthouse.beep.core.common.exts.dp
+import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImageSizeUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesOnlyGifticonUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
-import com.lighthouse.beep.ui.feature.gallery.model.GalleryScrollInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -47,14 +47,14 @@ internal class GalleryViewModel @Inject constructor(
     private val _bucketType = MutableStateFlow(BucketType.RECOMMEND)
     val bucketType = _bucketType.asStateFlow()
 
-    private val bucketScrollInfoMap = mutableMapOf<BucketType, GalleryScrollInfo>()
+    private val bucketScrollInfoMap = mutableMapOf<BucketType, ScrollInfo>()
 
     val bucketScroll
-        get() = bucketScrollInfoMap.getOrDefault(bucketType.value, GalleryScrollInfo.None)
+        get() = bucketScrollInfoMap.getOrDefault(bucketType.value, ScrollInfo.None)
 
     fun setBucketScroll(
         type: BucketType = bucketType.value,
-        scrollInfo: GalleryScrollInfo,
+        scrollInfo: ScrollInfo,
     ) {
         bucketScrollInfoMap[type] = scrollInfo
     }

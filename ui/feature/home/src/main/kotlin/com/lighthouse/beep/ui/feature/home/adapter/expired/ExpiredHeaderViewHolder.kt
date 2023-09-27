@@ -8,6 +8,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
+import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
@@ -15,7 +16,6 @@ import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredHeaderBinding
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
-import com.lighthouse.beep.ui.feature.home.model.BrandScrollInfo
 
 internal class ExpiredHeaderViewHolder(
     parent: ViewGroup,
@@ -50,11 +50,10 @@ internal class ExpiredHeaderViewHolder(
         }
 
         private fun onBrandScroll(recyclerView: RecyclerView) {
-            val position = brandLayoutManager.findFirstVisibleItemPosition()
-            val viewOffset = brandLayoutManager.findViewByPosition(position)?.left ?: 0
-            val viewSpace = if(position > 0) 4.dp else 0
-            val offset = viewOffset - viewSpace - recyclerView.paddingLeft
-            listener.onBrandScroll(BrandScrollInfo(position, offset))
+            val scrollInfo = recyclerView.getScrollInfo { position ->
+                if(position > 0) 4.dp else 0
+            }
+            listener.onBrandScroll(scrollInfo)
         }
     }
 

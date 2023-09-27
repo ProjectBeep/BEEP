@@ -39,11 +39,7 @@ internal class GalleryViewHolder(
             val isSelected = index != -1
             binding.textSelectedOrder.isVisible = isSelected
             binding.textSelectedOrder.text = (index + 1).toString()
-            binding.imageGallery.foreground = if(isSelected) {
-                ResourcesCompat.getDrawable(resources, R.drawable.fg_gallery_selected, null)
-            } else {
-                null
-            }
+            binding.imageGallery.isSelected = isSelected
         }
     }
 }

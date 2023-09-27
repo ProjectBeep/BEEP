@@ -16,6 +16,8 @@ dependencies {
 
     implementation(projects.navs)
 
+    implementation(projects.ui.dialog.confirmation)
+
     implementation(libs.coil)
 
     implementation(libs.squareup.moshi.kotlin)

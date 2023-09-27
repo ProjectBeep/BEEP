@@ -1,8 +1,8 @@
 package com.lighthouse.beep.ui.feature.home.adapter.expired
 
+import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
-import com.lighthouse.beep.ui.feature.home.model.BrandScrollInfo
 import kotlinx.coroutines.flow.Flow
 
 internal interface OnExpiredHeaderListener {
@@ -11,7 +11,7 @@ internal interface OnExpiredHeaderListener {
 
     fun getBrandListFlow(): Flow<List<ExpiredBrandItem>>
 
-    fun getBrandScrollInfo(): Flow<BrandScrollInfo>
+    fun getBrandScrollInfo(): Flow<ScrollInfo>
 
     fun onOrderClick(order: ExpiredOrder)
 
@@ -19,5 +19,5 @@ internal interface OnExpiredHeaderListener {
 
     fun onGotoEditClick()
 
-    fun onBrandScroll(scrollInfo: BrandScrollInfo)
+    fun onBrandScroll(scrollInfo: ScrollInfo)
 }

@@ -9,6 +9,7 @@ import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
+import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.model.location.DmsPos
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
@@ -26,7 +27,6 @@ import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
 import com.lighthouse.beep.ui.feature.home.model.MapGifticonItem
-import com.lighthouse.beep.ui.feature.home.model.BrandScrollInfo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -81,7 +81,7 @@ internal class HomeActivity: AppCompatActivity() {
             return viewModel.selectedExpiredOrder
         }
 
-        override fun getBrandScrollInfo(): Flow<BrandScrollInfo> {
+        override fun getBrandScrollInfo(): Flow<ScrollInfo> {
             return viewModel.brandScrollInfo
         }
 
@@ -96,7 +96,7 @@ internal class HomeActivity: AppCompatActivity() {
         override fun onGotoEditClick() {
         }
 
-        override fun onBrandScroll(scrollInfo: BrandScrollInfo) {
+        override fun onBrandScroll(scrollInfo: ScrollInfo) {
             viewModel.setBrandScrollInfo(scrollInfo)
         }
     }

@@ -9,13 +9,13 @@ import android.view.View.OnClickListener
 import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import com.lighthouse.beep.ui.core.binding.viewBindings
+import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.ui.dialog.confirmation.databinding.DialogConfirmationBinding
 
 class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
     companion object {
-        fun newInstance(params: ConfirmationParams): ConfirmationDialog {
+        fun newInstance(params: ConfirmationParam): ConfirmationDialog {
             return ConfirmationDialog().apply {
                 arguments = params.buildBundle()
             }
@@ -57,19 +57,19 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
     private fun setUpContent() {
         binding.tvTitle.apply {
-            text = ConfirmationParams.getTitle(arguments)
+            text = ConfirmationParam.getTitle(arguments)
             isVisible = text.isNotEmpty()
         }
 
         binding.tvTitle.apply {
-            text = ConfirmationParams.getMessage(arguments)
+            text = ConfirmationParam.getMessage(arguments)
             isVisible = text.isNotEmpty()
         }
     }
 
     private fun setUpOkButton() {
         binding.tvOk.apply {
-            text = ConfirmationParams.getOkText(arguments)
+            text = ConfirmationParam.getOkText(arguments)
             isVisible = text.isNotEmpty()
             setOnClickListener { v ->
                 if (onOkClickListener != null) {
@@ -82,7 +82,7 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
     private fun setUpCancelButton() {
         binding.tvCancel.apply {
-            text = ConfirmationParams.getCancelText(arguments)
+            text = ConfirmationParam.getCancelText(arguments)
             isVisible = text.isNotEmpty()
             setOnClickListener { v ->
                 if (onCancelClickListener != null) {

@@ -2,7 +2,7 @@ package com.lighthouse.beep.ui.dialog.confirmation
 
 import android.os.Bundle
 
-data class ConfirmationParams(
+data class ConfirmationParam(
     val title: String = "",
     val message: String = "",
     val okText: String = "",

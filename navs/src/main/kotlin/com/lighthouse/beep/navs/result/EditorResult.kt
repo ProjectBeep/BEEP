@@ -6,7 +6,7 @@ import com.lighthouse.beep.model.gallery.adapter.toJson
 
 class EditorResult(
     val list: List<GalleryImage>
-) : AppNavResult {
+) {
 
     companion object {
         private const val KEY_GALLERY_IMAGE_LIST = "Key.GalleryImageList"
@@ -19,7 +19,7 @@ class EditorResult(
 
     constructor(intent: Intent?) : this (getGalleryList(intent))
 
-    override fun createIntent(): Intent {
+    fun createIntent(): Intent {
         return Intent().apply {
             putExtra(KEY_GALLERY_IMAGE_LIST, list.toJson())
         }

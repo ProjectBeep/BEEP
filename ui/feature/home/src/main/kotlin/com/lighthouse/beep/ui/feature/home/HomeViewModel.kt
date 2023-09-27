@@ -3,12 +3,12 @@ package com.lighthouse.beep.ui.feature.home
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.lighthouse.beep.core.common.exts.calculateNextDayRemainingTime
+import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.model.location.DmsPos
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
 import com.lighthouse.beep.ui.feature.home.model.MapGifticonItem
-import com.lighthouse.beep.ui.feature.home.model.BrandScrollInfo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,10 +32,10 @@ internal class HomeViewModel : ViewModel() {
         _selectedBrand.value = item
     }
 
-    private val _brandScrollInfo = MutableStateFlow(BrandScrollInfo.None)
+    private val _brandScrollInfo = MutableStateFlow(ScrollInfo.None)
     val brandScrollInfo = _brandScrollInfo.asStateFlow()
 
-    fun setBrandScrollInfo(info: BrandScrollInfo) {
+    fun setBrandScrollInfo(info: ScrollInfo) {
         _brandScrollInfo.value = info
     }
 

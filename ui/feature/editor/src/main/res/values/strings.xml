@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="editor_title">기프티콘 등록</string>
+
+    <string name="editor_gifticon_delete_message">정말 삭제하시겠습니까?</string>
+    <string name="editor_gifticon_delete_ok">예</string>
+    <string name="editor_gifticon_delete_cancel">아니오</string>
 </resources>
