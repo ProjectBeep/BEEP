@@ -16,6 +16,7 @@ import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
 import com.lighthouse.beep.core.ui.decoration.GridItemDecoration
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
+import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryAllAdapter
@@ -25,6 +26,7 @@ import com.lighthouse.beep.ui.feature.gallery.adapter.selected.OnSelectedGallery
 import com.lighthouse.beep.ui.feature.gallery.adapter.selected.SelectedGalleryAdapter
 import com.lighthouse.beep.ui.feature.gallery.databinding.ActivityGalleryBinding
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
+import com.lighthouse.beep.ui.feature.gallery.model.GalleryScrollInfo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -79,6 +81,7 @@ internal class GalleryActivity : AppCompatActivity() {
         setUpSelectedGalleryList()
         setUpGalleryList()
         setUpCollectState()
+        setUpOnClickEvent()
     }
 
     override fun onStop() {
@@ -91,6 +94,15 @@ internal class GalleryActivity : AppCompatActivity() {
         binding.tabBucketType.addOnTabSelectedListener(object: OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab ?: return
+                binding.listGallery.stopScroll()
+
+                val manager = binding.listGallery.layoutManager as? GridLayoutManager ?: return
+                val position = manager.findFirstVisibleItemPosition()
+                val viewOffset = manager.findViewByPosition(position)?.top ?: 0
+                val viewSpace = if(position > 0) 2.dp else 0
+                val offset = viewOffset - viewSpace - binding.listGallery.paddingTop
+
+                viewModel.setBucketScroll(scrollInfo = GalleryScrollInfo(position, offset))
                 viewModel.setBucketType(BucketType.entries[tab.position])
             }
 
@@ -120,7 +132,6 @@ internal class GalleryActivity : AppCompatActivity() {
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.bucketType.collect { type ->
-                binding.listGallery.stopScroll()
                 binding.listGallery.clearOnScrollListeners()
                 when(type) {
                     BucketType.RECOMMEND -> {
@@ -133,6 +144,10 @@ internal class GalleryActivity : AppCompatActivity() {
                         viewModel.cancelRecommendNext()
                     }
                 }
+
+                val scrollInfo = viewModel.bucketScroll
+                val manager = binding.listGallery.layoutManager as? GridLayoutManager
+                manager?.scrollToPositionWithOffset(scrollInfo.position, scrollInfo.offset)
             }
         }
 
@@ -182,12 +197,24 @@ internal class GalleryActivity : AppCompatActivity() {
                 } else {
                     getString(R.string.selected_item_count, list.size)
                 }
+            }
+        }
 
-                val isListOpen = list.isNotEmpty()
+        repeatOnStarted {
+            var animator: ViewPropertyAnimator? = null
+            viewModel.isSelected.collect { isSelected ->
+                val confirmTextColor = if(isSelected) {
+                    getColor(com.lighthouse.beep.theme.R.color.font_dark_gray)
+                } else {
+                    getColor(com.lighthouse.beep.theme.R.color.light_gray)
+                }
+                binding.textConfirm.setTextColor(confirmTextColor)
+
                 val start = binding.listSelected.height
-                val end = if (isListOpen) resources.getDimension(R.dimen.selected_gallery_list_height).toInt() else 0.dp
+                val end = if (isSelected) resources.getDimension(R.dimen.selected_gallery_list_height).toInt() else 0.dp
                 if (start != end) {
-                    binding.listSelected.animate()
+                    animator?.cancel()
+                    animator = binding.listSelected.animate()
                         .setDuration(300L)
                         .setUpdateListener {
                             binding.listSelected.updateLayoutParams {
@@ -201,9 +228,23 @@ internal class GalleryActivity : AppCompatActivity() {
                             override fun onAnimationEnd(animator: Animator) {
                                 binding.listSelected.adapter = selectedGalleryAdapter
                             }
-                        }).start()
+                        })
+                    animator?.start()
                 }
             }
         }
+    }
+
+    private fun setUpOnClickEvent() {
+        binding.iconClose.setOnClickListener(createThrottleClickListener {
+            finish()
+        })
+
+        binding.textConfirm.setOnClickListener(createThrottleClickListener {
+            if (viewModel.isSelected.value) {
+                // 값을 result 로 전달
+                finish()
+            }
+        })
     }
 }

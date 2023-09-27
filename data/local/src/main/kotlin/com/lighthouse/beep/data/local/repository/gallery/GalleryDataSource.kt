@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.model.gallery.GalleryImageBucket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -15,55 +14,8 @@ import javax.inject.Inject
 internal class GalleryDataSource @Inject constructor(
     private val contentResolver: ContentResolver,
 ) {
-    suspend fun getFolders(): List<GalleryImageBucket> = withContext(Dispatchers.IO) {
-        val projection = arrayOf(
-            MediaStore.Images.Media.BUCKET_ID,
-            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-            MediaStore.Images.Media._ID,
-        )
-        val cursor = contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            null,
-            null,
-            null
-        )
-
-        val bucketList = mutableListOf<GalleryImageBucket>()
-        val bucketSet = mutableSetOf<Long>()
-        cursor?.use {
-            val idColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID)
-            val displayNameColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
-            val imageIdColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-
-            while (it.moveToNext()) {
-                val id = it.getLong(idColumn)
-                if (id in bucketSet) {
-                    continue
-                }
-                bucketSet.add(id)
-
-                val displayName = it.getString(displayNameColumn)
-                val imageId = it.getLong(imageIdColumn)
-                val galleryImage = GalleryImageBucket(id, displayName, imageId)
-                bucketList.add(galleryImage)
-            }
-        }
-
-        return@withContext bucketList
-    }
-
     suspend fun getImages(page: Int, limit: Int): List<GalleryImage> {
         return getImages(null, null, page, limit)
-    }
-
-    suspend fun getImages(bucketId: Long, page: Int, limit: Int): List<GalleryImage> {
-        return getImages(
-            "${MediaStore.Images.Media.BUCKET_ID}=?",
-            arrayOf(bucketId.toString()),
-            page,
-            limit,
-        )
     }
 
     private suspend fun getImages(

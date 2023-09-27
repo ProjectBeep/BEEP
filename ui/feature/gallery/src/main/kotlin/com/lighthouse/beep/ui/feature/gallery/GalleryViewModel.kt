@@ -10,14 +10,18 @@ import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesOnlyGifticonUs
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
+import com.lighthouse.beep.ui.feature.gallery.model.GalleryScrollInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -42,6 +46,18 @@ internal class GalleryViewModel @Inject constructor(
 
     private val _bucketType = MutableStateFlow(BucketType.RECOMMEND)
     val bucketType = _bucketType.asStateFlow()
+
+    private val bucketScrollInfoMap = mutableMapOf<BucketType, GalleryScrollInfo>()
+
+    val bucketScroll
+        get() = bucketScrollInfoMap.getOrDefault(bucketType.value, GalleryScrollInfo.None)
+
+    fun setBucketScroll(
+        type: BucketType = bucketType.value,
+        scrollInfo: GalleryScrollInfo,
+    ) {
+        bucketScrollInfoMap[type] = scrollInfo
+    }
 
     fun setBucketType(bucketType: BucketType) {
         _bucketType.value = bucketType
@@ -112,6 +128,10 @@ internal class GalleryViewModel @Inject constructor(
 
     private val _selectedListFlow = MutableSharedFlow<List<GalleryImage>>(replay = 1)
     val selectedListFlow = _selectedListFlow.asSharedFlow()
+
+    val isSelected = selectedListFlow.map {
+        it.isNotEmpty()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun selectItem(item: GalleryImage) {
         val index = selectedList.indexOfFirst { it.id == item.id }
