@@ -10,4 +10,7 @@ android {
 dependencies {
     implementation(libs.kotlin.serialization.json)
     implementation(libs.kotlin.datetime)
+
+    implementation(libs.squareup.moshi.kotlin)
+    implementation(libs.squareup.moshi.kotlin.codegen)
 }

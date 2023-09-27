@@ -17,4 +17,6 @@ dependencies {
     implementation(projects.navs)
 
     implementation(libs.coil)
+
+    implementation(libs.squareup.moshi.kotlin)
 }

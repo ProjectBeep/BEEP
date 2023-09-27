@@ -124,7 +124,9 @@ internal class GalleryViewModel @Inject constructor(
 
     val allList = getGalleryImagesUseCase(pageCount)
 
-    private val selectedList = mutableListOf<GalleryImage>()
+    private val _selectedList = mutableListOf<GalleryImage>()
+    val selectedList
+        get() = _selectedList.toList()
 
     private val _selectedListFlow = MutableSharedFlow<List<GalleryImage>>(replay = 1)
     val selectedListFlow = _selectedListFlow.asSharedFlow()
@@ -134,26 +136,34 @@ internal class GalleryViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun selectItem(item: GalleryImage) {
-        val index = selectedList.indexOfFirst { it.id == item.id }
+        val index = _selectedList.indexOfFirst { it.id == item.id }
         if (index == -1){
-            selectedList.add(item)
+            _selectedList.add(item)
         } else {
-            selectedList.removeAt(index)
+            _selectedList.removeAt(index)
         }
         viewModelScope.launch {
-            _selectedListFlow.emit(selectedList)
+            _selectedListFlow.emit(_selectedList)
         }
     }
 
     fun deleteItem(item:GalleryImage) {
-        val index = selectedList.indexOfFirst { it.id == item.id }
+        val index = _selectedList.indexOfFirst { it.id == item.id }
         if (index == -1){
             return
         } else {
-            selectedList.removeAt(index)
+            _selectedList.removeAt(index)
         }
         viewModelScope.launch {
-            _selectedListFlow.emit(selectedList)
+            _selectedListFlow.emit(_selectedList)
+        }
+    }
+
+    fun setItems(list: List<GalleryImage>) {
+        _selectedList.clear()
+        _selectedList.addAll(list)
+        viewModelScope.launch {
+            _selectedListFlow.emit(_selectedList)
         }
     }
 

@@ -20,7 +20,7 @@ internal class AppNavigatorImpl @Inject constructor() : AppNavigator {
             is ActivityNavItem.Login -> LoginParam.createParma()
             is ActivityNavItem.Home -> HomeParam.createParma()
             is ActivityNavItem.Gallery -> GalleryParam.createParam()
-            is ActivityNavItem.Editor -> EditorParam.createParam()
+            is ActivityNavItem.Editor -> EditorParam.createParam(navItem.list)
         }
     }
 }

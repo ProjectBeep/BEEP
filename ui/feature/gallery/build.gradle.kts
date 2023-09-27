@@ -18,4 +18,6 @@ dependencies {
 
     implementation(libs.androidx.paging.runtime)
     implementation(libs.coil)
+
+    implementation(libs.squareup.moshi.kotlin)
 }

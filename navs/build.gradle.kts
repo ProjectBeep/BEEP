@@ -9,4 +9,7 @@ android {
 
 dependencies {
     implementation(projects.model)
+
+    implementation(libs.squareup.moshi.kotlin)
+    implementation(libs.squareup.moshi.kotlin.codegen)
 }

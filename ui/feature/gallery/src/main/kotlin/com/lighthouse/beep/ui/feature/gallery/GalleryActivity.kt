@@ -1,6 +1,7 @@
 package com.lighthouse.beep.ui.feature.gallery
 
 import android.animation.Animator
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewPropertyAnimator
@@ -22,6 +23,7 @@ import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
+import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryAllAdapter
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryRecommendAdapter
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.OnGalleryListener
@@ -77,7 +79,11 @@ internal class GalleryActivity : AppCompatActivity() {
     }
 
     private val editorLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
+        if (it.resultCode == Activity.RESULT_OK) {
+            finish()
+        } else {
+            viewModel.setItems(EditorResult(it.data).list)
+        }
     }
 
     @Inject
@@ -253,7 +259,7 @@ internal class GalleryActivity : AppCompatActivity() {
 
         binding.btnConfirm.setOnClickListener(createThrottleClickListener {
             if (viewModel.isSelected.value) {
-                val intent = navigator.getIntent(this, ActivityNavItem.Editor())
+                val intent = navigator.getIntent(this, ActivityNavItem.Editor(viewModel.selectedList))
                 editorLauncher.launch(intent)
             }
         })
