@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".GalleryActivity"
+            android:name=".EditorActivity"
             android:theme="@style/Theme.BEEP.SharedElementTransition"/>
     </application>
 </manifest>

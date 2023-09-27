@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="selected_list_height">87dp</dimen>
+    <string name="editor_title">기프티콘 등록</string>
 </resources>

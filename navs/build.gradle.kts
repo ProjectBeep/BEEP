@@ -6,3 +6,7 @@ plugins {
 android {
     namespace = "com.lighthouse.beep.navs"
 }
+
+dependencies {
+    implementation(projects.model)
+}

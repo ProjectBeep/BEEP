@@ -3,6 +3,7 @@ package com.lighthouse.beep.navs
 import android.content.Context
 import com.lighthouse.beep.ui.feature.login.page.login.LoginParam
 import android.content.Intent
+import com.lighthouse.beep.ui.feature.editor.EditorParam
 import com.lighthouse.beep.ui.feature.gallery.GalleryParam
 import com.lighthouse.beep.ui.feature.home.HomeParam
 import javax.inject.Inject
@@ -19,6 +20,7 @@ internal class AppNavigatorImpl @Inject constructor() : AppNavigator {
             is ActivityNavItem.Login -> LoginParam.createParma()
             is ActivityNavItem.Home -> HomeParam.createParma()
             is ActivityNavItem.Gallery -> GalleryParam.createParam()
+            is ActivityNavItem.Editor -> EditorParam.createParam()
         }
     }
 }

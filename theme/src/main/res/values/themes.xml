@@ -10,7 +10,12 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="colorPrimary">@color/beep_pink</item>
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 
     <style name="Theme.BEEP" parent="PlatformAdjusted.Theme.Beep" />
+
+    <style name="Theme.BEEP.SharedElementTransition" parent="Theme.BEEP">
+        <item name="android:windowContentTransitions">true</item>
+    </style>
 </resources>

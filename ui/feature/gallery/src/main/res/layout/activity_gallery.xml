@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent">
         
         <ImageView
-            android:id="@+id/icon_close"
+            android:id="@+id/btn_close"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="19dp"
@@ -34,10 +34,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:textAppearance="@style/Text.Title2"
             android:textColor="@color/font_dark_gray"
-            android:text="@string/title"/>
+            android:text="@string/gallery_title"/>
 
         <TextView
-            android:id="@+id/text_confirm"
+            android:id="@+id/btn_confirm"
+            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -45,7 +46,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:textAppearance="@style/Text.Title2"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/confirm_text"
             android:text="@string/confirm"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -59,7 +60,7 @@
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/container_toolbar"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:layout_height="@dimen/selected_gallery_list_height"
+        tools:layout_height="@dimen/selected_list_height"
         tools:listitem="@layout/item_selected_gallery"/>
 
     <com.google.android.material.tabs.TabLayout
