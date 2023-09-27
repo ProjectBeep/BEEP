@@ -9,6 +9,8 @@ class LinearItemDecoration(
     private val space: Int
 ) : RecyclerView.ItemDecoration() {
 
+    constructor(space: Float): this(space.toInt())
+
     override fun getItemOffsets(
         outRect: Rect,
         view: View,

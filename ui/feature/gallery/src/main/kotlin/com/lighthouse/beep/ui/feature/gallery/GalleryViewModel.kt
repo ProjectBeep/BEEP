@@ -86,7 +86,7 @@ internal class GalleryViewModel @Inject constructor(
         lastVisible = currentLastVisible ?: lastVisible
         requestNextJob = viewModelScope.launch {
             launch {
-                delay(100)
+                delay(200)
                 recognizing.value = true
             }
             val targetSize = recommendList.value.size + pageCount
@@ -117,6 +117,18 @@ internal class GalleryViewModel @Inject constructor(
         val index = selectedList.indexOfFirst { it.id == item.id }
         if (index == -1){
             selectedList.add(item)
+        } else {
+            selectedList.removeAt(index)
+        }
+        viewModelScope.launch {
+            _selectedListFlow.emit(selectedList)
+        }
+    }
+
+    fun deleteItem(item:GalleryImage) {
+        val index = selectedList.indexOfFirst { it.id == item.id }
+        if (index == -1){
+            return
         } else {
             selectedList.removeAt(index)
         }

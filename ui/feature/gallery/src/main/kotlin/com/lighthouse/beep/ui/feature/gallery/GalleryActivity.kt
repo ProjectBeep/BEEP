@@ -7,6 +7,7 @@ import android.view.ViewPropertyAnimator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
@@ -14,12 +15,19 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
 import com.lighthouse.beep.core.ui.decoration.GridItemDecoration
+import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryAllAdapter
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryRecommendAdapter
+import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.OnGalleryListener
+import com.lighthouse.beep.ui.feature.gallery.adapter.selected.OnSelectedGalleryListener
+import com.lighthouse.beep.ui.feature.gallery.adapter.selected.SelectedGalleryAdapter
 import com.lighthouse.beep.ui.feature.gallery.databinding.ActivityGalleryBinding
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @AndroidEntryPoint
 internal class GalleryActivity : AppCompatActivity() {
@@ -28,9 +36,31 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<GalleryViewModel>()
 
-    private val galleryRecommendAdapter = GalleryRecommendAdapter()
+    private val onGalleryListener = object: OnGalleryListener {
+        override fun getSelectedIndexFlow(item: GalleryImage): Flow<Int> {
+            return viewModel.selectedListFlow.map { list ->
+                list.indexOfFirst { it.id == item.id }
+            }
+        }
 
-    private val galleryAllAdapter = GalleryAllAdapter()
+        override fun onClick(item: GalleryImage) {
+            viewModel.selectItem(item)
+        }
+    }
+
+    private val galleryRecommendAdapter = GalleryRecommendAdapter(onGalleryListener)
+
+    private val galleryAllAdapter = GalleryAllAdapter(onGalleryListener)
+
+    private val onSelectedGalleryListener = object: OnSelectedGalleryListener {
+        override fun onClick(item: GalleryImage) {
+            viewModel.deleteItem(item)
+        }
+    }
+
+    private val selectedGalleryAdapter = SelectedGalleryAdapter(
+        onSelectedGalleryListener = onSelectedGalleryListener
+    )
 
     private val recommendScrollListener = object: RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -46,6 +76,7 @@ internal class GalleryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setUpBucketTypeTab()
+        setUpSelectedGalleryList()
         setUpGalleryList()
         setUpCollectState()
     }
@@ -73,6 +104,12 @@ internal class GalleryActivity : AppCompatActivity() {
             }
             binding.tabBucketType.addTab(tab)
         }
+    }
+
+    private fun setUpSelectedGalleryList() {
+        binding.listSelected.adapter = selectedGalleryAdapter
+        binding.listSelected.setHasFixedSize(true)
+        binding.listSelected.addItemDecoration(LinearItemDecoration(1.5f.dp))
     }
 
     private fun setUpGalleryList() {
@@ -115,9 +152,9 @@ internal class GalleryActivity : AppCompatActivity() {
             var animator: ViewPropertyAnimator? = null
             viewModel.showRecognizeProgress.collect { isShow ->
                 val translationY = if (isShow) {
-                    - binding.progressRecognize.height - 150f.dp
+                    (-150f).dp
                 } else {
-                    0f.dp
+                    binding.progressRecognize.height.toFloat()
                 }
                 animator?.cancel()
                 animator = binding.progressRecognize.animate()
@@ -131,18 +168,41 @@ internal class GalleryActivity : AppCompatActivity() {
                         override fun onAnimationEnd(animator: Animator) {
                             binding.progressRecognize.isVisible = isShow
                         }
-
-                        override fun onAnimationCancel(animator: Animator) {
-                            binding.progressRecognize.isVisible = isShow
-                        }
                     })
                 animator?.start()
             }
         }
 
         repeatOnStarted {
-            viewModel.selectedListFlow.collect {
+            viewModel.selectedListFlow.collect { list ->
+                selectedGalleryAdapter.submitList(list.toList())
 
+                binding.textSelectedItemCount.text = if (list.isEmpty()) {
+                    getString(R.string.selected_item_empty)
+                } else {
+                    getString(R.string.selected_item_count, list.size)
+                }
+
+                val isListOpen = list.isNotEmpty()
+                val start = binding.listSelected.height
+                val end = if (isListOpen) resources.getDimension(R.dimen.selected_gallery_list_height).toInt() else 0.dp
+                if (start != end) {
+                    binding.listSelected.animate()
+                        .setDuration(300L)
+                        .setUpdateListener {
+                            binding.listSelected.updateLayoutParams {
+                                height = (start - (start - end) * it.animatedFraction).toInt()
+                            }
+                        }.setListener(object: SimpleAnimatorListener() {
+                            override fun onAnimationStart(animator: Animator) {
+                                binding.listSelected.adapter = null
+                            }
+
+                            override fun onAnimationEnd(animator: Animator) {
+                                binding.listSelected.adapter = selectedGalleryAdapter
+                            }
+                        }).start()
+                }
             }
         }
     }
