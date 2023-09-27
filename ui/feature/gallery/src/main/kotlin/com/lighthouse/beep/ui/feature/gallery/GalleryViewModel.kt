@@ -13,7 +13,9 @@ import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -55,23 +57,33 @@ internal class GalleryViewModel @Inject constructor(
 
     private val recognizing = MutableStateFlow(false)
 
+    private val needRecommendFetch = MutableStateFlow(false)
+
     val showRecognizeProgress = combine(
         bucketType,
-        recognizing
-    ) { type, recognizing ->
-        type == BucketType.RECOMMEND && recognizing
+        needRecommendFetch,
+        recognizing,
+    ) { type, needRecommendFetch, recognizing ->
+        type == BucketType.RECOMMEND && needRecommendFetch && recognizing
     }
 
     private var requestNextJob: Job? = null
 
-    fun requestRecommendNext(lastVisiblePosition: Int = lastVisible) {
-        if (
-            requestNextJob?.isActive == true ||
+    fun requestRecommendNext(currentLastVisible: Int? = null) {
+        needRecommendFetch.value = if (currentLastVisible == null) {
+            lastVisible >= recommendList.value.size - pageFetchCount
+        } else {
+            currentLastVisible >= recommendList.value.size - pageFetchCount
+        }
+
+        if (requestNextJob?.isActive == true ||
             currentPage >= maxPage ||
-            lastVisiblePosition < recommendList.value.size - pageFetchCount) {
+            !needRecommendFetch.value
+        ) {
             return
         }
-        lastVisible = lastVisiblePosition
+
+        lastVisible = currentLastVisible ?: lastVisible
         requestNextJob = viewModelScope.launch {
             launch {
                 delay(100)
@@ -95,4 +107,27 @@ internal class GalleryViewModel @Inject constructor(
     }
 
     val allList = getGalleryImagesUseCase(pageCount)
+
+    private val selectedList = mutableListOf<GalleryImage>()
+
+    private val _selectedListFlow = MutableSharedFlow<List<GalleryImage>>(replay = 1)
+    val selectedListFlow = _selectedListFlow.asSharedFlow()
+
+    fun selectItem(item: GalleryImage) {
+        val index = selectedList.indexOfFirst { it.id == item.id }
+        if (index == -1){
+            selectedList.add(item)
+        } else {
+            selectedList.removeAt(index)
+        }
+        viewModelScope.launch {
+            _selectedListFlow.emit(selectedList)
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            _selectedListFlow.emit(emptyList())
+        }
+    }
 }

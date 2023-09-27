@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title">사진 선택</string>
+    <string name="confirm">선택</string>
+
     <string name="bucket_type_recommend">추천</string>
     <string name="bucket_type_all">앨범</string>
+    
+    <string name="selected_item_count">선택된 항목 %d / 30개</string>
 </resources>

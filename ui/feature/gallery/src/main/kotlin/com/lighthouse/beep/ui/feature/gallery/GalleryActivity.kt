@@ -139,5 +139,11 @@ internal class GalleryActivity : AppCompatActivity() {
                 animator?.start()
             }
         }
+
+        repeatOnStarted {
+            viewModel.selectedListFlow.collect {
+
+            }
+        }
     }
 }
