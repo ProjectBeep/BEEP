@@ -109,10 +109,14 @@
   @com.squareup.moshi.ToJson <methods>;
 }
 
--keep class com.google.devtools.ksp.processing.SymbolProcessorProvider {
-    *;
+-keep class com.squareup.moshi.kotlin.reflect.** { *; }
+-keepclasswithmembers class * {
+    @com.squareup.moshi.* <methods>;
 }
 
--keep class com.squareup.moshi.kotlin.codegen.ksp.JsonClassSymbolProcessorProvider {
-    *;
+-keepnames @com.squareup.moshi.JsonClass class *
+
+-keepclasseswithmembers class **.*JsonAdapter extends com.squareup.moshi.JsonAdapter {
+	<init>(...);
+	<fields>;
 }
