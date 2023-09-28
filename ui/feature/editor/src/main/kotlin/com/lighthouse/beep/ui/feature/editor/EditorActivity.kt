@@ -7,17 +7,23 @@ import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
+import com.lighthouse.beep.ui.feature.editor.adapter.chip.EditorPropertyChipAdapter
+import com.lighthouse.beep.ui.feature.editor.adapter.chip.OnEditorPropertyChipListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.OnEditorGifticonListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdapter
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
+import com.lighthouse.beep.ui.feature.editor.decorator.EditorPropertyChipItemDecoration
+import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -77,13 +83,36 @@ class EditorActivity : AppCompatActivity() {
         onSelectedGalleryListener = onEditorGifticonListener
     )
 
+    private val onEditorPropertyChipListener = object: OnEditorPropertyChipListener {
+        override fun isSelectedFlow(item: EditorChip.Property): Flow<Boolean> {
+            return flow {
+                emit(true)
+            }
+        }
+
+        override fun isInvalidFlow(item: EditorChip.Property): Flow<Boolean> {
+            return flow {
+                emit(true)
+            }
+        }
+
+        override fun onClick(item: EditorChip.Property) {
+
+        }
+    }
+
+    private val editorPropertyChipAdapter = EditorPropertyChipAdapter(
+        onEditorPropertyChipListener = onEditorPropertyChipListener
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditorBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
         setUpBackPress()
-        setUpSelectedList()
+        setUpGifticonList()
+        setUpPropertyChipList()
         setUpCollectState()
         setUpOnClickEvent()
     }
@@ -94,10 +123,23 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpSelectedList() {
+    private fun setUpGifticonList() {
         binding.listSelected.adapter = editorGifticonAdapter
         binding.listSelected.setHasFixedSize(true)
         binding.listSelected.addItemDecoration(LinearItemDecoration(1.5f.dp))
+    }
+
+    private fun setUpPropertyChipList() {
+        editorPropertyChipAdapter.submitList(viewModel.editorPropertyChipList)
+
+        binding.btnPreview.setOnOffsetChangedListener { _: Int, progress: Float ->
+            binding.textPreview.alpha = progress
+        }
+
+        binding.listEditorChip.adapter = editorPropertyChipAdapter
+        binding.listEditorChip.layoutManager = CenterScrollLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.listEditorChip.addItemDecoration(LinearItemDecoration(8.dp))
+        binding.listEditorChip.addItemDecoration(EditorPropertyChipItemDecoration(this))
     }
 
     private fun setUpCollectState() {
@@ -117,7 +159,13 @@ class EditorActivity : AppCompatActivity() {
             cancelEditor()
         })
 
-        binding.btnRegister
+        binding.btnPreview.setOnClickListener(createThrottleClickListener {
+
+        })
+
+        binding.btnRegister.setOnClickListener(createThrottleClickListener {
+
+        })
     }
 
     private fun cancelEditor() {

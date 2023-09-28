@@ -2,6 +2,7 @@
 <resources>
     <string name="editor_title">기프티콘 등록</string>
 
+    <string name="editor_gifticon_preview">미리보기</string>
     <string name="editor_gifticon_property_thumbnail">썸네일</string>
     <string name="editor_gifticon_property_name">제품명</string>
     <string name="editor_gifticon_property_brand">브랜드</string>

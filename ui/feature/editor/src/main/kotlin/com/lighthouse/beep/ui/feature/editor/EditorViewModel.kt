@@ -22,9 +22,7 @@ internal class EditorViewModel @Inject constructor(
         _galleryImage.value = _galleryImage.value.filter { it.id != item.id }
     }
 
-    val editorChipList = listOf(
-        EditorChip.Preview,
-    ) + PropertyType.entries.map {
+    val editorPropertyChipList = PropertyType.entries.map {
         EditorChip.Property(it)
     }
 }

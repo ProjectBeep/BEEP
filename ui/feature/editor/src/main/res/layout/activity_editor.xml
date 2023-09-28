@@ -81,6 +81,59 @@
         android:layout_width="match_parent"
         android:layout_height="34dp"
         app:layout_constraintBottom_toTopOf="@id/recycler_editor">
+
+        <com.lighthouse.beep.ui.feature.editor.behavior.HorizontalHeaderLayout
+            android:id="@+id/btn_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:minWidth="34dp"
+            android:padding="7dp"
+            android:layout_marginStart="24dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_editor_preview_chip">
+            
+            <ImageView
+                android:id="@+id/icon_preview"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/text_preview"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:contentDescription="@null"
+                app:tint="@color/editor_preview_chip"
+                android:src="@drawable/icon_preview"/>
+
+            <TextView
+                android:id="@+id/text_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="6dp"
+                app:layout_constraintStart_toEndOf="@id/icon_preview"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textColor="@color/editor_preview_chip"
+                android:textAppearance="@style/Text.Body1"
+                android:text="@string/editor_gifticon_preview" />
+
+        </com.lighthouse.beep.ui.feature.editor.behavior.HorizontalHeaderLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_editor_chip"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="11dp"
+            android:paddingEnd="24dp"
+            android:clipToPadding="false"
+            app:layout_behavior="com.lighthouse.beep.ui.feature.editor.behavior.HorizontalScrollBehavior"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_editor_property_chip"
+            tools:itemCount="5"/>
         
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

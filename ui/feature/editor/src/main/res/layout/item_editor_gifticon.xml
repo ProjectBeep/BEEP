@@ -15,7 +15,7 @@
         android:scaleType="centerCrop"
         android:backgroundTint="@color/light_gray"
         android:background="@drawable/bg_rect_r8"
-        android:foreground="@drawable/fg_editor_gifticon_selected"
+        android:foreground="@drawable/fg_editor_gifticon"
         android:contentDescription="@null"/>
 
     <ImageView
