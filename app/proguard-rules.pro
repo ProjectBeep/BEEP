@@ -109,5 +109,10 @@
   @com.squareup.moshi.ToJson <methods>;
 }
 
--keep class com.google.devtools.ksp.processing.SymbolProcessorProvider;
--keep class com.squareup.moshi.kotlin.codegen.ksp.JsonClassSymbolProcessorProvider;
+-keep class com.google.devtools.ksp.processing.SymbolProcessorProvider {
+    *;
+}
+
+-keep class com.squareup.moshi.kotlin.codegen.ksp.JsonClassSymbolProcessorProvider {
+    *;
+}
