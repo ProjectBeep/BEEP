@@ -9,5 +9,5 @@ internal interface OnEditorPropertyChipListener {
 
     fun isInvalidFlow(item: EditorChip.Property): Flow<Boolean>
 
-    fun onClick(item: EditorChip.Property)
+    fun onClick(item: EditorChip.Property, position: Int)
 }

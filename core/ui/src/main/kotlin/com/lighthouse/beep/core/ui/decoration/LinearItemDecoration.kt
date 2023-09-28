@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class LinearItemDecoration(
-    private val space: Int
+    private val space: Int,
+    private val start: Int = 0,
+    private val end: Int = 0,
 ) : RecyclerView.ItemDecoration() {
 
     constructor(space: Float): this(space.toInt())
@@ -38,12 +40,12 @@ class LinearItemDecoration(
 
     private fun horizontalItemOffsets(outRect: Rect, position: Position) {
         outRect.left = when (position) {
-            Position.Start -> 0
+            Position.Start -> start
             else -> space / 2
         }
         outRect.top = 0
         outRect.right = when (position) {
-            Position.End -> 0
+            Position.End -> end
             else -> space / 2
         }
         outRect.bottom = 0
@@ -52,12 +54,12 @@ class LinearItemDecoration(
     private fun verticalItemOffsets(outRect: Rect, position: Position) {
         outRect.left = 0
         outRect.top = when (position) {
-            Position.Start -> 0
+            Position.Start -> start
             else -> space / 2
         }
         outRect.right = 0
         outRect.bottom = when (position) {
-            Position.End -> 0
+            Position.End -> end
             else -> space / 2
         }
     }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
@@ -22,11 +23,13 @@ import com.lighthouse.beep.ui.feature.editor.adapter.chip.OnEditorPropertyChipLi
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.OnEditorGifticonListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdapter
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
-import com.lighthouse.beep.ui.feature.editor.decorator.EditorPropertyChipItemDecoration
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlin.math.max
 
 @AndroidEntryPoint
 class EditorActivity : AppCompatActivity() {
@@ -41,9 +44,9 @@ class EditorActivity : AppCompatActivity() {
 
     private val onEditorGifticonListener = object : OnEditorGifticonListener {
         override fun isSelectedFlow(item: GalleryImage): Flow<Boolean> {
-            return flow {
-                emit(true)
-            }
+            return viewModel.selectedGifticon
+                .map { it?.id == item.id }
+                .distinctUntilChanged()
         }
 
         override fun isInvalidFlow(item: GalleryImage): Flow<Boolean> {
@@ -53,7 +56,7 @@ class EditorActivity : AppCompatActivity() {
         }
 
         override fun onClick(item: GalleryImage) {
-
+            viewModel.selectGifticon(item)
         }
 
         override fun onDeleteClick(item: GalleryImage) {
@@ -83,11 +86,11 @@ class EditorActivity : AppCompatActivity() {
         onSelectedGalleryListener = onEditorGifticonListener
     )
 
-    private val onEditorPropertyChipListener = object: OnEditorPropertyChipListener {
+    private val onEditorPropertyChipListener = object : OnEditorPropertyChipListener {
         override fun isSelectedFlow(item: EditorChip.Property): Flow<Boolean> {
-            return flow {
-                emit(true)
-            }
+            return viewModel.selectedEditorChip
+                .map { it is EditorChip.Property && it.type == item.type }
+                .distinctUntilChanged()
         }
 
         override fun isInvalidFlow(item: EditorChip.Property): Flow<Boolean> {
@@ -96,8 +99,9 @@ class EditorActivity : AppCompatActivity() {
             }
         }
 
-        override fun onClick(item: EditorChip.Property) {
-
+        override fun onClick(item: EditorChip.Property, position: Int) {
+            binding.listEditorChip.smoothScrollToPosition(position)
+            viewModel.selectEditorChip(item)
         }
     }
 
@@ -132,14 +136,35 @@ class EditorActivity : AppCompatActivity() {
     private fun setUpPropertyChipList() {
         editorPropertyChipAdapter.submitList(viewModel.editorPropertyChipList)
 
-        binding.btnPreview.setOnOffsetChangedListener { _: Int, progress: Float ->
-            binding.textPreview.alpha = progress
-        }
+        binding.listEditorChip.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val preview = binding.btnPreview
+                val offset = binding.listEditorChip.computeHorizontalScrollOffset()
+                val current = max(preview.maxWidth - offset, preview.minWidth)
+                if (current != preview.width) {
+                    val progress =
+                        (current - preview.minWidth).toFloat() / (preview.maxWidth - preview.minWidth)
+                    binding.textPreview.alpha = progress
+                    preview.updateLayoutParams { width = current }
+                }
+            }
+        })
 
         binding.listEditorChip.adapter = editorPropertyChipAdapter
-        binding.listEditorChip.layoutManager = CenterScrollLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        binding.listEditorChip.addItemDecoration(LinearItemDecoration(8.dp))
-        binding.listEditorChip.addItemDecoration(EditorPropertyChipItemDecoration(this))
+        binding.listEditorChip.layoutManager = CenterScrollLayoutManager(
+            context = this,
+            orientation = RecyclerView.HORIZONTAL,
+            offset = (-12).dp
+        )
+        binding.btnPreview.post {
+            binding.btnPreview.maxWidth = binding.btnPreview.measuredWidth
+            binding.listEditorChip.addItemDecoration(
+                LinearItemDecoration(
+                    8.dp,
+                    binding.btnPreview.maxWidth + 12.dp
+                )
+            )
+        }
     }
 
     private fun setUpCollectState() {
@@ -152,6 +177,20 @@ class EditorActivity : AppCompatActivity() {
                 }
             }
         }
+
+        repeatOnStarted {
+            viewModel.isSelectPreview.collect { isSelected ->
+                binding.btnPreview.isSelected = isSelected
+                binding.textPreview.isSelected = isSelected
+                binding.iconPreview.isSelected = isSelected
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.selectedEditorChip.collect {
+
+            }
+        }
     }
 
     private fun setUpOnClickEvent() {
@@ -160,7 +199,8 @@ class EditorActivity : AppCompatActivity() {
         })
 
         binding.btnPreview.setOnClickListener(createThrottleClickListener {
-
+            binding.listEditorChip.smoothScrollToPosition(0)
+            viewModel.selectEditorChip(EditorChip.Preview)
         })
 
         binding.btnRegister.setOnClickListener(createThrottleClickListener {

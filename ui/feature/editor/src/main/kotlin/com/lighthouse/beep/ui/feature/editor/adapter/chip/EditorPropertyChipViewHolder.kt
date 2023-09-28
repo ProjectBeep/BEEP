@@ -25,7 +25,7 @@ internal class EditorPropertyChipViewHolder(
 
     override fun onSetUpClickEvent(item: EditorChip.Property) {
         binding.root.setOnThrottleClickListener {
-            listener.onClick(item)
+            listener.onClick(item, absoluteAdapterPosition)
         }
     }
 
