@@ -5,6 +5,7 @@ import android.net.Uri
 import com.lighthouse.beep.core.common.exts.decodeBitmap
 import com.lighthouse.beep.library.recognizer.TextRecognizer
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
 import javax.inject.Inject
 
 class RecognizeTextUseCase @Inject constructor(
@@ -13,7 +14,7 @@ class RecognizeTextUseCase @Inject constructor(
 
     suspend operator fun invoke(uri: Uri): Result<String> {
         return runCatching {
-            val bitmap = context.decodeBitmap(uri)
+            val bitmap = context.decodeBitmap(uri) ?: throw IOException("$uri decode Failed")
             val inputs = TextRecognizer().recognize(bitmap)
             inputs.joinToString("")
         }

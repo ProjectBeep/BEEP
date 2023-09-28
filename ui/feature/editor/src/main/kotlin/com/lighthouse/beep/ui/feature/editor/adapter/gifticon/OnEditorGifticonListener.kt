@@ -1,9 +1,9 @@
-package com.lighthouse.beep.ui.feature.editor.adapter
+package com.lighthouse.beep.ui.feature.editor.adapter.gifticon
 
 import com.lighthouse.beep.model.gallery.GalleryImage
 import kotlinx.coroutines.flow.Flow
 
-internal interface OnSelectedGifticonListener {
+internal interface OnEditorGifticonListener {
 
     fun isSelectedFlow(item: GalleryImage): Flow<Boolean>
 

@@ -3,6 +3,8 @@ package com.lighthouse.beep.ui.feature.editor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.ui.feature.editor.model.EditorChip
+import com.lighthouse.beep.ui.feature.editor.model.PropertyType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,5 +20,11 @@ internal class EditorViewModel @Inject constructor(
 
     fun deleteItem(item: GalleryImage) {
         _galleryImage.value = _galleryImage.value.filter { it.id != item.id }
+    }
+
+    val editorChipList = listOf(
+        EditorChip.Preview,
+    ) + PropertyType.entries.map {
+        EditorChip.Property(it)
     }
 }

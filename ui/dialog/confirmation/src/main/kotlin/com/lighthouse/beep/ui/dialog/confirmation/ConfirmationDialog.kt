@@ -61,7 +61,7 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
             isVisible = text.isNotEmpty()
         }
 
-        binding.tvTitle.apply {
+        binding.tvMessage.apply {
             text = ConfirmationParam.getMessage(arguments)
             isVisible = text.isNotEmpty()
         }

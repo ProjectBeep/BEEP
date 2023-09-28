@@ -5,6 +5,7 @@ import android.net.Uri
 import com.lighthouse.beep.core.common.exts.decodeBitmap
 import com.lighthouse.beep.library.recognizer.ExpiredRecognizer
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
 import java.util.Date
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class RecognizeExpiredUseCase @Inject constructor(
 
     suspend operator fun invoke(uri: Uri): Result<Date> {
         return runCatching {
-            val bitmap = context.decodeBitmap(uri)
+            val bitmap = context.decodeBitmap(uri) ?: throw IOException("$uri decode Failed")
             ExpiredRecognizer().recognize(bitmap).expired
         }
     }

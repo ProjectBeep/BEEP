@@ -35,8 +35,8 @@ fun Context.calculateSampleSize(uri: Uri, maxWidth: Int = displayWidth, maxHeigh
 }
 
 @Suppress("DEPRECATION")
-fun Context.decodeBitmap(uri: Uri): Bitmap {
-    return when (uri.scheme) {
+fun Context.decodeBitmap(uri: Uri?): Bitmap? {
+    return when (uri?.scheme) {
         ContentResolver.SCHEME_CONTENT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val source = ImageDecoder.createSource(contentResolver, uri)
             ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
@@ -47,7 +47,7 @@ fun Context.decodeBitmap(uri: Uri): Bitmap {
         }
 
         ContentResolver.SCHEME_FILE -> BitmapFactory.decodeFile(uri.path)
-        else -> throw IOException("알 수 없는 scheme 입니다.")
+        else -> null
     }
 }
 

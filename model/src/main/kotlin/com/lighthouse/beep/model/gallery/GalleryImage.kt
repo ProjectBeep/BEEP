@@ -15,6 +15,9 @@ data class GalleryImage(
 ) {
     companion object {
         fun fromJson(json: String): List<GalleryImage> {
+            if (json.isEmpty()) {
+                return emptyList()
+            }
             val jsonAdapter = getGalleryImageListAdapter()
             return jsonAdapter.fromJson(json) ?: emptyList()
         }

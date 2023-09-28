@@ -17,6 +17,7 @@ dependencies {
     implementation(projects.navs)
 
     implementation(projects.ui.dialog.confirmation)
+    implementation(projects.ui.designsystem.cropview)
 
     implementation(libs.coil)
 

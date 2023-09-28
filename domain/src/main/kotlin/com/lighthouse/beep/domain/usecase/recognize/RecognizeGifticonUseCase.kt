@@ -13,6 +13,7 @@ import com.lighthouse.beep.library.recognizer.GifticonRecognizer
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
 import javax.inject.Inject
 
 class RecognizeGifticonUseCase @Inject constructor(
@@ -22,6 +23,7 @@ class RecognizeGifticonUseCase @Inject constructor(
     suspend operator fun invoke(gallery: GalleryImage): Result<GifticonRecognizeResult> {
         return runCatching {
             val bitmap = context.decodeBitmap(gallery.contentUri)
+                ?: throw IOException("${gallery.contentUri} decode Failed")
             val info = GifticonRecognizer().recognize(bitmap)
             var croppedUri: Uri? = null
             val croppedImage = info.croppedImage

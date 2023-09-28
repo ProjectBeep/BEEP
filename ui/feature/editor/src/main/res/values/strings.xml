@@ -2,6 +2,15 @@
 <resources>
     <string name="editor_title">기프티콘 등록</string>
 
+    <string name="editor_gifticon_property_thumbnail">썸네일</string>
+    <string name="editor_gifticon_property_name">제품명</string>
+    <string name="editor_gifticon_property_brand">브랜드</string>
+    <string name="editor_gifticon_property_barcode">바코드</string>
+    <string name="editor_gifticon_property_expired">유효기간</string>
+
+    <string name="editor_gifticon_register_invalid">쿠폰 등록하기</string>
+    <string name="editor_gifticon_register_valid">%d개 쿠폰 우선 등록하기</string>
+
     <string name="editor_gifticon_delete_message">정말 삭제하시겠습니까?</string>
     <string name="editor_gifticon_delete_ok">예</string>
     <string name="editor_gifticon_delete_cancel">아니오</string>
