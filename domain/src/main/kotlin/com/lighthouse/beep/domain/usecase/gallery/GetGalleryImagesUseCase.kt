@@ -13,4 +13,8 @@ class GetGalleryImagesUseCase @Inject constructor(
     operator fun invoke(pageSize: Int): Flow<PagingData<GalleryImage>> {
         return galleryRepository.getImages(pageSize)
     }
+
+    suspend operator fun invoke(page: Int, limit: Int): List<GalleryImage> {
+        return galleryRepository.getImages(page, limit)
+    }
 }

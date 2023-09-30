@@ -8,7 +8,4 @@
 
     <string name="selected_item_empty">이미지를 선택해주세요</string>
     <string name="selected_item_count">선택된 항목 %d / 30개</string>
-
-    <string name="tag_gallery_header">GalleryHeader</string>
-    <string name="tag_gallery_footer">GalleryFooter</string>
 </resources>

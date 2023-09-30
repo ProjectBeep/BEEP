@@ -6,14 +6,15 @@ import com.lighthouse.beep.core.common.exts.displayHeight
 import com.lighthouse.beep.core.common.exts.displayWidth
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.model.ScrollInfo
+import com.lighthouse.beep.domain.usecase.gallery.GetGalleryGifticonUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImageSizeUseCase
-import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesOnlyGifticonUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesUseCase
+import com.lighthouse.beep.domain.usecase.gallery.GetGalleryRecognizeDataUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.model.gallery.GalleryImageRecognizeData
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,8 +30,9 @@ import kotlin.math.ceil
 @HiltViewModel
 internal class GalleryViewModel @Inject constructor(
     getGalleryImageSizeUseCase: GetGalleryImageSizeUseCase,
-    getGalleryImagesUseCase: GetGalleryImagesUseCase,
-    private val getGalleryImagesOnlyGifticonUseCase: GetGalleryImagesOnlyGifticonUseCase,
+    private val getGalleryImagesUseCase: GetGalleryImagesUseCase,
+    private val getGalleryRecognizeDataUseCase: GetGalleryRecognizeDataUseCase,
+    private val retGalleryGifticonUseCase: GetGalleryGifticonUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -101,14 +103,26 @@ internal class GalleryViewModel @Inject constructor(
 
         lastVisible = currentLastVisible ?: lastVisible
         requestNextJob = viewModelScope.launch {
-            launch {
-                delay(200)
-                recognizing.value = true
-            }
             val targetSize = recommendList.value.size + pageCount
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
-                val items = getGalleryImagesOnlyGifticonUseCase(currentPage, limit)
-                _recommendList.value += items
+                val images = getGalleryImagesUseCase(currentPage, limit)
+                val list = mutableListOf<GalleryImage>()
+                val requestRecognizeList = images.filter {
+                    val recognize = getGalleryRecognizeDataUseCase(it)
+                    if (recognize == GalleryImageRecognizeData.GIFTICON) {
+                        list.add(it)
+                    }
+                    recognize == GalleryImageRecognizeData.NONE
+                }
+
+                if (requestRecognizeList.isNotEmpty()) {
+                    if (!recognizing.value) {
+                        recognizing.value = true
+                    }
+                    list.addAll(retGalleryGifticonUseCase(requestRecognizeList))
+                    list.sortBy { -it.dateAdded.time }
+                }
+                _recommendList.value += list
                 currentPage += 1
             }
         }.also {
@@ -137,7 +151,7 @@ internal class GalleryViewModel @Inject constructor(
 
     fun selectItem(item: GalleryImage) {
         val index = _selectedList.indexOfFirst { it.id == item.id }
-        if (index == -1){
+        if (index == -1) {
             _selectedList.add(item)
         } else {
             _selectedList.removeAt(index)
@@ -147,9 +161,9 @@ internal class GalleryViewModel @Inject constructor(
         }
     }
 
-    fun deleteItem(item:GalleryImage) {
+    fun deleteItem(item: GalleryImage) {
         val index = _selectedList.indexOfFirst { it.id == item.id }
-        if (index == -1){
+        if (index == -1) {
             return
         } else {
             _selectedList.removeAt(index)

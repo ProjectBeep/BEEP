@@ -77,26 +77,16 @@
         app:tabIndicatorColor="@color/black"
         app:tabMode="scrollable"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_footer"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_gallery"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="66dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:tag="@string/tag_gallery_footer">
-
-        <TextView
-            android:id="@+id/text_selected_item_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/Text.Title5"
-            android:textColor="@color/font_dark_gray"
-            android:text="@string/selected_item_empty" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tab_bucket_type"
+        app:layout_constraintBottom_toTopOf="@id/container_footer"
+        tools:spanCount="3"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_gallery"/>
 
     <ProgressBar
         android:id="@+id/progress_recognize"
@@ -112,15 +102,24 @@
         android:backgroundTint="@color/bg"
         android:background="@drawable/bg_oval"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_gallery"
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_footer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tab_bucket_type"
-        app:layout_constraintBottom_toTopOf="@id/container_footer"
-        tools:spanCount="3"
-        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:listitem="@layout/item_gallery"/>
+        android:layout_height="66dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/white">
 
+        <TextView
+            android:id="@+id/text_selected_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textAppearance="@style/Text.Title5"
+            android:textColor="@color/font_dark_gray"
+            android:text="@string/selected_item_empty" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
