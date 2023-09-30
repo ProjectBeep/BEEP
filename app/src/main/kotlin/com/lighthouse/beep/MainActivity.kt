@@ -17,6 +17,7 @@ import com.lighthouse.beep.navs.AppNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,10 +59,20 @@ class MainActivity : AppCompatActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        splashScreen.setKeepOnScreenCondition {
-            viewModel.uiState.value is MainUiState.Success
+        if (savedInstanceState == null) {
+            splashScreen.setKeepOnScreenCondition {
+                viewModel.uiState.value is MainUiState.Success
+            }
+            splashScreen.setOnExitAnimationListener(onExitAnimationListener)
+        } else {
+            lifecycleScope.launch {
+                viewModel.uiState.filterIsInstance<MainUiState.Success>()
+                    .take(1)
+                    .collect {
+                        setUpPageNavigate()
+                    }
+            }
         }
-        splashScreen.setOnExitAnimationListener(onExitAnimationListener)
     }
 
     private fun setUpPageNavigate() {

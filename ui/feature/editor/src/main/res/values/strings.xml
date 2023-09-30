@@ -2,12 +2,24 @@
 <resources>
     <string name="editor_title">기프티콘 등록</string>
 
+    <string name="editor_preview_gifticon_info">기프티콘 정보</string>
+    <string name="editor_preview_gifticon_name">제품명</string>
+    <string name="editor_preview_gifticon_brand">브랜드</string>
+    <string name="editor_preview_gifticon_expired">유효기간</string>
+    <string name="editor_preview_gifticon_memo">메모</string>
+
     <string name="editor_gifticon_preview">미리보기</string>
     <string name="editor_gifticon_property_thumbnail">썸네일</string>
     <string name="editor_gifticon_property_name">제품명</string>
     <string name="editor_gifticon_property_brand">브랜드</string>
     <string name="editor_gifticon_property_barcode">바코드</string>
     <string name="editor_gifticon_property_expired">유효기간</string>
+
+    <string name="editor_preview_property_all">모든</string>
+    <string name="editor_preview_complete">%s 항목이 등록되었어요</string>
+    <string name="editor_preview_invalid_items">%s 항목이 등록되지 않았어요.</string>
+    <string name="editor_thumbnail_check">썸네일 이미지가 맞는지 확인해 주세요.</string>
+    <string name="editor_edit">편집</string>
 
     <string name="editor_gifticon_register_invalid">쿠폰 등록하기</string>
     <string name="editor_gifticon_register_valid">%d개 쿠폰 우선 등록하기</string>

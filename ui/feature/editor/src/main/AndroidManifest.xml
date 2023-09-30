@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".EditorActivity"
-            android:theme="@style/Theme.BEEP.SharedElementTransition"/>
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>

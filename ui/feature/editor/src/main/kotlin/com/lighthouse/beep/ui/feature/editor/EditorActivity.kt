@@ -1,11 +1,13 @@
 package com.lighthouse.beep.ui.feature.editor
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
@@ -20,10 +22,15 @@ import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.EditorPropertyChipAdapter
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.OnEditorPropertyChipListener
+import com.lighthouse.beep.ui.feature.editor.adapter.editor.EditorAdapter
+import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorPreviewListener
+import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorTextListener
+import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorThumbnailListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.OnEditorGifticonListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdapter
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
+import com.lighthouse.beep.ui.feature.editor.model.PropertyType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -109,6 +116,46 @@ class EditorActivity : AppCompatActivity() {
         onEditorPropertyChipListener = onEditorPropertyChipListener
     )
 
+    private val onEditorPreviewListener = object : OnEditorPreviewListener {
+        override fun getInvalidPropertyFlow(): Flow<List<PropertyType>> {
+            return flow {
+                emit(emptyList())
+            }
+        }
+    }
+
+    private val onEditorThumbnailListener = object : OnEditorThumbnailListener {
+        override fun getThumbnailFlow(): Flow<Uri> {
+            return flow {
+                emit(Uri.EMPTY)
+            }
+        }
+
+        override fun isInvalidThumbnailFlow(): Flow<Boolean> {
+            return flow {
+                emit(true)
+            }
+        }
+    }
+
+    private val onEditorTextListener = object : OnEditorTextListener {
+        override fun getTextFlow(item: EditorChip.Property): Flow<String> {
+            return flow {
+                emit("")
+            }
+        }
+
+        override fun onEditClick(item: EditorChip.Property) {
+
+        }
+    }
+
+    private val editorAdapter = EditorAdapter(
+        onEditorPreviewListener = onEditorPreviewListener,
+        onEditorThumbnailListener = onEditorThumbnailListener,
+        onEditorTextListener = onEditorTextListener,
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditorBinding.inflate(LayoutInflater.from(this))
@@ -117,6 +164,7 @@ class EditorActivity : AppCompatActivity() {
         setUpBackPress()
         setUpGifticonList()
         setUpPropertyChipList()
+        setUpRecycleEditor()
         setUpCollectState()
         setUpOnClickEvent()
     }
@@ -167,6 +215,12 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
+    private fun setUpRecycleEditor() {
+        binding.recyclerEditor.adapter = editorAdapter
+        binding.recyclerEditor.itemAnimator = null
+        binding.recyclerEditor.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+    }
+
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.galleryImage.collect {
@@ -188,6 +242,10 @@ class EditorActivity : AppCompatActivity() {
 
         repeatOnStarted {
             viewModel.selectedEditorChip.collect {
+                binding.cardPreview.isVisible = it is EditorChip.Preview
+                binding.cropGifticon.isVisible = it is EditorChip.Property
+
+                editorAdapter.submitList(listOf(it))
 
             }
         }

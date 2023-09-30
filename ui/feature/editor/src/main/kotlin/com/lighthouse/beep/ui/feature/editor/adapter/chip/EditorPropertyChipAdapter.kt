@@ -3,11 +3,11 @@ package com.lighthouse.beep.ui.feature.editor.adapter.chip
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
-import com.lighthouse.beep.ui.feature.editor.model.EditorChipDiff
+import com.lighthouse.beep.ui.feature.editor.model.EditorChipPropertyDiff
 
 internal class EditorPropertyChipAdapter(
     private val onEditorPropertyChipListener: OnEditorPropertyChipListener,
-) : ListAdapter<EditorChip.Property, EditorPropertyChipViewHolder>(EditorChipDiff()){
+) : ListAdapter<EditorChip.Property, EditorPropertyChipViewHolder>(EditorChipPropertyDiff()){
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

@@ -10,7 +10,27 @@ internal sealed interface EditorChip {
     data class Property(val type: PropertyType) : EditorChip
 }
 
-internal class EditorChipDiff : DiffUtil.ItemCallback<EditorChip.Property>() {
+internal class EditorChipDiff : DiffUtil.ItemCallback<EditorChip>() {
+    override fun areItemsTheSame(
+        oldItem: EditorChip,
+        newItem: EditorChip,
+    ): Boolean {
+        return when {
+            oldItem is EditorChip.Preview && newItem is EditorChip.Preview -> oldItem == newItem
+            oldItem is EditorChip.Property && newItem is EditorChip.Property -> oldItem.type == newItem.type
+            else -> false
+        }
+    }
+
+    override fun areContentsTheSame(
+        oldItem: EditorChip,
+        newItem: EditorChip,
+    ): Boolean {
+        return oldItem == newItem
+    }
+}
+
+internal class EditorChipPropertyDiff : DiffUtil.ItemCallback<EditorChip.Property>() {
     override fun areItemsTheSame(
         oldItem: EditorChip.Property,
         newItem: EditorChip.Property

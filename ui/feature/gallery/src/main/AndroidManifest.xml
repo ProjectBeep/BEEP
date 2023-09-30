@@ -4,6 +4,6 @@
     <application>
         <activity
             android:name=".GalleryActivity"
-            android:theme="@style/Theme.BEEP.SharedElementTransition"/>
+            android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>
