@@ -347,4 +347,9 @@
         android:textColor="@color/white"
         android:textAppearance="@style/Text.Title5"
         android:text="@string/editor_gifticon_register_invalid"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container_system"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

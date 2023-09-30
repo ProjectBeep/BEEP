@@ -17,7 +17,7 @@ internal class EditorTextViewHolder(
 ): LifecycleViewHolder<EditorChip.Property>(binding.root) {
 
     override fun onSetUpClickEvent(item: EditorChip.Property) {
-        binding.btnEdit.setOnThrottleClickListener {
+        binding.textEditor.setOnThrottleClickListener {
             listener.onEditClick(item)
         }
     }

@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".EditorActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustNothing|stateVisible"
             android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>

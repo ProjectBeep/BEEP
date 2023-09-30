@@ -32,7 +32,7 @@ internal class GalleryViewModel @Inject constructor(
     getGalleryImageSizeUseCase: GetGalleryImageSizeUseCase,
     private val getGalleryImagesUseCase: GetGalleryImagesUseCase,
     private val getGalleryRecognizeDataUseCase: GetGalleryRecognizeDataUseCase,
-    private val retGalleryGifticonUseCase: GetGalleryGifticonUseCase,
+    private val getGalleryGifticonUseCase: GetGalleryGifticonUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -119,7 +119,7 @@ internal class GalleryViewModel @Inject constructor(
                     if (!recognizing.value) {
                         recognizing.value = true
                     }
-                    list.addAll(retGalleryGifticonUseCase(requestRecognizeList))
+                    list.addAll(getGalleryGifticonUseCase(requestRecognizeList))
                     list.sortBy { -it.dateAdded.time }
                 }
                 _recommendList.value += list

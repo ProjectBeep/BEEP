@@ -3,6 +3,7 @@ package com.lighthouse.beep.ui.feature.editor
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
@@ -20,6 +22,9 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
+import com.lighthouse.beep.ui.dialog.textinput.TextInputDialog
+import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
+import com.lighthouse.beep.ui.dialog.textinput.TextInputResult
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.EditorPropertyChipAdapter
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.OnEditorPropertyChipListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.EditorAdapter
@@ -138,6 +143,18 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
+    private fun showTextInputDialog(text: String) {
+        var fragment =
+            supportFragmentManager.findFragmentByTag(TextInputDialog.TAG)
+        if (fragment == null) {
+            val param = TextInputParam(text)
+            fragment = TextInputDialog.newInstance(param)
+        }
+        supportFragmentManager.commit {
+            replace(binding.containerSystem.id, fragment, TextInputDialog.TAG)
+        }
+    }
+
     private val onEditorTextListener = object : OnEditorTextListener {
         override fun getTextFlow(item: EditorChip.Property): Flow<String> {
             return flow {
@@ -146,7 +163,7 @@ class EditorActivity : AppCompatActivity() {
         }
 
         override fun onEditClick(item: EditorChip.Property) {
-
+            showTextInputDialog(item.type.name)
         }
     }
 
@@ -165,6 +182,7 @@ class EditorActivity : AppCompatActivity() {
         setUpGifticonList()
         setUpPropertyChipList()
         setUpRecycleEditor()
+        setUpTextInputResult()
         setUpCollectState()
         setUpOnClickEvent()
     }
@@ -219,6 +237,13 @@ class EditorActivity : AppCompatActivity() {
         binding.recyclerEditor.adapter = editorAdapter
         binding.recyclerEditor.itemAnimator = null
         binding.recyclerEditor.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+    }
+
+    private fun setUpTextInputResult() {
+        supportFragmentManager.setFragmentResultListener(TextInputResult.KEY, this) { _, data ->
+            val result = TextInputResult(data)
+            Log.d("TextInput", "result : ${result.text}")
+        }
     }
 
     private fun setUpCollectState() {
