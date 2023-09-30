@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
@@ -144,15 +143,13 @@ class EditorActivity : AppCompatActivity() {
     }
 
     private fun showTextInputDialog(text: String) {
-        var fragment =
-            supportFragmentManager.findFragmentByTag(TextInputDialog.TAG)
-        if (fragment == null) {
+        var dialog =
+            supportFragmentManager.findFragmentByTag(TextInputDialog.TAG) as? DialogFragment
+        if (dialog == null) {
             val param = TextInputParam(text)
-            fragment = TextInputDialog.newInstance(param)
+            dialog = TextInputDialog.newInstance(param)
         }
-        supportFragmentManager.commit {
-            replace(binding.containerSystem.id, fragment, TextInputDialog.TAG)
-        }
+        dialog.show(supportFragmentManager, TextInputDialog.TAG)
     }
 
     private val onEditorTextListener = object : OnEditorTextListener {

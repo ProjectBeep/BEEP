@@ -87,6 +87,10 @@ class FragmentKeyboardProvider(
                     }
                     keyboardProvider = null
                 }
+
+                override fun onStart(owner: LifecycleOwner) {
+                    keyboardProvider = KeyboardProvider(fragment.requireActivity())
+                }
             })
         }
 
@@ -105,7 +109,8 @@ class FragmentKeyboardProvider(
     }
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): KeyboardProvider {
-        return keyboardProvider ?: KeyboardProvider(fragment.requireActivity()).also {            keyboardProvider = it
+        return keyboardProvider ?: KeyboardProvider(fragment.requireActivity()).also {
+            keyboardProvider = it
         }
     }
 }
@@ -121,6 +126,10 @@ class ActivityKeyboardProvider(
                 keyboardProvider?.dismiss()
             }
             keyboardProvider = null
+        }
+
+        override fun onStart(owner: LifecycleOwner) {
+            keyboardProvider = KeyboardProvider(activity)
         }
 
         override fun onDestroy(owner: LifecycleOwner) {

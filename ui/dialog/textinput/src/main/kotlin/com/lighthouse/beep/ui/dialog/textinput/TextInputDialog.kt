@@ -3,10 +3,9 @@ package com.lighthouse.beep.ui.dialog.textinput
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
@@ -44,25 +43,34 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             window?.apply {
-                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                requestFeature(Window.FEATURE_NO_TITLE)
+                setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING or
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
+                )
             }
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.editText.addTextChangedListener {
-            viewModel.text = it.toString()
-        }
-        binding.editText.setText(TextInputParam.getText(arguments))
-        binding.editText.hint = TextInputParam.getHint(arguments)
-        binding.editText.requestFocus()
+        setUpBackPress()
+        setUpKeyboardPadding()
+        setUpEditText()
+        setUpClickEvent()
+    }
 
-        imm?.showSoftInput(binding.editText, 0)
-
-        binding.root.setOnClickListener {
+    private fun setUpBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             dismiss()
         }
+    }
 
+    private fun setUpKeyboardPadding() {
         keyboardHeightProvider.setOnKeyboardHeightListener { height ->
             val start = binding.containerTextInput.paddingBottom
             binding.containerTextInput.animate()
@@ -74,26 +82,31 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
                 }
                 .start()
         }
+    }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+    private fun setUpEditText() {
+        binding.editText.addTextChangedListener {
+            viewModel.text = it.toString()
+        }
+        binding.editText.setText(TextInputParam.getText(arguments))
+        binding.editText.hint = TextInputParam.getHint(arguments)
+        binding.editText.requestFocus()
+    }
+
+    private fun setUpClickEvent() {
+        binding.root.setOnClickListener {
+            val windowToken = binding.editText.windowToken
+            if (windowToken != null) {
+                imm?.hideSoftInputFromWindow(windowToken, 0)
+            }
             dismiss()
         }
     }
-    override fun onResume() {
-        super.onResume()
 
-        dialog?.window?.apply {
-            attributes = attributes.apply {
-                width = WindowManager.LayoutParams.MATCH_PARENT
-                height = WindowManager.LayoutParams.MATCH_PARENT
-            }
-        }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
+    override fun onDismiss(dialogInterface: DialogInterface) {
         val result = TextInputResult(viewModel.text)
         setFragmentResult(TextInputResult.KEY, result.buildBundle())
 
-        super.onDismiss(dialog)
+        super.onDismiss(dialogInterface)
     }
 }
