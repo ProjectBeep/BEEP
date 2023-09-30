@@ -72,15 +72,17 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
 
     private fun setUpKeyboardPadding() {
         keyboardHeightProvider.setOnKeyboardHeightListener { height ->
-            val start = binding.containerTextInput.paddingBottom
-            binding.containerTextInput.animate()
-                .setDuration(180)
-                .setInterpolator(DecelerateInterpolator())
-                .setUpdateListener {
-                    val padding = start - ((start - height) * it.animatedFraction).toInt()
-                    binding.containerTextInput.updatePadding(bottom = padding)
-                }
-                .start()
+            if (isAdded) {
+                val start = binding.containerTextInput.paddingBottom
+                binding.containerTextInput.animate()
+                    .setDuration(180)
+                    .setInterpolator(DecelerateInterpolator())
+                    .setUpdateListener {
+                        val padding = start - ((start - height) * it.animatedFraction).toInt()
+                        binding.containerTextInput.updatePadding(bottom = padding)
+                    }
+                    .start()
+            }
         }
     }
 
