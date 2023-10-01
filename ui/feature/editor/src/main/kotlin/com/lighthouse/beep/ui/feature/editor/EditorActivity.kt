@@ -24,6 +24,7 @@ import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
 import com.lighthouse.beep.ui.dialog.progress.ProgressDialog
 import com.lighthouse.beep.ui.dialog.progress.ProgressParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputDialog
+import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputResult
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.EditorPropertyChipAdapter
@@ -142,9 +143,24 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun showTextInputDialog(text: String) {
-        show(TextInputDialog.TAG) {
-            val param = TextInputParam(text)
+    private fun showTextInputDialog(item: EditorChip) {
+        val tag = when (item) {
+            is EditorChip.Preview -> "Memo"
+            is EditorChip.Property -> item.type.name
+        }
+        show(tag) {
+            val inputFormat = when (item) {
+                is EditorChip.Preview -> TextInputFormat.TEXT
+                is EditorChip.Property -> when(item.type) {
+                    PropertyType.BRAND -> TextInputFormat.BALANCE
+                    PropertyType.BARCODE -> TextInputFormat.BARCODE
+                    else -> TextInputFormat.TEXT
+                }
+            }
+
+            val param = TextInputParam(
+                inputFormat = inputFormat
+            )
             TextInputDialog.newInstance(param)
         }
     }
@@ -157,7 +173,7 @@ class EditorActivity : AppCompatActivity() {
         }
 
         override fun onEditClick(item: EditorChip.Property) {
-            showTextInputDialog(item.type.name)
+            showTextInputDialog(item)
         }
     }
 
@@ -236,7 +252,7 @@ class EditorActivity : AppCompatActivity() {
     private fun setUpTextInputResult() {
         supportFragmentManager.setFragmentResultListener(TextInputResult.KEY, this) { _, data ->
             val result = TextInputResult(data)
-            Log.d("TextInput", "result : ${result.text}")
+            Log.d("TextInput", "result : ${result.displayText}, ${result.value}")
         }
     }
 
