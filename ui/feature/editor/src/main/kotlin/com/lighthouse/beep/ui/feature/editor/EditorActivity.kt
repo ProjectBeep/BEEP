@@ -10,17 +10,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
+import com.lighthouse.beep.ui.dialog.progress.ProgressDialog
+import com.lighthouse.beep.ui.dialog.progress.ProgressParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputDialog
 import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputResult
@@ -41,6 +43,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlin.math.max
+import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
 class EditorActivity : AppCompatActivity() {
@@ -76,21 +79,18 @@ class EditorActivity : AppCompatActivity() {
     }
 
     private fun showSelectedGifticonDeleteDialog(item: GalleryImage) {
-        var dialog =
-            supportFragmentManager.findFragmentByTag(TAG_SELECTED_GIFTICON_DELETE) as? DialogFragment
-        if (dialog == null) {
+        show(TAG_SELECTED_GIFTICON_DELETE) {
             val param = ConfirmationParam(
                 message = getString(R.string.editor_gifticon_delete_message),
                 okText = getString(R.string.editor_gifticon_delete_ok),
                 cancelText = getString(R.string.editor_gifticon_delete_cancel)
             )
-            dialog = ConfirmationDialog.newInstance(param).apply {
+            ConfirmationDialog.newInstance(param).apply {
                 setOnOkClickListener {
                     viewModel.deleteItem(item)
                 }
             }
         }
-        dialog.show(supportFragmentManager, TAG_SELECTED_GIFTICON_DELETE)
     }
 
     private val editorGifticonAdapter = EditorGifticonAdapter(
@@ -143,13 +143,10 @@ class EditorActivity : AppCompatActivity() {
     }
 
     private fun showTextInputDialog(text: String) {
-        var dialog =
-            supportFragmentManager.findFragmentByTag(TextInputDialog.TAG) as? DialogFragment
-        if (dialog == null) {
+        show(TextInputDialog.TAG) {
             val param = TextInputParam(text)
-            dialog = TextInputDialog.newInstance(param)
+            TextInputDialog.newInstance(param)
         }
-        dialog.show(supportFragmentManager, TextInputDialog.TAG)
     }
 
     private val onEditorTextListener = object : OnEditorTextListener {
@@ -243,6 +240,17 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
+    private fun showProgress() {
+        show(ProgressDialog.TAG) {
+            val param = ProgressParam(getColor(ThemeR.color.black_60))
+            ProgressDialog.newInstance(param).apply {
+                setOnCancelListener {
+                    cancelEditor()
+                }
+            }
+        }
+    }
+
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.galleryImage.collect {
@@ -268,7 +276,6 @@ class EditorActivity : AppCompatActivity() {
                 binding.cropGifticon.isVisible = it is EditorChip.Property
 
                 editorAdapter.submitList(listOf(it))
-
             }
         }
     }

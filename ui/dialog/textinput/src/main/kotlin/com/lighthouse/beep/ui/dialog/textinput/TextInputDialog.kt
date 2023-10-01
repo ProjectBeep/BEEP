@@ -4,12 +4,12 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.addCallback
 import androidx.core.view.updatePadding
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
@@ -18,6 +18,7 @@ import androidx.fragment.app.viewModels
 import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.core.ui.keyboard.keyboardProviders
 import com.lighthouse.beep.ui.dialog.textinput.databinding.DialogTextInputBinding
+import com.lighthouse.beep.theme.R as ThemeR
 
 class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
 
@@ -48,26 +49,27 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING or
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
                 )
+                setOnKeyListener { _, keyCode, _ ->
+                    if(keyCode == KeyEvent.KEYCODE_BACK){
+                        hideDialog()
+                        true
+                    } else {
+                        false
+                    }
+                }
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
+        setStyle(STYLE_NO_FRAME, ThemeR.style.Theme_Dialog)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setUpBackPress()
         setUpKeyboardPadding()
         setUpEditText()
         setUpClickEvent()
-    }
-
-    private fun setUpBackPress() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            dismiss()
-        }
     }
 
     private fun setUpKeyboardPadding() {
@@ -97,12 +99,16 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
 
     private fun setUpClickEvent() {
         binding.root.setOnClickListener {
-            val windowToken = binding.editText.windowToken
-            if (windowToken != null) {
-                imm?.hideSoftInputFromWindow(windowToken, 0)
-            }
-            dismiss()
+            hideDialog()
         }
+    }
+
+    private fun hideDialog() {
+        val windowToken = binding.editText.windowToken
+        if (windowToken != null) {
+            imm?.hideSoftInputFromWindow(windowToken, 0)
+        }
+        dismiss()
     }
 
     override fun onDismiss(dialogInterface: DialogInterface) {

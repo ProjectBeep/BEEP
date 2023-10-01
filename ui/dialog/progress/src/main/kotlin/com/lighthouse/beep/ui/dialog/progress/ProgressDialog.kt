@@ -1,46 +1,50 @@
 package com.lighthouse.beep.ui.dialog.progress
 
 import android.app.Dialog
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
+import android.view.KeyEvent
 import androidx.fragment.app.DialogFragment
-import com.lighthouse.beep.ui.core.binding.viewBindings
-import com.lighthouse.beep.ui.dialog.progress.databinding.DialogProgressBinding
+import com.lighthouse.beep.theme.R as ThemeR
 
 class ProgressDialog : DialogFragment(R.layout.dialog_progress) {
 
     companion object {
-        fun newInstance(params: ProgressParam = ProgressParam()): ProgressDialog {
+        const val TAG = "ProgressDialog"
+
+        fun newInstance(param: ProgressParam = ProgressParam()): ProgressDialog {
             return ProgressDialog().apply {
-                arguments = params.buildBundle()
+                arguments = param.buildBundle()
             }
         }
     }
 
-    private val binding by viewBindings<DialogProgressBinding>()
+    private var onCancelListener: OnCancelListener? = null
+
+    fun setOnCancelListener(listener: OnCancelListener) {
+        onCancelListener = listener
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_FRAME, ThemeR.style.Theme_Dialog)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             window?.apply {
-                setDimAmount(ProgressParam.getDimAmount(arguments))
                 setCancelable(false)
                 setCanceledOnTouchOutside(false)
+                val backgroundColor = ProgressParam.getBackgroundColor(arguments)
+                setBackgroundDrawable(ColorDrawable(backgroundColor))
             }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.root.setBackgroundColor(ProgressParam.getBackgroundColor(arguments))
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        dialog?.window?.apply {
-            attributes = attributes.apply {
-                width = WindowManager.LayoutParams.MATCH_PARENT
-                height = WindowManager.LayoutParams.MATCH_PARENT
+            setOnKeyListener { _, keyCode, _ ->
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    onCancelListener?.onCancel()
+                    true
+                } else {
+                    false
+                }
             }
         }
     }

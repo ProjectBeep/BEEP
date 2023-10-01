@@ -16,6 +16,7 @@ dependencies {
 
     implementation(projects.navs)
 
+    implementation(projects.ui.dialog.progress)
     implementation(projects.ui.dialog.confirmation)
     implementation(projects.ui.dialog.textinput)
     implementation(projects.ui.designsystem.cropview)

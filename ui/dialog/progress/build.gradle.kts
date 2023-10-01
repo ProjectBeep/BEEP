@@ -1,5 +1,5 @@
 plugins {
-    id("beep.android.library")
+    id("beep.android.feature")
 }
 
 android {
@@ -7,7 +7,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.ui.core)
+    implementation(projects.core.ui)
+    implementation(projects.theme)
 
     implementation(libs.androidx.fragment.ktx)
 }

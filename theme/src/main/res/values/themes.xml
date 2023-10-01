@@ -20,4 +20,14 @@
     <style name="Theme.BEEP.SharedElementTransition" parent="Theme.BEEP">
         <item name="android:windowContentTransitions">true</item>
     </style>
+
+    <style name="Theme.Dialog" parent="">
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorSecondary">@color/beep_pink</item>
+        <item name="colorAccent">@color/beep_pink</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/black_60</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>
