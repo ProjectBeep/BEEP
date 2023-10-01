@@ -367,6 +367,6 @@ class CropImageView(
         private val RECT_F_EMPTY = RectF()
 
         private const val MIN_ZOOM = 1f
-        private const val MAX_ZOOM = 4f
+        private const val MAX_ZOOM = 2f
     }
 }

@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.activity.ComponentActivity
@@ -19,7 +20,7 @@ import kotlin.reflect.KProperty
 
 class KeyboardProvider(
     activity: ComponentActivity
-) : PopupWindow() {
+) : PopupWindow(), ViewTreeObserver.OnGlobalLayoutListener {
 
     private val view = View(activity)
     private var originHeight = -1
@@ -41,7 +42,7 @@ class KeyboardProvider(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
 
-            ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            view.setOnApplyWindowInsetsListener { _, insets ->
                 val imeHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
                 val navigationBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
                 onKeyboardHeightListener?.onHeightChanged(imeHeight - navigationBarHeight)
@@ -50,21 +51,31 @@ class KeyboardProvider(
         } else {
             softInputMode =
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
-            view.viewTreeObserver.addOnGlobalLayoutListener {
-                if (view.height > originHeight) {
-                    originHeight = view.height
-                }
-                val visibleFrameSize = Rect().apply {
-                    view.getWindowVisibleDisplayFrame(this)
-                }
-
-                val visibleFrameHeight = visibleFrameSize.bottom - visibleFrameSize.top
-                val keyboardHeight = originHeight - visibleFrameHeight
-                onKeyboardHeightListener?.onHeightChanged(keyboardHeight)
-            }
+            view.viewTreeObserver.addOnGlobalLayoutListener(this)
         }
 
         showAtLocation(activity.window.decorView, Gravity.NO_GRAVITY, 0, 0)
+    }
+
+    fun release() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            view.setOnApplyWindowInsetsListener(null)
+        } else {
+            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    }
+
+    override fun onGlobalLayout() {
+        if (view.height > originHeight) {
+            originHeight = view.height
+        }
+        val visibleFrameSize = Rect().apply {
+            view.getWindowVisibleDisplayFrame(this)
+        }
+
+        val visibleFrameHeight = visibleFrameSize.bottom - visibleFrameSize.top
+        val keyboardHeight = originHeight - visibleFrameHeight
+        onKeyboardHeightListener?.onHeightChanged(keyboardHeight)
     }
 }
 
@@ -82,6 +93,7 @@ class FragmentKeyboardProvider(
         private val viewLifecycleOwnerObserver = Observer<LifecycleOwner?> { viewLifecycleOwner ->
             viewLifecycleOwner?.lifecycle?.addObserver(object : DefaultLifecycleObserver {
                 override fun onStop(owner: LifecycleOwner) {
+                    keyboardProvider?.release()
                     if (keyboardProvider?.isShowing == true) {
                         keyboardProvider?.dismiss()
                     }
@@ -122,6 +134,7 @@ class ActivityKeyboardProvider(
 
     private val activityObserver = object : DefaultLifecycleObserver {
         override fun onStop(owner: LifecycleOwner) {
+            keyboardProvider?.release()
             if (keyboardProvider?.isShowing == true) {
                 keyboardProvider?.dismiss()
             }

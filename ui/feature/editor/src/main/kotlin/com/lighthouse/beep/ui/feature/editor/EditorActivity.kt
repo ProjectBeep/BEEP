@@ -3,7 +3,6 @@ package com.lighthouse.beep.ui.feature.editor
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.hide
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
@@ -36,6 +36,7 @@ import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorThumbnailLis
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.OnEditorGifticonListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdapter
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
+import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.PropertyType
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,9 +66,9 @@ class EditorActivity : AppCompatActivity() {
         }
 
         override fun isInvalidFlow(item: GalleryImage): Flow<Boolean> {
-            return flow {
-                emit(true)
-            }
+            return viewModel.gifticonDataMapFlow
+                .map { map -> map[item.id]?.isInvalid ?: true }
+                .distinctUntilChanged()
         }
 
         override fun onClick(item: GalleryImage) {
@@ -106,9 +107,9 @@ class EditorActivity : AppCompatActivity() {
         }
 
         override fun isInvalidFlow(item: EditorChip.Property): Flow<Boolean> {
-            return flow {
-                emit(true)
-            }
+            return viewModel.selectedGifticonData
+                .map { it?.isInvalid ?: false }
+                .distinctUntilChanged()
         }
 
         override fun onClick(item: EditorChip.Property, position: Int) {
@@ -123,9 +124,9 @@ class EditorActivity : AppCompatActivity() {
 
     private val onEditorPreviewListener = object : OnEditorPreviewListener {
         override fun getInvalidPropertyFlow(): Flow<List<PropertyType>> {
-            return flow {
-                emit(emptyList())
-            }
+            return viewModel.selectedGifticonData.map { data ->
+                PropertyType.entries.filter { data?.isInvalid(it) ?: false }
+            }.distinctUntilChanged()
         }
     }
 
@@ -145,7 +146,7 @@ class EditorActivity : AppCompatActivity() {
 
     private fun showTextInputDialog(item: EditorChip) {
         val tag = when (item) {
-            is EditorChip.Preview -> "Memo"
+            is EditorChip.Preview -> item.toString()
             is EditorChip.Property -> item.type.name
         }
         show(tag) {
@@ -166,9 +167,9 @@ class EditorActivity : AppCompatActivity() {
 
     private val onEditorTextListener = object : OnEditorTextListener {
         override fun getTextFlow(item: EditorChip.Property): Flow<String> {
-            return flow {
-                emit("")
-            }
+            return viewModel.selectedGifticonData
+                .map { it?.getText(item.type) ?: "" }
+                .distinctUntilChanged()
         }
 
         override fun onEditClick(item: EditorChip.Property) {
@@ -251,18 +252,33 @@ class EditorActivity : AppCompatActivity() {
     private fun setUpTextInputResult() {
         supportFragmentManager.setFragmentResultListener(TextInputResult.KEY, this) { _, data ->
             val result = TextInputResult(data)
-            Log.d("TextInput", "result : ${result.displayText}, ${result.value}")
+            val editData = when (val editorChip = viewModel.selectedEditorChip.value) {
+                is EditorChip.Preview -> EditData.Memo(result.value)
+                is EditorChip.Property -> when (editorChip.type) {
+                    PropertyType.NAME -> EditData.Name(result.value)
+                    PropertyType.BRAND -> EditData.Brand(result.value)
+                    PropertyType.BARCODE -> EditData.Barcode(result.value)
+                    else -> null
+                }
+            }
+            if (editData != null) {
+                viewModel.updateGifticonData(editData = editData)
+            }
         }
     }
 
-    private fun showProgress() {
-        show(ProgressDialog.TAG) {
-            val param = ProgressParam(getColor(ThemeR.color.black_60))
-            ProgressDialog.newInstance(param).apply {
-                setOnCancelListener {
-                    cancelEditor()
+    private fun showProgress(isLoading: Boolean) {
+        if (isLoading) {
+            show(ProgressDialog.TAG) {
+                val param = ProgressParam(getColor(ThemeR.color.black_60))
+                ProgressDialog.newInstance(param).apply {
+                    setOnCancelListener {
+                        cancelEditor()
+                    }
                 }
             }
+        } else {
+            hide(ProgressDialog.TAG)
         }
     }
 
@@ -291,6 +307,12 @@ class EditorActivity : AppCompatActivity() {
                 binding.cropGifticon.isVisible = it is EditorChip.Property
 
                 editorAdapter.submitList(listOf(it))
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.recognizeLoading.collect { isLoading ->
+                showProgress(isLoading)
             }
         }
     }
