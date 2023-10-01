@@ -152,7 +152,6 @@ class EditorActivity : AppCompatActivity() {
             val inputFormat = when (item) {
                 is EditorChip.Preview -> TextInputFormat.TEXT
                 is EditorChip.Property -> when(item.type) {
-                    PropertyType.BRAND -> TextInputFormat.BALANCE
                     PropertyType.BARCODE -> TextInputFormat.BARCODE
                     else -> TextInputFormat.TEXT
                 }
@@ -308,6 +307,10 @@ class EditorActivity : AppCompatActivity() {
 
         binding.btnRegister.setOnClickListener(createThrottleClickListener {
 
+        })
+
+        binding.previewEditorMemo.setOnClickListener(createThrottleClickListener {
+            showTextInputDialog(EditorChip.Preview)
         })
     }
 

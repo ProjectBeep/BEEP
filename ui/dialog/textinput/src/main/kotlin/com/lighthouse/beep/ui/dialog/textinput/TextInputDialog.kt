@@ -157,6 +157,14 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
                 }
             })
         }
+        binding.editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                hideDialog()
+                true
+            } else {
+                false
+            }
+        }
         binding.editText.requestFocus()
     }
 
