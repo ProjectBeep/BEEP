@@ -5,8 +5,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.load
-import coil.transform.RoundedCornersTransformation
-import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gallery.GalleryImage
@@ -20,12 +18,14 @@ internal class EditorGifticonViewHolder(
     )
 ): LifecycleViewHolder<GalleryImage>(binding.root) {
 
+    init {
+        binding.imageGifticon.clipToOutline = true
+    }
+
     override fun bind(item: GalleryImage) {
         super.bind(item)
 
-        binding.imageGifticon.load(item.contentUri) {
-            transformations(RoundedCornersTransformation(8f.dp))
-        }
+        binding.imageGifticon.load(item.contentUri)
     }
 
     override fun onSetUpClickEvent(item: GalleryImage) {

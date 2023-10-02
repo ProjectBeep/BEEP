@@ -7,5 +7,5 @@
     <string name="bucket_type_all">앨범</string>
 
     <string name="selected_item_empty">이미지를 선택해주세요</string>
-    <string name="selected_item_count">선택된 항목 %d / 30개</string>
+    <string name="selected_item_count">선택된 항목 %d / %d개</string>
 </resources>

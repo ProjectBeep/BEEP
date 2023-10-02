@@ -106,7 +106,10 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@id/preview_gifticon_info"
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
-                    android:contentDescription="@null"/>
+                    android:scaleType="matrix"
+                    android:contentDescription="@null"
+                    android:backgroundTint="@color/light_gray"
+                    android:background="@drawable/bg_rect_r8"/>
 
                 <TextView
                     android:id="@+id/preview_gifticon_name_label"
@@ -126,7 +129,6 @@
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     app:layout_constraintEnd_toEndOf="@id/guide_preview_end"
                     app:layout_constraintTop_toBottomOf="@id/preview_gifticon_name_label"
-                    android:lines="1"
                     android:textAppearance="@style/Text.Body1"
                     android:textColor="@color/font_dark_gray"
                     tools:text="스타벅스 아메리카노"/>
@@ -145,8 +147,8 @@
                     android:id="@+id/preview_gifticon_brand_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/preview_gifticon_name"
+                    android:layout_marginTop="38dp"
+                    app:layout_constraintTop_toBottomOf="@id/preview_gifticon_name_label"
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     android:textAppearance="@style/Text.Body5"
                     android:textColor="@color/font_gray"
@@ -159,7 +161,6 @@
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     app:layout_constraintEnd_toEndOf="@id/guide_preview_end"
                     app:layout_constraintTop_toBottomOf="@id/preview_gifticon_brand_label"
-                    android:lines="1"
                     android:textAppearance="@style/Text.Body1"
                     android:textColor="@color/font_dark_gray"
                     tools:text="스타벅스"/>
@@ -178,8 +179,8 @@
                     android:id="@+id/preview_gifticon_expired_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/preview_gifticon_brand"
+                    android:layout_marginTop="38dp"
+                    app:layout_constraintTop_toBottomOf="@id/preview_gifticon_brand_label"
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     android:textAppearance="@style/Text.Body5"
                     android:textColor="@color/font_gray"
@@ -335,7 +336,6 @@
     
     <TextView
         android:id="@+id/btn_register"
-        android:enabled="false"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_marginHorizontal="24dp"

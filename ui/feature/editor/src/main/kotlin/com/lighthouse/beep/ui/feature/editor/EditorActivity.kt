@@ -1,6 +1,8 @@
 package com.lighthouse.beep.ui.feature.editor
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
@@ -42,6 +45,7 @@ import com.lighthouse.beep.ui.feature.editor.model.PropertyType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlin.math.max
@@ -69,6 +73,12 @@ class EditorActivity : AppCompatActivity() {
             return viewModel.gifticonDataMapFlow
                 .map { map -> map[item.id]?.isInvalid ?: true }
                 .distinctUntilChanged()
+        }
+
+        override fun getCropRectFlow(item: GalleryImage): Flow<RectF> {
+            return flow {
+                emit(RectF())
+            }
         }
 
         override fun onClick(item: GalleryImage) {
@@ -108,7 +118,7 @@ class EditorActivity : AppCompatActivity() {
 
         override fun isInvalidFlow(item: EditorChip.Property): Flow<Boolean> {
             return viewModel.selectedGifticonData
-                .map { it?.isInvalid ?: false }
+                .map { it?.isInvalid(item.type) ?: false }
                 .distinctUntilChanged()
         }
 
@@ -132,15 +142,24 @@ class EditorActivity : AppCompatActivity() {
 
     private val onEditorThumbnailListener = object : OnEditorThumbnailListener {
         override fun getThumbnailFlow(): Flow<Uri> {
-            return flow {
-                emit(Uri.EMPTY)
-            }
+            return viewModel.selectedGifticonData
+                .filterNotNull()
+                .map { it.originUri }
+                .distinctUntilChanged()
         }
 
-        override fun isInvalidThumbnailFlow(): Flow<Boolean> {
-            return flow {
-                emit(true)
-            }
+        override fun getCropRectFlow(): Flow<RectF> {
+            return viewModel.selectedGifticonData
+                .filterNotNull()
+                .map { it.cropRect }
+                .distinctUntilChanged()
+        }
+
+        override fun isThumbnailEditedFlow(): Flow<Boolean> {
+            return viewModel.selectedGifticonData
+                .filterNotNull()
+                .map { it.isThumbnailEdited }
+                .distinctUntilChanged()
         }
     }
 
@@ -150,17 +169,20 @@ class EditorActivity : AppCompatActivity() {
             is EditorChip.Property -> item.type.name
         }
         show(tag) {
-            val inputFormat = when (item) {
-                is EditorChip.Preview -> TextInputFormat.TEXT
+            val param = when (item) {
+                is EditorChip.Preview -> TextInputParam(
+                    maxLength = 20,
+                    inputFormat = TextInputFormat.TEXT,
+                )
                 is EditorChip.Property -> when(item.type) {
-                    PropertyType.BARCODE -> TextInputFormat.BARCODE
-                    else -> TextInputFormat.TEXT
+                    PropertyType.BARCODE -> TextInputParam(
+                        inputFormat = TextInputFormat.BARCODE
+                    )
+                    else -> TextInputParam(
+                        inputFormat = TextInputFormat.TEXT
+                    )
                 }
             }
-
-            val param = TextInputParam(
-                inputFormat = inputFormat
-            )
             TextInputDialog.newInstance(param)
         }
     }
@@ -192,6 +214,7 @@ class EditorActivity : AppCompatActivity() {
         setUpGifticonList()
         setUpPropertyChipList()
         setUpRecycleEditor()
+        setUpPreview()
         setUpTextInputResult()
         setUpCollectState()
         setUpOnClickEvent()
@@ -249,6 +272,10 @@ class EditorActivity : AppCompatActivity() {
         binding.recyclerEditor.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
     }
 
+    private fun setUpPreview() {
+        binding.previewGifticonThumbnail.clipToOutline = true
+    }
+
     private fun setUpTextInputResult() {
         supportFragmentManager.setFragmentResultListener(TextInputResult.KEY, this) { _, data ->
             val result = TextInputResult(data)
@@ -282,6 +309,7 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.galleryImage.collect {
@@ -311,8 +339,34 @@ class EditorActivity : AppCompatActivity() {
         }
 
         repeatOnStarted {
+            viewModel.selectedGifticonData.collect { data ->
+                binding.previewGifticonName.isVisible = data?.name?.isNotEmpty() ?: false
+                binding.previewGifticonNameEmpty.isVisible = data?.name?.isEmpty() ?: false
+                binding.previewGifticonBrand.isVisible = data?.brand?.isNotEmpty() ?: false
+                binding.previewGifticonBrandEmpty.isVisible = data?.brand?.isEmpty() ?: false
+                binding.previewGifticonExpired.isVisible = data?.displayExpired?.isNotEmpty() ?: false
+                binding.previewGifticonExpiredEmpty.isVisible = data?.displayExpired?.isEmpty() ?: false
+
+                binding.previewGifticonThumbnail.load(data?.originUri)
+                if (data != null) {
+                    binding.previewGifticonName.text = data.name
+                    binding.previewGifticonBrand.text = data.brand
+                    binding.previewGifticonExpired.text = data.displayExpired
+                    binding.previewEditorMemo.text = data.memo
+                    binding.previewEditorMemoLength.text = "${data.memo.length}/${viewModel.maxMemoLength}"
+                }
+            }
+        }
+
+        repeatOnStarted {
             viewModel.recognizeLoading.collect { isLoading ->
                 showProgress(isLoading)
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.isRegisterActivated.collect { isActivated ->
+                binding.btnRegister.isActivated = isActivated
             }
         }
     }
@@ -328,7 +382,11 @@ class EditorActivity : AppCompatActivity() {
         })
 
         binding.btnRegister.setOnClickListener(createThrottleClickListener {
+            if (viewModel.isRegisterActivated.value) {
 
+            } else {
+
+            }
         })
 
         binding.previewEditorMemo.setOnClickListener(createThrottleClickListener {

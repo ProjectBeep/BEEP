@@ -44,6 +44,8 @@ internal class GalleryViewModel @Inject constructor(
         val spanCount = displayWidth / (imageWidth + space)
         val pageCount: Int = spanCount * displayHeight / (imageHeight + space)
         val pageFetchCount: Int = pageCount / 2
+
+        val maxSelectCount = 30
     }
 
     private val _bucketType = MutableStateFlow(BucketType.RECOMMEND)
@@ -149,7 +151,14 @@ internal class GalleryViewModel @Inject constructor(
         it.isNotEmpty()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val isSelectable
+        get() = _selectedList.size < maxSelectCount
+
     fun selectItem(item: GalleryImage) {
+        if (!isSelectable) {
+            return
+        }
+
         val index = _selectedList.indexOfFirst { it.id == item.id }
         if (index == -1) {
             _selectedList.add(item)

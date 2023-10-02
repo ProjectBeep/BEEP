@@ -12,7 +12,7 @@
         android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:scaleType="centerCrop"
+        android:scaleType="matrix"
         android:backgroundTint="@color/light_gray"
         android:background="@drawable/bg_rect_r8"
         android:foreground="@drawable/fg_editor_gifticon"

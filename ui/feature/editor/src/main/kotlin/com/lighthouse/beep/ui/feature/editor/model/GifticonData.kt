@@ -1,6 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.RectF
+import android.net.Uri
 import androidx.core.graphics.toRectF
 import com.lighthouse.beep.core.common.exts.toFormattedString
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
@@ -8,22 +9,24 @@ import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import java.util.Date
 
 internal data class GifticonData(
-    val cropImageRect: RectF = RectF(),
+    val originUri: Uri,
+    val cropRect: RectF = EMPTY_RECT_F,
     val name: String = "",
-    val nameRect: RectF = RectF(),
+    val nameRect: RectF = EMPTY_RECT_F,
     val brand: String = "",
-    val brandRect: RectF = RectF(),
+    val brandRect: RectF = EMPTY_RECT_F,
     val barcode: String = "",
-    val barcodeRect: RectF = RectF(),
+    val barcodeRect: RectF = EMPTY_RECT_F,
     val expired: Date = EMPTY_DATE,
-    val expiredRect: RectF = RectF(),
+    val expiredRect: RectF = EMPTY_RECT_F,
     val isCashCard: Boolean = false,
     val balance: String = "",
-    val balanceRect: RectF = RectF(),
+    val balanceRect: RectF = EMPTY_RECT_F,
     val memo: String = "",
 ) {
     companion object {
         private val EMPTY_DATE = Date(0)
+        private val EMPTY_RECT_F = RectF()
 
         private val VALID_BARCODE_COUNT = setOf(12, 14, 16, 18, 20, 22, 24)
     }
@@ -33,6 +36,9 @@ internal data class GifticonData(
     val displayExpired: String = if (expired == EMPTY_DATE) "" else expired.toFormattedString()
 
     val displayBalance: String = TextInputFormat.BALANCE.valueToTransformed(balance)
+
+    val isThumbnailEdited
+        get() = cropRect != EMPTY_RECT_F
 
     val isInvalid
         get() = name.isEmpty() ||
@@ -62,10 +68,11 @@ internal data class GifticonData(
     }
 }
 
-internal fun GifticonRecognizeResult?.toGifticonData(): GifticonData {
-    this ?: return GifticonData()
+internal fun GifticonRecognizeResult?.toGifticonData(originUri: Uri): GifticonData {
+    this ?: return GifticonData(originUri)
     return GifticonData(
-        cropImageRect = croppedRect?.toRectF() ?: RectF(),
+        originUri = originUri,
+        cropRect = croppedRect?.toRectF() ?: RectF(),
         name = name,
         brand = brandName,
         barcode = barcode,

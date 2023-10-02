@@ -17,11 +17,13 @@ import com.lighthouse.beep.ui.feature.editor.model.toGifticonData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,7 +36,7 @@ internal class EditorViewModel @Inject constructor(
     private val recognizeBarcodeUseCase: RecognizeBarcodeUseCase,
     private val recognizeBalanceUseCase: RecognizeBalanceUseCase,
     private val recognizeExpiredUseCase: RecognizeExpiredUseCase,
-) : ViewModel(){
+) : ViewModel() {
 
     private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
     val galleryImage = _galleryImage.asStateFlow()
@@ -70,6 +72,10 @@ internal class EditorViewModel @Inject constructor(
     private val _gifticonDataMapFlow = MutableSharedFlow<Map<Long, GifticonData>>(replay = 1)
     val gifticonDataMapFlow = _gifticonDataMapFlow.asSharedFlow()
 
+    val isRegisterActivated = gifticonDataMapFlow
+        .map { map -> map.values.any { !it.isInvalid } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     fun updateGifticonData(
         selectedItem: GalleryImage? = selectedGifticon.value,
         editData: EditData,
@@ -90,8 +96,10 @@ internal class EditorViewModel @Inject constructor(
         gifticonDataMapFlow,
     ) { selected, gifticonMap ->
         selected ?: return@combine null
-        gifticonMap[selected.id] ?: GifticonData()
+        gifticonMap[selected.id]
     }
+
+    val maxMemoLength = 20
 
     private val _recognizeLoading = MutableStateFlow(false)
     val recognizeLoading = _recognizeLoading.asStateFlow()
@@ -102,7 +110,7 @@ internal class EditorViewModel @Inject constructor(
             _gifticonDataMapFlow.emit(emptyMap())
             galleryImage.value.map { gallery ->
                 launch {
-                    val data = recognizeGifticonUseCase(gallery).getOrNull().toGifticonData()
+                    val data = recognizeGifticonUseCase(gallery).getOrNull().toGifticonData(gallery.contentUri)
                     gifticonDataMap[gallery.id] = data
                 }
             }.joinAll()

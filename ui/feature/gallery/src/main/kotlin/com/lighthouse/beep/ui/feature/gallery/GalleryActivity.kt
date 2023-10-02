@@ -3,7 +3,6 @@ package com.lighthouse.beep.ui.feature.gallery
 import android.animation.Animator
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewPropertyAnimator
 import androidx.activity.result.contract.ActivityResultContracts
@@ -218,7 +217,7 @@ internal class GalleryActivity : AppCompatActivity() {
                 binding.textSelectedItemCount.text = if (list.isEmpty()) {
                     getString(R.string.selected_item_empty)
                 } else {
-                    getString(R.string.selected_item_count, list.size)
+                    getString(R.string.selected_item_count, list.size, GalleryViewModel.maxSelectCount)
                 }
             }
         }
