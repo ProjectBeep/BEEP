@@ -7,11 +7,13 @@ import androidx.lifecycle.SavedStateHandle
 data class TextInputParam(
     val text: String = "",
     val hint: String = "",
+    val maxLength: Int = Int.MAX_VALUE,
     val inputFormat: TextInputFormat = TextInputFormat.TEXT,
 ) {
     companion object {
         private const val KEY_TEXT = "Key.Text"
         private const val KEY_HINT = "Key.Hint"
+        private const val KEY_MAX_LENGTH = "Key.MaxLength"
         private const val KEY_FORMAT = "Key.Format"
 
         fun getText(savedStateHandle: SavedStateHandle): String {
@@ -20,6 +22,10 @@ data class TextInputParam(
 
         fun getHint(savedStateHandle: SavedStateHandle): String {
             return savedStateHandle.get<String>(KEY_HINT) ?: ""
+        }
+
+        fun getMaxLength(savedStateHandle: SavedStateHandle): Int {
+            return savedStateHandle.get<Int>(KEY_MAX_LENGTH) ?: Int.MAX_VALUE
         }
 
         fun getInputFormat(savedStateHandle: SavedStateHandle): TextInputFormat {
@@ -34,6 +40,7 @@ data class TextInputParam(
         return bundleOf(
             KEY_TEXT to text,
             KEY_HINT to hint,
+            KEY_MAX_LENGTH to maxLength,
             KEY_FORMAT to inputFormat.name,
         )
     }

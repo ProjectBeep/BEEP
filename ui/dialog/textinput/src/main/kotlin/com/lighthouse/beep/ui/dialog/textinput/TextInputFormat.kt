@@ -2,7 +2,6 @@ package com.lighthouse.beep.ui.dialog.textinput
 
 import android.text.InputFilter
 import android.text.InputType
-import android.widget.EditText
 import com.lighthouse.beep.core.common.exts.toDigit
 import com.lighthouse.beep.ui.dialog.textinput.filter.DigitFilterWithMaxLength
 import java.text.DecimalFormat
@@ -52,10 +51,4 @@ enum class TextInputFormat(
     open fun transformedToValue(text: String): String {
         return text
     }
-}
-
-fun EditText.applyFormat(format: TextInputFormat) {
-    filters = format.filters
-    inputType = format.inputType
-    setRawInputType(format.rawInputType)
 }

@@ -95,7 +95,9 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
     }
 
     private fun setUpEditText() {
-        binding.editText.applyFormat(viewModel.inputFormat)
+        binding.editText.filters = viewModel.filters
+        binding.editText.inputType = viewModel.inputType
+        binding.editText.setRawInputType(viewModel.rawInputType)
         binding.editText.hint = viewModel.hint
         binding.editText.imeOptions = EditorInfo.IME_ACTION_DONE
 
