@@ -39,6 +39,7 @@ import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorThumbnailLis
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.OnEditorGifticonListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdapter
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
+import com.lighthouse.beep.ui.feature.editor.model.CropData
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.PropertyType
@@ -46,7 +47,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
@@ -75,10 +75,11 @@ class EditorActivity : AppCompatActivity() {
                 .distinctUntilChanged()
         }
 
-        override fun getCropRectFlow(item: GalleryImage): Flow<RectF> {
-            return flow {
-                emit(RectF())
-            }
+        override fun getCropDataFlow(item: GalleryImage): Flow<CropData> {
+            return viewModel.gifticonDataMapFlow
+                .map { map -> map[item.id]?.cropData }
+                .filterNotNull()
+                .distinctUntilChanged()
         }
 
         override fun onClick(item: GalleryImage) {

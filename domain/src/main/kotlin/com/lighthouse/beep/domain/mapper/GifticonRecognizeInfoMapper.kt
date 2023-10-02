@@ -9,6 +9,8 @@ internal fun GifticonRecognizeInfo.toGifticonRecognizerResult(
     croppedUri: Uri?,
 ): GifticonRecognizeResult {
     return GifticonRecognizeResult(
+        imageWidth = imageWidth,
+        imageHeight = imageHeight,
         name = name,
         brandName = brand,
         barcode = barcode,

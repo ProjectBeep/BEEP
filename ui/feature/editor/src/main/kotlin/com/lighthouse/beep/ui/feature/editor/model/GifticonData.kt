@@ -10,6 +10,7 @@ import java.util.Date
 
 internal data class GifticonData(
     val originUri: Uri,
+    val cropData: CropData = CropData.None,
     val cropRect: RectF = EMPTY_RECT_F,
     val name: String = "",
     val nameRect: RectF = EMPTY_RECT_F,
@@ -72,7 +73,11 @@ internal fun GifticonRecognizeResult?.toGifticonData(originUri: Uri): GifticonDa
     this ?: return GifticonData(originUri)
     return GifticonData(
         originUri = originUri,
-        cropRect = croppedRect?.toRectF() ?: RectF(),
+        cropData = CropData(
+            originWidth = imageWidth,
+            originHeight = imageHeight,
+            cropRect = croppedRect?.toRectF() ?: RectF(),
+        ),
         name = name,
         brand = brandName,
         barcode = barcode,

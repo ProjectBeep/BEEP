@@ -38,8 +38,11 @@ class GifticonRecognizer {
         val inputs = textRecognizer.recognize(bitmap)
         val barcodeResult = barcodeParser.parseBarcode(inputs)
         val expiredResult = expiredParser.parseExpiredDate(barcodeResult.filtered)
-        var info =
-            GifticonRecognizeInfo(candidate = expiredResult.filtered)
+        var info = GifticonRecognizeInfo(
+            imageWidth = bitmap.width,
+            imageHeight = bitmap.height,
+            candidate = expiredResult.filtered
+        )
         getTemplateRecognizer(info.candidate)?.run {
             info = recognize(bitmap, info.candidate)
         }

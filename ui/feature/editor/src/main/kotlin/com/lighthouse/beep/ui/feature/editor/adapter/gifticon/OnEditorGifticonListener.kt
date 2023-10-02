@@ -1,7 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.gifticon
 
-import android.graphics.RectF
 import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.ui.feature.editor.model.CropData
 import kotlinx.coroutines.flow.Flow
 
 internal interface OnEditorGifticonListener {
@@ -10,7 +10,7 @@ internal interface OnEditorGifticonListener {
 
     fun isInvalidFlow(item: GalleryImage): Flow<Boolean>
 
-    fun getCropRectFlow(item: GalleryImage): Flow<RectF>
+    fun getCropDataFlow(item: GalleryImage): Flow<CropData>
 
     fun onClick(item: GalleryImage)
 

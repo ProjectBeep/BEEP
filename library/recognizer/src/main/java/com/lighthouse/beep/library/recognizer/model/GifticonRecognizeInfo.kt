@@ -5,6 +5,8 @@ import android.graphics.Rect
 import java.util.Date
 
 data class GifticonRecognizeInfo(
+    val imageWidth: Int = 0,
+    val imageHeight: Int = 0,
     val name: String = "",
     val brand: String = "",
     val expiredAt: Date = Date(0),

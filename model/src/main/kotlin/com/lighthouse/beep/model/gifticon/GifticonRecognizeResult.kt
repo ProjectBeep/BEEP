@@ -5,6 +5,8 @@ import android.net.Uri
 import java.util.Date
 
 data class GifticonRecognizeResult(
+    val imageWidth: Int,
+    val imageHeight: Int,
     val name: String,
     val brandName: String,
     val barcode: String,
