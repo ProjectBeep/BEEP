@@ -1,9 +1,12 @@
 package com.lighthouse.beep.ui.designsystem.cropview
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PointF
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import android.view.MotionEvent
 import com.lighthouse.beep.core.common.exts.dp
@@ -29,7 +32,9 @@ internal class CropImagePen(
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
-        color = view.context.getColor(ThemeR.color.beep_pink_20)
+        alpha = 0xFF
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        color = Color.TRANSPARENT
     }
 
     private val penPointerPaint = Paint().apply {
@@ -43,11 +48,22 @@ internal class CropImagePen(
     private val drawRect = RectF()
     private val pointerPos = PointF()
 
+    private val backgroundPaint by lazy {
+        Paint().apply {
+            color = view.context.getColor(ThemeR.color.black_60)
+        }
+    }
+
     fun onDraw(canvas: Canvas) {
+        canvas.save()
+        val layerId = canvas.saveLayer(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), null)
+        canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), backgroundPaint)
         canvas.drawPath(drawPath, penPaint)
         if (pointerPos != POINT_F_EMPTY) {
             canvas.drawCircle(pointerPos.x, pointerPos.y, penPaint.strokeWidth / 2f, penPointerPaint)
         }
+        canvas.restoreToCount(layerId)
+        canvas.restore()
     }
 
     fun onTouchEvent(event: MotionEvent): Boolean {

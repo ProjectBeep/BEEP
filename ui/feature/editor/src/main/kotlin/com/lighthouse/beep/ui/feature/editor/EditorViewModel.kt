@@ -1,9 +1,16 @@
 package com.lighthouse.beep.ui.feature.editor
 
+import android.graphics.Bitmap
+import android.graphics.RectF
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.core.common.exts.EMPTY_DATE
+import com.lighthouse.beep.domain.usecase.recognize.RecognizeBalanceUseCase
+import com.lighthouse.beep.domain.usecase.recognize.RecognizeBarcodeUseCase
+import com.lighthouse.beep.domain.usecase.recognize.RecognizeExpiredUseCase
 import com.lighthouse.beep.domain.usecase.recognize.RecognizeGifticonUseCase
+import com.lighthouse.beep.domain.usecase.recognize.RecognizeTextUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
@@ -30,6 +37,10 @@ import javax.inject.Inject
 internal class EditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val recognizeGifticonUseCase: RecognizeGifticonUseCase,
+    private val recognizeTextUseCase: RecognizeTextUseCase,
+    private val recognizeBarcodeUseCase: RecognizeBarcodeUseCase,
+    private val recognizeBalanceUseCase: RecognizeBalanceUseCase,
+    private val recognizeExpiredUseCase: RecognizeExpiredUseCase,
 ) : ViewModel() {
 
     private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
@@ -49,16 +60,18 @@ internal class EditorViewModel @Inject constructor(
     private val _selectedEditorChip = MutableStateFlow<EditorChip>(EditorChip.Preview)
     val selectedEditorChip = _selectedEditorChip.asStateFlow()
 
+    val selectedEditType: EditType?
+        get() {
+            val chip = selectedEditorChip.value as? EditorChip.Property
+            return chip?.type
+        }
+
     val selectedEditorPage = selectedEditorChip.map { chip ->
         when (chip) {
             is EditorChip.Preview -> EditorPage.PREVIEW
             else -> EditorPage.CROP
         }
     }.distinctUntilChanged()
-
-    val isSelectPreview = selectedEditorChip
-        .map { it is EditorChip.Preview }
-        .distinctUntilChanged()
 
     fun selectEditorChip(item: EditorChip) {
         _selectedEditorChip.value = item
@@ -77,11 +90,8 @@ internal class EditorViewModel @Inject constructor(
         .map { map -> map.values.any { !it.isInvalid } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    fun updateGifticonData(
-        selectedItem: GalleryImage? = selectedGifticon.value,
-        editData: EditData,
-    ) {
-        selectedItem ?: return
+    fun updateGifticonData(editData: EditData) {
+        val selectedItem = selectedGifticon.value ?: return
         val data = gifticonDataMap[selectedItem.id] ?: return
         if (!editData.isModified(data)) {
             return
@@ -89,6 +99,36 @@ internal class EditorViewModel @Inject constructor(
         gifticonDataMap[selectedItem.id] = editData.updatedGifticon(data)
         viewModelScope.launch {
             _gifticonDataMapFlow.emit(gifticonDataMap)
+        }
+    }
+
+    suspend fun updateGifticonData(
+        type: EditType,
+        bitmap: Bitmap,
+        rect: RectF,
+    ) {
+        val editData = when (type) {
+            EditType.NAME,
+            EditType.BRAND -> {
+                val result = recognizeTextUseCase(bitmap).getOrDefault("")
+                type.createEditDataWithCrop(result, rect)
+            }
+            EditType.BARCODE -> {
+                val barcode = recognizeBarcodeUseCase(bitmap).getOrDefault("")
+                EditData.CropBarcode(barcode, rect)
+            }
+            EditType.BALANCE -> {
+                val balance = recognizeBalanceUseCase(bitmap).getOrDefault(0).toString()
+                EditData.CropBalance(balance, rect)
+            }
+            EditType.EXPIRED -> {
+                val date = recognizeExpiredUseCase(bitmap).getOrDefault(EMPTY_DATE)
+                EditData.CropExpired(date, rect)
+            }
+            else -> EditData.None
+        }
+        if(editData != EditData.None) {
+            updateGifticonData(editData)
         }
     }
 

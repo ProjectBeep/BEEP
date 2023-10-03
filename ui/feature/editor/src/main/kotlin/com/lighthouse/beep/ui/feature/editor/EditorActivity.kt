@@ -305,14 +305,6 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
         }
 
         repeatOnStarted {
-            viewModel.isSelectPreview.collect { isSelected ->
-                binding.btnPreview.isSelected = isSelected
-                binding.textPreview.isSelected = isSelected
-                binding.iconPreview.isSelected = isSelected
-            }
-        }
-
-        repeatOnStarted {
             viewModel.selectedEditorChip.collect {
                 editorAdapter.submitList(listOf(it))
             }
@@ -320,6 +312,10 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
 
         repeatOnStarted {
             viewModel.selectedEditorPage.collect {
+                binding.btnPreview.isSelected = it == EditorPage.PREVIEW
+                binding.textPreview.isSelected = it == EditorPage.PREVIEW
+                binding.iconPreview.isSelected = it == EditorPage.PREVIEW
+
                 changeEditorPage(it)
             }
         }

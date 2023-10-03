@@ -1,6 +1,7 @@
 package com.lighthouse.beep.domain.usecase.recognize
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import com.lighthouse.beep.core.common.exts.calculateSampleSize
 import com.lighthouse.beep.core.common.exts.decodeSampledBitmap
@@ -17,6 +18,12 @@ class RecognizeBarcodeUseCase @Inject constructor(
         runCatching {
             val sampleSize = context.calculateSampleSize(uri, 360)
             val bitmap = context.decodeSampledBitmap(uri, sampleSize)
+            BarcodeRecognizer().recognize(bitmap).barcode
+        }
+    }
+
+    suspend operator fun invoke(bitmap: Bitmap): Result<String> = withContext(Dispatchers.Default){
+        runCatching {
             BarcodeRecognizer().recognize(bitmap).barcode
         }
     }

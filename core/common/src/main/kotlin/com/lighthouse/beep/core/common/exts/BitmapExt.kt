@@ -24,10 +24,10 @@ fun Bitmap.calculateCenterCropRect(aspectRatio: Float): Rect {
 
 fun Bitmap.centerCrop(aspectRatio: Float): Bitmap {
     val rect = calculateCenterCropRect(aspectRatio)
-    return centerCrop(rect)
+    return crop(rect)
 }
 
-fun Bitmap.centerCrop(rect: Rect): Bitmap {
+fun Bitmap.crop(rect: Rect): Bitmap {
     return Bitmap.createBitmap(
         this,
         rect.left,

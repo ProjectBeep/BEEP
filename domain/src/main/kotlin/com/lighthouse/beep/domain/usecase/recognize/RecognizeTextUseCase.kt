@@ -1,6 +1,7 @@
 package com.lighthouse.beep.domain.usecase.recognize
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import com.lighthouse.beep.core.common.exts.decodeBitmap
 import com.lighthouse.beep.library.recognizer.TextRecognizer
@@ -17,6 +18,13 @@ class RecognizeTextUseCase @Inject constructor(
     suspend operator fun invoke(uri: Uri): Result<String> = withContext(Dispatchers.Default) {
         runCatching {
             val bitmap = context.decodeBitmap(uri) ?: throw IOException("$uri decode Failed")
+            val inputs = TextRecognizer().recognize(bitmap)
+            inputs.joinToString("")
+        }
+    }
+
+    suspend operator fun invoke(bitmap: Bitmap): Result<String> = withContext(Dispatchers.Default) {
+        runCatching {
             val inputs = TextRecognizer().recognize(bitmap)
             inputs.joinToString("")
         }

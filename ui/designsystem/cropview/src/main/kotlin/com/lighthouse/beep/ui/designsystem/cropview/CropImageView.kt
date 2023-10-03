@@ -12,13 +12,9 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import androidx.core.view.doOnAttach
-import com.lighthouse.beep.core.common.exts.decodeBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.min
 
@@ -108,7 +104,11 @@ class CropImageView(
                 val croppedRect = RectF(curCropRect)
                 mainMatrix.invert(mainInverseMatrix)
                 mainInverseMatrix.mapRect(croppedRect)
-                onChangeCropRectListener?.onChange(croppedRect)
+
+                val bitmap = originBitmap
+                if (bitmap != null) {
+                    onChangeCropRectListener?.onChange(bitmap, croppedRect)
+                }
             }
         },
     )
@@ -181,30 +181,37 @@ class CropImageView(
         this.onChangeCropRectListener = onChangeCropRectListener
     }
 
-    fun setBitmap(bitmap: Bitmap) {
-        doOnAttach {
-            originBitmap = bitmap
-            initRect(null)
-            applyMatrix(false)
-        }
-    }
-
-    fun setCropInfo(info: CropImageInfo) {
-        doOnAttach {
-            viewScope.launch {
-                originBitmap = withContext(Dispatchers.IO) {
-                    context.decodeBitmap(info.uri)
-                }
-                initRect(info.croppedRect)
-                applyMatrix(false)
+    fun setBitmap(bitmap: Bitmap, rect: RectF? = null) {
+        if (width == 0 || height == 0) {
+            post {
+                setBitmap(bitmap, rect)
             }
+        } else {
+            originBitmap = bitmap
+            initRect(rect)
+            applyZoom(width, height, false)
         }
     }
 
-    fun cropImage() {
+    fun setCropRect(rect: RectF) {
+        if (originBitmap == null) {
+            return
+        }
+
+        if (width == 0 || height == 0) {
+            post {
+                setCropRect(rect)
+            }
+        } else {
+            initRect(rect)
+            applyZoom(width, height, false)
+        }
+    }
+
+    fun cropImage(rect: RectF = cropImageWindow.curCropRect) {
         val bitmap = originBitmap
         if (bitmap != null) {
-            val croppedRect = RectF(cropImageWindow.curCropRect)
+            val croppedRect = RectF(rect)
             mainMatrix.invert(mainInverseMatrix)
             mainInverseMatrix.mapRect(croppedRect)
 
@@ -234,10 +241,14 @@ class CropImageView(
             curImageRect.set(RECT_F_EMPTY)
         }
 
+        if (croppedRect == null || croppedRect == RECT_F_EMPTY) {
+            zoom = 1f
+        }
+
         cropImageWindow.initRect(bitmap, croppedRect)
     }
 
-    private fun applyZoom(width: Int, height: Int) {
+    private fun applyZoom(width: Int, height: Int, animate: Boolean = true) {
         if (width == 0 || height == 0 || originBitmap == null) {
             return
         }
@@ -267,10 +278,15 @@ class CropImageView(
             newZoom = max(min(scaleW, scaleH), MIN_ZOOM)
         }
 
-        if (newZoom != zoom) {
-            cropZoomAnimation.setStartState(cropImageWindow.curCropRect, curImageRect, mainMatrix)
+        if(animate) {
+            if (newZoom != zoom) {
+                cropZoomAnimation.setStartState(cropImageWindow.curCropRect, curImageRect, mainMatrix)
+                zoom = newZoom
+                applyMatrix(animate = true)
+            }
+        } else {
             zoom = newZoom
-            applyMatrix(animate = true)
+            applyMatrix(animate = false)
         }
     }
 

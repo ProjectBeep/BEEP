@@ -8,7 +8,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.lighthouse.beep.core.common.exts.calculateCenterCropRect
 import com.lighthouse.beep.core.common.exts.calculateSampleSize
-import com.lighthouse.beep.core.common.exts.centerCrop
+import com.lighthouse.beep.core.common.exts.crop
 import com.lighthouse.beep.core.common.exts.compressBitmap
 import com.lighthouse.beep.core.common.exts.decodeSampledBitmap
 import com.lighthouse.beep.core.common.exts.displayHeight
@@ -50,7 +50,7 @@ internal class LocalGifticonStorageImpl @Inject constructor(
                 croppedRect = inputCropRect.scale(1f / sampleSize)
             } else {
                 croppedRect = sampledOriginBitmap.calculateCenterCropRect(1f)
-                cropped = sampledOriginBitmap.centerCrop(croppedRect)
+                cropped = sampledOriginBitmap.crop(croppedRect)
             }
 
             outputCroppedFile.compressBitmap(cropped, Bitmap.CompressFormat.JPEG, 90)
