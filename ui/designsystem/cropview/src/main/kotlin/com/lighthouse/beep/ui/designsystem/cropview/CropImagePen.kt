@@ -89,6 +89,7 @@ internal class CropImagePen(
 
                 activePointerId = null
                 listener.onPenTouchComplete(drawRect)
+                drawPath.reset()
             }
         }
 

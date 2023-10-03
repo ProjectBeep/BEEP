@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,7 +33,7 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         private val VIEW_RECT = RectF(0f, 0f, 80f.dp, 80f.dp)
     }
 
-    private val viewModel by activityViewModels<EditorViewModel>()
+    private val editorViewModel by activityViewModels<EditorViewModel>()
 
     private val binding by viewBindings<FragmentEditorPreviewBinding>()
 
@@ -59,7 +60,7 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
     @SuppressLint("SetTextI18n")
     private fun setUpCollectState() {
         repeatOnStarted {
-            viewModel.selectedGifticonDataFlow
+            editorViewModel.selectedGifticonDataFlow
                 .map { it.originUri }
                 .distinctUntilChanged()
                 .collect { contentUri ->
@@ -70,16 +71,21 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.selectedGifticonDataFlow
-                .map { it.cropData }
+            editorViewModel.selectedGifticonDataFlow
+                .map { it.thumbnailCropData }
                 .distinctUntilChanged()
                 .collect { data ->
-                    binding.imageThumbnail.imageMatrix = data.calculateMatrix(VIEW_RECT)
+                    if (data.isCropped) {
+                        binding.imageThumbnail.scaleType = ImageView.ScaleType.MATRIX
+                        binding.imageThumbnail.imageMatrix = data.calculateMatrix(VIEW_RECT)
+                    } else {
+                        binding.imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
+                    }
                 }
         }
 
         repeatOnStarted {
-            viewModel.selectedGifticonDataFlow
+            editorViewModel.selectedGifticonDataFlow
                 .map { it.name }
                 .distinctUntilChanged()
                 .collect { name ->
@@ -89,7 +95,7 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.selectedGifticonDataFlow
+            editorViewModel.selectedGifticonDataFlow
                 .map { it.brand }
                 .distinctUntilChanged()
                 .collect { brand ->
@@ -99,7 +105,7 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.selectedGifticonDataFlow
+            editorViewModel.selectedGifticonDataFlow
                 .map { it.displayExpired }
                 .distinctUntilChanged()
                 .collect { expired ->
@@ -109,7 +115,7 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.selectedGifticonDataFlow
+            editorViewModel.selectedGifticonDataFlow
                 .map { it.memo }
                 .distinctUntilChanged()
                 .collect { memo ->

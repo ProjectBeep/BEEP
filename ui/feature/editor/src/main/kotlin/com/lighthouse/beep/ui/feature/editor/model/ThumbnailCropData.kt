@@ -4,7 +4,7 @@ import android.graphics.Matrix
 import android.graphics.RectF
 import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 
-internal data class CropData(
+internal data class ThumbnailCropData(
     val originWidth: Int,
     val originHeight: Int,
     val rect: RectF,
@@ -34,6 +34,6 @@ internal data class CropData(
     }
 
     companion object {
-        val None = CropData(0, 0, EMPTY_RECT_F)
+        val None = ThumbnailCropData(0, 0, EMPTY_RECT_F)
     }
 }

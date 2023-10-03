@@ -34,7 +34,7 @@ import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorThumbnailLis
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.OnEditorGifticonListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdapter
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
-import com.lighthouse.beep.ui.feature.editor.model.CropData
+import com.lighthouse.beep.ui.feature.editor.model.ThumbnailCropData
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditType
@@ -72,9 +72,9 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
                 .distinctUntilChanged()
         }
 
-        override fun getCropDataFlow(item: GalleryImage): Flow<CropData> {
+        override fun getCropDataFlow(item: GalleryImage): Flow<ThumbnailCropData> {
             return viewModel.gifticonDataMapFlow
-                .map { map -> map[item.id]?.cropData }
+                .map { map -> map[item.id]?.thumbnailCropData }
                 .filterNotNull()
                 .distinctUntilChanged()
         }
@@ -161,15 +161,15 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
                 .distinctUntilChanged()
         }
 
-        override fun getCropDataFlow(): Flow<CropData> {
+        override fun getCropDataFlow(): Flow<ThumbnailCropData> {
             return viewModel.selectedGifticonDataFlow
-                .map { it.cropData }
+                .map { it.thumbnailCropData }
                 .distinctUntilChanged()
         }
 
         override fun isThumbnailEditedFlow(): Flow<Boolean> {
             return viewModel.selectedGifticonDataFlow
-                .map { it.cropData.isCropped }
+                .map { it.thumbnailCropData.isCropped }
                 .distinctUntilChanged()
         }
     }

@@ -2,6 +2,7 @@ package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.RectF
 import androidx.annotation.StringRes
+import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 import com.lighthouse.beep.core.common.exts.toDate
 import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
@@ -32,6 +33,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
         override fun createEditDataWithCrop(rect: RectF): EditData {
             return EditData.Thumbnail(rect)
         }
+
+        override fun getCropRectF(data: GifticonData): RectF {
+            return data.thumbnailCropData.rect
+        }
     },
     NAME(R.string.editor_gifticon_property_name) {
         override fun createEditDataWithText(value: String): EditData {
@@ -56,6 +61,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
         override fun getText(data: GifticonData): String {
             return data.name
         }
+
+        override fun getCropRectF(data: GifticonData): RectF {
+            return data.nameRect
+        }
     },
     BRAND(R.string.editor_gifticon_property_brand) {
         override fun createEditDataWithText(value: String): EditData {
@@ -79,6 +88,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
 
         override fun getText(data: GifticonData): String {
             return data.brand
+        }
+
+        override fun getCropRectF(data: GifticonData): RectF {
+            return data.brandRect
         }
     },
     BARCODE(R.string.editor_gifticon_property_barcode) {
@@ -106,6 +119,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
         override fun getText(data: GifticonData): String {
             return data.displayBarcode
         }
+
+        override fun getCropRectF(data: GifticonData): RectF {
+            return data.barcodeRect
+        }
     },
     EXPIRED(R.string.editor_gifticon_property_expired) {
         override fun createEditDataWithCrop(value: String, rect: RectF): EditData {
@@ -114,6 +131,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
 
         override fun getText(data: GifticonData): String {
             return data.displayExpired
+        }
+
+        override fun getCropRectF(data: GifticonData): RectF {
+            return data.expiredRect
         }
     },
     BALANCE(R.string.editor_gifticon_property_balance) {
@@ -139,6 +160,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
         override fun getText(data: GifticonData): String {
             return data.displayBalance
         }
+
+        override fun getCropRectF(data: GifticonData): RectF {
+            return data.balanceRect
+        }
     };
 
     open val maxLength = Int.MAX_VALUE
@@ -154,4 +179,6 @@ internal enum class EditType(@StringRes val textResId: Int) {
     open fun isInvalid(data: GifticonData): Boolean = false
 
     open fun getText(data: GifticonData): String = ""
+
+    open fun getCropRectF(data: GifticonData): RectF = EMPTY_RECT_F
 }

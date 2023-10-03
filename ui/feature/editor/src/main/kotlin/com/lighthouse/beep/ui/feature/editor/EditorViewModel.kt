@@ -3,11 +3,7 @@ package com.lighthouse.beep.ui.feature.editor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.beep.domain.usecase.recognize.RecognizeBalanceUseCase
-import com.lighthouse.beep.domain.usecase.recognize.RecognizeBarcodeUseCase
-import com.lighthouse.beep.domain.usecase.recognize.RecognizeExpiredUseCase
 import com.lighthouse.beep.domain.usecase.recognize.RecognizeGifticonUseCase
-import com.lighthouse.beep.domain.usecase.recognize.RecognizeTextUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
@@ -34,10 +30,6 @@ import javax.inject.Inject
 internal class EditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val recognizeGifticonUseCase: RecognizeGifticonUseCase,
-    private val recognizeTextUseCase: RecognizeTextUseCase,
-    private val recognizeBarcodeUseCase: RecognizeBarcodeUseCase,
-    private val recognizeBalanceUseCase: RecognizeBalanceUseCase,
-    private val recognizeExpiredUseCase: RecognizeExpiredUseCase,
 ) : ViewModel() {
 
     private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
@@ -73,6 +65,10 @@ internal class EditorViewModel @Inject constructor(
     }
 
     private val gifticonDataMap = mutableMapOf<Long, GifticonData>()
+
+    fun getGifticonData(id: Long): GifticonData? {
+        return gifticonDataMap[id]
+    }
 
     private val _gifticonDataMapFlow = MutableSharedFlow<Map<Long, GifticonData>>(replay = 1)
     val gifticonDataMapFlow = _gifticonDataMapFlow.asSharedFlow()

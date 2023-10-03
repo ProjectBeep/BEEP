@@ -59,6 +59,10 @@ class CropImageView(
         private set
 
     var cropImageMode = CropImageMode.DRAG_WINDOW
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     private val cropImagePen = CropImagePen(
         this,
@@ -175,6 +179,14 @@ class CropImageView(
     private var onChangeCropRectListener: OnChangeCropRectListener? = null
     fun setOnChangeCropRectListener(onChangeCropRectListener: OnChangeCropRectListener?) {
         this.onChangeCropRectListener = onChangeCropRectListener
+    }
+
+    fun setBitmap(bitmap: Bitmap) {
+        doOnAttach {
+            originBitmap = bitmap
+            initRect(null)
+            applyMatrix(false)
+        }
     }
 
     fun setCropInfo(info: CropImageInfo) {

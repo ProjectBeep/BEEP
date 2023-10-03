@@ -18,12 +18,12 @@ internal sealed interface EditData {
 
     data class Thumbnail(val rect: RectF): EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return rect != data.cropData.rect
+            return rect != data.thumbnailCropData.rect
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            val cropData = data.cropData.copy(rect = rect)
-            return data.copy(cropData = cropData)
+            val cropData = data.thumbnailCropData.copy(rect = rect)
+            return data.copy(thumbnailCropData = cropData)
         }
     }
 
