@@ -1,19 +1,15 @@
 package com.lighthouse.beep.ui.feature.editor
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.size.Size
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
@@ -42,6 +38,7 @@ import com.lighthouse.beep.ui.feature.editor.model.CropData
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditType
+import com.lighthouse.beep.ui.feature.editor.model.EditorPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -51,7 +48,7 @@ import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-class EditorActivity : AppCompatActivity() {
+internal class EditorActivity : AppCompatActivity(), DialogProvider {
 
     companion object {
         private const val TAG_SELECTED_GIFTICON_DELETE = "Tag.SelectedGifticonDelete"
@@ -148,9 +145,9 @@ class EditorActivity : AppCompatActivity() {
                 .distinctUntilChanged()
         }
 
-        override fun getCropRectFlow(): Flow<RectF> {
+        override fun getCropDataFlow(): Flow<CropData> {
             return viewModel.selectedGifticonDataFlow
-                .map { it.cropData.rect }
+                .map { it.cropData }
                 .distinctUntilChanged()
         }
 
@@ -161,8 +158,8 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun showTextInputDialog(type: EditType) {
-        val data = viewModel.selectedGifticonData.value ?: return
+    override fun showTextInputDialog(type: EditType) {
+        val data = viewModel.selectedGifticonData.value?: return
         show(type.name) {
             val param = type.createTextInputParam(data)
             supportFragmentManager.setFragmentResultListener(type.name, this) { requestKey, data ->
@@ -204,7 +201,6 @@ class EditorActivity : AppCompatActivity() {
         setUpGifticonList()
         setUpPropertyChipList()
         setUpRecycleEditor()
-        setUpPreview()
         setUpCollectState()
         setUpOnClickEvent()
     }
@@ -261,10 +257,6 @@ class EditorActivity : AppCompatActivity() {
         binding.recyclerEditor.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
     }
 
-    private fun setUpPreview() {
-        binding.previewGifticonThumbnail.clipToOutline = true
-    }
-
     private fun showProgress(isLoading: Boolean) {
         if (isLoading) {
             show(ProgressDialog.TAG) {
@@ -280,7 +272,6 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.galleryImage.collect {
@@ -302,30 +293,13 @@ class EditorActivity : AppCompatActivity() {
 
         repeatOnStarted {
             viewModel.selectedEditorChip.collect {
-                binding.cardPreview.isVisible = it is EditorChip.Preview
-                binding.cropGifticon.isVisible = it is EditorChip.Property
-
                 editorAdapter.submitList(listOf(it))
             }
         }
 
         repeatOnStarted {
-            viewModel.selectedGifticonDataFlow.collect { data ->
-                binding.previewGifticonNameEmpty.isVisible = data.name.isEmpty()
-                binding.previewGifticonBrandEmpty.isVisible = data.brand.isEmpty()
-                binding.previewGifticonExpiredEmpty.isVisible = data.displayExpired.isEmpty()
-
-                binding.previewGifticonThumbnail.load(data.originUri) {
-                    size(Size.ORIGINAL)
-                }
-                binding.previewGifticonThumbnail.imageMatrix = data.cropData.calculateMatrix(
-                    RectF(0f, 0f, 80f.dp, 80f.dp)
-                )
-                binding.previewGifticonName.text = data.name
-                binding.previewGifticonBrand.text = data.brand
-                binding.previewGifticonExpired.text = data.displayExpired
-                binding.previewEditorMemo.text = data.memo
-                binding.previewEditorMemoLength.text = "${data.memo.length}/${viewModel.maxMemoLength}"
+            viewModel.selectedEditorPage.collect {
+                changeEditorPage(it)
             }
         }
 
@@ -359,10 +333,16 @@ class EditorActivity : AppCompatActivity() {
 
             }
         })
+    }
 
-        binding.previewEditorMemo.setOnClickListener(createThrottleClickListener {
-            showTextInputDialog(EditType.MEMO)
-        })
+    private fun changeEditorPage(page: EditorPage) {
+        var fragment = supportFragmentManager.findFragmentByTag(page.name)
+        if (fragment == null) {
+            fragment = page.createFragment()
+        }
+        supportFragmentManager.commit {
+            replace(binding.containerEditor.id, fragment, page.name)
+        }
     }
 
     private fun cancelEditor() {

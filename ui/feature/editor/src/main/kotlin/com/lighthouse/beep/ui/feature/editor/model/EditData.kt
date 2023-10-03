@@ -3,6 +3,7 @@ package com.lighthouse.beep.ui.feature.editor.model
 import android.graphics.RectF
 import java.util.Date
 
+@Suppress("unused")
 internal sealed interface EditData {
 
     data object None: EditData {

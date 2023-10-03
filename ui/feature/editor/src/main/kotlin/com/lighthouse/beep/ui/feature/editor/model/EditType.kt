@@ -7,8 +7,11 @@ import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
 import com.lighthouse.beep.ui.feature.editor.R
 
+@Suppress("unused")
 internal enum class EditType(@StringRes val textResId: Int) {
     MEMO(R.string.editor_gifticon_property_memo) {
+        override val maxLength: Int = 20
+
         override fun createEditDataWithText(value: String): EditData {
             return EditData.Memo(value)
         }
@@ -16,7 +19,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
         override fun createTextInputParam(data: GifticonData): TextInputParam {
             return TextInputParam(
                 text = data.memo,
-                maxLength = 20,
+                maxLength = maxLength,
                 inputFormat = TextInputFormat.TEXT,
             )
         }
@@ -137,6 +140,8 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return data.displayBalance
         }
     };
+
+    open val maxLength = Int.MAX_VALUE
 
     open fun createEditDataWithText(value: String): EditData = EditData.None
 

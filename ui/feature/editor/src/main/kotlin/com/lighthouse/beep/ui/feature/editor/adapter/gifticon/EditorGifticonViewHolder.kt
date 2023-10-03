@@ -1,7 +1,6 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.gifticon
 
 import android.graphics.RectF
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -56,7 +55,6 @@ internal class EditorGifticonViewHolder(
         }
 
         listener.getCropDataFlow(item).collect(lifecycleOwner) { data ->
-            Log.d("TEST", "getCropDataFlow ${binding.imageGifticon}")
             if (data.isCropped) {
                 binding.imageGifticon.scaleType = ImageView.ScaleType.MATRIX
                 binding.imageGifticon.imageMatrix = data.calculateMatrix(VIEW_RECT)

@@ -2,7 +2,6 @@ package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.Matrix
 import android.graphics.RectF
-import android.util.Log
 import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 
 internal data class CropData(
@@ -16,7 +15,6 @@ internal data class CropData(
     fun calculateMatrix(viewRect: RectF): Matrix {
         val matrix = Matrix()
         if (isCropped) {
-            Log.d("TEST", "crop : $rect")
             matrix.setRectToRect(rect, viewRect, Matrix.ScaleToFit.FILL)
         } else {
             val imageRect = RectF(0f, 0f, originWidth.toFloat(), originHeight.toFloat())

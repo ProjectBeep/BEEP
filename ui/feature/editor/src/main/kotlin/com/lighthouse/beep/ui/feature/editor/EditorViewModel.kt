@@ -13,6 +13,7 @@ import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
 import com.lighthouse.beep.ui.feature.editor.model.EditType
+import com.lighthouse.beep.ui.feature.editor.model.EditorPage
 import com.lighthouse.beep.ui.feature.editor.model.toGifticonData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -60,6 +61,13 @@ internal class EditorViewModel @Inject constructor(
     private val _selectedEditorChip = MutableStateFlow<EditorChip>(EditorChip.Preview)
     val selectedEditorChip = _selectedEditorChip.asStateFlow()
 
+    val selectedEditorPage = selectedEditorChip.map { chip ->
+        when (chip){
+            is EditorChip.Preview -> EditorPage.PREVIEW
+            else -> EditorPage.CROP
+        }
+    }.distinctUntilChanged()
+
     val isSelectPreview = selectedEditorChip
         .map { it is EditorChip.Preview }
         .distinctUntilChanged()
@@ -101,8 +109,6 @@ internal class EditorViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val selectedGifticonDataFlow = selectedGifticonData.filterNotNull()
-
-    val maxMemoLength = 20
 
     private val _recognizeLoading = MutableStateFlow(false)
     val recognizeLoading = _recognizeLoading.asStateFlow()
