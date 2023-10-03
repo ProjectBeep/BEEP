@@ -7,7 +7,7 @@ internal sealed interface EditorChip {
 
     data object Preview : EditorChip
 
-    data class Property(val type: PropertyType) : EditorChip
+    data class Property(val type: EditType) : EditorChip
 }
 
 internal class EditorChipDiff : DiffUtil.ItemCallback<EditorChip>() {

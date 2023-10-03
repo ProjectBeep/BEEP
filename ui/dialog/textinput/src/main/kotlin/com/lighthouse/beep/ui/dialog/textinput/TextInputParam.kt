@@ -16,6 +16,8 @@ data class TextInputParam(
         private const val KEY_MAX_LENGTH = "Key.MaxLength"
         private const val KEY_FORMAT = "Key.Format"
 
+        val None = TextInputParam()
+
         fun getText(savedStateHandle: SavedStateHandle): String {
             return savedStateHandle.get<String>(KEY_TEXT) ?: ""
         }

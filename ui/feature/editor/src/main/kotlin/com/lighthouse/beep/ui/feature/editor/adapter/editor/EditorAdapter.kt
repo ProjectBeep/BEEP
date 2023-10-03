@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditorChipDiff
-import com.lighthouse.beep.ui.feature.editor.model.PropertyType
+import com.lighthouse.beep.ui.feature.editor.model.EditType
 
 internal class EditorAdapter(
     private val onEditorPreviewListener: OnEditorPreviewListener,
@@ -22,7 +22,7 @@ internal class EditorAdapter(
     override fun getItemViewType(position: Int): Int {
         return when(val item = getItem(position)) {
             is EditorChip.Preview -> TYPE_PREVIEW
-            is EditorChip.Property -> if (item.type == PropertyType.THUMBNAIL) {
+            is EditorChip.Property -> if (item.type == EditType.THUMBNAIL) {
                 TYPE_THUMBNAIL
             } else {
                 TYPE_TEXT

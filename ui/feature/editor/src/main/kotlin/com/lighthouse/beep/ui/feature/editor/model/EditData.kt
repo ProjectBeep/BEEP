@@ -5,12 +5,33 @@ import java.util.Date
 
 internal sealed interface EditData {
 
+    data object None: EditData {
+        override fun isModified(data: GifticonData): Boolean {
+            return false
+        }
+
+        override fun updatedGifticon(data: GifticonData): GifticonData {
+            return data
+        }
+    }
+
+    data class Thumbnail(val rect: RectF): EditData {
+        override fun isModified(data: GifticonData): Boolean {
+            return rect != data.cropData.rect
+        }
+
+        override fun updatedGifticon(data: GifticonData): GifticonData {
+            val cropData = data.cropData.copy(rect = rect)
+            return data.copy(cropData = cropData)
+        }
+    }
+
     data class Name(val name: String): EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.name != name
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(name = name)
         }
     }
@@ -20,7 +41,7 @@ internal sealed interface EditData {
             return data.name != name && data.nameRect != rect
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(name = name, nameRect = rect)
         }
     }
@@ -30,7 +51,7 @@ internal sealed interface EditData {
             return data.brand != brand
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(brand = brand)
         }
     }
@@ -40,7 +61,7 @@ internal sealed interface EditData {
             return data.brand != brand && data.brandRect != rect
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(brand = brand, brandRect = rect)
         }
     }
@@ -50,7 +71,7 @@ internal sealed interface EditData {
             return data.barcode != barcode
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(barcode = barcode)
         }
     }
@@ -60,7 +81,7 @@ internal sealed interface EditData {
             return data.barcode != barcode && data.barcodeRect != rect
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(barcode = barcode, barcodeRect = rect)
         }
     }
@@ -70,7 +91,7 @@ internal sealed interface EditData {
             return data.expired != date
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(expired = date)
         }
     }
@@ -80,7 +101,7 @@ internal sealed interface EditData {
             return data.expired != date && data.expiredRect != rect
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(expired = date, expiredRect = rect)
         }
     }
@@ -90,7 +111,7 @@ internal sealed interface EditData {
             return data.balance != balance
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(balance = balance)
         }
     }
@@ -100,7 +121,7 @@ internal sealed interface EditData {
             return data.balance != balance && data.balanceRect != rect
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(balance = balance, balanceRect = rect)
         }
     }
@@ -110,12 +131,12 @@ internal sealed interface EditData {
             return data.memo != memo
         }
 
-        override fun applyGifticon(data: GifticonData): GifticonData {
+        override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(memo = memo)
         }
     }
 
     fun isModified(data: GifticonData): Boolean
 
-    fun applyGifticon(data: GifticonData): GifticonData
+    fun updatedGifticon(data: GifticonData): GifticonData
 }

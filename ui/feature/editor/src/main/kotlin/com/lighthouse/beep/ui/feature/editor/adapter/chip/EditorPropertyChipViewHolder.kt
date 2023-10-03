@@ -35,7 +35,7 @@ internal class EditorPropertyChipViewHolder(
             binding.chip.isSelected = isSelected
         }
 
-        listener.isInvalidFlow(item).collect(lifecycleOwner) { isInvalid ->
+        listener.isInvalidFlow(item.type).collect(lifecycleOwner) { isInvalid ->
             binding.iconInvalid.isVisible = isInvalid
         }
     }

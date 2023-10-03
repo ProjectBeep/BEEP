@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.size.Size
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
@@ -27,8 +28,6 @@ import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
 import com.lighthouse.beep.ui.dialog.progress.ProgressDialog
 import com.lighthouse.beep.ui.dialog.progress.ProgressParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputDialog
-import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
-import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputResult
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.EditorPropertyChipAdapter
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.OnEditorPropertyChipListener
@@ -42,7 +41,7 @@ import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
 import com.lighthouse.beep.ui.feature.editor.model.CropData
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
-import com.lighthouse.beep.ui.feature.editor.model.PropertyType
+import com.lighthouse.beep.ui.feature.editor.model.EditType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -71,7 +70,8 @@ class EditorActivity : AppCompatActivity() {
 
         override fun isInvalidFlow(item: GalleryImage): Flow<Boolean> {
             return viewModel.gifticonDataMapFlow
-                .map { map -> map[item.id]?.isInvalid ?: true }
+                .map { map -> map[item.id]?.isInvalid }
+                .filterNotNull()
                 .distinctUntilChanged()
         }
 
@@ -117,9 +117,9 @@ class EditorActivity : AppCompatActivity() {
                 .distinctUntilChanged()
         }
 
-        override fun isInvalidFlow(item: EditorChip.Property): Flow<Boolean> {
-            return viewModel.selectedGifticonData
-                .map { it?.isInvalid(item.type) ?: false }
+        override fun isInvalidFlow(type: EditType): Flow<Boolean> {
+            return viewModel.selectedGifticonDataFlow
+                .map { type.isInvalid(it) }
                 .distinctUntilChanged()
         }
 
@@ -134,69 +134,58 @@ class EditorActivity : AppCompatActivity() {
     )
 
     private val onEditorPreviewListener = object : OnEditorPreviewListener {
-        override fun getInvalidPropertyFlow(): Flow<List<PropertyType>> {
-            return viewModel.selectedGifticonData.map { data ->
-                PropertyType.entries.filter { data?.isInvalid(it) ?: false }
-            }.distinctUntilChanged()
+        override fun getInvalidPropertyFlow(): Flow<List<EditType>> {
+            return viewModel.selectedGifticonDataFlow
+                .map { data -> EditType.entries.filter { it.isInvalid(data) } }
+                .distinctUntilChanged()
         }
     }
 
     private val onEditorThumbnailListener = object : OnEditorThumbnailListener {
         override fun getThumbnailFlow(): Flow<Uri> {
-            return viewModel.selectedGifticonData
-                .filterNotNull()
+            return viewModel.selectedGifticonDataFlow
                 .map { it.originUri }
                 .distinctUntilChanged()
         }
 
         override fun getCropRectFlow(): Flow<RectF> {
-            return viewModel.selectedGifticonData
-                .filterNotNull()
-                .map { it.cropRect }
+            return viewModel.selectedGifticonDataFlow
+                .map { it.cropData.rect }
                 .distinctUntilChanged()
         }
 
         override fun isThumbnailEditedFlow(): Flow<Boolean> {
-            return viewModel.selectedGifticonData
-                .filterNotNull()
-                .map { it.isThumbnailEdited }
+            return viewModel.selectedGifticonDataFlow
+                .map { it.cropData.isCropped }
                 .distinctUntilChanged()
         }
     }
 
-    private fun showTextInputDialog(item: EditorChip) {
-        val tag = when (item) {
-            is EditorChip.Preview -> item.toString()
-            is EditorChip.Property -> item.type.name
-        }
-        show(tag) {
-            val param = when (item) {
-                is EditorChip.Preview -> TextInputParam(
-                    maxLength = 20,
-                    inputFormat = TextInputFormat.TEXT,
-                )
-                is EditorChip.Property -> when(item.type) {
-                    PropertyType.BARCODE -> TextInputParam(
-                        inputFormat = TextInputFormat.BARCODE
-                    )
-                    else -> TextInputParam(
-                        inputFormat = TextInputFormat.TEXT
-                    )
+    private fun showTextInputDialog(type: EditType) {
+        val data = viewModel.selectedGifticonData.value ?: return
+        show(type.name) {
+            val param = type.createTextInputParam(data)
+            supportFragmentManager.setFragmentResultListener(type.name, this) { requestKey, data ->
+                val result = TextInputResult(data)
+                val editData = type.createEditDataWithText(result.value)
+                if (editData !is EditData.None) {
+                    viewModel.updateGifticonData(editData = editData)
                 }
+                supportFragmentManager.clearFragmentResultListener(requestKey)
             }
             TextInputDialog.newInstance(param)
         }
     }
 
     private val onEditorTextListener = object : OnEditorTextListener {
-        override fun getTextFlow(item: EditorChip.Property): Flow<String> {
-            return viewModel.selectedGifticonData
-                .map { it?.getText(item.type) ?: "" }
+        override fun getTextFlow(type: EditType): Flow<String> {
+            return viewModel.selectedGifticonDataFlow
+                .map { type.getText(it) }
                 .distinctUntilChanged()
         }
 
-        override fun onEditClick(item: EditorChip.Property) {
-            showTextInputDialog(item)
+        override fun onEditClick(type: EditType) {
+            showTextInputDialog(type)
         }
     }
 
@@ -216,7 +205,6 @@ class EditorActivity : AppCompatActivity() {
         setUpPropertyChipList()
         setUpRecycleEditor()
         setUpPreview()
-        setUpTextInputResult()
         setUpCollectState()
         setUpOnClickEvent()
     }
@@ -277,24 +265,6 @@ class EditorActivity : AppCompatActivity() {
         binding.previewGifticonThumbnail.clipToOutline = true
     }
 
-    private fun setUpTextInputResult() {
-        supportFragmentManager.setFragmentResultListener(TextInputResult.KEY, this) { _, data ->
-            val result = TextInputResult(data)
-            val editData = when (val editorChip = viewModel.selectedEditorChip.value) {
-                is EditorChip.Preview -> EditData.Memo(result.value)
-                is EditorChip.Property -> when (editorChip.type) {
-                    PropertyType.NAME -> EditData.Name(result.value)
-                    PropertyType.BRAND -> EditData.Brand(result.value)
-                    PropertyType.BARCODE -> EditData.Barcode(result.value)
-                    else -> null
-                }
-            }
-            if (editData != null) {
-                viewModel.updateGifticonData(editData = editData)
-            }
-        }
-    }
-
     private fun showProgress(isLoading: Boolean) {
         if (isLoading) {
             show(ProgressDialog.TAG) {
@@ -340,22 +310,22 @@ class EditorActivity : AppCompatActivity() {
         }
 
         repeatOnStarted {
-            viewModel.selectedGifticonData.collect { data ->
-                binding.previewGifticonName.isVisible = data?.name?.isNotEmpty() ?: false
-                binding.previewGifticonNameEmpty.isVisible = data?.name?.isEmpty() ?: false
-                binding.previewGifticonBrand.isVisible = data?.brand?.isNotEmpty() ?: false
-                binding.previewGifticonBrandEmpty.isVisible = data?.brand?.isEmpty() ?: false
-                binding.previewGifticonExpired.isVisible = data?.displayExpired?.isNotEmpty() ?: false
-                binding.previewGifticonExpiredEmpty.isVisible = data?.displayExpired?.isEmpty() ?: false
+            viewModel.selectedGifticonDataFlow.collect { data ->
+                binding.previewGifticonNameEmpty.isVisible = data.name.isEmpty()
+                binding.previewGifticonBrandEmpty.isVisible = data.brand.isEmpty()
+                binding.previewGifticonExpiredEmpty.isVisible = data.displayExpired.isEmpty()
 
-                binding.previewGifticonThumbnail.load(data?.originUri)
-                if (data != null) {
-                    binding.previewGifticonName.text = data.name
-                    binding.previewGifticonBrand.text = data.brand
-                    binding.previewGifticonExpired.text = data.displayExpired
-                    binding.previewEditorMemo.text = data.memo
-                    binding.previewEditorMemoLength.text = "${data.memo.length}/${viewModel.maxMemoLength}"
+                binding.previewGifticonThumbnail.load(data.originUri) {
+                    size(Size.ORIGINAL)
                 }
+                binding.previewGifticonThumbnail.imageMatrix = data.cropData.calculateMatrix(
+                    RectF(0f, 0f, 80f.dp, 80f.dp)
+                )
+                binding.previewGifticonName.text = data.name
+                binding.previewGifticonBrand.text = data.brand
+                binding.previewGifticonExpired.text = data.displayExpired
+                binding.previewEditorMemo.text = data.memo
+                binding.previewEditorMemoLength.text = "${data.memo.length}/${viewModel.maxMemoLength}"
             }
         }
 
@@ -391,7 +361,7 @@ class EditorActivity : AppCompatActivity() {
         })
 
         binding.previewEditorMemo.setOnClickListener(createThrottleClickListener {
-            showTextInputDialog(EditorChip.Preview)
+            showTextInputDialog(EditType.MEMO)
         })
     }
 

@@ -120,7 +120,7 @@
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     android:textAppearance="@style/Text.Body5"
                     android:textColor="@color/font_gray"
-                    android:text="@string/editor_preview_gifticon_name"/>
+                    android:text="@string/editor_gifticon_property_name"/>
 
                 <TextView
                     android:id="@+id/preview_gifticon_name"
@@ -152,7 +152,7 @@
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     android:textAppearance="@style/Text.Body5"
                     android:textColor="@color/font_gray"
-                    android:text="@string/editor_preview_gifticon_brand"/>
+                    android:text="@string/editor_gifticon_property_brand"/>
 
                 <TextView
                     android:id="@+id/preview_gifticon_brand"
@@ -184,7 +184,7 @@
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     android:textAppearance="@style/Text.Body5"
                     android:textColor="@color/font_gray"
-                    android:text="@string/editor_preview_gifticon_expired"/>
+                    android:text="@string/editor_gifticon_property_expired"/>
 
                 <TextView
                     android:id="@+id/preview_gifticon_expired"
@@ -217,7 +217,7 @@
                     app:layout_constraintStart_toStartOf="@id/guide_preview_start"
                     android:textAppearance="@style/Text.Body5"
                     android:textColor="@color/font_gray"
-                    android:text="@string/editor_preview_gifticon_memo"/>
+                    android:text="@string/editor_gifticon_property_memo"/>
 
                 <TextView
                     android:id="@+id/preview_editor_memo"

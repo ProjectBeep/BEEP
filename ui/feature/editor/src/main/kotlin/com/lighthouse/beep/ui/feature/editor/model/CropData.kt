@@ -3,20 +3,21 @@ package com.lighthouse.beep.ui.feature.editor.model
 import android.graphics.Matrix
 import android.graphics.RectF
 import android.util.Log
+import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 
 internal data class CropData(
     val originWidth: Int,
     val originHeight: Int,
-    val cropRect: RectF,
+    val rect: RectF,
 ) {
     val isCropped
-        get() = cropRect != EMPTY_RECT_F
+        get() = rect != EMPTY_RECT_F
 
     fun calculateMatrix(viewRect: RectF): Matrix {
         val matrix = Matrix()
         if (isCropped) {
-            Log.d("TEST", "crop : $cropRect")
-            matrix.setRectToRect(cropRect, viewRect, Matrix.ScaleToFit.FILL)
+            Log.d("TEST", "crop : $rect")
+            matrix.setRectToRect(rect, viewRect, Matrix.ScaleToFit.FILL)
         } else {
             val imageRect = RectF(0f, 0f, originWidth.toFloat(), originHeight.toFloat())
             val imageRatio = imageRect.width() / imageRect.height()
@@ -35,8 +36,6 @@ internal data class CropData(
     }
 
     companion object {
-        private val EMPTY_RECT_F = RectF()
-
-        val None = CropData(0, 0, RectF())
+        val None = CropData(0, 0, EMPTY_RECT_F)
     }
 }

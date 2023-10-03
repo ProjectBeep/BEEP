@@ -12,7 +12,7 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
-import com.lighthouse.beep.ui.feature.editor.model.PropertyType
+import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.toGifticonData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
@@ -52,7 +53,7 @@ internal class EditorViewModel @Inject constructor(
         _selectedGifticon.value = item
     }
 
-    val editorPropertyChipList = PropertyType.entries.map {
+    val editorPropertyChipList = EditType.entries.map {
         EditorChip.Property(it)
     }
 
@@ -85,7 +86,7 @@ internal class EditorViewModel @Inject constructor(
         if (!editData.isModified(data)) {
             return
         }
-        gifticonDataMap[selectedItem.id] = editData.applyGifticon(data)
+        gifticonDataMap[selectedItem.id] = editData.updatedGifticon(data)
         viewModelScope.launch {
             _gifticonDataMapFlow.emit(gifticonDataMap)
         }
@@ -97,7 +98,9 @@ internal class EditorViewModel @Inject constructor(
     ) { selected, gifticonMap ->
         selected ?: return@combine null
         gifticonMap[selected.id]
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val selectedGifticonDataFlow = selectedGifticonData.filterNotNull()
 
     val maxMemoLength = 20
 

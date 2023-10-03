@@ -18,12 +18,12 @@ internal class EditorTextViewHolder(
 
     override fun onSetUpClickEvent(item: EditorChip.Property) {
         binding.textEditor.setOnThrottleClickListener {
-            listener.onEditClick(item)
+            listener.onEditClick(item.type)
         }
     }
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Property) {
-        listener.getTextFlow(item).collect(lifecycleOwner) { text ->
+        listener.getTextFlow(item.type).collect(lifecycleOwner) { text ->
             binding.textEditor.text = text
         }
     }
