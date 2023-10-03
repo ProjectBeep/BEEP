@@ -22,7 +22,8 @@ enum class TextInputFormat(
         private val balanceFormat = DecimalFormat("###,###,###")
 
         override fun valueToTransformed(value: String): String {
-            return balanceFormat.format(value.toDigit())
+            val balance = value.toDigit()
+            return if (balance > 0) balanceFormat.format(balance) else ""
         }
 
         override fun transformedToValue(text: String): String {
