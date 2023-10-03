@@ -56,7 +56,8 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                     job?.cancel()
                     job = lifecycleScope.launch(Dispatchers.IO) {
                         val bitmap = originBitmap.crop(rect.toRect())
-                        editorViewModel.updateGifticonData(editType, bitmap, rect)
+                        val editData = editType.createEditDataWithCrop(bitmap, rect)
+                        editorViewModel.updateGifticonData(editData)
                     }
                 }
             }

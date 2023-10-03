@@ -1,9 +1,13 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
+import android.graphics.Bitmap
 import android.graphics.RectF
 import androidx.annotation.StringRes
 import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
-import com.lighthouse.beep.core.common.exts.toDate
+import com.lighthouse.beep.library.recognizer.BalanceRecognizer
+import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
+import com.lighthouse.beep.library.recognizer.ExpiredRecognizer
+import com.lighthouse.beep.library.recognizer.TextRecognizer
 import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
 import com.lighthouse.beep.ui.feature.editor.R
@@ -35,11 +39,14 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     NAME(R.string.editor_gifticon_property_name) {
+        private val textRecognizer = TextRecognizer()
+
         override fun createEditDataWithText(value: String): EditData {
             return EditData.Name(value)
         }
 
-        override fun createEditDataWithCrop(value: String, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+            val value = textRecognizer.recognize(bitmap).joinToString("")
             return EditData.CropName(value, rect)
         }
 
@@ -63,11 +70,14 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     BRAND(R.string.editor_gifticon_property_brand) {
+        private val textRecognizer = TextRecognizer()
+
         override fun createEditDataWithText(value: String): EditData {
             return EditData.Brand(value)
         }
 
-        override fun createEditDataWithCrop(value: String, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+            val value = textRecognizer.recognize(bitmap).joinToString("")
             return EditData.CropBrand(value, rect)
         }
 
@@ -91,13 +101,15 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     BARCODE(R.string.editor_gifticon_property_barcode) {
+        private val barcodeRecognizer = BarcodeRecognizer()
         private val validBarcodeCount = setOf(12, 14, 16, 18, 20, 22, 24)
 
         override fun createEditDataWithText(value: String): EditData {
             return EditData.Barcode(value)
         }
 
-        override fun createEditDataWithCrop(value: String, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+            val value = barcodeRecognizer.recognize(bitmap).barcode
             return EditData.CropBarcode(value, rect)
         }
 
@@ -121,8 +133,11 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     EXPIRED(R.string.editor_gifticon_property_expired) {
-        override fun createEditDataWithCrop(value: String, rect: RectF): EditData {
-            return EditData.CropExpired(value.toDate(), rect)
+        private val expiredRecognizer = ExpiredRecognizer()
+
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+            val value = expiredRecognizer.recognize(bitmap).expired
+            return EditData.CropExpired(value, rect)
         }
 
         override fun getText(data: GifticonData): String {
@@ -134,11 +149,14 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     BALANCE(R.string.editor_gifticon_property_balance) {
+        private val balanceRecognizer = BalanceRecognizer()
+
         override fun createEditDataWithText(value: String): EditData {
             return EditData.Balance(value)
         }
 
-        override fun createEditDataWithCrop(value: String, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+            val value = balanceRecognizer.recognize(bitmap).balance.toString()
             return EditData.CropBalance(value, rect)
         }
 
@@ -166,7 +184,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
 
     open fun createEditDataWithText(value: String): EditData = EditData.None
 
-    open fun createEditDataWithCrop(value: String, rect: RectF): EditData = EditData.None
+    open suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData = EditData.None
 
     open fun createTextInputParam(data: GifticonData) = TextInputParam.None
 
