@@ -144,5 +144,5 @@
         android:background="@drawable/bg_rect_r16"
         android:textColor="@color/white"
         android:textAppearance="@style/Text.Title5"
-        android:text="@string/editor_gifticon_register_invalid"/>
+        android:text="@string/editor_gifticon_register"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

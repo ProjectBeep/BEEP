@@ -46,8 +46,26 @@ internal class EditorViewModel @Inject constructor(
     private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
     val galleryImage = _galleryImage.asStateFlow()
 
+    val gifticonCount
+        get() = galleryImage.value.size
+
     fun deleteItem(item: GalleryImage) {
-        _galleryImage.value = _galleryImage.value.filter { it.id != item.id }
+        val oldList = _galleryImage.value
+        val index = oldList.indexOfFirst { it.id == item.id }
+        val newSelectItem = when {
+            index + 1 < oldList.size -> oldList[index + 1]
+            index - 1 >= 0 -> oldList[index - 1]
+            else -> null
+        }
+        if (newSelectItem != null) {
+            selectGifticon(newSelectItem)
+        }
+
+        _galleryImage.value = oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
+        gifticonDataMap.remove(item.id)
+        viewModelScope.launch {
+            _gifticonDataMapFlow.emit(gifticonDataMap)
+        }
     }
 
     private val _selectedGifticon = MutableStateFlow(_galleryImage.value.firstOrNull())
@@ -85,6 +103,10 @@ internal class EditorViewModel @Inject constructor(
 
     private val _gifticonDataMapFlow = MutableSharedFlow<Map<Long, GifticonData>>(replay = 1)
     val gifticonDataMapFlow = _gifticonDataMapFlow.asSharedFlow()
+
+    val validGifticonCount = gifticonDataMapFlow
+        .map { map -> map.count { !it.value.isInvalid } }
+        .distinctUntilChanged()
 
     val isRegisterActivated = gifticonDataMapFlow
         .map { map -> map.values.any { !it.isInvalid } }

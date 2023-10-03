@@ -132,7 +132,7 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
     }
 
     override fun selectEditorChip(item: EditorChip) {
-        val position = when(item) {
+        val position = when (item) {
             is EditorChip.Preview -> 0
             is EditorChip.Property -> editorPropertyChipAdapter.getPosition(item)
         }
@@ -175,10 +175,13 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
     }
 
     override fun showTextInputDialog(type: EditType) {
-        val data = viewModel.selectedGifticonData.value?: return
+        val data = viewModel.selectedGifticonData.value ?: return
         show(type.name) {
             val param = type.createTextInputParam(data)
-            supportFragmentManager.setFragmentResultListener(TextInputResult.KEY, this) { requestKey, data ->
+            supportFragmentManager.setFragmentResultListener(
+                TextInputResult.KEY,
+                this
+            ) { requestKey, data ->
                 val result = TextInputResult(data)
                 val editData = type.createEditDataWithText(result.value)
                 if (editData !is EditData.None) {
@@ -327,6 +330,16 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
         }
 
         repeatOnStarted {
+            viewModel.validGifticonCount.collect { count ->
+                binding.btnRegister.text = if (count == 0 || count == viewModel.gifticonCount) {
+                    getString(R.string.editor_gifticon_register)
+                } else {
+                    getString(R.string.editor_gifticon_register_valid, count)
+                }
+            }
+        }
+
+        repeatOnStarted {
             viewModel.isRegisterActivated.collect { isActivated ->
                 binding.btnRegister.isActivated = isActivated
             }
@@ -345,8 +358,6 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
 
         binding.btnRegister.setOnClickListener(createThrottleClickListener {
             if (viewModel.isRegisterActivated.value) {
-
-            } else {
 
             }
         })
