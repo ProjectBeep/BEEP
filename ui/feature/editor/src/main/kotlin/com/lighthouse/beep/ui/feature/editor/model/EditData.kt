@@ -39,7 +39,7 @@ internal sealed interface EditData {
 
     data class CropName(val name: String, val rect: RectF): EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.name != name && data.nameRect != rect
+            return data.name != name || data.nameRect != rect
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
@@ -59,7 +59,7 @@ internal sealed interface EditData {
 
     data class CropBrand(val brand: String, val rect: RectF): EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.brand != brand && data.brandRect != rect
+            return data.brand != brand || data.brandRect != rect
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
@@ -79,7 +79,7 @@ internal sealed interface EditData {
 
     data class CropBarcode(val barcode: String, val rect: RectF): EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.barcode != barcode && data.barcodeRect != rect
+            return data.barcode != barcode || data.barcodeRect != rect
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
@@ -99,7 +99,7 @@ internal sealed interface EditData {
 
     data class CropExpired(val date: Date, val rect: RectF): EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.expired != date && data.expiredRect != rect
+            return data.expired != date || data.expiredRect != rect
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
@@ -119,7 +119,7 @@ internal sealed interface EditData {
 
     data class CropBalance(val balance: String, val rect: RectF): EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.balance != balance && data.balanceRect != rect
+            return data.balance != balance || data.balanceRect != rect
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
