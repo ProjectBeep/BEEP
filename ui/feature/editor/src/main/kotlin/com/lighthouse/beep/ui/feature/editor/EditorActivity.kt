@@ -233,7 +233,7 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
     private fun setUpGifticonList() {
         binding.listSelected.adapter = editorGifticonAdapter
         binding.listSelected.setHasFixedSize(true)
-        binding.listSelected.addItemDecoration(LinearItemDecoration(1.5f.dp))
+        binding.listSelected.addItemDecoration(LinearItemDecoration(14.5f.dp))
     }
 
     private fun setUpPropertyChipList() {

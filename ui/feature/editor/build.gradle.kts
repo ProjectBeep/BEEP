@@ -21,6 +21,8 @@ dependencies {
     implementation(projects.ui.dialog.textinput)
     implementation(projects.ui.designsystem.cropview)
 
+    implementation(projects.library.recognizer)
+
     implementation(libs.coil)
 
     implementation(libs.squareup.moshi.kotlin)

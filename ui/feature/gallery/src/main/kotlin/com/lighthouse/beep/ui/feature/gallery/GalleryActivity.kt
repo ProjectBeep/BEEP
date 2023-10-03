@@ -140,7 +140,7 @@ internal class GalleryActivity : AppCompatActivity() {
     private fun setUpSelectedGalleryList() {
         binding.listSelected.adapter = selectedGalleryAdapter
         binding.listSelected.setHasFixedSize(true)
-        binding.listSelected.addItemDecoration(LinearItemDecoration(1.5f.dp))
+        binding.listSelected.addItemDecoration(LinearItemDecoration(14.5f.dp))
     }
 
     private fun setUpGalleryList() {
