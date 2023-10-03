@@ -67,6 +67,8 @@ class CropImageView(
                 cropImageMode = CropImageMode.DRAG_WINDOW
                 cropImageWindow.initRect(originBitmap, drawRect)
                 applyZoom(width, height)
+
+                onChangeCropRect(cropImageWindow.curCropRect)
             }
         },
     )
@@ -101,17 +103,21 @@ class CropImageView(
             }
 
             override fun onWindowTouchComplete(curCropRect: RectF) {
-                val croppedRect = RectF(curCropRect)
-                mainMatrix.invert(mainInverseMatrix)
-                mainInverseMatrix.mapRect(croppedRect)
-
-                val bitmap = originBitmap
-                if (bitmap != null) {
-                    onChangeCropRectListener?.onChange(bitmap, croppedRect)
-                }
+                onChangeCropRect(curCropRect)
             }
         },
     )
+
+    private fun onChangeCropRect(curCropRect: RectF) {
+        val croppedRect = RectF(curCropRect)
+        mainMatrix.invert(mainInverseMatrix)
+        mainInverseMatrix.mapRect(croppedRect)
+
+        val bitmap = originBitmap
+        if (bitmap != null) {
+            onChangeCropRectListener?.onChange(bitmap, croppedRect)
+        }
+    }
 
     // AspectRatio = Width / Height
     var enableAspectRatio = true
@@ -189,7 +195,12 @@ class CropImageView(
         } else {
             originBitmap = bitmap
             initRect(rect)
-            applyZoom(width, height, false)
+            if (rect == null || rect == RECT_F_EMPTY) {
+                zoom = 1f
+                applyMatrix(false)
+            } else {
+                applyZoom(width, height, false)
+            }
         }
     }
 
@@ -204,7 +215,12 @@ class CropImageView(
             }
         } else {
             initRect(rect)
-            applyZoom(width, height, false)
+            if (rect == RECT_F_EMPTY) {
+                zoom = 1f
+                applyMatrix(false)
+            } else {
+                applyZoom(width, height, false)
+            }
         }
     }
 
@@ -239,10 +255,6 @@ class CropImageView(
         } else {
             realImageRect.set(RECT_F_EMPTY)
             curImageRect.set(RECT_F_EMPTY)
-        }
-
-        if (croppedRect == null || croppedRect == RECT_F_EMPTY) {
-            zoom = 1f
         }
 
         cropImageWindow.initRect(bitmap, croppedRect)
