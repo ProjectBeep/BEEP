@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import coil.load
 import coil.size.Size
 import com.lighthouse.beep.core.common.exts.cast
@@ -16,6 +17,7 @@ import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.ui.feature.editor.EditorSelectGifticonDataDelegate
 import com.lighthouse.beep.ui.feature.editor.OnDialogProvider
 import com.lighthouse.beep.ui.feature.editor.EditorViewModel
 import com.lighthouse.beep.ui.feature.editor.OnEditorChipListener
@@ -23,8 +25,6 @@ import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.FragmentEditorPreviewBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 
 @AndroidEntryPoint
 internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview) {
@@ -33,7 +33,13 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         private val VIEW_RECT = RectF(0f, 0f, 80f.dp, 80f.dp)
     }
 
-    private val editorViewModel by activityViewModels<EditorViewModel>()
+    private val delegate: EditorSelectGifticonDataDelegate by activityViewModels<EditorViewModel>()
+
+    private val viewModel by viewModels<EditorPreviewViewModel>(
+        factoryProducer = {
+            EditorPreviewViewModel.factory(delegate)
+        }
+    )
 
     private val binding by viewBindings<FragmentEditorPreviewBinding>()
 
@@ -60,68 +66,50 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
     @SuppressLint("SetTextI18n")
     private fun setUpCollectState() {
         repeatOnStarted {
-            editorViewModel.selectedGifticonDataFlow
-                .map { it.originUri }
-                .distinctUntilChanged()
-                .collect { contentUri ->
-                    binding.imageThumbnail.load(contentUri) {
-                        size(Size.ORIGINAL)
-                    }
+            viewModel.thumbnailUri.collect { contentUri ->
+                binding.imageThumbnail.load(contentUri) {
+                    size(Size.ORIGINAL)
                 }
+            }
         }
 
         repeatOnStarted {
-            editorViewModel.selectedGifticonDataFlow
-                .map { it.thumbnailCropData }
-                .distinctUntilChanged()
-                .collect { data ->
-                    if (data.isCropped) {
-                        binding.imageThumbnail.scaleType = ImageView.ScaleType.MATRIX
-                        binding.imageThumbnail.imageMatrix = data.calculateMatrix(VIEW_RECT)
-                    } else {
-                        binding.imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
-                    }
+            viewModel.thumbnailCropData.collect { data ->
+                if (data.isCropped) {
+                    binding.imageThumbnail.scaleType = ImageView.ScaleType.MATRIX
+                    binding.imageThumbnail.imageMatrix = data.calculateMatrix(VIEW_RECT)
+                } else {
+                    binding.imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
                 }
+            }
         }
 
         repeatOnStarted {
-            editorViewModel.selectedGifticonDataFlow
-                .map { it.name }
-                .distinctUntilChanged()
-                .collect { name ->
-                    binding.iconNameEmpty.isVisible = name.isEmpty()
-                    binding.textName.text = name
-                }
+            viewModel.gifticonName.collect { name ->
+                binding.iconNameEmpty.isVisible = name.isEmpty()
+                binding.textName.text = name
+            }
         }
 
         repeatOnStarted {
-            editorViewModel.selectedGifticonDataFlow
-                .map { it.brand }
-                .distinctUntilChanged()
-                .collect { brand ->
-                    binding.iconBrandEmpty.isVisible = brand.isEmpty()
-                    binding.textBrand.text = brand
-                }
+            viewModel.brandName.collect { brand ->
+                binding.iconBrandEmpty.isVisible = brand.isEmpty()
+                binding.textBrand.text = brand
+            }
         }
 
         repeatOnStarted {
-            editorViewModel.selectedGifticonDataFlow
-                .map { it.displayExpired }
-                .distinctUntilChanged()
-                .collect { expired ->
-                    binding.iconExpiredEmpty.isVisible = expired.isEmpty()
-                    binding.textExpired.text = expired
-                }
+            viewModel.expired.collect { expired ->
+                binding.iconExpiredEmpty.isVisible = expired.isEmpty()
+                binding.textExpired.text = expired
+            }
         }
 
         repeatOnStarted {
-            editorViewModel.selectedGifticonDataFlow
-                .map { it.memo }
-                .distinctUntilChanged()
-                .collect { memo ->
-                    binding.textMemo.text = memo
-                    binding.textMemoLength.text = "${memo.length}/${EditType.MEMO.maxLength}"
-                }
+            viewModel.memo.collect { memo ->
+                binding.textMemo.text = memo
+                binding.textMemoLength.text = "${memo.length}/${EditType.MEMO.maxLength}"
+            }
         }
     }
 
