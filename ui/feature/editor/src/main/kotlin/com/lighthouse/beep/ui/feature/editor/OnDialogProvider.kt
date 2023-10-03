@@ -2,6 +2,6 @@ package com.lighthouse.beep.ui.feature.editor
 
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 
-internal interface DialogProvider {
+internal interface OnDialogProvider {
     fun showTextInputDialog(type: EditType)
 }

@@ -19,4 +19,8 @@ internal class EditorPropertyChipAdapter(
     override fun onBindViewHolder(holder: EditorPropertyChipViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    fun getPosition(item: EditorChip.Property): Int {
+        return currentList.indexOfFirst { item.type == it.type }
+    }
 }

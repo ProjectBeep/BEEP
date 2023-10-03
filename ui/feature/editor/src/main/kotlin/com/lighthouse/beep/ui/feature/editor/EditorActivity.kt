@@ -48,7 +48,7 @@ import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-internal class EditorActivity : AppCompatActivity(), DialogProvider {
+internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorChipListener {
 
     companion object {
         private const val TAG_SELECTED_GIFTICON_DELETE = "Tag.SelectedGifticonDelete"
@@ -81,6 +81,7 @@ internal class EditorActivity : AppCompatActivity(), DialogProvider {
 
         override fun onClick(item: GalleryImage) {
             viewModel.selectGifticon(item)
+            selectEditorChip(EditorChip.Preview)
         }
 
         override fun onDeleteClick(item: GalleryImage) {
@@ -121,6 +122,21 @@ internal class EditorActivity : AppCompatActivity(), DialogProvider {
         }
 
         override fun onClick(item: EditorChip.Property, position: Int) {
+            binding.listEditorChip.smoothScrollToPosition(position)
+            viewModel.selectEditorChip(item)
+        }
+    }
+
+    override fun selectEditorChip(type: EditType) {
+        selectEditorChip(EditorChip.Property(type))
+    }
+
+    override fun selectEditorChip(item: EditorChip) {
+        val position = when(item) {
+            is EditorChip.Preview -> 0
+            is EditorChip.Property -> editorPropertyChipAdapter.getPosition(item)
+        }
+        if (position >= 0) {
             binding.listEditorChip.smoothScrollToPosition(position)
             viewModel.selectEditorChip(item)
         }
@@ -218,8 +234,7 @@ internal class EditorActivity : AppCompatActivity(), DialogProvider {
     }
 
     private fun setUpPropertyChipList() {
-        editorPropertyChipAdapter.submitList(viewModel.editorPropertyChipList)
-
+        binding.listEditorChip.itemAnimator = null
         binding.listEditorChip.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val preview = binding.btnPreview
@@ -273,6 +288,12 @@ internal class EditorActivity : AppCompatActivity(), DialogProvider {
     }
 
     private fun setUpCollectState() {
+        repeatOnStarted {
+            viewModel.editorPropertyChipList.collect {
+                editorPropertyChipAdapter.submitList(it)
+            }
+        }
+
         repeatOnStarted {
             viewModel.galleryImage.collect {
                 if (it.isEmpty()) {

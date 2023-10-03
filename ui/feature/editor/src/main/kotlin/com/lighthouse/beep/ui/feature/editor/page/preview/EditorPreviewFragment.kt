@@ -15,8 +15,9 @@ import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
-import com.lighthouse.beep.ui.feature.editor.DialogProvider
+import com.lighthouse.beep.ui.feature.editor.OnDialogProvider
 import com.lighthouse.beep.ui.feature.editor.EditorViewModel
+import com.lighthouse.beep.ui.feature.editor.OnEditorChipListener
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.FragmentEditorPreviewBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditType
@@ -35,12 +36,14 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
 
     private val binding by viewBindings<FragmentEditorPreviewBinding>()
 
-    private lateinit var dialogProvider: DialogProvider
+    private lateinit var onDialogProvider: OnDialogProvider
+    private lateinit var onEditorChipListener: OnEditorChipListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        dialogProvider = context.cast()
+        onDialogProvider = context.cast()
+        onEditorChipListener = context.cast()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,8 +120,24 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
     }
 
     private fun setUpOnClickEvent() {
+        binding.imageThumbnail.setOnClickListener(createThrottleClickListener {
+            onEditorChipListener.selectEditorChip(EditType.THUMBNAIL)
+        })
+
+        binding.textName.setOnClickListener(createThrottleClickListener {
+            onEditorChipListener.selectEditorChip(EditType.NAME)
+        })
+
+        binding.textBrand.setOnClickListener(createThrottleClickListener {
+            onEditorChipListener.selectEditorChip(EditType.BRAND)
+        })
+
+        binding.textExpired.setOnClickListener(createThrottleClickListener {
+            onEditorChipListener.selectEditorChip(EditType.EXPIRED)
+        })
+
         binding.textMemo.setOnClickListener(createThrottleClickListener {
-            dialogProvider.showTextInputDialog(EditType.MEMO)
+            onDialogProvider.showTextInputDialog(EditType.MEMO)
         })
     }
 }

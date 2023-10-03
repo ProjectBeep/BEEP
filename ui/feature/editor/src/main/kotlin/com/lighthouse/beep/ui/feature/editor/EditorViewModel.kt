@@ -54,15 +54,11 @@ internal class EditorViewModel @Inject constructor(
         _selectedGifticon.value = item
     }
 
-    val editorPropertyChipList = EditType.entries.map {
-        EditorChip.Property(it)
-    }
-
     private val _selectedEditorChip = MutableStateFlow<EditorChip>(EditorChip.Preview)
     val selectedEditorChip = _selectedEditorChip.asStateFlow()
 
     val selectedEditorPage = selectedEditorChip.map { chip ->
-        when (chip){
+        when (chip) {
             is EditorChip.Preview -> EditorPage.PREVIEW
             else -> EditorPage.CROP
         }
@@ -110,6 +106,18 @@ internal class EditorViewModel @Inject constructor(
 
     val selectedGifticonDataFlow = selectedGifticonData.filterNotNull()
 
+    val editorPropertyChipList = selectedGifticonDataFlow.map { data ->
+        EditType.entries.filter { type ->
+            when (type) {
+                EditType.MEMO -> false
+                EditType.BALANCE -> data.isCashCard
+                else -> true
+            }
+        }.map {
+            EditorChip.Property(it)
+        }
+    }.distinctUntilChanged()
+
     private val _recognizeLoading = MutableStateFlow(false)
     val recognizeLoading = _recognizeLoading.asStateFlow()
 
@@ -119,7 +127,8 @@ internal class EditorViewModel @Inject constructor(
             _gifticonDataMapFlow.emit(emptyMap())
             galleryImage.value.map { gallery ->
                 launch {
-                    val data = recognizeGifticonUseCase(gallery).getOrNull().toGifticonData(gallery.contentUri)
+                    val data = recognizeGifticonUseCase(gallery).getOrNull()
+                        .toGifticonData(gallery.contentUri)
                     gifticonDataMap[gallery.id] = data
                 }
             }.joinAll()
