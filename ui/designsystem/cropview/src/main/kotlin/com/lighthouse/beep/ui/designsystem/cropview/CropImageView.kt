@@ -196,12 +196,9 @@ class CropImageView(
         } else {
             originBitmap = bitmap
             initRect(rect)
-            if (rect == null || rect == RECT_F_EMPTY) {
-                zoom = 1f
-                applyMatrix(false)
-            } else {
-                applyZoom(width, height, false)
-            }
+            zoom = 1f
+            applyMatrix(false)
+            applyZoom(width, height, false)
         }
     }
 
@@ -216,12 +213,9 @@ class CropImageView(
             }
         } else {
             initRect(rect)
-            if (rect == RECT_F_EMPTY) {
-                zoom = 1f
-                applyMatrix(false)
-            } else {
-                applyZoom(width, height, false)
-            }
+            zoom = 1f
+            applyMatrix(false)
+            applyZoom(width, height, false)
         }
     }
 
