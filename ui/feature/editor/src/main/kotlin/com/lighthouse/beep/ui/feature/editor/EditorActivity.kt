@@ -178,7 +178,7 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
         val data = viewModel.selectedGifticonData.value?: return
         show(type.name) {
             val param = type.createTextInputParam(data)
-            supportFragmentManager.setFragmentResultListener(type.name, this) { requestKey, data ->
+            supportFragmentManager.setFragmentResultListener(TextInputResult.KEY, this) { requestKey, data ->
                 val result = TextInputResult(data)
                 val editData = type.createEditDataWithText(result.value)
                 if (editData !is EditData.None) {

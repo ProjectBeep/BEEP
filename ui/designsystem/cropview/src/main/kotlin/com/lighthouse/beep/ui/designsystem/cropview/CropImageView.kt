@@ -190,6 +190,7 @@ class CropImageView(
     fun setBitmap(bitmap: Bitmap, rect: RectF? = null) {
         if (width == 0 || height == 0) {
             post {
+
                 setBitmap(bitmap, rect)
             }
         } else {
