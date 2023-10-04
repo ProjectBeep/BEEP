@@ -20,6 +20,7 @@ class GifticonRecognizer {
     private val balanceParser = BalanceParser()
 
     private val textRecognizer = TextRecognizer()
+    private val barcodeRecognizer = BarcodeRecognizer()
 
     private val templateRecognizerList = listOf(
         KakaoRecognizer(),
@@ -36,7 +37,11 @@ class GifticonRecognizer {
 
     suspend fun recognize(bitmap: Bitmap): GifticonRecognizeInfo = withContext(Dispatchers.IO) {
         val inputs = textRecognizer.recognize(bitmap)
-        val barcodeResult = barcodeParser.parseBarcode(inputs)
+        var barcodeResult = barcodeParser.parseBarcode(inputs)
+        if (barcodeResult.barcode.isEmpty()) {
+            val barcode = barcodeRecognizer.recognize(bitmap, BarcodeScanMode.IMAGE)
+            barcodeResult = barcodeResult.copy(barcode = barcode)
+        }
         val expiredResult = expiredParser.parseExpiredDate(barcodeResult.filtered)
         var info = GifticonRecognizeInfo(
             imageWidth = bitmap.width,
