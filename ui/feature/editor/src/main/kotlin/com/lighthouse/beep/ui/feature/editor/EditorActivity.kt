@@ -331,7 +331,7 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
 
         repeatOnStarted {
             viewModel.validGifticonCount.collect { count ->
-                binding.btnRegister.text = if (count == 0 || count == viewModel.gifticonCount) {
+                binding.btnRegister.text = if (count == 0) {
                     getString(R.string.editor_gifticon_register)
                 } else {
                     getString(R.string.editor_gifticon_register_valid, count)
