@@ -1,15 +1,13 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.editor
 
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
-import com.lighthouse.beep.ui.feature.editor.R
-import com.lighthouse.beep.theme.R as ThemeR
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorPreviewBinding
+import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 
 internal class EditorPreviewViewHolder(
@@ -20,24 +18,17 @@ internal class EditorPreviewViewHolder(
     )
 ) : LifecycleViewHolder<EditorChip.Preview>(binding.root) {
 
+    override fun onSetUpClickEvent(item: EditorChip.Preview) {
+        binding.textMemo.setOnThrottleClickListener {
+            listener.onMemoClick()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Preview) {
-        listener.getInvalidPropertyFlow().collect(lifecycleOwner) { list ->
-            val items = if (list.isEmpty()) {
-                context.getString(R.string.editor_preview_property_all)
-            } else {
-                list.joinToString { context.getString(it.textResId) }
-            }
-
-            val text = if (list.isEmpty()) {
-                context.getString(R.string.editor_preview_complete, items)
-            } else {
-                context.getString(R.string.editor_preview_invalid_items, items)
-            }
-
-            binding.textInvalidProperty.text = SpannableString(text).apply {
-                val color = ForegroundColorSpan(context.getColor(ThemeR.color.beep_pink))
-                setSpan(color, 0, items.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
+        listener.getMemoFlow().collect(lifecycleOwner) { memo ->
+            binding.textMemo.text = memo
+            binding.textMemoLength.text = "${memo.length}/${EditType.MEMO.maxLength}"
         }
     }
 }

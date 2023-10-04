@@ -48,7 +48,7 @@ import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorChipListener {
+internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
 
     companion object {
         private const val TAG_SELECTED_GIFTICON_DELETE = "Tag.SelectedGifticonDelete"
@@ -147,10 +147,14 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
     )
 
     private val onEditorPreviewListener = object : OnEditorPreviewListener {
-        override fun getInvalidPropertyFlow(): Flow<List<EditType>> {
+        override fun getMemoFlow(): Flow<String> {
             return viewModel.selectedGifticonDataFlow
-                .map { data -> EditType.entries.filter { it.isInvalid(data) } }
+                .map { it.memo }
                 .distinctUntilChanged()
+        }
+
+        override fun onMemoClick() {
+            showTextInputDialog(EditType.MEMO)
         }
     }
 
@@ -166,15 +170,9 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
                 .map { it.thumbnailCropData }
                 .distinctUntilChanged()
         }
-
-        override fun isThumbnailEditedFlow(): Flow<Boolean> {
-            return viewModel.selectedGifticonDataFlow
-                .map { it.thumbnailCropData.isCropped }
-                .distinctUntilChanged()
-        }
     }
 
-    override fun showTextInputDialog(type: EditType) {
+    private fun showTextInputDialog(type: EditType) {
         val data = viewModel.selectedGifticonData.value ?: return
         show(type.name) {
             val param = type.createTextInputParam(data)

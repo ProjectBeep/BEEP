@@ -18,16 +18,4 @@
         android:backgroundTint="@color/light_gray"
         android:background="@drawable/bg_rect_r8"/>
 
-    <TextView
-        android:id="@+id/text_thumbnail_not_edited"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintBottom_toBottomOf="@id/image_thumbnail"
-        app:layout_constraintStart_toEndOf="@id/image_thumbnail"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/editor_thumbnail_check"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.lighthouse.beep.ui.feature.editor.page.preview
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.RectF
 import android.os.Bundle
@@ -18,7 +17,6 @@ import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.ui.feature.editor.EditorSelectGifticonDataDelegate
-import com.lighthouse.beep.ui.feature.editor.OnDialogProvider
 import com.lighthouse.beep.ui.feature.editor.EditorViewModel
 import com.lighthouse.beep.ui.feature.editor.OnEditorChipListener
 import com.lighthouse.beep.ui.feature.editor.R
@@ -43,13 +41,11 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
 
     private val binding by viewBindings<FragmentEditorPreviewBinding>()
 
-    private lateinit var onDialogProvider: OnDialogProvider
     private lateinit var onEditorChipListener: OnEditorChipListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        onDialogProvider = context.cast()
         onEditorChipListener = context.cast()
     }
 
@@ -63,7 +59,6 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         binding.imageThumbnail.clipToOutline = true
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.thumbnailUri.collect { contentUri ->
@@ -106,9 +101,14 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.memo.collect { memo ->
-                binding.textMemo.text = memo
-                binding.textMemoLength.text = "${memo.length}/${EditType.MEMO.maxLength}"
+            viewModel.balance.collect { balance ->
+                binding.textBalance.text = getString(R.string.editor_preview_balance, balance)
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.barcode.collect { barcode ->
+                binding.textBarcode.text = barcode
             }
         }
     }
@@ -130,8 +130,16 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
             onEditorChipListener.selectEditorChip(EditType.EXPIRED)
         })
 
-        binding.textMemo.setOnClickListener(createThrottleClickListener {
-            onDialogProvider.showTextInputDialog(EditType.MEMO)
+        binding.textBalance.setOnClickListener(createThrottleClickListener {
+            onEditorChipListener.selectEditorChip(EditType.BALANCE)
+        })
+
+        binding.textBarcode.setOnClickListener(createThrottleClickListener {
+            onEditorChipListener.selectEditorChip(EditType.BARCODE)
+        })
+
+        binding.imageBarcode.setOnClickListener(createThrottleClickListener {
+            onEditorChipListener.selectEditorChip(EditType.BARCODE)
         })
     }
 }

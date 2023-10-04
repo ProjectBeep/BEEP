@@ -12,11 +12,7 @@
     <string name="editor_gifticon_property_expired">유효기간</string>
     <string name="editor_gifticon_property_balance">잔액</string>
 
-    <string name="editor_preview_property_all">모든</string>
-    <string name="editor_preview_complete">%s 항목이 등록되었어요</string>
-    <string name="editor_preview_invalid_items">%s 항목이 등록되지 않았어요.</string>
-    <string name="editor_thumbnail_check">썸네일 이미지가 맞는지 확인해 주세요.</string>
-    <string name="editor_edit">편집</string>
+    <string name="editor_preview_balance">%s원</string>
 
     <string name="editor_gifticon_register">쿠폰 등록하기</string>
     <string name="editor_gifticon_register_valid">%d개 쿠폰 등록하기</string>

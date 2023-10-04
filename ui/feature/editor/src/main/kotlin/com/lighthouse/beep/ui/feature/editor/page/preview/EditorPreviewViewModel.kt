@@ -39,7 +39,11 @@ internal class EditorPreviewViewModel constructor(
         .map { it.displayExpired }
         .distinctUntilChanged()
 
-    val memo = selectedGifticonDataFlow
-        .map { it.memo }
+    val balance = selectedGifticonDataFlow
+        .map { it.displayBalance }
+        .distinctUntilChanged()
+
+    val barcode = selectedGifticonDataFlow
+        .map { it.displayBarcode }
         .distinctUntilChanged()
 }

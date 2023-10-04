@@ -9,6 +9,4 @@ internal interface OnEditorThumbnailListener {
     fun getThumbnailFlow(): Flow<Uri>
 
     fun getCropDataFlow(): Flow<ThumbnailCropData>
-
-    fun isThumbnailEditedFlow(): Flow<Boolean>
 }

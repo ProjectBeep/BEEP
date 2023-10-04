@@ -4,7 +4,6 @@ import android.graphics.RectF
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.load
 import coil.size.Size
@@ -43,10 +42,6 @@ internal class EditorThumbnailViewHolder(
             } else {
                 binding.imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
             }
-        }
-
-        listener.isThumbnailEditedFlow().collect(lifecycleOwner) { isEdited ->
-            binding.textThumbnailNotEdited.isVisible = !isEdited
         }
     }
 }
