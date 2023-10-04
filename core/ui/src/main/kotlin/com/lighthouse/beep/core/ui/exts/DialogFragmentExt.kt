@@ -14,22 +14,30 @@ fun Fragment.show(tag: String, factoryProducer: () -> DialogFragment) {
 }
 
 fun FragmentManager.show(tag: String, factoryProducer: () -> DialogFragment) {
-    var dialog = findFragmentByTag(tag) as? DialogFragment
-    if (dialog == null) {
-        dialog = factoryProducer()
+    try {
+        var dialog = findFragmentByTag(tag) as? DialogFragment
+        if (dialog == null) {
+            dialog = factoryProducer()
+        }
+        if (!dialog.isAdded) {
+            dialog.show(this, tag)
+        }
+    } catch (e: IllegalStateException) {
+        e.printStackTrace()
     }
-    dialog.show(this, tag)
 }
 
-fun FragmentActivity.hide(tag: String) {
-    supportFragmentManager.hide(tag)
+fun FragmentActivity.dismiss(tag: String) {
+    supportFragmentManager.dismiss(tag)
 }
 
-fun Fragment.hide(tag: String) {
-    childFragmentManager.hide(tag)
+fun Fragment.dismiss(tag: String) {
+    childFragmentManager.dismiss(tag)
 }
 
-fun FragmentManager.hide(tag: String) {
+fun FragmentManager.dismiss(tag: String) {
     val dialog = findFragmentByTag(tag) as? DialogFragment
-    dialog?.dismiss()
+    if (dialog?.isAdded == true) {
+        dialog.dismiss()
+    }
 }

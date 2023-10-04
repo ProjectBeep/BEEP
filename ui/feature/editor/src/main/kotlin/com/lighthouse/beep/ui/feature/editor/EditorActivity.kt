@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
-import com.lighthouse.beep.core.ui.exts.hide
+import com.lighthouse.beep.core.ui.exts.dismiss
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
@@ -286,7 +286,7 @@ internal class EditorActivity : AppCompatActivity(), OnDialogProvider, OnEditorC
                 }
             }
         } else {
-            hide(ProgressDialog.TAG)
+            dismiss(ProgressDialog.TAG)
         }
     }
 
