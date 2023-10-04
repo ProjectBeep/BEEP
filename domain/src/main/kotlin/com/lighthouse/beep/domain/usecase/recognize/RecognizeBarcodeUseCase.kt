@@ -5,6 +5,7 @@ import android.net.Uri
 import com.lighthouse.beep.core.common.exts.calculateSampleSize
 import com.lighthouse.beep.core.common.exts.decodeSampledBitmap
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
+import com.lighthouse.beep.library.recognizer.BarcodeScanMode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +20,7 @@ class RecognizeBarcodeUseCase @Inject constructor(
         runCatching {
             val sampleSize = context.calculateSampleSize(uri, 360)
             val bitmap = context.decodeSampledBitmap(uri, sampleSize)
-            barcodeRecognizer.recognize(bitmap).barcode
+            barcodeRecognizer.recognize(bitmap, BarcodeScanMode.IMAGE)
         }
     }
 }

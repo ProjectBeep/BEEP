@@ -109,7 +109,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
 
         override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
-            val value = barcodeRecognizer.recognize(bitmap).barcode
+            val value = barcodeRecognizer.recognize(bitmap)
             return EditData.CropBarcode(value, rect)
         }
 
@@ -136,7 +136,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
         private val expiredRecognizer = ExpiredRecognizer()
 
         override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
-            val value = expiredRecognizer.recognize(bitmap).expired
+            val value = expiredRecognizer.recognize(bitmap)
             return EditData.CropExpired(value, rect)
         }
 
@@ -156,7 +156,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
 
         override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
-            val value = balanceRecognizer.recognize(bitmap).balance.toString()
+            val value = balanceRecognizer.recognize(bitmap).toString()
             return EditData.CropBalance(value, rect)
         }
 

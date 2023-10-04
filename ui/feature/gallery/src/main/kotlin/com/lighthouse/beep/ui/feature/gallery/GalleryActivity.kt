@@ -21,6 +21,7 @@ import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.utils.vibrator.VibratorGenerator
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
@@ -147,6 +148,60 @@ internal class GalleryActivity : AppCompatActivity() {
         binding.listGallery.layoutManager = GridLayoutManager(this, GalleryViewModel.spanCount)
         binding.listGallery.setHasFixedSize(true)
         binding.listGallery.addItemDecoration(GridItemDecoration(4f.dp))
+
+//        binding.listGallery.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+//            private var downPosition: Int = -1
+//            private var isSameItemPressed = false
+//
+//            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+//                when(e.action) {
+//                    MotionEvent.ACTION_DOWN -> {
+//                        val view = rv.findChildViewUnder(e.x, e.y) ?: return false
+//                        downPosition = rv.getChildAdapterPosition(view)
+//                        isSameItemPressed = true
+//                    }
+//                    MotionEvent.ACTION_MOVE -> {
+//                        if (!isSameItemPressed) {
+//                            return false
+//                        }
+//                        val view = rv.findChildViewUnder(e.x, e.y) ?: return false
+//                        val currentPosition = rv.getChildAdapterPosition(view)
+//                        if (downPosition != currentPosition) {
+//                            isSameItemPressed = false
+//                            return false
+//                        }
+//
+//                        if (e.eventTime - e.downTime >= ViewConfiguration.getLongPressTimeout()) {
+//                            VibratorGenerator.vibrate(applicationContext)
+//                            Log.d("List", "${e.y - rv.height} ${e.y}")
+//                            return false
+//                        }
+//                    }
+//                }
+//                return false
+//            }
+//
+//            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+//                Log.d("List", "${e.y - rv.height} ${e.y}")
+//
+//                when(e.action) {
+//                    MotionEvent.ACTION_MOVE -> {
+//                        when {
+//                            0 > e.y -> { rv.scrollBy(0, e.y.toInt() / 10) }
+//                            rv.height < e.y -> { rv.scrollBy(0, (e.y - rv.height).toInt() / 10) }
+//                        }
+//
+//
+//                    }
+//                    MotionEvent.ACTION_UP,
+//                    MotionEvent.ACTION_CANCEL -> {
+//
+//                    }
+//                }
+//            }
+//
+//            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) = Unit
+//        })
     }
 
     private fun setUpCollectState() {

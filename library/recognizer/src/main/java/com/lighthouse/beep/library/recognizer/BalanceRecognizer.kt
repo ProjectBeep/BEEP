@@ -11,8 +11,8 @@ class BalanceRecognizer {
 
     private val textRecognizer = TextRecognizer()
 
-    suspend fun recognize(bitmap: Bitmap) = withContext(Dispatchers.IO) {
+    suspend fun recognize(bitmap: Bitmap): Int = withContext(Dispatchers.IO) {
         val inputs = textRecognizer.recognize(bitmap)
-        balanceParser.parseCashCard(inputs)
+        balanceParser.parseCashCard(inputs).balance
     }
 }

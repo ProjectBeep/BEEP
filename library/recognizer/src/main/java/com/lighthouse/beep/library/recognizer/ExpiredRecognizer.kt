@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.lighthouse.beep.library.recognizer.parser.ExpiredParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Date
 
 class ExpiredRecognizer {
 
@@ -11,8 +12,8 @@ class ExpiredRecognizer {
 
     private val textRecognizer = TextRecognizer()
 
-    suspend fun recognize(bitmap: Bitmap) = withContext(Dispatchers.IO) {
+    suspend fun recognize(bitmap: Bitmap): Date = withContext(Dispatchers.IO) {
         val inputs = textRecognizer.recognize(bitmap)
-        expiredParser.parseExpiredDate(inputs)
+        expiredParser.parseExpiredDate(inputs).expired
     }
 }

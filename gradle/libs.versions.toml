@@ -1,5 +1,5 @@
 [versions]
-androidStudioGradlePlugin = "8.1.1"
+androidStudioGradlePlugin = "8.1.2"
 
 # AndroidX
 activity = "1.8.0-rc01"
@@ -111,6 +111,8 @@ firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 ## MLKit
 mlkit-text-recognition-korean = "com.google.mlkit:text-recognition-korean:16.0.0"
+mlkit-barcode-scanning = "com.google.mlkit:barcode-scanning:17.2.0"
+
 ## Zxing
 zxing-core = "com.google.zxing:core:3.5.1"
 ## Squareup
