@@ -34,11 +34,11 @@
         android:id="@+id/icon_invalid"
         android:layout_width="6dp"
         android:layout_height="6dp"
-        android:layout_marginStart="-2.5dp"
+        android:layout_marginStart="4dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="@color/beep_pink"
         android:background="@drawable/bg_oval"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
