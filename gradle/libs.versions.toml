@@ -114,6 +114,7 @@ mlkit-text-recognition-korean = "com.google.mlkit:text-recognition-korean:16.0.0
 mlkit-barcode-scanning = "com.google.mlkit:barcode-scanning:17.2.0"
 
 ## Zxing
+zxing-android-embedded = "com.journeyapps:zxing-android-embedded:4.3.0"
 zxing-core = "com.google.zxing:core:3.5.1"
 ## Squareup
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }

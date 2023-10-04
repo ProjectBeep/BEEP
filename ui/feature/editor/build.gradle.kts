@@ -25,5 +25,6 @@ dependencies {
 
     implementation(libs.coil)
 
+    implementation(libs.zxing.core)
     implementation(libs.squareup.moshi.kotlin)
 }

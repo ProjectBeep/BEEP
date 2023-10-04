@@ -10,9 +10,10 @@ import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class FragmentViewBindingDelegate<VB : ViewBinding>(
+class FragmentBindingDelegate<VB : ViewBinding>(
     private val fragment: Fragment,
     bindingClass: Class<VB>,
+    onDestroyView: (VB) -> Unit,
 ) : ReadOnlyProperty<Fragment, VB> {
 
     private var binding: VB? = null
@@ -23,6 +24,10 @@ class FragmentViewBindingDelegate<VB : ViewBinding>(
         private val viewLifecycleOwnerObserver = Observer<LifecycleOwner?> { viewLifecycleOwner ->
             viewLifecycleOwner?.lifecycle?.addObserver(object : DefaultLifecycleObserver {
                 override fun onDestroy(owner: LifecycleOwner) {
+                    val oldBinding = binding
+                    if(oldBinding != null) {
+                        onDestroyView(oldBinding)
+                    }
                     binding = null
                 }
             })
@@ -58,5 +63,5 @@ class FragmentViewBindingDelegate<VB : ViewBinding>(
     }
 }
 
-inline fun <reified VB : ViewBinding> Fragment.viewBindings() =
-    FragmentViewBindingDelegate(this, VB::class.java)
+inline fun <reified VB : ViewBinding> Fragment.viewBindings(noinline onDestroyView: (VB) -> Unit = {}) =
+    FragmentBindingDelegate(this, VB::class.java, onDestroyView)

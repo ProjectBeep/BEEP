@@ -1,11 +1,19 @@
 package com.lighthouse.beep.ui.feature.editor.page.preview
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.oned.Code128Writer
+import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.ui.feature.editor.EditorSelectGifticonDataDelegate
+import com.lighthouse.beep.ui.feature.editor.model.EditType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 internal class EditorPreviewViewModel constructor(
     editorSelectGifticonDataDelegate: EditorSelectGifticonDataDelegate
@@ -35,15 +43,44 @@ internal class EditorPreviewViewModel constructor(
         .map { it.brand }
         .distinctUntilChanged()
 
-    val expired = selectedGifticonDataFlow
+    val displayExpired = selectedGifticonDataFlow
         .map { it.displayExpired }
         .distinctUntilChanged()
 
-    val balance = selectedGifticonDataFlow
+    val displayBalance = selectedGifticonDataFlow
         .map { it.displayBalance }
         .distinctUntilChanged()
 
-    val barcode = selectedGifticonDataFlow
+    val barcodeImage = selectedGifticonDataFlow
+        .map { EditType.BARCODE.isInvalid(it) to it.displayBarcode }
+        .distinctUntilChanged()
+        .map { (isInvalid, displayBarcode) ->
+            when(isInvalid) {
+                true -> null
+                false -> withContext(Dispatchers.IO) {
+                    createBarcode(displayBarcode)
+                }
+            }
+        }
+
+    val displayBarcode = selectedGifticonDataFlow
         .map { it.displayBarcode }
         .distinctUntilChanged()
+
+    private fun createBarcode(value: String): Bitmap {
+        val width = 300.dp
+        val height = 60.dp
+        val bitMatrix = Code128Writer().encode(value, BarcodeFormat.CODE_128, width, height)
+
+        val pixels = IntArray(width * height) { i ->
+            val y = i / width
+            val x = i % width
+            if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE
+        }
+
+        return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            .apply {
+                setPixels(pixels, 0, width, 0, 0, width, height)
+            }
+    }
 }

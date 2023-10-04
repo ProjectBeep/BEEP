@@ -94,20 +94,26 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.expired.collect { expired ->
+            viewModel.displayExpired.collect { expired ->
                 binding.iconExpiredEmpty.isVisible = expired.isEmpty()
                 binding.textExpired.text = expired
             }
         }
 
         repeatOnStarted {
-            viewModel.balance.collect { balance ->
+            viewModel.displayBalance.collect { balance ->
                 binding.textBalance.text = getString(R.string.editor_preview_balance, balance)
             }
         }
 
         repeatOnStarted {
-            viewModel.barcode.collect { barcode ->
+            viewModel.barcodeImage.collect { image ->
+                binding.imageBarcode.setImageBitmap(image)
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.displayBarcode.collect { barcode ->
                 binding.textBarcode.text = barcode
             }
         }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.Selection
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewPropertyAnimator
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
@@ -38,7 +39,9 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
         }
     }
 
-    private val binding by viewBindings<DialogTextInputBinding>()
+    private val binding by viewBindings<DialogTextInputBinding> {
+        keyboardAnimator?.cancel()
+    }
 
     private val viewModel by viewModels<TextInputViewModel>()
 
@@ -78,19 +81,23 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
         setUpClickEvent()
     }
 
+    private var keyboardAnimator: ViewPropertyAnimator? = null
+
     private fun setUpKeyboardPadding() {
         keyboardHeightProvider.setOnKeyboardHeightListener { height ->
             if (!isAdded) {
                 return@setOnKeyboardHeightListener
             }
             val start = binding.containerTextInput.paddingBottom
-            binding.containerTextInput.animate()
+            keyboardAnimator = binding.containerTextInput.animate()
                 .setDuration(180)
                 .setInterpolator(DecelerateInterpolator())
                 .setUpdateListener {
                     val padding = start - ((start - height) * it.animatedFraction).toInt()
                     binding.containerTextInput.updatePadding(bottom = padding)
-                }.start()
+                }.also {
+                    it.start()
+                }
         }
     }
 
