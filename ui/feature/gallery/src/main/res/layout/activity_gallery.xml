@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/Text.Title2"
+            android:textAppearance="@style/Text.SubTitle1"
             android:textColor="@color/confirm_text"
             android:text="@string/confirm"/>
 

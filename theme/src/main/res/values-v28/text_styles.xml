@@ -93,12 +93,6 @@
         <item name="android:fontFamily">@font/pretendard_medium</item>
     </style>
 
-    <style name="Text.SubTitle" parent="">
-        <item name="android:textSize">14dp</item>
-        <item name="android:lineHeight">20dp</item>
-        <item name="android:fontFamily">@font/pretendard_medium</item>
-    </style>
-
     <style name="Text.SubText" parent="">
         <item name="android:textSize">12dp</item>
         <item name="android:lineHeight">18dp</item>
