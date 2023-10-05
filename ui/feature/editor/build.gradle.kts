@@ -21,10 +21,10 @@ dependencies {
     implementation(projects.ui.dialog.textinput)
     implementation(projects.ui.designsystem.cropview)
 
+    implementation(projects.library.barcode)
     implementation(projects.library.recognizer)
 
     implementation(libs.coil)
 
-    implementation(libs.zxing.core)
     implementation(libs.squareup.moshi.kotlin)
 }

@@ -21,7 +21,7 @@ import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
-import com.lighthouse.beep.core.ui.recyclerview.scroll.OnLongPressDragListener
+import com.lighthouse.beep.core.ui.recyclerview.itemtouch.OnLongPressDragListener
 import com.lighthouse.beep.core.ui.utils.vibrator.VibratorGenerator
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.ActivityNavItem
@@ -150,7 +150,6 @@ internal class GalleryActivity : AppCompatActivity() {
         binding.listGallery.layoutManager = GridLayoutManager(this, GalleryViewModel.spanCount)
         binding.listGallery.setHasFixedSize(true)
         binding.listGallery.addItemDecoration(GridItemDecoration(4f.dp))
-
         binding.listGallery.addOnItemTouchListener(object : OnLongPressDragListener() {
             private var dragMode = DragMode.NONE
 
