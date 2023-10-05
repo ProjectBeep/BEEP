@@ -177,8 +177,11 @@ internal class GalleryViewModel @Inject constructor(
         }
     }
 
-    fun selectItem(item: GalleryImage) {
+    private fun selectItem(item: GalleryImage) {
         if (!isSelectable) {
+            return
+        }
+        if (_selectedList.value.find { it.id == item.id } != null) {
             return
         }
         _selectedList.add(item)

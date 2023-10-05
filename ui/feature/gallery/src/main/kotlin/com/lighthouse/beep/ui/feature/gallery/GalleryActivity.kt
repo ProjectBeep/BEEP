@@ -3,6 +3,7 @@ package com.lighthouse.beep.ui.feature.gallery
 import android.animation.Animator
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewPropertyAnimator
 import androidx.activity.result.contract.ActivityResultContracts
@@ -172,36 +173,47 @@ internal class GalleryActivity : AppCompatActivity() {
             }
 
             override fun onMoveDrag(position: Int) {
+                Log.d("TEST", "$downPosition $movePosition $position")
                 when {
                     movePosition in (position + 1)..downPosition -> {
-                        for (pos in (movePosition - 1) downTo position) {
-                            val item = getItem(pos) ?: continue
-                            viewModel.dragItem(item, dragMode)
-                        }
+                        dragToUp(movePosition - 1, position, dragMode)
                     }
-                    downPosition > movePosition && movePosition < position -> {
-                        for (pos in movePosition until position) {
-                            val item = getItem(pos) ?: continue
-                            viewModel.dragItem(item, DragMode.DELETE)
-                        }
+                    position in (movePosition + 1)..downPosition -> {
+                        dragToDown(movePosition - 1, position - 1, DragMode.DELETE)
                     }
-                    downPosition < movePosition && movePosition > position -> {
-                        for (pos in movePosition downTo (position + 1)) {
-                            val item = getItem(pos) ?: continue
-                            viewModel.dragItem(item, DragMode.DELETE)
-                        }
+                    downPosition in (movePosition + 1)..< position -> {
+                        dragToDown(movePosition, downPosition - 1, DragMode.DELETE)
+                        dragToDown(downPosition + 1, position, dragMode)
                     }
-                    movePosition in downPosition..<position -> {
-                        for (pos in (movePosition + 1) .. position) {
-                            val item = getItem(pos) ?: continue
-                            viewModel.dragItem(item, dragMode)
-                        }
+                    downPosition in (position + 1)..< movePosition -> {
+                        dragToUp(movePosition, downPosition + 1, DragMode.DELETE)
+                        dragToUp(downPosition - 1, position, dragMode)
+                    }
+                    movePosition in downPosition..< position -> {
+                        dragToDown(movePosition + 1, position, dragMode)
+                    }
+                    position in downPosition..< movePosition -> {
+                        dragToUp(movePosition + 1, position + 1, DragMode.DELETE)
                     }
                 }
             }
 
             override fun onEndDrag() {
                 dragMode = DragMode.NONE
+            }
+
+            private fun dragToDown(from: Int, to: Int, mode: DragMode) {
+                for (pos in from .. to) {
+                    val item = getItem(pos) ?: continue
+                    viewModel.dragItem(item, mode)
+                }
+            }
+
+            private fun dragToUp(from: Int, to: Int, mode: DragMode) {
+                for (pos in from downTo to) {
+                    val item = getItem(pos) ?: continue
+                    viewModel.dragItem(item, mode)
+                }
             }
         })
     }
