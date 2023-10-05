@@ -5,7 +5,6 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
@@ -26,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview) {
 
     companion object {
-        private val VIEW_RECT = RectF(0f, 0f, 80f.dp, 80f.dp)
+        private val VIEW_RECT = RectF(0f, 0f, 96f.dp, 96f.dp)
     }
 
     private val previewModel by lazy {
@@ -75,21 +74,18 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
 
         repeatOnStarted {
             previewModel.gifticonName.collect { name ->
-                binding.iconNameEmpty.isVisible = name.isEmpty()
                 binding.textName.text = name
             }
         }
 
         repeatOnStarted {
             previewModel.brandName.collect { brand ->
-                binding.iconBrandEmpty.isVisible = brand.isEmpty()
                 binding.textBrand.text = brand
             }
         }
 
         repeatOnStarted {
             previewModel.displayExpired.collect { expired ->
-                binding.iconExpiredEmpty.isVisible = expired.isEmpty()
                 binding.textExpired.text = expired
             }
         }
@@ -118,19 +114,19 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
             onEditorChipListener.selectEditorChip(EditType.THUMBNAIL)
         })
 
-        binding.textName.setOnClickListener(createThrottleClickListener {
+        binding.containerName.setOnClickListener(createThrottleClickListener {
             onEditorChipListener.selectEditorChip(EditType.NAME)
         })
 
-        binding.textBrand.setOnClickListener(createThrottleClickListener {
+        binding.containerBrand.setOnClickListener(createThrottleClickListener {
             onEditorChipListener.selectEditorChip(EditType.BRAND)
         })
 
-        binding.textExpired.setOnClickListener(createThrottleClickListener {
+        binding.containerExpired.setOnClickListener(createThrottleClickListener {
             onEditorChipListener.selectEditorChip(EditType.EXPIRED)
         })
 
-        binding.textBalance.setOnClickListener(createThrottleClickListener {
+        binding.containerBalance.setOnClickListener(createThrottleClickListener {
             onEditorChipListener.selectEditorChip(EditType.BALANCE)
         })
 

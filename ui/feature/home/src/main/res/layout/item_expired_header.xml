@@ -18,7 +18,7 @@
         app:tabTextColor="@color/font_medium_gray"
         app:tabRippleColor="@color/light_gray"
         app:tabIndicatorColor="@color/black"
-        android:background="@drawable/bg_tab"/>
+        android:background="@drawable/bg_underline_l1_light_gray"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_brand"

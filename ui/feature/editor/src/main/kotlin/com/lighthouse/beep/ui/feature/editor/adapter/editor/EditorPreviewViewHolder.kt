@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorPreviewBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
@@ -27,7 +28,11 @@ internal class EditorPreviewViewHolder(
     @SuppressLint("SetTextI18n")
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Preview) {
         listener.getMemoFlow().collect(lifecycleOwner) { memo ->
-            binding.textMemo.text = memo
+            if (memo.isEmpty()) {
+                binding.textMemo.setText(R.string.editor_gifticon_preview_memo_hint)
+            } else {
+                binding.textMemo.text = memo
+            }
             binding.textMemoLength.text = "${memo.length}/${EditType.MEMO.maxLength}"
         }
     }

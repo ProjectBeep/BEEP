@@ -224,6 +224,11 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
 
     private fun setUpBackPress() {
         onBackPressedDispatcher.addCallback(this) {
+            if (viewModel.selectedEditorChip.value !is EditorChip.Preview) {
+                binding.listEditorChip.smoothScrollToPosition(0)
+                viewModel.selectEditorChip(EditorChip.Preview)
+                return@addCallback
+            }
             cancelEditor()
         }
     }
