@@ -1,5 +1,6 @@
-package com.lighthouse.beep.core.ui.recyclerview.scroll
+package com.lighthouse.beep.core.ui.recyclerview.itemtouch
 
+import android.graphics.PointF
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -9,14 +10,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 abstract class OnLongPressDragListener: RecyclerView.OnItemTouchListener {
     protected var downPosition: Int = -1
         private set
+    private var downPos: PointF = PointF()
+
     protected var movePosition: Int = -1
         private set
 
-    private var isSameItemPressed = false
+    private var isLongPressCanceled = true
 
     private var job: Job? = null
     private var scrollDy = 0
@@ -28,17 +32,28 @@ abstract class OnLongPressDragListener: RecyclerView.OnItemTouchListener {
                 if(downPosition == -1) {
                     return false
                 }
-                isSameItemPressed = true
+                downPos.set(e.x, e.y)
+                isLongPressCanceled = false
             }
             MotionEvent.ACTION_MOVE -> {
-                if (!isSameItemPressed) {
+                if (isLongPressCanceled) {
                     return false
                 }
+
+                val touchSlop = ViewConfiguration.get(rv.context).scaledTouchSlop
+                val diffX = abs(e.x - downPos.x)
+                val diffY = abs(e.y - downPos.y)
+                if (diffX > touchSlop || diffY > touchSlop) {
+                    isLongPressCanceled = true
+                    return false
+                }
+
                 val currentPosition = getPosition(rv, e)
                 if (downPosition != currentPosition || currentPosition == -1) {
-                    isSameItemPressed = false
+                    isLongPressCanceled = true
                     return false
                 }
+
                 if (e.eventTime - e.downTime >= ViewConfiguration.getLongPressTimeout()) {
                     job = startDrag(rv)
                     return job != null
