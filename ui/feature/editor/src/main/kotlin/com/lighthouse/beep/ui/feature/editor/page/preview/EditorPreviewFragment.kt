@@ -7,8 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.size.Size
 import com.lighthouse.beep.core.common.exts.cast
@@ -16,7 +15,6 @@ import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
-import com.lighthouse.beep.ui.feature.editor.EditorSelectGifticonDataDelegate
 import com.lighthouse.beep.ui.feature.editor.EditorViewModel
 import com.lighthouse.beep.ui.feature.editor.OnEditorChipListener
 import com.lighthouse.beep.ui.feature.editor.R
@@ -31,13 +29,9 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         private val VIEW_RECT = RectF(0f, 0f, 80f.dp, 80f.dp)
     }
 
-    private val delegate: EditorSelectGifticonDataDelegate by activityViewModels<EditorViewModel>()
-
-    private val viewModel by viewModels<EditorPreviewViewModel>(
-        factoryProducer = {
-            EditorPreviewViewModel.factory(delegate)
-        }
-    )
+    private val previewModel by lazy {
+        EditorPreviewModel(ViewModelProvider(requireActivity())[EditorViewModel::class.java])
+    }
 
     private val binding by viewBindings<FragmentEditorPreviewBinding>()
 
@@ -61,7 +55,7 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
 
     private fun setUpCollectState() {
         repeatOnStarted {
-            viewModel.thumbnailUri.collect { contentUri ->
+            previewModel.thumbnailUri.collect { contentUri ->
                 binding.imageThumbnail.load(contentUri) {
                     size(Size.ORIGINAL)
                 }
@@ -69,7 +63,7 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.thumbnailCropData.collect { data ->
+            previewModel.thumbnailCropData.collect { data ->
                 if (data.isCropped) {
                     binding.imageThumbnail.scaleType = ImageView.ScaleType.MATRIX
                     binding.imageThumbnail.imageMatrix = data.calculateMatrix(VIEW_RECT)
@@ -80,40 +74,40 @@ internal class EditorPreviewFragment : Fragment(R.layout.fragment_editor_preview
         }
 
         repeatOnStarted {
-            viewModel.gifticonName.collect { name ->
+            previewModel.gifticonName.collect { name ->
                 binding.iconNameEmpty.isVisible = name.isEmpty()
                 binding.textName.text = name
             }
         }
 
         repeatOnStarted {
-            viewModel.brandName.collect { brand ->
+            previewModel.brandName.collect { brand ->
                 binding.iconBrandEmpty.isVisible = brand.isEmpty()
                 binding.textBrand.text = brand
             }
         }
 
         repeatOnStarted {
-            viewModel.displayExpired.collect { expired ->
+            previewModel.displayExpired.collect { expired ->
                 binding.iconExpiredEmpty.isVisible = expired.isEmpty()
                 binding.textExpired.text = expired
             }
         }
 
         repeatOnStarted {
-            viewModel.displayBalance.collect { balance ->
+            previewModel.displayBalance.collect { balance ->
                 binding.textBalance.text = getString(R.string.editor_preview_balance, balance)
             }
         }
 
         repeatOnStarted {
-            viewModel.barcodeImage.collect { image ->
+            previewModel.barcodeImage.collect { image ->
                 binding.imageBarcode.setImageBitmap(image)
             }
         }
 
         repeatOnStarted {
-            viewModel.displayBarcode.collect { barcode ->
+            previewModel.displayBarcode.collect { barcode ->
                 binding.textBarcode.text = barcode
             }
         }

@@ -30,7 +30,7 @@ import javax.inject.Inject
 internal class EditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val recognizeGifticonUseCase: RecognizeGifticonUseCase,
-) : ViewModel(), EditorSelectGifticonDataDelegate {
+) : ViewModel(), EditorPreviewViewModelDelegate {
 
     private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
     val galleryImage = _galleryImage.asStateFlow()

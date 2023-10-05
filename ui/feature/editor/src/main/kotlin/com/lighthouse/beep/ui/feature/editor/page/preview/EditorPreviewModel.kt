@@ -1,28 +1,17 @@
 package com.lighthouse.beep.ui.feature.editor.page.preview
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.library.barcode.BarcodeGenerator
-import com.lighthouse.beep.ui.feature.editor.EditorSelectGifticonDataDelegate
+import com.lighthouse.beep.ui.feature.editor.EditorPreviewViewModelDelegate
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-internal class EditorPreviewViewModel constructor(
-    editorSelectGifticonDataDelegate: EditorSelectGifticonDataDelegate
-) : ViewModel(), EditorSelectGifticonDataDelegate by editorSelectGifticonDataDelegate {
-
-    companion object {
-        fun factory(delegate: EditorSelectGifticonDataDelegate) = viewModelFactory {
-            initializer {
-                EditorPreviewViewModel(delegate)
-            }
-        }
-    }
+internal class EditorPreviewModel constructor(
+    editorPreviewViewModelDelegate: EditorPreviewViewModelDelegate
+) : EditorPreviewViewModelDelegate by editorPreviewViewModelDelegate {
 
     val thumbnailUri = selectedGifticonDataFlow
         .map { it.originUri }
@@ -63,21 +52,4 @@ internal class EditorPreviewViewModel constructor(
     val displayBarcode = selectedGifticonDataFlow
         .map { it.displayBarcode }
         .distinctUntilChanged()
-
-//    private fun createBarcode(value: String): Bitmap {
-//        val width = 300.dp
-//        val height = 60.dp
-//        val bitMatrix = Code128Writer().encode(value, BarcodeFormat.CODE_128, width, height)
-//
-//        val pixels = IntArray(width * height) { i ->
-//            val y = i / width
-//            val x = i % width
-//            if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE
-//        }
-//
-//        return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-//            .apply {
-//                setPixels(pixels, 0, width, 0, 0, width, height)
-//            }
-//    }
 }
