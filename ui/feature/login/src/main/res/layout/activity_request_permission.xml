@@ -93,7 +93,7 @@
                 app:layout_constraintStart_toEndOf="@id/icon_notification"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/text_notification_description"
-                android:textAppearance="@style/Text.SubTitle"
+                android:textAppearance="@style/Text.SubTitle2"
                 android:textColor="@color/font_dark_gray"
                 android:text="@string/guide_permission_notification"/>
 
@@ -150,7 +150,7 @@
                 app:layout_constraintStart_toEndOf="@id/icon_storage"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/text_storage_description"
-                android:textAppearance="@style/Text.SubTitle"
+                android:textAppearance="@style/Text.SubTitle2"
                 android:textColor="@color/font_dark_gray"
                 android:text="@string/guide_permission_storage"/>
 
@@ -207,7 +207,7 @@
                 app:layout_constraintStart_toEndOf="@id/icon_location"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/text_location_description"
-                android:textAppearance="@style/Text.SubTitle"
+                android:textAppearance="@style/Text.SubTitle2"
                 android:textColor="@color/font_dark_gray"
                 android:text="@string/guide_permission_location"/>
 

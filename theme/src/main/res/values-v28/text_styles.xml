@@ -33,6 +33,12 @@
         <item name="android:fontFamily">@font/pretendard_bold</item>
     </style>
 
+    <style name="Text.SubTitle1" parent="">
+        <item name="android:textSize">20dp</item>
+        <item name="android:lineHeight">26dp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
     <style name="Text.Title3" parent="">
         <item name="android:textSize">18dp</item>
         <item name="android:lineHeight">24dp</item>
@@ -53,7 +59,7 @@
 
     <style name="Text.Body1" parent="">
         <item name="android:textSize">16dp</item>
-        <item name="android:lineHeight">22dp</item>
+        <item name="android:lineHeight">18dp</item>
         <item name="android:fontFamily">@font/pretendard_medium</item>
     </style>
 
@@ -61,6 +67,12 @@
         <item name="android:textSize">16dp</item>
         <item name="android:lineHeight">22dp</item>
         <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
+    <style name="Text.SubTitle2" parent="">
+        <item name="android:textSize">14dp</item>
+        <item name="android:lineHeight">20dp</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
     </style>
 
     <style name="Text.Body3" parent="">
@@ -77,7 +89,7 @@
 
     <style name="Text.Body5" parent="">
         <item name="android:textSize">12dp</item>
-        <item name="android:lineHeight">18dp</item>
+        <item name="android:lineHeight">14dp</item>
         <item name="android:fontFamily">@font/pretendard_medium</item>
     </style>
 
