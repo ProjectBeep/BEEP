@@ -11,12 +11,12 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
-import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
+import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.dismiss
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.show
-import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
+import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog

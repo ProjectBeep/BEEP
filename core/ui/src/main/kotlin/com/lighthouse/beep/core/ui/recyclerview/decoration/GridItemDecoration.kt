@@ -1,4 +1,4 @@
-package com.lighthouse.beep.core.ui.decoration
+package com.lighthouse.beep.core.ui.recyclerview.decoration
 
 import android.graphics.Rect
 import android.view.View

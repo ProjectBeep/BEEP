@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
-import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorPropertyChipBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 

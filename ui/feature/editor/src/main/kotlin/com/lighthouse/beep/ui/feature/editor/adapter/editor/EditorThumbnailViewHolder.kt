@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.load
 import coil.size.Size
 import com.lighthouse.beep.core.common.exts.dp
-import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorThumbnailBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 

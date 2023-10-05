@@ -1,4 +1,4 @@
-package com.lighthouse.beep.core.ui.viewholder
+package com.lighthouse.beep.core.ui.recyclerview.viewholder
 
 import android.view.View
 import androidx.annotation.CallSuper

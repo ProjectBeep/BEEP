@@ -1,4 +1,4 @@
-package com.lighthouse.beep.core.ui.scroller
+package com.lighthouse.beep.core.ui.recyclerview.scroller
 
 import android.content.Context
 import android.view.View

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
-import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.home.R
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredBrandChipBinding
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem

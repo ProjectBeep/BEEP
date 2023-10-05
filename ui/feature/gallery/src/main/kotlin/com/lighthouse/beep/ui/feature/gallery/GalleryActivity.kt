@@ -4,26 +4,24 @@ import android.animation.Animator
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.ViewConfiguration
 import android.view.ViewPropertyAnimator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
-import com.lighthouse.beep.core.ui.decoration.GridItemDecoration
-import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
+import com.lighthouse.beep.core.ui.recyclerview.decoration.GridItemDecoration
+import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.recyclerview.scroll.OnLongPressDragListener
 import com.lighthouse.beep.core.ui.utils.vibrator.VibratorGenerator
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.ActivityNavItem
@@ -38,12 +36,8 @@ import com.lighthouse.beep.ui.feature.gallery.databinding.ActivityGalleryBinding
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import com.lighthouse.beep.ui.feature.gallery.model.DragMode
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -157,68 +151,8 @@ internal class GalleryActivity : AppCompatActivity() {
         binding.listGallery.setHasFixedSize(true)
         binding.listGallery.addItemDecoration(GridItemDecoration(4f.dp))
 
-        binding.listGallery.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-            private var downPosition: Int = -1
-            private var movePosition: Int = -1
+        binding.listGallery.addOnItemTouchListener(object : OnLongPressDragListener() {
             private var dragMode = DragMode.NONE
-
-            private var isSameItemPressed = false
-
-            private var job: Job? = null
-            private var scrollDy = 0
-
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                when(e.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        downPosition = getPosition(rv, e)
-                        if(downPosition == -1) {
-                            return false
-                        }
-                        isSameItemPressed = true
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        if (!isSameItemPressed) {
-                            return false
-                        }
-                        val currentPosition = getPosition(rv, e)
-                        if (downPosition != currentPosition || currentPosition == -1) {
-                            isSameItemPressed = false
-                            return false
-                        }
-                        if (e.eventTime - e.downTime >= ViewConfiguration.getLongPressTimeout()) {
-                            job = startDrag(rv)
-                            return job != null
-                        }
-                    }
-                }
-                return false
-            }
-
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-                when(e.action) {
-                    MotionEvent.ACTION_MOVE -> {
-                        moveDrag(getPosition(rv, e))
-                        scrollDy = when {
-                            0 > e.y -> e.y.toInt() / 10
-                            rv.height < e.y -> (e.y - rv.height).toInt() / 10
-                            else -> 0
-                        }
-                    }
-                    MotionEvent.ACTION_UP,
-                    MotionEvent.ACTION_CANCEL -> {
-                        dragMode = DragMode.NONE
-                        job?.cancel()
-                        job = null
-                    }
-                }
-            }
-
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) = Unit
-
-            private fun getPosition(rv: RecyclerView, event: MotionEvent): Int {
-                val view = rv.findChildViewUnder(event.x, event.y) ?: return -1
-                return rv.getChildAdapterPosition(view)
-            }
 
             private fun getItem(position: Int): GalleryImage? {
                 return when (viewModel.bucketType.value) {
@@ -227,30 +161,18 @@ internal class GalleryActivity : AppCompatActivity() {
                 }
             }
 
-            private fun startDrag(rv: RecyclerView): Job? {
-                val item = getItem(downPosition) ?: return null
+            override fun onStartDrag(): Boolean {
+                val item = getItem(downPosition) ?: return false
                 dragMode = when(viewModel.isSelectedItem(item)) {
                     true -> DragMode.DELETE
                     false -> DragMode.SELECT
                 }
                 viewModel.dragItem(item, dragMode)
-                movePosition = downPosition
-
                 VibratorGenerator.vibrate(applicationContext, 100L)
-                return lifecycleScope.launch {
-                    while(isActive) {
-                        delay(5)
-                        if (scrollDy != 0) {
-                            rv.scrollBy(0, scrollDy)
-                        }
-                    }
-                }
+                return true
             }
 
-            private fun moveDrag(position: Int) {
-                if (position == -1 || movePosition == position) {
-                    return
-                }
+            override fun onMoveDrag(position: Int) {
                 when {
                     movePosition in (position + 1)..downPosition -> {
                         for (pos in (movePosition - 1) downTo position) {
@@ -277,7 +199,10 @@ internal class GalleryActivity : AppCompatActivity() {
                         }
                     }
                 }
-                movePosition = position
+            }
+
+            override fun onEndDrag() {
+                dragMode = DragMode.NONE
             }
         })
     }

@@ -10,7 +10,7 @@ import coil.load
 import coil.size.Size
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
-import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorGifticonBinding
 

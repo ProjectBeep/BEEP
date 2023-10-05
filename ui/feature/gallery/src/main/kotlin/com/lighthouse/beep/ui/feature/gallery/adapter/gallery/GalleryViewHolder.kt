@@ -3,14 +3,12 @@ package com.lighthouse.beep.ui.feature.gallery.adapter.gallery
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.load
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
-import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.ui.feature.gallery.R
 import com.lighthouse.beep.ui.feature.gallery.databinding.ItemGalleryBinding
 
 internal class GalleryViewHolder(

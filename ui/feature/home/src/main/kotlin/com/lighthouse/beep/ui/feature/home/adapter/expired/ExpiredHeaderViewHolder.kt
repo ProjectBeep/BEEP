@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lighthouse.beep.core.common.exts.dp
-import com.lighthouse.beep.core.ui.decoration.LinearItemDecoration
+import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
-import com.lighthouse.beep.core.ui.scroller.CenterScrollLayoutManager
-import com.lighthouse.beep.core.ui.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
+import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredHeaderBinding
 import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
 import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
