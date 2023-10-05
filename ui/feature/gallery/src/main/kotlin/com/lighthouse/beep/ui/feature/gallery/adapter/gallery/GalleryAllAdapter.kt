@@ -17,4 +17,11 @@ internal class GalleryAllAdapter(
         val item = getItem(position) ?: return
         holder.bind(item)
     }
+
+    fun getItemByPosition(position: Int): GalleryImage? {
+        if (position == -1) {
+            return null
+        }
+        return getItem(position)
+    }
 }

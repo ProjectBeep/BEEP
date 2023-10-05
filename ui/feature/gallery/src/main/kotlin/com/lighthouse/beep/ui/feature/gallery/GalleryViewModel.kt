@@ -2,9 +2,12 @@ package com.lighthouse.beep.ui.feature.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.core.common.exts.add
 import com.lighthouse.beep.core.common.exts.displayHeight
 import com.lighthouse.beep.core.common.exts.displayWidth
 import com.lighthouse.beep.core.common.exts.dp
+import com.lighthouse.beep.core.common.exts.remove
+import com.lighthouse.beep.core.common.exts.removeAt
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryGifticonUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImageSizeUseCase
@@ -13,12 +16,11 @@ import com.lighthouse.beep.domain.usecase.gallery.GetGalleryRecognizeDataUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gallery.GalleryImageRecognizeData
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
+import com.lighthouse.beep.ui.feature.gallery.model.DragMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -140,59 +142,53 @@ internal class GalleryViewModel @Inject constructor(
 
     val allList = getGalleryImagesUseCase(pageCount)
 
-    private val _selectedList = mutableListOf<GalleryImage>()
-    val selectedList
-        get() = _selectedList.toList()
+    private val _selectedList = MutableStateFlow<List<GalleryImage>>(emptyList())
+    val selectedList = _selectedList.asStateFlow()
 
-    private val _selectedListFlow = MutableSharedFlow<List<GalleryImage>>(replay = 1)
-    val selectedListFlow = _selectedListFlow.asSharedFlow()
-
-    val isSelected = selectedListFlow.map {
+    val isSelected = selectedList.map {
         it.isNotEmpty()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    val isSelectable
-        get() = _selectedList.size < maxSelectCount
+    private val isSelectable
+        get() = selectedList.value.size < maxSelectCount
 
-    fun selectItem(item: GalleryImage) {
+    fun toggleItem(item: GalleryImage) {
         if (!isSelectable) {
             return
         }
 
-        val index = _selectedList.indexOfFirst { it.id == item.id }
+        val index = _selectedList.value.indexOfFirst { it.id == item.id }
         if (index == -1) {
             _selectedList.add(item)
         } else {
             _selectedList.removeAt(index)
         }
-        viewModelScope.launch {
-            _selectedListFlow.emit(_selectedList)
+    }
+
+    fun isSelectedItem(item: GalleryImage) : Boolean {
+        return _selectedList.value.indexOfFirst { it.id == item.id } != -1
+    }
+
+    fun dragItem(item: GalleryImage, dragMode: DragMode) {
+        when(dragMode) {
+            DragMode.SELECT -> selectItem(item)
+            DragMode.DELETE -> deleteItem(item)
+            else -> {}
         }
+    }
+
+    fun selectItem(item: GalleryImage) {
+        if (!isSelectable) {
+            return
+        }
+        _selectedList.add(item)
     }
 
     fun deleteItem(item: GalleryImage) {
-        val index = _selectedList.indexOfFirst { it.id == item.id }
-        if (index == -1) {
-            return
-        } else {
-            _selectedList.removeAt(index)
-        }
-        viewModelScope.launch {
-            _selectedListFlow.emit(_selectedList)
-        }
+        _selectedList.remove { it.id == item.id }
     }
 
     fun setItems(list: List<GalleryImage>) {
-        _selectedList.clear()
-        _selectedList.addAll(list)
-        viewModelScope.launch {
-            _selectedListFlow.emit(_selectedList)
-        }
-    }
-
-    init {
-        viewModelScope.launch {
-            _selectedListFlow.emit(emptyList())
-        }
+        _selectedList.value = list
     }
 }
