@@ -35,9 +35,6 @@ internal class EditorViewModel @Inject constructor(
     private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
     val galleryImage = _galleryImage.asStateFlow()
 
-    val gifticonCount
-        get() = galleryImage.value.size
-
     fun deleteItem(item: GalleryImage) {
         val oldList = _galleryImage.value
         val index = oldList.indexOfFirst { it.id == item.id }
@@ -55,6 +52,11 @@ internal class EditorViewModel @Inject constructor(
         viewModelScope.launch {
             _gifticonDataMapFlow.emit(gifticonDataMap)
         }
+    }
+
+    fun deleteGalleryContent(id: Long) {
+        val item = _galleryImage.value.find { it.id == id } ?: return
+        deleteItem(item)
     }
 
     private val _selectedGifticon = MutableStateFlow(_galleryImage.value.firstOrNull())

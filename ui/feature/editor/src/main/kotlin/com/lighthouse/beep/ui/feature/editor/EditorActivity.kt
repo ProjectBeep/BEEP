@@ -11,6 +11,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
+import com.lighthouse.beep.core.ui.content.OnContentChangeListener
+import com.lighthouse.beep.core.ui.content.registerGalleryContentObserver
 import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.dismiss
@@ -214,12 +216,23 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
         binding = ActivityEditorBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        setUpGalleryContentObserver()
         setUpBackPress()
         setUpGifticonList()
         setUpPropertyChipList()
         setUpRecycleEditor()
         setUpCollectState()
         setUpOnClickEvent()
+    }
+
+    private fun setUpGalleryContentObserver() {
+        registerGalleryContentObserver(object : OnContentChangeListener {
+            override fun onInsert(id: Long) = Unit
+
+            override fun onDelete(id: Long) {
+                viewModel.deleteGalleryContent(id)
+            }
+        })
     }
 
     private fun setUpBackPress() {
