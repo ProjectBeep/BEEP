@@ -232,7 +232,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            
+
             <ImageView
                 android:id="@+id/image_barcode"
                 android:layout_width="200dp"

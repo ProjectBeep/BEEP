@@ -5,6 +5,7 @@ import com.lighthouse.beep.model.user.UsageHistory
 
 internal fun UsageHistory.toEntity(gifticonId: Long): DBUsageHistoryEntity {
     return DBUsageHistoryEntity(
+        id = null,
         gifticonId = gifticonId,
         date = date,
         x = x,

@@ -14,32 +14,66 @@ import javax.inject.Inject
 internal class GalleryDataSource @Inject constructor(
     private val contentResolver: ContentResolver,
 ) {
-    suspend fun getImages(page: Int, limit: Int): List<GalleryImage> {
-        return getImages(null, null, page, limit)
+    private val imageProjection = arrayOf(
+        MediaStore.Images.Media._ID,
+        MediaStore.Images.Media.DATE_ADDED,
+        MediaStore.Images.Media.DATA,
+    )
+
+    suspend fun getImage(id: Long): GalleryImage? = withContext(Dispatchers.IO){
+        val selection = "${MediaStore.Images.Media._ID}=?"
+        val selectionArg = arrayOf(id.toString())
+        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val queryArgs = Bundle().apply {
+                putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
+                putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArg)
+                putInt(ContentResolver.QUERY_ARG_LIMIT, 1)
+            }
+            contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                imageProjection,
+                queryArgs,
+                null,
+            )
+        } else {
+            val limit = "LIMIT 1"
+            contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                imageProjection,
+                selection,
+                selectionArg,
+                limit,
+            )
+        }
+
+        cursor?.use {
+            val imagePathColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            val dateAddedColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
+
+            if (it.moveToNext()) {
+                val contentUri =
+                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                val dateAdded = it.getLong(dateAddedColumn) * 1000
+                val imagePath = it.getString(imagePathColumn)
+                GalleryImage(id, contentUri, imagePath, Date(dateAdded))
+            } else {
+                null
+            }
+        }
     }
 
-    private suspend fun getImages(
-        selection: String?,
-        selectionArg: Array<String>?,
-        page: Int,
-        limit: Int,
-    ): List<GalleryImage> = withContext(Dispatchers.IO) {
-        val projection = arrayOf(
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DATE_ADDED,
-            MediaStore.Images.Media.DATA,
-        )
+    suspend fun getImages(page: Int, limit: Int, offset: Int): List<GalleryImage> = withContext(Dispatchers.IO){
 //        val selection = "${MediaStore.Images.Media.BUCKET_ID}=$bucketId AND ${MediaStore.Images.Media.MIME_TYPE} in (?,?)"
 //        val mimeTypeMap = MimeTypeMap.getSingleton()
 //        val selectionArg = arrayOf(
 //            mimeTypeMap.getMimeTypeFromExtension("png"),
 //            mimeTypeMap.getMimeTypeFromExtension("jpg"),
 //        )
-        val offset = page * limit
+        val pageOffset = page * limit + offset
         val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val queryArgs = Bundle().apply {
-                putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
-                putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArg)
+//                putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
+//                putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArg)
                 putStringArray(
                     ContentResolver.QUERY_ARG_SORT_COLUMNS,
                     arrayOf(MediaStore.Images.Media.DATE_ADDED),
@@ -48,12 +82,12 @@ internal class GalleryDataSource @Inject constructor(
                     ContentResolver.QUERY_ARG_SORT_DIRECTION,
                     ContentResolver.QUERY_SORT_DIRECTION_DESCENDING,
                 )
-                putInt(ContentResolver.QUERY_ARG_OFFSET, offset)
+                putInt(ContentResolver.QUERY_ARG_OFFSET, pageOffset)
                 putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
             }
             contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
+                imageProjection,
                 queryArgs,
                 null,
             )
@@ -61,9 +95,9 @@ internal class GalleryDataSource @Inject constructor(
             val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC LIMIT $limit OFFSET $offset"
             contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                selectionArg,
+                imageProjection,
+                null,
+                null,
                 sortOrder,
             )
         }

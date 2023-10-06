@@ -19,7 +19,7 @@ internal class GalleryImagePagingFactory(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GalleryImage> {
         val current = params.key ?: page
-        val results = dataSource.getImages(current, params.loadSize)
+        val results = dataSource.getImages(current, params.loadSize, 0)
         return try {
             LoadResult.Page(
                 data = results,

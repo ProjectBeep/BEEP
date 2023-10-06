@@ -14,7 +14,7 @@ class GetGalleryGifticonUseCase @Inject constructor(
     private val recognizeBarcodeUseCase: RecognizeBarcodeUseCase
 ){
 
-    suspend operator fun invoke(requestRecognizeList: List<GalleryImage>) = withContext(Dispatchers.Default) {
+    suspend operator fun invoke(requestRecognizeList: List<GalleryImage>): List<GalleryImage> = withContext(Dispatchers.Default) {
         val list = mutableListOf<GalleryImage>()
         requestRecognizeList.map {
             launch {

@@ -11,6 +11,7 @@ import com.lighthouse.beep.core.common.exts.removeAt
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryGifticonUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImageSizeUseCase
+import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImageUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesUseCase
 import com.lighthouse.beep.domain.usecase.gallery.GetGalleryRecognizeDataUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
@@ -32,6 +33,7 @@ import kotlin.math.ceil
 @HiltViewModel
 internal class GalleryViewModel @Inject constructor(
     getGalleryImageSizeUseCase: GetGalleryImageSizeUseCase,
+    private val getGalleryImageUseCase: GetGalleryImageUseCase,
     private val getGalleryImagesUseCase: GetGalleryImagesUseCase,
     private val getGalleryRecognizeDataUseCase: GetGalleryRecognizeDataUseCase,
     private val getGalleryGifticonUseCase: GetGalleryGifticonUseCase,
@@ -47,7 +49,7 @@ internal class GalleryViewModel @Inject constructor(
         val pageCount: Int = spanCount * displayHeight / (imageHeight + space)
         val pageFetchCount: Int = pageCount / 2
 
-        val maxSelectCount = 30
+        const val maxSelectCount = 30
     }
 
     private val _bucketType = MutableStateFlow(BucketType.RECOMMEND)
@@ -71,6 +73,9 @@ internal class GalleryViewModel @Inject constructor(
 
     private val _recommendList = MutableStateFlow<List<GalleryImage>>(emptyList())
     val recommendList = _recommendList.asStateFlow()
+
+    private val recommendSearchIdSet = mutableSetOf<Long>()
+    private var pageOffset = 0
 
     private var currentPage = 0
     private val maxPage = ceil(getGalleryImageSizeUseCase() / limit.toFloat()).toInt()
@@ -109,9 +114,10 @@ internal class GalleryViewModel @Inject constructor(
         requestNextJob = viewModelScope.launch {
             val targetSize = recommendList.value.size + pageCount
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
-                val images = getGalleryImagesUseCase(currentPage, limit)
+                val images = getGalleryImagesUseCase(currentPage, limit, pageOffset)
                 val list = mutableListOf<GalleryImage>()
                 val requestRecognizeList = images.filter {
+                    recommendSearchIdSet.add(it.id)
                     val recognize = getGalleryRecognizeDataUseCase(it)
                     if (recognize == GalleryImageRecognizeData.GIFTICON) {
                         list.add(it)
@@ -193,5 +199,27 @@ internal class GalleryViewModel @Inject constructor(
 
     fun setItems(list: List<GalleryImage>) {
         _selectedList.value = list
+    }
+
+    fun insertGalleryContent(id: Long) {
+        viewModelScope.launch {
+            val item = getGalleryImageUseCase(id) ?: return@launch
+            pageOffset += 1
+
+            recommendSearchIdSet.add(item.id)
+            val list = getGalleryGifticonUseCase(listOf(item))
+            if (list.isNotEmpty()) {
+                _recommendList.value = list + _recommendList.value
+            }
+        }
+    }
+
+    fun deleteGalleryContent(id: Long) {
+        if (id in recommendSearchIdSet) {
+            pageOffset -= 1
+
+            _selectedList.remove { it.id == id }
+            _recommendList.remove { it.id == id }
+        }
     }
 }

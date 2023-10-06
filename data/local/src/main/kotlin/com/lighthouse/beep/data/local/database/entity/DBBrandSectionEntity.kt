@@ -8,6 +8,7 @@ import java.util.Date
 
 @Entity(tableName = "brand_section_table")
 internal data class DBBrandSectionEntity(
+    // TODO : "0000000_0000000_brand" String 으로 변경
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "section_id")
     val id: Long?,

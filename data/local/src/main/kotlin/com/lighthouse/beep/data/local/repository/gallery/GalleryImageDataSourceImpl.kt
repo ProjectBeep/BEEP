@@ -12,6 +12,10 @@ internal class GalleryImageDataSourceImpl @Inject constructor(
     private val dataSource: GalleryDataSource,
 ) : GalleryImageDataSource {
 
+    override suspend fun getImage(id: Long): GalleryImage? {
+        return dataSource.getImage(id)
+    }
+
     override fun getImages(pageSize: Int): Flow<PagingData<GalleryImage>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize, enablePlaceholders = false),
@@ -21,8 +25,8 @@ internal class GalleryImageDataSourceImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun getImages(page: Int, limit: Int): List<GalleryImage> {
-        return dataSource.getImages(page, limit)
+    override suspend fun getImages(page: Int, limit: Int, offset: Int): List<GalleryImage> {
+        return dataSource.getImages(page, limit, offset)
     }
 
     override fun getImageSize(): Int {

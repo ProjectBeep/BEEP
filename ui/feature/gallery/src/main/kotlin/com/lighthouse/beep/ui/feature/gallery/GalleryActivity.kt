@@ -2,7 +2,12 @@ package com.lighthouse.beep.ui.feature.gallery
 
 import android.animation.Animator
 import android.app.Activity
+import android.database.ContentObserver
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewPropertyAnimator
@@ -17,6 +22,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
+import com.lighthouse.beep.core.ui.content.OnContentChangeListener
+import com.lighthouse.beep.core.ui.content.registerGalleryContentObserver
 import com.lighthouse.beep.core.ui.recyclerview.decoration.GridItemDecoration
 import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
@@ -48,7 +55,7 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<GalleryViewModel>()
 
-    private val onGalleryListener = object: OnGalleryListener {
+    private val onGalleryListener = object : OnGalleryListener {
         override fun getSelectedIndexFlow(item: GalleryImage): Flow<Int> {
             return viewModel.selectedList.map { list ->
                 list.indexOfFirst { it.id == item.id }
@@ -64,7 +71,7 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private val galleryAllAdapter = GalleryAllAdapter(onGalleryListener)
 
-    private val onSelectedGalleryListener = object: OnSelectedGalleryListener {
+    private val onSelectedGalleryListener = object : OnSelectedGalleryListener {
         override fun onClick(item: GalleryImage) {
             viewModel.deleteItem(item)
         }
@@ -74,7 +81,7 @@ internal class GalleryActivity : AppCompatActivity() {
         onSelectedGalleryListener = onSelectedGalleryListener
     )
 
-    private val recommendScrollListener = object: RecyclerView.OnScrollListener() {
+    private val recommendScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val manager = recyclerView.layoutManager as? GridLayoutManager ?: return
             val lastVisible = manager.findLastVisibleItemPosition()
@@ -82,13 +89,14 @@ internal class GalleryActivity : AppCompatActivity() {
         }
     }
 
-    private val editorLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            finish()
-        } else {
-            viewModel.setItems(EditorResult(it.data).list)
+    private val editorLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                finish()
+            } else {
+                viewModel.setItems(EditorResult(it.data).list)
+            }
         }
-    }
 
     @Inject
     lateinit var navigator: AppNavigator
@@ -98,6 +106,7 @@ internal class GalleryActivity : AppCompatActivity() {
         binding = ActivityGalleryBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        setUpGalleryContentObserver()
         setUpBucketTypeTab()
         setUpSelectedGalleryList()
         setUpGalleryList()
@@ -113,8 +122,20 @@ internal class GalleryActivity : AppCompatActivity() {
         super.onStop()
     }
 
+    private fun setUpGalleryContentObserver() {
+        registerGalleryContentObserver(object : OnContentChangeListener {
+            override fun onInsert(id: Long) {
+                viewModel.insertGalleryContent(id)
+            }
+
+            override fun onDelete(id: Long) {
+                viewModel.deleteGalleryContent(id)
+            }
+        })
+    }
+
     private fun setUpBucketTypeTab() {
-        binding.tabBucketType.addOnTabSelectedListener(object: OnTabSelectedListener{
+        binding.tabBucketType.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab ?: return
                 binding.listGallery.stopScroll()
@@ -136,7 +157,7 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private fun saveBucketScroll() {
         val scrollInfo = binding.listGallery.getScrollInfo { position ->
-            if(position > 0) 4.dp else 0
+            if (position > 0) 4.dp else 0
         }
         viewModel.setBucketScroll(scrollInfo = scrollInfo)
     }
@@ -163,7 +184,7 @@ internal class GalleryActivity : AppCompatActivity() {
 
             override fun onStartDrag(): Boolean {
                 val item = getItem(downPosition) ?: return false
-                dragMode = when(viewModel.isSelectedItem(item)) {
+                dragMode = when (viewModel.isSelectedItem(item)) {
                     true -> DragMode.DELETE
                     false -> DragMode.SELECT
                 }
@@ -173,26 +194,30 @@ internal class GalleryActivity : AppCompatActivity() {
             }
 
             override fun onMoveDrag(position: Int) {
-                Log.d("TEST", "$downPosition $movePosition $position")
                 when {
                     movePosition in (position + 1)..downPosition -> {
                         dragToUp(movePosition - 1, position, dragMode)
                     }
+
                     position in (movePosition + 1)..downPosition -> {
                         dragToDown(movePosition - 1, position - 1, DragMode.DELETE)
                     }
-                    downPosition in (movePosition + 1)..< position -> {
+
+                    downPosition in (movePosition + 1)..<position -> {
                         dragToDown(movePosition, downPosition - 1, DragMode.DELETE)
                         dragToDown(downPosition + 1, position, dragMode)
                     }
-                    downPosition in (position + 1)..< movePosition -> {
+
+                    downPosition in (position + 1)..<movePosition -> {
                         dragToUp(movePosition, downPosition + 1, DragMode.DELETE)
                         dragToUp(downPosition - 1, position, dragMode)
                     }
-                    movePosition in downPosition..< position -> {
+
+                    movePosition in downPosition..<position -> {
                         dragToDown(movePosition + 1, position, dragMode)
                     }
-                    position in downPosition..< movePosition -> {
+
+                    position in downPosition..<movePosition -> {
                         dragToUp(movePosition + 1, position + 1, DragMode.DELETE)
                     }
                 }
@@ -203,7 +228,7 @@ internal class GalleryActivity : AppCompatActivity() {
             }
 
             private fun dragToDown(from: Int, to: Int, mode: DragMode) {
-                for (pos in from .. to) {
+                for (pos in from..to) {
                     val item = getItem(pos) ?: continue
                     viewModel.dragItem(item, mode)
                 }
@@ -222,12 +247,13 @@ internal class GalleryActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.bucketType.collect { type ->
                 binding.listGallery.clearOnScrollListeners()
-                when(type) {
+                when (type) {
                     BucketType.RECOMMEND -> {
                         binding.listGallery.adapter = galleryRecommendAdapter
                         binding.listGallery.addOnScrollListener(recommendScrollListener)
                         viewModel.requestRecommendNext()
                     }
+
                     BucketType.ALL -> {
                         binding.listGallery.adapter = galleryAllAdapter
                         viewModel.cancelRecommendNext()
@@ -265,7 +291,7 @@ internal class GalleryActivity : AppCompatActivity() {
                     animator = binding.progressRecognize.animate()
                         .translationY(translationY)
                         .setDuration(300)
-                        .setListener(object: SimpleAnimatorListener(){
+                        .setListener(object : SimpleAnimatorListener() {
                             override fun onAnimationStart(animator: Animator) {
                                 binding.progressRecognize.isVisible = true
                             }
@@ -286,7 +312,11 @@ internal class GalleryActivity : AppCompatActivity() {
                 binding.textSelectedItemCount.text = if (list.isEmpty()) {
                     getString(R.string.selected_item_empty)
                 } else {
-                    getString(R.string.selected_item_count, list.size, GalleryViewModel.maxSelectCount)
+                    getString(
+                        R.string.selected_item_count,
+                        list.size,
+                        GalleryViewModel.maxSelectCount
+                    )
                 }
             }
         }
@@ -297,7 +327,8 @@ internal class GalleryActivity : AppCompatActivity() {
                 binding.btnConfirm.isEnabled = isSelected
 
                 val start = binding.listSelected.height
-                val end = if (isSelected) resources.getDimension(R.dimen.selected_list_height).toInt() else 0.dp
+                val end = if (isSelected) resources.getDimension(R.dimen.selected_list_height)
+                    .toInt() else 0.dp
                 if (start != end) {
                     animator?.cancel()
                     animator = binding.listSelected.animate()
@@ -306,7 +337,7 @@ internal class GalleryActivity : AppCompatActivity() {
                             binding.listSelected.updateLayoutParams {
                                 height = (start - (start - end) * it.animatedFraction).toInt()
                             }
-                        }.setListener(object: SimpleAnimatorListener() {
+                        }.setListener(object : SimpleAnimatorListener() {
                             override fun onAnimationStart(animator: Animator) {
                                 binding.listSelected.adapter = null
                             }
@@ -328,7 +359,8 @@ internal class GalleryActivity : AppCompatActivity() {
 
         binding.btnConfirm.setOnClickListener(createThrottleClickListener {
             if (viewModel.isSelected.value) {
-                val intent = navigator.getIntent(this, ActivityNavItem.Editor(viewModel.selectedList.value))
+                val intent =
+                    navigator.getIntent(this, ActivityNavItem.Editor(viewModel.selectedList.value))
                 editorLauncher.launch(intent)
             }
         })

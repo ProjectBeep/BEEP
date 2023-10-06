@@ -14,7 +14,7 @@ class GetGalleryImagesUseCase @Inject constructor(
         return galleryRepository.getImages(pageSize)
     }
 
-    suspend operator fun invoke(page: Int, limit: Int): List<GalleryImage> {
-        return galleryRepository.getImages(page, limit)
+    suspend operator fun invoke(page: Int, limit: Int, offset: Int): List<GalleryImage> {
+        return galleryRepository.getImages(page, limit, offset)
     }
 }
