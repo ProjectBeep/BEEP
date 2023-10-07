@@ -1,43 +1,44 @@
-package com.lighthouse.beep.ui.feature.editor.page.preview
+package com.lighthouse.beep.ui.feature.editor.adapter.preview
 
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.library.barcode.BarcodeGenerator
-import com.lighthouse.beep.ui.feature.editor.EditorPreviewViewModelDelegate
 import com.lighthouse.beep.ui.feature.editor.model.EditType
+import com.lighthouse.beep.ui.feature.editor.model.GifticonData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-internal class EditorPreviewModel constructor(
-    editorPreviewViewModelDelegate: EditorPreviewViewModelDelegate
-) : EditorPreviewViewModelDelegate by editorPreviewViewModelDelegate {
+internal class EditorPreviewDisplayModel(
+    gifticonDataFlow: Flow<GifticonData>,
+) {
 
-    val thumbnailUri = selectedGifticonDataFlow
-        .map { it.originUri }
-        .distinctUntilChanged()
-
-    val thumbnailCropData = selectedGifticonDataFlow
+    val thumbnailCropData = gifticonDataFlow
         .map { it.thumbnailCropData }
         .distinctUntilChanged()
 
-    val gifticonName = selectedGifticonDataFlow
+    val gifticonName = gifticonDataFlow
         .map { it.name }
         .distinctUntilChanged()
 
-    val brandName = selectedGifticonDataFlow
+    val brandName = gifticonDataFlow
         .map { it.brand }
         .distinctUntilChanged()
 
-    val displayExpired = selectedGifticonDataFlow
+    val displayExpired = gifticonDataFlow
         .map { it.displayExpired }
         .distinctUntilChanged()
 
-    val displayBalance = selectedGifticonDataFlow
+    val isCash = gifticonDataFlow
+        .map { it.isCashCard }
+        .distinctUntilChanged()
+
+    val displayBalance = gifticonDataFlow
         .map { it.displayBalance }
         .distinctUntilChanged()
 
-    val barcodeImage = selectedGifticonDataFlow
+    val barcodeImage = gifticonDataFlow
         .map { EditType.BARCODE.isInvalid(it) to it.displayBarcode }
         .distinctUntilChanged()
         .map { (isInvalid, displayBarcode) ->
@@ -49,7 +50,7 @@ internal class EditorPreviewModel constructor(
             }
         }
 
-    val displayBarcode = selectedGifticonDataFlow
+    val displayBarcode = gifticonDataFlow
         .map { it.displayBarcode }
         .distinctUntilChanged()
 }

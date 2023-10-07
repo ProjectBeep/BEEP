@@ -11,9 +11,9 @@ import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorPreviewBin
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 
-internal class EditorPreviewViewHolder(
+internal class EditorMemoViewHolder(
     parent: ViewGroup,
-    private val listener: OnEditorPreviewListener,
+    private val listener: OnEditorMemoListener,
     private val binding: SectionEditorPreviewBinding = SectionEditorPreviewBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
     )

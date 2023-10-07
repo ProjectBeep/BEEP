@@ -30,7 +30,7 @@ import javax.inject.Inject
 internal class EditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val recognizeGifticonUseCase: RecognizeGifticonUseCase,
-) : ViewModel(), EditorPreviewViewModelDelegate {
+) : ViewModel() {
 
     private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
     val galleryImage = _galleryImage.asStateFlow()
@@ -64,6 +64,11 @@ internal class EditorViewModel @Inject constructor(
 
     fun selectGifticon(item: GalleryImage) {
         _selectedGifticon.value = item
+    }
+
+    fun selectGifticon(position: Int) {
+        val item = galleryImage.value.getOrNull(position) ?: return
+        selectGifticon(item)
     }
 
     private val _selectedEditorChip = MutableStateFlow<EditorChip>(EditorChip.Preview)
@@ -103,8 +108,11 @@ internal class EditorViewModel @Inject constructor(
         .map { map -> map.values.any { !it.isInvalid } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    fun updateGifticonData(editData: EditData) {
-        val selectedItem = selectedGifticon.value ?: return
+    fun updateGifticonData(
+        selectedItem:GalleryImage? = selectedGifticon.value,
+        editData: EditData,
+    ) {
+        selectedItem ?: return
         val data = gifticonDataMap[selectedItem.id] ?: return
         if (!editData.isModified(data)) {
             return
@@ -123,7 +131,7 @@ internal class EditorViewModel @Inject constructor(
         gifticonMap[selected.id]
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    override val selectedGifticonDataFlow = selectedGifticonData.filterNotNull()
+    val selectedGifticonDataFlow = selectedGifticonData.filterNotNull()
 
     val editorPropertyChipList = selectedGifticonDataFlow.map { data ->
         EditType.entries.filter { type ->

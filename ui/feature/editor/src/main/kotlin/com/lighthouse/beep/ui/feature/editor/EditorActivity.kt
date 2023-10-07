@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.content.OnContentChangeListener
@@ -30,17 +32,21 @@ import com.lighthouse.beep.ui.dialog.textinput.TextInputResult
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.EditorPropertyChipAdapter
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.OnEditorPropertyChipListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.EditorAdapter
-import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorPreviewListener
+import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorMemoListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorTextListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorThumbnailListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.OnEditorGifticonListener
 import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdapter
+import com.lighthouse.beep.ui.feature.editor.adapter.preview.EditorPreviewAdapter
+import com.lighthouse.beep.ui.feature.editor.adapter.preview.OnEditorPreviewListener
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
 import com.lighthouse.beep.ui.feature.editor.model.ThumbnailCropData
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorPage
+import com.lighthouse.beep.ui.feature.editor.model.GifticonData
+import com.lighthouse.beep.ui.feature.editor.page.crop.EditorCropFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -50,7 +56,7 @@ import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
+internal class EditorActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG_SELECTED_GIFTICON_DELETE = "Tag.SelectedGifticonDelete"
@@ -59,6 +65,18 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
     private lateinit var binding: ActivityEditorBinding
 
     private val viewModel by viewModels<EditorViewModel>()
+
+    private val onPreviewScrollListener = object: RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                val offset = recyclerView.computeHorizontalScrollOffset()
+                val extent = recyclerView.computeHorizontalScrollExtent()
+                val position = offset / extent
+                binding.listSelected.smoothScrollToPosition(position)
+                viewModel.selectGifticon(position)
+            }
+        }
+    }
 
     private val onEditorGifticonListener = object : OnEditorGifticonListener {
         override fun isSelectedFlow(item: GalleryImage): Flow<Boolean> {
@@ -81,8 +99,10 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
                 .distinctUntilChanged()
         }
 
-        override fun onClick(item: GalleryImage) {
+        override fun onClick(item: GalleryImage, position: Int) {
             viewModel.selectGifticon(item)
+            binding.listSelected.smoothScrollToPosition(position)
+            binding.listPreview.smoothScrollToPosition(position)
             selectEditorChip(EditorChip.Preview)
         }
 
@@ -110,6 +130,26 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
         onSelectedGalleryListener = onEditorGifticonListener
     )
 
+    private val onEditorPreviewListener = object : OnEditorPreviewListener {
+        override fun getGifticonDataFlow(image: GalleryImage): Flow<GifticonData> {
+            return viewModel.gifticonDataMapFlow
+                .map { it[image.id] }
+                .filterNotNull()
+                .distinctUntilChanged()
+        }
+
+        override fun onCashChange(item: GalleryImage, isCash: Boolean) {
+            viewModel.updateGifticonData(item, EditData.Cash(isCash))
+        }
+
+        override fun onEditClick(editType: EditType) {
+            selectEditorChip(EditorChip.Property(editType))
+        }
+    }
+
+    private val editorPreviewAdapter =
+        EditorPreviewAdapter(onEditorPreviewListener = onEditorPreviewListener)
+
     private val onEditorPropertyChipListener = object : OnEditorPropertyChipListener {
         override fun isSelectedFlow(item: EditorChip.Property): Flow<Boolean> {
             return viewModel.selectedEditorChip
@@ -129,11 +169,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
         }
     }
 
-    override fun selectEditorChip(type: EditType) {
-        selectEditorChip(EditorChip.Property(type))
-    }
-
-    override fun selectEditorChip(item: EditorChip) {
+    private fun selectEditorChip(item: EditorChip) {
         val position = when (item) {
             is EditorChip.Preview -> 0
             is EditorChip.Property -> editorPropertyChipAdapter.getPosition(item)
@@ -148,7 +184,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
         onEditorPropertyChipListener = onEditorPropertyChipListener
     )
 
-    private val onEditorPreviewListener = object : OnEditorPreviewListener {
+    private val onEditorMemoListener = object : OnEditorMemoListener {
         override fun getMemoFlow(): Flow<String> {
             return viewModel.selectedGifticonDataFlow
                 .map { it.memo }
@@ -206,7 +242,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
     }
 
     private val editorAdapter = EditorAdapter(
-        onEditorPreviewListener = onEditorPreviewListener,
+        onEditorMemoListener = onEditorMemoListener,
         onEditorThumbnailListener = onEditorThumbnailListener,
         onEditorTextListener = onEditorTextListener,
     )
@@ -219,6 +255,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
         setUpGalleryContentObserver()
         setUpBackPress()
         setUpGifticonList()
+        setUpPreviewList()
         setUpPropertyChipList()
         setUpRecycleEditor()
         setUpCollectState()
@@ -250,6 +287,14 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
         binding.listSelected.adapter = editorGifticonAdapter
         binding.listSelected.setHasFixedSize(true)
         binding.listSelected.addItemDecoration(LinearItemDecoration(14.5f.dp))
+        binding.listSelected.layoutManager = CenterScrollLayoutManager(this, RecyclerView.HORIZONTAL, false)
+    }
+
+    private fun setUpPreviewList() {
+        binding.listPreview.adapter = editorPreviewAdapter
+        binding.listPreview.setHasFixedSize(true)
+        binding.listPreview.addOnScrollListener(onPreviewScrollListener)
+        PagerSnapHelper().attachToRecyclerView(binding.listPreview)
     }
 
     private fun setUpPropertyChipList() {
@@ -319,6 +364,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
                     cancelEditor()
                 } else {
                     editorGifticonAdapter.submitList(it)
+                    editorPreviewAdapter.submitList(it)
                 }
             }
         }
@@ -334,8 +380,9 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
                 binding.btnPreview.isSelected = it == EditorPage.PREVIEW
                 binding.textPreview.isSelected = it == EditorPage.PREVIEW
                 binding.iconPreview.isSelected = it == EditorPage.PREVIEW
+                binding.listPreview.isVisible = it == EditorPage.PREVIEW
 
-                changeEditorPage(it)
+                setVisibleCrop(it == EditorPage.CROP)
             }
         }
 
@@ -379,13 +426,17 @@ internal class EditorActivity : AppCompatActivity(), OnEditorChipListener {
         })
     }
 
-    private fun changeEditorPage(page: EditorPage) {
-        var fragment = supportFragmentManager.findFragmentByTag(page.name)
+    private fun setVisibleCrop(visible: Boolean) {
+        var fragment = supportFragmentManager.findFragmentByTag(EditorPage.CROP.name)
         if (fragment == null) {
-            fragment = page.createFragment()
+            fragment = EditorCropFragment()
         }
         supportFragmentManager.commit {
-            replace(binding.containerEditor.id, fragment, page.name)
+            if (visible) {
+                add(binding.containerCrop.id, fragment, EditorPage.CROP.name)
+            } else {
+                remove(fragment)
+            }
         }
     }
 

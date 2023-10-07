@@ -41,7 +41,7 @@ internal class EditorGifticonViewHolder(
 
     override fun onSetUpClickEvent(item: GalleryImage) {
         binding.root.setOnThrottleClickListener {
-            listener.onClick(item)
+            listener.onClick(item, absoluteAdapterPosition)
         }
 
         binding.btnDelete.setOnThrottleClickListener {

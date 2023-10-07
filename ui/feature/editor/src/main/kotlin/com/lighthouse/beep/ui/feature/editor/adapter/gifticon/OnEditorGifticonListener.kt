@@ -12,7 +12,7 @@ internal interface OnEditorGifticonListener {
 
     fun getCropDataFlow(item: GalleryImage): Flow<ThumbnailCropData>
 
-    fun onClick(item: GalleryImage)
+    fun onClick(item: GalleryImage, position: Int)
 
     fun onDeleteClick(item: GalleryImage)
 }

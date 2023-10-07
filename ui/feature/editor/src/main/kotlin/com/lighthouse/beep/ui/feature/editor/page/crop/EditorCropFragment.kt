@@ -51,13 +51,13 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
             override fun onChange(originBitmap: Bitmap, rect: RectF)  {
                 val editType = editorViewModel.selectedEditType ?: return
                 if (editType == EditType.THUMBNAIL) {
-                    editorViewModel.updateGifticonData(EditData.Thumbnail(rect))
+                    editorViewModel.updateGifticonData(editData= EditData.Thumbnail(rect))
                 } else {
                     job?.cancel()
                     job = lifecycleScope.launch(Dispatchers.IO) {
                         val bitmap = originBitmap.crop(rect.toRect())
                         val editData = editType.createEditDataWithCrop(bitmap, rect)
-                        editorViewModel.updateGifticonData(editData)
+                        editorViewModel.updateGifticonData(editData = editData)
                     }
                 }
             }
@@ -65,7 +65,7 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
     }
 
     private fun setUpCollectState() {
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             editorViewModel.selectedGifticon
                 .filterNotNull()
                 .collect {
@@ -83,7 +83,7 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                 }
         }
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             combine(
                 editorViewModel.selectedGifticon.filterNotNull(),
                 editorViewModel.selectedEditorChip.filterIsInstance<EditorChip.Property>()

@@ -107,6 +107,17 @@ internal sealed interface EditData {
         }
     }
 
+    data class Cash(val isCash: Boolean): EditData {
+
+        override fun isModified(data: GifticonData): Boolean {
+            return data.isCashCard != isCash
+        }
+
+        override fun updatedGifticon(data: GifticonData): GifticonData {
+            return data.copy(isCashCard = isCash)
+        }
+    }
+
     data class Balance(val balance: String): EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.balance != balance

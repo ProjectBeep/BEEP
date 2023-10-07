@@ -28,11 +28,13 @@ internal class GalleryContentObserver(
                      * NOTIFY_INSERT 이후 NOTIFY_UPDATE 가 2번 들어 오는데
                      * 값을 전부 받아야 이미지를 갱신 할 수 있음
                      */
+                    Log.d("ContentObserver", "insert : $id")
                     handler.postDelayed({
                         listener.onInsert(id)
                     }, 100)
                 }
                 flags and ContentResolver.NOTIFY_DELETE == ContentResolver.NOTIFY_DELETE -> {
+                    Log.d("ContentObserver", "delete : $id")
                     listener.onDelete(id)
                 }
             }

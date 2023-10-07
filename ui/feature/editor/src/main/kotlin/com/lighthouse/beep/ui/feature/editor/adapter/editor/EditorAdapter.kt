@@ -8,7 +8,7 @@ import com.lighthouse.beep.ui.feature.editor.model.EditorChipDiff
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 
 internal class EditorAdapter(
-    private val onEditorPreviewListener: OnEditorPreviewListener,
+    private val onEditorMemoListener: OnEditorMemoListener,
     private val onEditorThumbnailListener: OnEditorThumbnailListener,
     private val onEditorTextListener: OnEditorTextListener,
 ) : ListAdapter<EditorChip, RecyclerView.ViewHolder>(EditorChipDiff()){
@@ -32,7 +32,7 @@ internal class EditorAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_PREVIEW -> EditorPreviewViewHolder(parent, onEditorPreviewListener)
+            TYPE_PREVIEW -> EditorMemoViewHolder(parent, onEditorMemoListener)
             TYPE_THUMBNAIL -> EditorThumbnailViewHolder(parent, onEditorThumbnailListener)
             TYPE_TEXT -> EditorTextViewHolder(parent, onEditorTextListener)
             else -> throw RuntimeException("${javaClass.simpleName}에 정의 되지 않는 item 입니다")
@@ -42,7 +42,7 @@ internal class EditorAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         when {
-            holder is EditorPreviewViewHolder && item is EditorChip.Preview -> holder.bind(item)
+            holder is EditorMemoViewHolder && item is EditorChip.Preview -> holder.bind(item)
             holder is EditorThumbnailViewHolder && item is EditorChip.Property -> holder.bind(item)
             holder is EditorTextViewHolder && item is EditorChip.Property -> holder.bind(item)
         }
