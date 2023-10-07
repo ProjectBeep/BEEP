@@ -66,25 +66,18 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
             }
         })
 
-//        binding.cropGifticon.setOnCropImageModeChangeListener { currentMode ->
-//            when (currentMode) {
-//                CropImageMode.DRAG_WINDOW -> {
-//                    binding.textCropTouchMode.setText(R.string.editor_crop_touch_mode)
-//                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_touch_mode)
-//                }
-//                CropImageMode.DRAW_PEN -> {
-//                    binding.textCropTouchMode.setText(R.string.editor_crop_window_mode)
-//                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_window_mode)
-//                }
-//            }
-//            val nextMode = when (currentMode) {
-//                CropImageMode.DRAG_WINDOW -> CropImageMode.DRAW_PEN
-//                CropImageMode.DRAW_PEN -> CropImageMode.DRAG_WINDOW
-//            }
-//            binding.iconCropTouchMode.setOnClickListener(createThrottleClickListener {
-//                binding.cropGifticon.changeCropImageMode(nextMode)
-//            })
-//        }
+        binding.cropGifticon.setOnCropImageModeChangeListener { currentMode ->
+            when (currentMode) {
+                CropImageMode.DRAG_WINDOW -> {
+                    binding.textCropTouchMode.setText(R.string.editor_crop_touch_mode)
+                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_touch_mode)
+                }
+                CropImageMode.DRAW_PEN -> {
+                    binding.textCropTouchMode.setText(R.string.editor_crop_window_mode)
+                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_window_mode)
+                }
+            }
+        }
     }
 
     private fun setUpCollectState() {

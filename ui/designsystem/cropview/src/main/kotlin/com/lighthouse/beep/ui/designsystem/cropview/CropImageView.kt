@@ -55,7 +55,18 @@ class CropImageView(
         private set
 
     var cropImageMode = CropImageMode.DRAG_WINDOW
-        private set
+        private set(value) {
+            if (field != value) {
+                onCropImageModeChangeListener?.onChange(value)
+                field = value
+            }
+        }
+
+    private var onCropImageModeChangeListener: OnCropImageModeChangeListener? = null
+
+    fun setOnCropImageModeChangeListener(listener: OnCropImageModeChangeListener?) {
+        onCropImageModeChangeListener = listener
+    }
 
     fun selectCropImageTouchMode() {
         cropImageMode = CropImageMode.DRAW_PEN
