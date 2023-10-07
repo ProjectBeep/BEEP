@@ -63,7 +63,7 @@
                 app:layout_constraintEnd_toStartOf="@id/switch_cash"
                 android:textAppearance="@style/Text.Body5"
                 android:textColor="@color/font_gray"
-                android:text="@string/editor_gifticon_property_balance"/>
+                android:text="@string/editor_gifticon_preview_cash"/>
 
             <Switch
                 android:id="@+id/switch_cash"
@@ -108,6 +108,18 @@
                     android:textAppearance="@style/Text.Body3"
                     android:textColor="@color/font_dark_gray"
                     tools:text="스타벅스 아메리카노"/>
+
+                <ImageView
+                    android:id="@+id/icon_name_empty"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintStart_toEndOf="@id/text_name_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="invisible"
+                    android:contentDescription="@null"
+                    app:tint="@color/font_gray"
+                    android:src="@drawable/icon_empty_info"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -142,6 +154,18 @@
                     android:textAppearance="@style/Text.Body3"
                     android:textColor="@color/font_dark_gray"
                     tools:text="스타벅스"/>
+
+                <ImageView
+                    android:id="@+id/icon_brand_empty"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintStart_toEndOf="@id/text_brand_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="invisible"
+                    android:contentDescription="@null"
+                    app:tint="@color/font_gray"
+                    android:src="@drawable/icon_empty_info"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -177,7 +201,17 @@
                     android:textColor="@color/font_dark_gray"
                     tools:text="2021-11-06"/>
 
-
+                <ImageView
+                    android:id="@+id/icon_expired_empty"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintStart_toEndOf="@id/text_expired_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="invisible"
+                    android:contentDescription="@null"
+                    app:tint="@color/font_gray"
+                    android:src="@drawable/icon_empty_info"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

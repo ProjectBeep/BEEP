@@ -74,7 +74,6 @@ internal class EditorPreviewViewHolder(
         }
     }
 
-
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: GalleryImage) {
         val model = EditorPreviewDisplayModel(listener.getGifticonDataFlow(item))
 
@@ -88,15 +87,30 @@ internal class EditorPreviewViewHolder(
         }
 
         model.gifticonName.collect(lifecycleOwner) { name ->
-            binding.textName.text = name
+            val isEmpty = name.isEmpty()
+            binding.textName.isVisible = !isEmpty
+            binding.iconNameEmpty.isVisible = isEmpty
+            if (!isEmpty) {
+                binding.textName.text = name
+            }
         }
 
         model.brandName.collect(lifecycleOwner) { brand ->
-            binding.textBrand.text = brand
+            val isEmpty = brand.isEmpty()
+            binding.textBrand.isVisible = !isEmpty
+            binding.iconBrandEmpty.isVisible = isEmpty
+            if (!isEmpty) {
+                binding.textBrand.text = brand
+            }
         }
 
         model.displayExpired.collect(lifecycleOwner) { expired ->
-            binding.textExpired.text = expired
+            val isEmpty = expired.isEmpty()
+            binding.textExpired.isVisible = !isEmpty
+            binding.iconExpiredEmpty.isVisible = isEmpty
+            if (!isEmpty) {
+                binding.textExpired.text = expired
+            }
         }
 
         model.isCash.collect(lifecycleOwner) { isCash ->
@@ -105,7 +119,12 @@ internal class EditorPreviewViewHolder(
         }
 
         model.displayBalance.collect(lifecycleOwner) { balance ->
-            binding.textBalance.text = context.getString(R.string.editor_preview_balance, balance)
+            val isEmpty = balance.isEmpty()
+            binding.textBalance.isVisible = !isEmpty
+            binding.iconBalanceEmpty.isVisible = isEmpty
+            if (!isEmpty) {
+                binding.textBalance.text = context.getString(R.string.editor_preview_balance, balance)
+            }
         }
 
         model.barcodeImage.collect(lifecycleOwner) { image ->

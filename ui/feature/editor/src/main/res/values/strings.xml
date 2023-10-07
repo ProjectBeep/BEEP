@@ -14,6 +14,9 @@
     <string name="editor_gifticon_property_expired">유효기간</string>
     <string name="editor_gifticon_property_balance">남은 금액</string>
 
+    <string name="editor_crop_touch_mode">터치</string>
+    <string name="editor_crop_window_mode">크롭</string>
+
     <string name="editor_preview_balance">%s 원</string>
 
     <string name="editor_gifticon_register">쿠폰 등록하기</string>

@@ -55,10 +55,24 @@ class CropImageView(
         private set
 
     var cropImageMode = CropImageMode.DRAG_WINDOW
-        set(value) {
-            field = value
-            invalidate()
-        }
+        private set
+
+    fun selectCropImageTouchMode() {
+        cropImageMode = CropImageMode.DRAW_PEN
+        cropImageWindow.initRect(originBitmap, RECT_F_EMPTY)
+        mainMatrix.reset()
+        zoom = 1f
+        applyMatrix(false)
+    }
+
+    fun selectCropImageWindowMode(rect: RectF?) {
+        cropImageMode = CropImageMode.DRAG_WINDOW
+        cropImageWindow.initRect(originBitmap, rect)
+        mainMatrix.reset()
+        zoom = 1f
+        applyMatrix(false)
+        applyZoom(width, height, false)
+    }
 
     private val cropImagePen = CropImagePen(
         this,
@@ -140,7 +154,6 @@ class CropImageView(
 
         init {
             duration = 300
-            fillAfter = true
             interpolator = AccelerateDecelerateInterpolator()
         }
 
@@ -190,11 +203,11 @@ class CropImageView(
         this.onChangeCropRectListener = onChangeCropRectListener
     }
 
-    private val croppedRect
-        get() = RectF(cropImageWindow.curCropRect).apply {
-            mainMatrix.invert(mainInverseMatrix)
-            mainInverseMatrix.mapRect(this)
-        }
+//    private val croppedRect
+//        get() = RectF(cropImageWindow.curCropRect).apply {
+//            mainMatrix.invert(mainInverseMatrix)
+//            mainInverseMatrix.mapRect(this)
+//        }
 
     fun setBitmap(bitmap: Bitmap, rect: RectF? = null) {
         if (width == 0 || height == 0) {
@@ -207,8 +220,8 @@ class CropImageView(
         }
     }
 
-    fun setCropRect(rect: RectF) {
-        if (originBitmap == null || rect == croppedRect) {
+    fun setCropRect(rect: RectF?) {
+        if (originBitmap == null) {
             return
         }
 
@@ -370,7 +383,9 @@ class CropImageView(
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
-        applyZoom(right - left, bottom - top)
+        if (changed) {
+            applyZoom(right - left, bottom - top)
+        }
     }
 
     override fun onDraw(canvas: Canvas) {

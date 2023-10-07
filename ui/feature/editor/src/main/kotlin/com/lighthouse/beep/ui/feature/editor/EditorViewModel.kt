@@ -1,5 +1,6 @@
 package com.lighthouse.beep.ui.feature.editor
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -114,9 +115,13 @@ internal class EditorViewModel @Inject constructor(
     ) {
         selectedItem ?: return
         val data = gifticonDataMap[selectedItem.id] ?: return
+        Log.d("TEST", "updateGifticonData : $editData")
+
         if (!editData.isModified(data)) {
             return
         }
+
+        Log.d("TEST", "updateGifticonData success : $editData")
         gifticonDataMap[selectedItem.id] = editData.updatedGifticon(data)
         viewModelScope.launch {
             _gifticonDataMapFlow.emit(gifticonDataMap)

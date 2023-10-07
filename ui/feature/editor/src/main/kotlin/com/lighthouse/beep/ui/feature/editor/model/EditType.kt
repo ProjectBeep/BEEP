@@ -168,7 +168,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
 
         override fun isInvalid(data: GifticonData): Boolean {
-            return data.isCashCard && data.balance.isEmpty()
+            return data.isCashCard && data.balance == "0"
         }
 
         override fun getText(data: GifticonData): String {

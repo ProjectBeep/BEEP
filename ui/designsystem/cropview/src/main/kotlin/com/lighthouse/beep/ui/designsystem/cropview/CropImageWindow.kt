@@ -5,8 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.RectF
-import android.graphics.Region
-import android.os.Build
 import android.view.MotionEvent
 import com.lighthouse.beep.core.common.exts.dp
 import kotlin.math.max

@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.graphics.toRect
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,7 @@ import coil.size.Size
 import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 import com.lighthouse.beep.core.common.exts.crop
 import com.lighthouse.beep.core.ui.binding.viewBindings
+import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.ui.designsystem.cropview.CropImageMode
 import com.lighthouse.beep.ui.designsystem.cropview.OnChangeCropRectListener
@@ -42,6 +44,7 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpCropView()
         setUpCollectState()
+        setUpOnClickEvent()
     }
 
     private fun setUpCropView() {
@@ -62,6 +65,26 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                 }
             }
         })
+
+//        binding.cropGifticon.setOnCropImageModeChangeListener { currentMode ->
+//            when (currentMode) {
+//                CropImageMode.DRAG_WINDOW -> {
+//                    binding.textCropTouchMode.setText(R.string.editor_crop_touch_mode)
+//                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_touch_mode)
+//                }
+//                CropImageMode.DRAW_PEN -> {
+//                    binding.textCropTouchMode.setText(R.string.editor_crop_window_mode)
+//                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_window_mode)
+//                }
+//            }
+//            val nextMode = when (currentMode) {
+//                CropImageMode.DRAG_WINDOW -> CropImageMode.DRAW_PEN
+//                CropImageMode.DRAW_PEN -> CropImageMode.DRAG_WINDOW
+//            }
+//            binding.iconCropTouchMode.setOnClickListener(createThrottleClickListener {
+//                binding.cropGifticon.changeCropImageMode(nextMode)
+//            })
+//        }
     }
 
     private fun setUpCollectState() {
@@ -84,14 +107,8 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
         }
 
         viewLifecycleOwner.repeatOnStarted {
-            combine(
-                editorViewModel.selectedGifticon.filterNotNull(),
-                editorViewModel.selectedEditorChip.filterIsInstance<EditorChip.Property>()
-            ) { gifticon, editorChip ->
-                val data = editorViewModel.getGifticonData(gifticon.id)
-                editorChip.type to editorChip.type.getCropRectF(data)
-            }.collect { (type, rect) ->
-                when(type) {
+            editorViewModel.selectedEditorChip.filterIsInstance<EditorChip.Property>().collect {
+                when(it.type) {
                     EditType.THUMBNAIL -> {
                         binding.cropGifticon.enableAspectRatio = true
                         binding.cropGifticon.aspectRatio = 1f
@@ -100,14 +117,40 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                         binding.cropGifticon.enableAspectRatio = false
                     }
                 }
-
-                binding.cropGifticon.cropImageMode = when {
-                    type != EditType.THUMBNAIL && rect == EMPTY_RECT_F -> CropImageMode.DRAW_PEN
-                    else -> CropImageMode.DRAG_WINDOW
-                }
-
-                binding.cropGifticon.setCropRect(rect)
             }
         }
+
+        viewLifecycleOwner.repeatOnStarted {
+            combine(
+                editorViewModel.selectedGifticonDataFlow,
+                editorViewModel.selectedEditorChip.filterIsInstance<EditorChip.Property>()
+            ) { data, editorChip ->
+                editorChip.type to editorChip.type.getCropRectF(data)
+            }.collect { (type, rect) ->
+                when(type != EditType.THUMBNAIL && rect == EMPTY_RECT_F) {
+                    true -> binding.cropGifticon.selectCropImageTouchMode()
+                    false -> binding.cropGifticon.selectCropImageWindowMode(rect)
+                }
+
+                val isChangeTouchModeVisible = type != EditType.THUMBNAIL && rect != EMPTY_RECT_F
+                binding.groupCropTouchMode.isVisible = isChangeTouchModeVisible
+            }
+        }
+    }
+
+    private fun setUpOnClickEvent() {
+        binding.iconCropTouchMode.setOnClickListener(createThrottleClickListener {
+            when(binding.cropGifticon.cropImageMode) {
+                CropImageMode.DRAG_WINDOW -> binding.cropGifticon.selectCropImageTouchMode()
+                CropImageMode.DRAW_PEN -> {
+                    val type = editorViewModel.selectedEditType ?: return@createThrottleClickListener
+                    val data = editorViewModel.selectedGifticonData.value ?: return@createThrottleClickListener
+                    val rect = type.getCropRectF(data)
+                    if (rect != EMPTY_RECT_F) {
+                        binding.cropGifticon.selectCropImageWindowMode(rect)
+                    }
+                }
+            }
+        })
     }
 }
