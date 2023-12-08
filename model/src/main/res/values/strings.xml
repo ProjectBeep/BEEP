@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_thumbnail_coffee">커피/베이커리</string>
+    <string name="title_thumbnail_chicken">치킨</string>
+    <string name="title_thumbnail_fast_food">패스트푸드</string>
+    <string name="title_thumbnail_shop">편의점</string>
+    <string name="title_thumbnail_digital">디지털</string>
+    <string name="title_thumbnail_entertainment">영화/문화</string>
+    <string name="title_thumbnail_food">외식</string>
+    <string name="title_thumbnail_sports">스포츠/레저</string>
+    <string name="title_thumbnail_fashion">패션/뷰티</string>
+    <string name="title_thumbnail_stationery">문구</string>
+    <string name="title_thumbnail_living">리빙</string>
+    <string name="title_thumbnail_etc">기타</string>
+</resources>
