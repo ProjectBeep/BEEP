@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
-import coil.load
-import coil.size.Size
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
@@ -16,6 +15,7 @@ import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorGifticonBindi
 
 internal class EditorGifticonViewHolder(
     parent: ViewGroup,
+    private val requestManager: RequestManager,
     private val listener: OnEditorGifticonListener,
     private val binding: ItemEditorGifticonBinding = ItemEditorGifticonBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
@@ -33,10 +33,8 @@ internal class EditorGifticonViewHolder(
     override fun bind(item: GalleryImage) {
         super.bind(item)
 
-
-        binding.imageGifticon.load(data = item.contentUri) {
-            size(Size.ORIGINAL)
-        }
+        requestManager.load(item.contentUri)
+            .into(binding.imageGifticon)
     }
 
     override fun onSetUpClickEvent(item: GalleryImage) {

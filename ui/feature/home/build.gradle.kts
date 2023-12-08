@@ -15,6 +15,5 @@ dependencies {
 
     implementation(projects.navs)
 
-    implementation(libs.coil)
-    implementation(libs.coil.svg)
+    implementation(libs.glide)
 }

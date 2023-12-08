@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -68,34 +69,62 @@ class CropImageView(
         onCropImageModeChangeListener = listener
     }
 
-    fun selectCropImageTouchMode() {
-        cropImageMode = CropImageMode.DRAW_PEN
-        cropImageWindow.initRect(originBitmap, RECT_F_EMPTY)
-        mainMatrix.reset()
-        zoom = 1f
-        applyMatrix(false)
+    fun calculateRealCropRect(viewCropRect: RectF) = RectF(viewCropRect).apply {
+        mainMatrix.invert(mainInverseMatrix)
+        mainInverseMatrix.mapRect(this)
     }
 
-    fun selectCropImageWindowMode(rect: RectF?) {
+    fun selectCropImageTouchMode() {
+        Log.d("TEST", "selectCropImageTouchMode")
+        cropImageMode = CropImageMode.DRAW_PEN
+        if (originBitmap != null) {
+            zoom = 1f
+            if (width == 0 || height == 0) {
+                post {
+                    applyMatrix(realImageRect, animate = false, runDraw = true)
+                }
+            } else {
+                applyMatrix(realImageRect, animate = false, runDraw = true)
+            }
+        }
+    }
+
+    fun selectCropImageWindowMode(rect: RectF) {
+        Log.d("TEST", "selectCropImageWindowMode bitmap : $originBitmap")
         cropImageMode = CropImageMode.DRAG_WINDOW
-        cropImageWindow.initRect(originBitmap, rect)
-        mainMatrix.reset()
-        zoom = 1f
-        applyMatrix(false)
-        applyZoom(width, height, false)
+        if (originBitmap != null) {
+            zoom = 1f
+            if (width == 0 || height == 0) {
+                post {
+//                    cropImageWindow.initRect(originBitmap, rect)
+//                    val cropRect = cropImageWindow.curCropRect
+//
+//                    Log.d("TEST", "post : $cropRect")
+//                    applyMatrix(cropRect, animate = false, runDraw = false)
+//                    applyZoom(cropRect, animate = false)
+                }
+            } else {
+//                cropImageWindow.initRect(originBitmap, rect)
+//                val cropRect = cropImageWindow.curCropRect
+//
+//                Log.d("TEST", "run : $cropRect")
+//                applyMatrix(cropRect, animate = false, runDraw = false)
+//                applyZoom(cropRect, animate = false)
+            }
+        }
     }
 
     private val cropImagePen = CropImagePen(
         this,
         object : OnCropImagePenListener {
-            override fun onPenTouchComplete(drawRect: RectF) {
-                val croppedRect = RectF(drawRect).apply {
+            override fun onPenTouchComplete(viewCropRect: RectF) {
+                val croppedRect = RectF(viewCropRect).apply {
                     mainMatrix.invert(mainInverseMatrix)
                     mainInverseMatrix.mapRect(this)
                 }
                 cropImageMode = CropImageMode.DRAG_WINDOW
-                initRect(croppedRect)
-
+                applyMatrix(croppedRect, animate = false, runDraw = false)
+                applyZoom(croppedRect, animate = true)
                 val bitmap = originBitmap
                 if (bitmap != null) {
                     onChangeCropRectListener?.onChange(bitmap, croppedRect)
@@ -103,49 +132,44 @@ class CropImageView(
             }
         },
     )
-    private val cropImageWindow = CropImageWindow(
-        this,
-        object : OnCropImageWindowListener {
-            override fun onWindowMove(unconsumedX: Float, unconsumedY: Float, boundRect: RectF) {
-                if (unconsumedX == 0f && unconsumedY == 0f) {
-                    return
-                }
 
-                val offsetX = when {
-                    boundRect.left + unconsumedX < curImageRect.left -> curImageRect.left - boundRect.left
-                    boundRect.right + unconsumedX > curImageRect.right -> curImageRect.right - boundRect.right
-                    else -> unconsumedX
-                }
-
-                val offsetY = when {
-                    boundRect.top + unconsumedY < curImageRect.top -> curImageRect.top - boundRect.top
-                    boundRect.bottom + unconsumedY > curImageRect.bottom -> curImageRect.bottom - boundRect.bottom
-                    else -> unconsumedY
-                }
-
-                if (offsetX != 0f || offsetY != 0f) {
-                    mainMatrix.postTranslate(-offsetX, -offsetY)
-                    mapCurrentImageRectByMatrix()
-                }
+    private val onCropImageWindowListener = object : OnCropImageWindowListener {
+        override fun onWindowMove(unconsumedX: Float, unconsumedY: Float, boundRect: RectF) {
+            if (unconsumedX == 0f && unconsumedY == 0f) {
+                return
             }
 
-            override fun onWindowResized() {
-                applyZoom(width, height)
+            val offsetX = when {
+                boundRect.left + unconsumedX < curImageRect.left -> curImageRect.left - boundRect.left
+                boundRect.right + unconsumedX > curImageRect.right -> curImageRect.right - boundRect.right
+                else -> unconsumedX
             }
 
-            override fun onWindowTouchComplete(curCropRect: RectF) {
-                val croppedRect = RectF(curCropRect).apply {
-                    mainMatrix.invert(mainInverseMatrix)
-                    mainInverseMatrix.mapRect(this)
-                }
-
-                val bitmap = originBitmap
-                if (bitmap != null) {
-                    onChangeCropRectListener?.onChange(bitmap, croppedRect)
-                }
+            val offsetY = when {
+                boundRect.top + unconsumedY < curImageRect.top -> curImageRect.top - boundRect.top
+                boundRect.bottom + unconsumedY > curImageRect.bottom -> curImageRect.bottom - boundRect.bottom
+                else -> unconsumedY
             }
-        },
-    )
+
+            if (offsetX != 0f || offsetY != 0f) {
+                mainMatrix.postTranslate(-offsetX, -offsetY)
+                mapCurrentImageRectByMatrix()
+            }
+        }
+
+        override fun onWindowResized(viewCropRect: RectF) {
+            applyZoom(calculateRealCropRect(viewCropRect), animate = true)
+        }
+
+        override fun onWindowTouchComplete(viewCropRect: RectF) {
+            val bitmap = originBitmap
+            if (bitmap != null) {
+                onChangeCropRectListener?.onChange(bitmap, calculateRealCropRect(viewCropRect))
+            }
+        }
+    }
+
+    private val cropImageWindow = CropImageWindow(this, onCropImageWindowListener)
 
     // AspectRatio = Width / Height
     var enableAspectRatio = true
@@ -214,36 +238,47 @@ class CropImageView(
         this.onChangeCropRectListener = onChangeCropRectListener
     }
 
-//    private val croppedRect
-//        get() = RectF(cropImageWindow.curCropRect).apply {
-//            mainMatrix.invert(mainInverseMatrix)
-//            mainInverseMatrix.mapRect(this)
+    fun setBitmap(bitmap: Bitmap?) {
+        Log.d("TEST", "setBitmap $bitmap")
+        bitmap ?: return
+        originBitmap = bitmap
+        realImageRect.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
+        curImageRect.set(realImageRect)
+
+//        if (width == 0 || height == 0) {
+//            post {
+//                setBitmap(bitmap)
+//            }
+//        } else {
+//
+//
+//            invalidate()
+//
+////            cropImageWindow.initRect(bitmap, rect)
+////            zoom = 1f
+////            if (width == 0 || height == 0) {
+////                post {
+////                    applyMatrix(RectF(realImageRect), animate = false, runDraw = true)
+////                }
+////            } else {
+////                applyMatrix(RectF(realImageRect), animate = false, runDraw = true)
+////            }
 //        }
-
-    fun setBitmap(bitmap: Bitmap, rect: RectF? = null) {
-        if (width == 0 || height == 0) {
-            post {
-                setBitmap(bitmap, rect)
-            }
-        } else {
-            initBitmap(bitmap)
-            initRect(rect)
-        }
     }
 
-    fun setCropRect(rect: RectF?) {
-        if (originBitmap == null) {
-            return
-        }
-
-        if (width == 0 || height == 0) {
-            post {
-                setCropRect(rect)
-            }
-        } else {
-            initRect(rect)
-        }
-    }
+//    fun setCropRect(rect: RectF) {
+//        if (originBitmap == null) {
+//            return
+//        }
+//
+//        if (width == 0 || height == 0) {
+//            post {
+//                setCropRect(rect)
+//            }
+//        } else {
+//            initRect(rect)
+//        }
+//    }
 
     fun cropImage(rect: RectF = cropImageWindow.curCropRect) {
         val bitmap = originBitmap
@@ -265,33 +300,30 @@ class CropImageView(
         }
     }
 
-    private fun initBitmap(bitmap: Bitmap?) {
-        originBitmap = bitmap
-        if (bitmap != null) {
-            realImageRect.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
-            curImageRect.set(realImageRect)
-        } else {
-            realImageRect.set(RECT_F_EMPTY)
-            curImageRect.set(RECT_F_EMPTY)
-        }
-    }
-
     // 새로운 이미지 등록시, Rect 초기화
-    private fun initRect(croppedRect: RectF? = null) {
-        cropImageWindow.initRect(originBitmap, croppedRect)
-        mainMatrix.reset()
-        zoom = 1f
-        applyMatrix(false)
-        applyZoom(width, height, false)
-    }
+//    private fun initRect(croppedRect: RectF, animate: Boolean = false) {
+//        cropImageWindow.initRect(originBitmap, croppedRect)
+//        mainMatrix.reset()
+//        zoom = 1f
+//        applyMatrix(croppedRect, animate, runDraw = false)
+//        applyZoom(croppedRect, animate, runDraw = true)
+//    }
 
-    private fun applyZoom(width: Int, height: Int, animate: Boolean = true) {
+    private fun applyZoom(
+        cropRect: RectF,
+        animate: Boolean = true,
+    ) {
+        Log.d("TEST", "applyMatrix : ${cropImageWindow.curCropRect}")
+
         if (width == 0 || height == 0 || originBitmap == null) {
             return
         }
 
-        val cropWidth = cropImageWindow.curCropRect.width()
-        val cropHeight = cropImageWindow.curCropRect.height()
+        val viewCropRect = RectF(cropRect).apply {
+            mainMatrix.mapRect(this)
+        }
+        val cropWidth = viewCropRect.width()
+        val cropHeight = viewCropRect.height()
 
         var newZoom = zoom
         /*
@@ -319,11 +351,11 @@ class CropImageView(
             if (newZoom != zoom) {
                 cropZoomAnimation.setStartState(cropImageWindow.curCropRect, curImageRect, mainMatrix)
                 zoom = newZoom
-                applyMatrix(animate = true)
+                applyMatrix(cropRect, animate = true, runDraw = true)
             }
         } else {
             zoom = newZoom
-            applyMatrix(animate = false)
+            applyMatrix(cropRect, animate = false, runDraw = true)
         }
     }
 
@@ -331,16 +363,22 @@ class CropImageView(
      * 화면이 갑자기 많이 바뀌는 상황에서 적절하게 위치를 조정하기 위한 함수
      * ex) onLayout, applyZoom
      */
-    private fun applyMatrix(animate: Boolean) {
+    private fun applyMatrix(
+        rect: RectF,
+        animate: Boolean = true,
+        runDraw: Boolean = true,
+    ) {
+        Log.d("TEST", "applyMatrix : ${cropImageWindow.curCropRect}")
         val bitmap = originBitmap
         if (width == 0 || height == 0 || bitmap == null) {
             return
         }
 
-        // 1. 역 행렬을 이용 하여 처음 보였던 이미지를 기준으로 변경한다
-        curImageRect.set(realImageRect)
-        mainMatrix.invert(mainInverseMatrix)
-        mainInverseMatrix.mapRect(cropImageWindow.curCropRect)
+//         1. 역 행렬을 이용 하여 처음 보였던 이미지를 기준으로 변경한다
+//        curImageRect.set(realImageRect)
+//        mainMatrix.invert(mainInverseMatrix)
+//        mainInverseMatrix.mapRect(cropImageWindow.curCropRect)
+        val cropRect = RectF(rect)
         mainMatrix.reset()
 
         // 2. 이미지를 화면에 맞게 키운다
@@ -354,34 +392,38 @@ class CropImageView(
         val offsetX = (width - curImageRect.width()) / 2
         val offsetY = (height - curImageRect.height()) / 2
         mainMatrix.postTranslate(offsetX, offsetY)
-        mainMatrix.mapRect(cropImageWindow.curCropRect)
+        mainMatrix.mapRect(cropRect)
         mapCurrentImageRectByMatrix()
 
         // 4. ZoomOffset 구하기
         val zoomOffsetX = when {
             width > curImageRect.width() -> 0f
             else -> max(
-                min(width / 2 - cropImageWindow.curCropRect.centerX(), -curImageRect.left),
+                min(width / 2 - cropRect.centerX(), -curImageRect.left),
                 width - curImageRect.right,
             )
         }
         val zoomOffsetY = when {
             height > curImageRect.height() -> 0f
             else -> max(
-                min(height / 2 - cropImageWindow.curCropRect.centerY(), -curImageRect.top),
+                min(height / 2 - cropRect.centerY(), -curImageRect.top),
                 height - curImageRect.bottom,
             )
         }
 
         mainMatrix.postTranslate(zoomOffsetX, zoomOffsetY)
-        cropImageWindow.curCropRect.offset(zoomOffsetX, zoomOffsetY)
+        cropRect.offset(zoomOffsetX, zoomOffsetY)
         mapCurrentImageRectByMatrix()
 
-        if (animate) {
-            cropZoomAnimation.setEndState(cropImageWindow.curCropRect, curImageRect, mainMatrix)
-            startAnimation(cropZoomAnimation)
-        } else {
-            invalidate()
+        cropImageWindow.curCropRect.set(cropRect)
+
+        if (runDraw) {
+            if (animate) {
+                cropZoomAnimation.setEndState(cropImageWindow.curCropRect, curImageRect, mainMatrix)
+                startAnimation(cropZoomAnimation)
+            } else {
+                invalidate()
+            }
         }
     }
 
@@ -395,7 +437,8 @@ class CropImageView(
         super.onLayout(changed, left, top, right, bottom)
 
         if (changed) {
-            applyZoom(right - left, bottom - top)
+            Log.d("TEST", "onLayout ${cropImageWindow.curCropRect}")
+            applyZoom(calculateRealCropRect(cropImageWindow.curCropRect), false)
         }
     }
 

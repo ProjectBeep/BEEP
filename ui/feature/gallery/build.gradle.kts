@@ -17,7 +17,7 @@ dependencies {
     implementation(projects.navs)
 
     implementation(libs.androidx.paging.runtime)
-    implementation(libs.coil)
+    implementation(libs.glide)
 
     implementation(libs.squareup.moshi.kotlin)
 }

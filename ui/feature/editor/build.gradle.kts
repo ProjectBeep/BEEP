@@ -24,7 +24,7 @@ dependencies {
     implementation(projects.library.barcode)
     implementation(projects.library.recognizer)
 
-    implementation(libs.coil)
+    implementation(libs.glide)
 
     implementation(libs.squareup.moshi.kotlin)
 }

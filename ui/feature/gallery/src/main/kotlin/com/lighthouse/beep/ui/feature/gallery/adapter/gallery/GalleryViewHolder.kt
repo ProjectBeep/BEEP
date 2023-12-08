@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
-import coil.load
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gallery.GalleryImage
@@ -13,6 +13,7 @@ import com.lighthouse.beep.ui.feature.gallery.databinding.ItemGalleryBinding
 
 internal class GalleryViewHolder(
     parent: ViewGroup,
+    private val requestManager: RequestManager,
     private val listener: OnGalleryListener,
     private val binding: ItemGalleryBinding = ItemGalleryBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
@@ -22,7 +23,8 @@ internal class GalleryViewHolder(
     override fun bind(item: GalleryImage) {
         super.bind(item)
 
-        binding.imageGallery.load(item.contentUri)
+        requestManager.load(item.contentUri)
+            .into(binding.imageGallery)
     }
 
     override fun onSetUpClickEvent(item: GalleryImage) {

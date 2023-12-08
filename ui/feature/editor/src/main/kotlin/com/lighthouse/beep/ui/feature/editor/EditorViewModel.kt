@@ -1,11 +1,11 @@
 package com.lighthouse.beep.ui.feature.editor
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.domain.usecase.recognize.RecognizeGifticonUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.ui.designsystem.cropview.CropImageMode
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
@@ -92,6 +92,13 @@ internal class EditorViewModel @Inject constructor(
         _selectedEditorChip.value = item
     }
 
+    private val _cropImageMode = MutableStateFlow(CropImageMode.DRAW_PEN)
+    val cropImageMode = _cropImageMode.asStateFlow()
+
+    fun setCropImageMode(value: CropImageMode) {
+        _cropImageMode.value = value
+    }
+
     private val gifticonDataMap = mutableMapOf<Long, GifticonData>()
 
     fun getGifticonData(id: Long): GifticonData? {
@@ -115,13 +122,11 @@ internal class EditorViewModel @Inject constructor(
     ) {
         selectedItem ?: return
         val data = gifticonDataMap[selectedItem.id] ?: return
-        Log.d("TEST", "updateGifticonData : $editData")
 
         if (!editData.isModified(data)) {
             return
         }
 
-        Log.d("TEST", "updateGifticonData success : $editData")
         gifticonDataMap[selectedItem.id] = editData.updatedGifticon(data)
         viewModelScope.launch {
             _gifticonDataMapFlow.emit(gifticonDataMap)

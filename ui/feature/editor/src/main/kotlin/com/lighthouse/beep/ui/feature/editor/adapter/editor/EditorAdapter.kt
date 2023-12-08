@@ -3,11 +3,13 @@ package com.lighthouse.beep.ui.feature.editor.adapter.editor
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditorChipDiff
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 
 internal class EditorAdapter(
+    private val requestManager: RequestManager,
     private val onEditorMemoListener: OnEditorMemoListener,
     private val onEditorThumbnailListener: OnEditorThumbnailListener,
     private val onEditorTextListener: OnEditorTextListener,
@@ -33,7 +35,7 @@ internal class EditorAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_PREVIEW -> EditorMemoViewHolder(parent, onEditorMemoListener)
-            TYPE_THUMBNAIL -> EditorThumbnailViewHolder(parent, onEditorThumbnailListener)
+            TYPE_THUMBNAIL -> EditorThumbnailViewHolder(parent, requestManager, onEditorThumbnailListener)
             TYPE_TEXT -> EditorTextViewHolder(parent, onEditorTextListener)
             else -> throw RuntimeException("${javaClass.simpleName}에 정의 되지 않는 item 입니다")
         }

@@ -12,6 +12,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.content.OnContentChangeListener
 import com.lighthouse.beep.core.ui.content.registerGalleryContentObserver
@@ -20,6 +22,7 @@ import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.dismiss
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.show
+import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
@@ -47,6 +50,7 @@ import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorPage
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
 import com.lighthouse.beep.ui.feature.editor.page.crop.EditorCropFragment
+import com.lighthouse.beep.ui.feature.editor.provider.OnEditorProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -56,7 +60,7 @@ import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-internal class EditorActivity : AppCompatActivity() {
+internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
     companion object {
         private const val TAG_SELECTED_GIFTICON_DELETE = "Tag.SelectedGifticonDelete"
@@ -66,14 +70,31 @@ internal class EditorActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<EditorViewModel>()
 
-    private val onPreviewScrollListener = object: RecyclerView.OnScrollListener() {
+    override val requestManager: RequestManager by lazy {
+        Glide.with(this)
+    }
+
+    private val onPreviewScrollListener = object : RecyclerView.OnScrollListener() {
+        private var lastPosition = -1
+        private var isLock = false
+
+        fun lockScroll() {
+            isLock = true
+        }
+
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                val offset = recyclerView.computeHorizontalScrollOffset()
-                val extent = recyclerView.computeHorizontalScrollExtent()
-                val position = offset / extent
-                binding.listSelected.smoothScrollToPosition(position)
-                viewModel.selectGifticon(position)
+                if (!isLock) {
+                    val offset = recyclerView.computeHorizontalScrollOffset()
+                    val extent = recyclerView.computeHorizontalScrollExtent()
+                    val position = offset / extent
+                    if (position != lastPosition) {
+                        lastPosition = position
+                        binding.listSelected.smoothScrollToPosition(position)
+                        viewModel.selectGifticon(position)
+                    }
+                }
+                isLock = false
             }
         }
     }
@@ -100,6 +121,7 @@ internal class EditorActivity : AppCompatActivity() {
         }
 
         override fun onClick(item: GalleryImage, position: Int) {
+            onPreviewScrollListener.lockScroll()
             viewModel.selectGifticon(item)
             binding.listSelected.smoothScrollToPosition(position)
             binding.listPreview.smoothScrollToPosition(position)
@@ -126,9 +148,12 @@ internal class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private val editorGifticonAdapter = EditorGifticonAdapter(
-        onSelectedGalleryListener = onEditorGifticonListener
-    )
+    private val editorGifticonAdapter by lazy {
+        EditorGifticonAdapter(
+            requestManager = requestManager,
+            onSelectedGalleryListener = onEditorGifticonListener,
+        )
+    }
 
     private val onEditorPreviewListener = object : OnEditorPreviewListener {
         override fun getGifticonDataFlow(image: GalleryImage): Flow<GifticonData> {
@@ -147,8 +172,12 @@ internal class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private val editorPreviewAdapter =
-        EditorPreviewAdapter(onEditorPreviewListener = onEditorPreviewListener)
+    private val editorPreviewAdapter by lazy {
+        EditorPreviewAdapter(
+            requestManager = requestManager,
+            onEditorPreviewListener = onEditorPreviewListener,
+        )
+    }
 
     private val onEditorPropertyChipListener = object : OnEditorPropertyChipListener {
         override fun isSelectedFlow(item: EditorChip.Property): Flow<Boolean> {
@@ -241,11 +270,14 @@ internal class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private val editorAdapter = EditorAdapter(
-        onEditorMemoListener = onEditorMemoListener,
-        onEditorThumbnailListener = onEditorThumbnailListener,
-        onEditorTextListener = onEditorTextListener,
-    )
+    private val editorAdapter by lazy {
+        EditorAdapter(
+            requestManager = requestManager,
+            onEditorMemoListener = onEditorMemoListener,
+            onEditorThumbnailListener = onEditorThumbnailListener,
+            onEditorTextListener = onEditorTextListener,
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -287,7 +319,8 @@ internal class EditorActivity : AppCompatActivity() {
         binding.listSelected.adapter = editorGifticonAdapter
         binding.listSelected.setHasFixedSize(true)
         binding.listSelected.addItemDecoration(LinearItemDecoration(14.5f.dp))
-        binding.listSelected.layoutManager = CenterScrollLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.listSelected.layoutManager =
+            CenterScrollLayoutManager(this, RecyclerView.HORIZONTAL, false)
     }
 
     private fun setUpPreviewList() {
@@ -320,7 +353,7 @@ internal class EditorActivity : AppCompatActivity() {
             offset = (-12).dp
         )
         binding.btnPreview.post {
-            binding.btnPreview.maxWidth = binding.btnPreview.measuredWidth
+            binding.btnPreview.maxWidth = binding.btnPreview.viewWidth
             binding.listEditorChip.addItemDecoration(
                 LinearItemDecoration(
                     8.dp,
@@ -394,10 +427,9 @@ internal class EditorActivity : AppCompatActivity() {
 
         repeatOnStarted {
             viewModel.validGifticonCount.collect { count ->
-                binding.btnRegister.text = if (count == 0) {
-                    getString(R.string.editor_gifticon_register)
-                } else {
-                    getString(R.string.editor_gifticon_register_valid, count)
+                binding.btnRegister.text = when (count) {
+                    0 -> getString(R.string.editor_gifticon_register)
+                    else -> getString(R.string.editor_gifticon_register_valid, count)
                 }
             }
         }
@@ -431,6 +463,11 @@ internal class EditorActivity : AppCompatActivity() {
         if (fragment == null) {
             fragment = EditorCropFragment()
         }
+
+        if (visible && fragment.isAdded) {
+            return
+        }
+
         supportFragmentManager.commit {
             if (visible) {
                 add(binding.containerCrop.id, fragment, EditorPage.CROP.name)

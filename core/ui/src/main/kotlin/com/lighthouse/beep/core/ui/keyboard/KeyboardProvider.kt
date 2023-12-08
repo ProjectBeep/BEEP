@@ -9,7 +9,6 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.activity.ComponentActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -101,7 +100,9 @@ class FragmentKeyboardProvider(
                 }
 
                 override fun onStart(owner: LifecycleOwner) {
-                    keyboardProvider = KeyboardProvider(fragment.requireActivity())
+                    if (keyboardProvider == null) {
+                        keyboardProvider = KeyboardProvider(fragment.requireActivity())
+                    }
                 }
             })
         }
@@ -142,7 +143,9 @@ class ActivityKeyboardProvider(
         }
 
         override fun onStart(owner: LifecycleOwner) {
-            keyboardProvider = KeyboardProvider(activity)
+            if (keyboardProvider == null) {
+                keyboardProvider = KeyboardProvider(activity)
+            }
         }
 
         override fun onDestroy(owner: LifecycleOwner) {

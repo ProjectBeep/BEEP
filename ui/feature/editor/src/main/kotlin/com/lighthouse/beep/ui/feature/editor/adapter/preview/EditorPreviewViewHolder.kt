@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
-import coil.load
-import coil.size.Size
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
@@ -18,6 +17,7 @@ import com.lighthouse.beep.ui.feature.editor.model.EditType
 
 internal class EditorPreviewViewHolder(
     parent: ViewGroup,
+    private val requestManager: RequestManager,
     private val listener: OnEditorPreviewListener,
     private val binding: ItemEditorPreviewBinding = ItemEditorPreviewBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
@@ -35,9 +35,8 @@ internal class EditorPreviewViewHolder(
     override fun bind(item: GalleryImage) {
         super.bind(item)
 
-        binding.imageThumbnail.load(item.contentUri) {
-            size(Size.ORIGINAL)
-        }
+        requestManager.load(item.contentUri)
+            .into(binding.imageThumbnail)
     }
 
     override fun onSetUpClickEvent(item: GalleryImage) {

@@ -6,7 +6,7 @@ interface OnCropImageWindowListener {
 
     fun onWindowMove(unconsumedX: Float, unconsumedY: Float, boundRect: RectF)
 
-    fun onWindowResized()
+    fun onWindowResized(viewCropRect: RectF)
 
-    fun onWindowTouchComplete(curCropRect: RectF)
+    fun onWindowTouchComplete(viewCropRect: RectF)
 }

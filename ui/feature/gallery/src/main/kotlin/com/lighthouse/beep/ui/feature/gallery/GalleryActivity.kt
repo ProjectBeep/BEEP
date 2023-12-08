@@ -2,13 +2,7 @@ package com.lighthouse.beep.ui.feature.gallery
 
 import android.animation.Animator
 import android.app.Activity
-import android.database.ContentObserver
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewPropertyAnimator
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lighthouse.beep.core.common.exts.dp
@@ -67,9 +62,23 @@ internal class GalleryActivity : AppCompatActivity() {
         }
     }
 
-    private val galleryRecommendAdapter = GalleryRecommendAdapter(onGalleryListener)
+    private val requestManager by lazy {
+        Glide.with(this)
+    }
 
-    private val galleryAllAdapter = GalleryAllAdapter(onGalleryListener)
+    private val galleryRecommendAdapter by lazy {
+        GalleryRecommendAdapter(
+            requestManager,
+            onGalleryListener,
+        )
+    }
+
+    private val galleryAllAdapter by lazy {
+        GalleryAllAdapter(
+            requestManager,
+            onGalleryListener,
+        )
+    }
 
     private val onSelectedGalleryListener = object : OnSelectedGalleryListener {
         override fun onClick(item: GalleryImage) {
@@ -77,9 +86,12 @@ internal class GalleryActivity : AppCompatActivity() {
         }
     }
 
-    private val selectedGalleryAdapter = SelectedGalleryAdapter(
-        onSelectedGalleryListener = onSelectedGalleryListener
-    )
+    private val selectedGalleryAdapter by lazy {
+        SelectedGalleryAdapter(
+            requestManager,
+            onSelectedGalleryListener,
+        )
+    }
 
     private val recommendScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

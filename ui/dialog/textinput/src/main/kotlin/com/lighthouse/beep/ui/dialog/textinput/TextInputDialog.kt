@@ -93,8 +93,10 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
                 .setDuration(180)
                 .setInterpolator(DecelerateInterpolator())
                 .setUpdateListener {
-                    val padding = start - ((start - height) * it.animatedFraction).toInt()
-                    binding.containerTextInput.updatePadding(bottom = padding)
+                    if (isAdded) {
+                        val padding = start - ((start - height) * it.animatedFraction).toInt()
+                        binding.containerTextInput.updatePadding(bottom = padding)
+                    }
                 }.also {
                     it.start()
                 }

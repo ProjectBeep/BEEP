@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.LifecycleOwner
-import coil.load
-import coil.size.Size
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorThumbnailBinding
@@ -14,6 +13,7 @@ import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 
 internal class EditorThumbnailViewHolder(
     parent: ViewGroup,
+    private val requestManager: RequestManager,
     private val listener: OnEditorThumbnailListener,
     private val binding: SectionEditorThumbnailBinding = SectionEditorThumbnailBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
@@ -30,9 +30,8 @@ internal class EditorThumbnailViewHolder(
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Property) {
         listener.getThumbnailFlow().collect(lifecycleOwner) { uri ->
-            binding.imageThumbnail.load(uri) {
-                size(Size.ORIGINAL)
-            }
+            requestManager.load(uri)
+                .into(binding.imageThumbnail)
         }
 
         listener.getCropDataFlow().collect(lifecycleOwner) { data ->
