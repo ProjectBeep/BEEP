@@ -13,17 +13,18 @@ import java.util.Date
 internal data class GifticonData(
     val originUri: Uri,
     val thumbnail: GifticonThumbnail = GifticonThumbnail.Default(originUri),
+    val thumbnailCropData: GifticonCropData = GifticonCropData.None,
     val name: String = "",
-    val nameRect: RectF = EMPTY_RECT_F,
+    val nameCropData: GifticonCropData = GifticonCropData.None,
     val brand: String = "",
-    val brandRect: RectF = EMPTY_RECT_F,
+    val brandCropData: GifticonCropData = GifticonCropData.None,
     val barcode: String = "",
-    val barcodeRect: RectF = EMPTY_RECT_F,
+    val barcodeCropData: GifticonCropData = GifticonCropData.None,
     val expired: Date = EMPTY_DATE,
-    val expiredRect: RectF = EMPTY_RECT_F,
+    val expiredCropData: GifticonCropData = GifticonCropData.None,
     val isCashCard: Boolean = false,
     val balance: String = "",
-    val balanceRect: RectF = EMPTY_RECT_F,
+    val balanceCropData: GifticonCropData = GifticonCropData.None,
     val memo: String = "",
 ) {
     val displayBarcode: String = TextInputFormat.BARCODE.valueToTransformed(barcode)
@@ -46,6 +47,11 @@ internal fun GifticonRecognizeResult?.toGifticonData(originUri: Uri): GifticonDa
                 rect = croppedRect.toRectF()
             )
         } ?: GifticonThumbnail.Default(originUri),
+        thumbnailCropData = croppedImage?.let {
+            GifticonCropData(
+                rect = croppedRect.toRectF(),
+            )
+        } ?: GifticonCropData.None,
         name = name,
         brand = brandName,
         barcode = barcode,

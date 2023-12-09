@@ -7,7 +7,7 @@ import java.util.Date
 @Suppress("unused")
 internal sealed interface EditData {
 
-    data object None: EditData {
+    data object None : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return false
         }
@@ -17,23 +17,31 @@ internal sealed interface EditData {
         }
     }
 
-    data class Thumbnail(val bitmap: Bitmap, val rect: RectF): EditData {
+    data class Thumbnail(val bitmap: Bitmap, val rect: RectF, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             if (data.thumbnail !is GifticonThumbnail.Crop) {
                 return true
             }
-            return bitmap != data.thumbnail.bitmap && rect != data.thumbnail.rect
+            return bitmap != data.thumbnail.bitmap ||
+                    rect != data.thumbnailCropData.rect ||
+                    zoom != data.thumbnailCropData.zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(thumbnail = GifticonThumbnail.Crop(
-                bitmap = bitmap,
-                rect = rect
-            ))
+            return data.copy(
+                thumbnail = GifticonThumbnail.Crop(
+                    bitmap = bitmap,
+                    rect = rect
+                ),
+                thumbnailCropData = GifticonCropData(
+                    rect = rect,
+                    zoom = zoom,
+                )
+            )
         }
     }
 
-    data class Name(val name: String): EditData {
+    data class Name(val name: String) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.name != name
         }
@@ -43,17 +51,25 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropName(val name: String, val rect: RectF): EditData {
+    data class CropName(val name: String, val rect: RectF, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.name != name || data.nameRect != rect
+            return data.name != name ||
+                    data.nameCropData.rect != rect ||
+                    data.nameCropData.zoom != zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(name = name, nameRect = rect)
+            return data.copy(
+                name = name,
+                nameCropData = GifticonCropData(
+                    rect = rect,
+                    zoom = zoom,
+                )
+            )
         }
     }
 
-    data class Brand(val brand: String): EditData {
+    data class Brand(val brand: String) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.brand != brand
         }
@@ -63,17 +79,25 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropBrand(val brand: String, val rect: RectF): EditData {
+    data class CropBrand(val brand: String, val rect: RectF, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.brand != brand || data.brandRect != rect
+            return data.brand != brand ||
+                    data.brandCropData.rect != rect ||
+                    data.brandCropData.zoom != zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(brand = brand, brandRect = rect)
+            return data.copy(
+                brand = brand,
+                brandCropData = GifticonCropData(
+                    rect = rect,
+                    zoom = zoom,
+                )
+            )
         }
     }
 
-    data class Barcode(val barcode: String): EditData {
+    data class Barcode(val barcode: String) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.barcode != barcode
         }
@@ -83,17 +107,25 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropBarcode(val barcode: String, val rect: RectF): EditData {
+    data class CropBarcode(val barcode: String, val rect: RectF, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.barcode != barcode || data.barcodeRect != rect
+            return data.barcode != barcode ||
+                    data.barcodeCropData.rect != rect ||
+                    data.barcodeCropData.zoom != zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(barcode = barcode, barcodeRect = rect)
+            return data.copy(
+                barcode = barcode,
+                barcodeCropData = GifticonCropData(
+                    rect = rect,
+                    zoom = zoom,
+                )
+            )
         }
     }
 
-    data class Expired(val date: Date): EditData {
+    data class Expired(val date: Date) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.expired != date
         }
@@ -103,17 +135,25 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropExpired(val date: Date, val rect: RectF): EditData {
+    data class CropExpired(val date: Date, val rect: RectF, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.expired != date || data.expiredRect != rect
+            return data.expired != date ||
+                    data.expiredCropData.rect != rect ||
+                    data.expiredCropData.zoom != zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(expired = date, expiredRect = rect)
+            return data.copy(
+                expired = date,
+                expiredCropData = GifticonCropData(
+                    rect = rect,
+                    zoom = zoom
+                )
+            )
         }
     }
 
-    data class Cash(val isCash: Boolean): EditData {
+    data class Cash(val isCash: Boolean) : EditData {
 
         override fun isModified(data: GifticonData): Boolean {
             return data.isCashCard != isCash
@@ -124,7 +164,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class Balance(val balance: String): EditData {
+    data class Balance(val balance: String) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.balance != balance
         }
@@ -134,17 +174,25 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropBalance(val balance: String, val rect: RectF): EditData {
+    data class CropBalance(val balance: String, val rect: RectF, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.balance != balance || data.balanceRect != rect
+            return data.balance != balance ||
+                    data.balanceCropData.rect != rect ||
+                    data.balanceCropData.zoom != zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(balance = balance, balanceRect = rect)
+            return data.copy(
+                balance = balance,
+                balanceCropData = GifticonCropData(
+                    rect = rect,
+                    zoom = zoom,
+                )
+            )
         }
     }
 
-    data class Memo(val memo: String): EditData {
+    data class Memo(val memo: String) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.memo != memo
         }

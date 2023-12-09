@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.asStateFlow
 
 internal class EditorCropViewModel: ViewModel() {
 
-    private val _cropImageMode = MutableStateFlow(CropImageMode.DRAW_PEN)
+    private val _cropImageMode = MutableStateFlow(CropImageMode.NONE)
     val cropImageMode = _cropImageMode.asStateFlow()
 
-    fun selectCropImageMode(mode: CropImageMode) {
+    fun setCropImageMode(mode: CropImageMode) {
         _cropImageMode.value = mode
     }
 
@@ -18,6 +18,7 @@ internal class EditorCropViewModel: ViewModel() {
         _cropImageMode.value = when(_cropImageMode.value) {
             CropImageMode.DRAW_PEN -> CropImageMode.DRAG_WINDOW
             CropImageMode.DRAG_WINDOW -> CropImageMode.DRAW_PEN
+            CropImageMode.NONE -> CropImageMode.NONE
         }
     }
 }

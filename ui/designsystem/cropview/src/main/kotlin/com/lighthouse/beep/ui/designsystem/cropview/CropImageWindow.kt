@@ -758,14 +758,14 @@ internal class CropImageWindow(
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_UP,
             -> {
+                listener.onWindowTouchComplete(curCropRect)
+
                 if (eventType == EventType.RESIZE) {
                     listener.onWindowResized(curCropRect)
                 }
 
                 eventType = EventType.NONE
                 activePointerId = null
-
-                listener.onWindowTouchComplete(curCropRect)
             }
         }
     }

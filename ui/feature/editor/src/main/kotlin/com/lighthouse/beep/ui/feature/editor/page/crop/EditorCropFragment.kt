@@ -4,17 +4,18 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.graphics.toRect
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.cast
 import com.lighthouse.beep.core.common.exts.crop
 import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
-import com.lighthouse.beep.ui.designsystem.cropview.CropImageMode
 import com.lighthouse.beep.ui.designsystem.cropview.OnChangeCropRectListener
 import com.lighthouse.beep.ui.feature.editor.EditorViewModel
 import com.lighthouse.beep.ui.feature.editor.R
@@ -25,8 +26,6 @@ import com.lighthouse.beep.ui.feature.editor.provider.OnEditorProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -38,6 +37,8 @@ import kotlinx.coroutines.withContext
 internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
 
     private val editorViewModel by activityViewModels<EditorViewModel>()
+
+    private val viewModel by viewModels<EditorCropViewModel>()
 
     private val binding by viewBindings<FragmentEditorCropBinding>()
 
@@ -64,62 +65,46 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                 job?.cancel()
                 job = lifecycleScope.launch(Dispatchers.IO) {
                     val bitmap = originBitmap.crop(rect.toRect())
-                    val editData = editType.createEditDataWithCrop(bitmap, rect)
+                    val editData = editType.createEditDataWithCrop(bitmap, rect, zoom)
                     editorViewModel.updateGifticonData(editData = editData)
                 }
             }
         })
 
-//        binding.cropGifticon.setOnCropImageModeChangeListener { currentMode ->
-//            when (currentMode) {
-//                CropImageMode.DRAG_WINDOW -> {
-//                    binding.textCropTouchMode.setText(R.string.editor_crop_touch_mode)
-//                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_touch_mode)
-//                }
-//                CropImageMode.DRAW_PEN -> {
-//                    binding.textCropTouchMode.setText(R.string.editor_crop_window_mode)
-//                    binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_window_mode)
-//                }
-//            }
-//        }
+        binding.cropGifticon.setOnCropImageModeChangeListener { currentMode ->
+            viewModel.setCropImageMode(currentMode)
+        }
     }
 
     private fun setUpCollectState() {
-        viewLifecycleOwner.repeatOnStarted {
-            editorViewModel.selectedEditorChip.filterIsInstance<EditorChip.Property>().collect {
-                when (it.type) {
-                    EditType.THUMBNAIL -> {
-                        binding.cropGifticon.enableAspectRatio = true
-                        binding.cropGifticon.aspectRatio = 1f
-                    }
+//        viewLifecycleOwner.repeatOnStarted {
+//            combine(
+//
+//            )
+//            viewModel.cropImageMode.collect {
+//
+//            }
+//        }
 
-                    else -> {
-                        binding.cropGifticon.enableAspectRatio = false
-                    }
-                }
-            }
-        }
-
-        viewLifecycleOwner.repeatOnStarted {
-            editorViewModel.cropImageMode.collect { cropImageMode ->
-                when (cropImageMode) {
-                    CropImageMode.DRAG_WINDOW -> {
-                        binding.textCropTouchMode.setText(R.string.editor_crop_touch_mode)
-                        binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_touch_mode)
-                    }
-
-                    CropImageMode.DRAW_PEN -> {
-                        binding.textCropTouchMode.setText(R.string.editor_crop_window_mode)
-                        binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_window_mode)
-                    }
-                }
-            }
-        }
+//        viewLifecycleOwner.repeatOnStarted {
+//            editorViewModel.cropImageMode.collect { cropImageMode ->
+//                when (cropImageMode) {
+//                    CropImageMode.DRAG_WINDOW -> {
+//                        binding.textCropTouchMode.setText(R.string.editor_crop_touch_mode)
+//                        binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_touch_mode)
+//                    }
+//
+//                    CropImageMode.DRAW_PEN -> {
+//                        binding.textCropTouchMode.setText(R.string.editor_crop_window_mode)
+//                        binding.iconCropTouchMode.setImageResource(R.drawable.icon_crop_window_mode)
+//                    }
+//                }
+//            }
+//        }
 
         viewLifecycleOwner.repeatOnStarted {
             editorViewModel.selectedGifticon
                 .filterNotNull()
-                .distinctUntilChanged()
                 .flatMapLatest { gifticon ->
                     val bitmap = withContext(Dispatchers.IO) {
                         requestManager.asBitmap()
@@ -128,13 +113,25 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                             .get()
                     }
                     binding.cropGifticon.setBitmap(bitmap)
+
                     editorViewModel.selectedEditorChip
                         .filterIsInstance<EditorChip.Property>()
                         .map { editorChip ->
                             val data = editorViewModel.getGifticonData(gifticon.id)
-                            editorChip.type to editorChip.type.getCropRectF(data)
+                            editorChip.type to editorChip.type.getCropData(data)
                         }
-                }.collect { (type, rect) ->
+                }.collect { (type, data) ->
+                    when(type) {
+                        EditType.THUMBNAIL -> {
+                            binding.cropGifticon.enableAspectRatio = true
+                            binding.cropGifticon.aspectRatio = 1f
+                        }
+                        else -> {
+                            binding.cropGifticon.enableAspectRatio = false
+                        }
+                    }
+                    Log.d("TEST", "type : $type data : $data")
+                    binding.cropGifticon.setCropInfo(data.rect, data.zoom)
 
 //                    when (type != EditType.THUMBNAIL && rect == EMPTY_RECT_F) {
 //                        true -> binding.cropGifticon.selectCropImageTouchMode()

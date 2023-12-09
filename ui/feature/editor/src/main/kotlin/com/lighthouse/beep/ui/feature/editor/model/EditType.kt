@@ -34,15 +34,12 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     THUMBNAIL(R.string.editor_gifticon_property_thumbnail) {
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
-            return EditData.Thumbnail(bitmap, rect)
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
+            return EditData.Thumbnail(bitmap, rect, zoom)
         }
 
-        override fun getCropRectF(data: GifticonData?): RectF {
-            return when (val thumbnail = data?.thumbnail) {
-                is GifticonThumbnail.Crop -> thumbnail.rect
-                else -> EMPTY_RECT_F
-            }
+        override fun getCropData(data: GifticonData?): GifticonCropData {
+            return data?.thumbnailCropData ?: GifticonCropData.None
         }
     },
     NAME(R.string.editor_gifticon_property_name) {
@@ -52,9 +49,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Name(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
             val value = textRecognizer.recognize(bitmap).joinToString("")
-            return EditData.CropName(value, rect)
+            return EditData.CropName(value, rect, zoom)
         }
 
         override fun createTextInputParam(data: GifticonData): TextInputParam {
@@ -72,8 +69,8 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return data.name
         }
 
-        override fun getCropRectF(data: GifticonData?): RectF {
-            return data?.nameRect ?: EMPTY_RECT_F
+        override fun getCropData(data: GifticonData?): GifticonCropData {
+            return data?.nameCropData ?: GifticonCropData.None
         }
     },
     BRAND(R.string.editor_gifticon_property_brand) {
@@ -83,9 +80,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Brand(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
             val value = textRecognizer.recognize(bitmap).joinToString("")
-            return EditData.CropBrand(value, rect)
+            return EditData.CropBrand(value, rect, zoom)
         }
 
         override fun createTextInputParam(data: GifticonData): TextInputParam {
@@ -103,8 +100,8 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return data.brand
         }
 
-        override fun getCropRectF(data: GifticonData?): RectF {
-            return data?.brandRect ?: EMPTY_RECT_F
+        override fun getCropData(data: GifticonData?): GifticonCropData {
+            return data?.brandCropData ?: GifticonCropData.None
         }
     },
     BARCODE(R.string.editor_gifticon_property_barcode) {
@@ -115,9 +112,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Barcode(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
             val value = barcodeRecognizer.recognize(bitmap)
-            return EditData.CropBarcode(value, rect)
+            return EditData.CropBarcode(value, rect, zoom)
         }
 
         override fun createTextInputParam(data: GifticonData): TextInputParam {
@@ -135,24 +132,24 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return data.displayBarcode
         }
 
-        override fun getCropRectF(data: GifticonData?): RectF {
-            return data?.barcodeRect ?: EMPTY_RECT_F
+        override fun getCropData(data: GifticonData?): GifticonCropData {
+            return data?.barcodeCropData ?: GifticonCropData.None
         }
     },
     EXPIRED(R.string.editor_gifticon_property_expired) {
         private val expiredRecognizer = ExpiredRecognizer()
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
             val value = expiredRecognizer.recognize(bitmap)
-            return EditData.CropExpired(value, rect)
+            return EditData.CropExpired(value, rect, zoom)
         }
 
         override fun getText(data: GifticonData): String {
             return data.displayExpired
         }
 
-        override fun getCropRectF(data: GifticonData?): RectF {
-            return data?.expiredRect ?: EMPTY_RECT_F
+        override fun getCropData(data: GifticonData?): GifticonCropData {
+            return data?.expiredCropData ?: GifticonCropData.None
         }
     },
     BALANCE(R.string.editor_gifticon_property_balance) {
@@ -162,9 +159,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Balance(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
             val value = balanceRecognizer.recognize(bitmap).toString()
-            return EditData.CropBalance(value, rect)
+            return EditData.CropBalance(value, rect, zoom)
         }
 
         override fun createTextInputParam(data: GifticonData): TextInputParam {
@@ -182,8 +179,8 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return data.displayBalance
         }
 
-        override fun getCropRectF(data: GifticonData?): RectF {
-            return data?.balanceRect ?: EMPTY_RECT_F
+        override fun getCropData(data: GifticonData?): GifticonCropData {
+            return data?.balanceCropData ?: GifticonCropData.None
         }
     };
 
@@ -191,7 +188,8 @@ internal enum class EditType(@StringRes val textResId: Int) {
 
     open fun createEditDataWithText(value: String): EditData = EditData.None
 
-    open suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData = EditData.None
+    open suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData =
+        EditData.None
 
     open fun createTextInputParam(data: GifticonData) = TextInputParam.None
 
@@ -199,5 +197,5 @@ internal enum class EditType(@StringRes val textResId: Int) {
 
     open fun getText(data: GifticonData): String = ""
 
-    open fun getCropRectF(data: GifticonData?): RectF = EMPTY_RECT_F
+    open fun getCropData(data: GifticonData?): GifticonCropData = GifticonCropData.None
 }
