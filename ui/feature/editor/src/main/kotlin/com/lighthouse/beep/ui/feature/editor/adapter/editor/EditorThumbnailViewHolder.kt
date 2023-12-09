@@ -31,7 +31,7 @@ internal class EditorThumbnailViewHolder(
     }
 
     override fun onSetUpClickEvent(item: EditorChip.Property) {
-        binding.iconShowEditorThumbnail.setOnThrottleClickListener {
+        binding.viewShowBuiltInThumbnailDialog.setOnThrottleClickListener {
             listener.showBuiltInThumbnail()
         }
     }

@@ -2,6 +2,7 @@ package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.Bitmap
 import android.graphics.RectF
+import com.lighthouse.beep.model.gifticon.GifticonBuiltInThumbnail
 import java.util.Date
 
 @Suppress("unused")
@@ -17,7 +18,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class Thumbnail(val bitmap: Bitmap, val rect: RectF, val zoom: Float) : EditData {
+    data class CropThumbnail(val bitmap: Bitmap, val rect: RectF, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             if (data.thumbnail !is GifticonThumbnail.Crop) {
                 return true
@@ -37,6 +38,26 @@ internal sealed interface EditData {
                     rect = rect,
                     zoom = zoom,
                 )
+            )
+        }
+    }
+
+    data class BuiltInThumbnail(
+        val builtIn: GifticonBuiltInThumbnail
+    ) : EditData {
+
+        override fun isModified(data: GifticonData): Boolean {
+            if (data.thumbnail !is GifticonThumbnail.BuiltIn) {
+                return true
+            }
+            return data.thumbnail.builtIn != builtIn
+        }
+
+        override fun updatedGifticon(data: GifticonData): GifticonData {
+            return data.copy(
+                thumbnail = GifticonThumbnail.BuiltIn(
+                    builtIn = builtIn
+                ),
             )
         }
     }

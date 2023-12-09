@@ -3,7 +3,6 @@ package com.lighthouse.beep.ui.feature.editor.model
 import android.graphics.Bitmap
 import android.graphics.RectF
 import androidx.annotation.StringRes
-import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 import com.lighthouse.beep.library.recognizer.BalanceRecognizer
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
 import com.lighthouse.beep.library.recognizer.ExpiredRecognizer
@@ -35,7 +34,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
     },
     THUMBNAIL(R.string.editor_gifticon_property_thumbnail) {
         override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
-            return EditData.Thumbnail(bitmap, rect, zoom)
+            return EditData.CropThumbnail(bitmap, rect, zoom)
         }
 
         override fun getCropData(data: GifticonData?): GifticonCropData {

@@ -16,6 +16,7 @@ import android.view.Window
 import android.view.animation.AccelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.transition.ChangeBounds
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
@@ -23,18 +24,24 @@ import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
 import com.lighthouse.beep.core.ui.animation.SimpleTransitionListener
 import com.lighthouse.beep.core.ui.exts.viewHeight
 import com.lighthouse.beep.model.gifticon.GifticonBuiltInThumbnail
+import com.lighthouse.beep.ui.feature.editor.EditorViewModel
 import com.lighthouse.beep.theme.R as ThemeR
 import com.lighthouse.beep.ui.feature.editor.databinding.DialogBuiltInThumbnailBinding
 import com.lighthouse.beep.ui.feature.editor.dialog.adapter.BuiltInThumbnailAdapter
 import com.lighthouse.beep.ui.feature.editor.dialog.adapter.OnBuiltInThumbnailListener
+import com.lighthouse.beep.ui.feature.editor.model.EditData
+import com.lighthouse.beep.ui.feature.editor.model.GifticonThumbnail
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 class BuiltInThumbnailDialog : DialogFragment() {
 
     companion object {
         const val TAG = "BuiltInThumbnail"
     }
+
+    private val editorViewModel by activityViewModels<EditorViewModel>()
 
     private var _binding: DialogBuiltInThumbnailBinding? = null
     private val binding
@@ -43,11 +50,16 @@ class BuiltInThumbnailDialog : DialogFragment() {
     private val builtInThumbnailAdapter = BuiltInThumbnailAdapter(
         listener = object : OnBuiltInThumbnailListener {
             override fun isSelectedFlow(item: GifticonBuiltInThumbnail): Flow<Boolean> {
-                return flow { emit(false) }
+                return editorViewModel.selectedGifticonDataFlow.map {
+                    val builtIn = it.thumbnail as? GifticonThumbnail.BuiltIn
+                    builtIn?.builtIn == item
+                }.distinctUntilChanged()
             }
 
             override fun onClick(item: GifticonBuiltInThumbnail) {
-
+                val editData = EditData.BuiltInThumbnail(item)
+                editorViewModel.updateGifticonData(editData = editData)
+                hideDialog()
             }
         }
     )
@@ -56,6 +68,7 @@ class BuiltInThumbnailDialog : DialogFragment() {
         return super.onCreateDialog(savedInstanceState).apply {
             window?.apply {
                 requestFeature(Window.FEATURE_NO_TITLE)
+                setCanceledOnTouchOutside(false)
                 setDimAmount(0.3f)
                 setOnShowListener {
                     showDialog()
@@ -103,6 +116,7 @@ class BuiltInThumbnailDialog : DialogFragment() {
 
     private fun setUpBuiltInList() {
         builtInThumbnailAdapter.submitList(GifticonBuiltInThumbnail.entries)
+        binding.gridBuiltInThumbnail.clipToOutline = true
         binding.gridBuiltInThumbnail.adapter = builtInThumbnailAdapter
     }
 
@@ -150,6 +164,7 @@ class BuiltInThumbnailDialog : DialogFragment() {
                     val start = binding.containerContent.translationY
                     val end = 0f
                     animator = binding.containerContent.animate()
+                        .setDuration(180L)
                         .setListener(object : SimpleAnimatorListener() {
                             override fun onAnimationStart(animator: Animator) {
                                 binding.viewHandle.isEnabled = false
@@ -191,7 +206,7 @@ class BuiltInThumbnailDialog : DialogFragment() {
         }.applyTo(binding.root)
 
         val trans = ChangeBounds().apply {
-            duration = 300L
+            duration = 180L
             interpolator = AccelerateInterpolator()
         }
         TransitionManager.beginDelayedTransition(binding.root, trans)
@@ -210,7 +225,7 @@ class BuiltInThumbnailDialog : DialogFragment() {
         }.applyTo(binding.root)
 
         val trans = ChangeBounds().apply {
-            duration = 300L
+            duration = 180L
             interpolator = AccelerateInterpolator()
             addListener(object : SimpleTransitionListener() {
                 override fun onTransitionStart(transition: Transition) {
