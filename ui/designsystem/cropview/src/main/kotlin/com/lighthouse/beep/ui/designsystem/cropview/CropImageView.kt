@@ -55,8 +55,7 @@ class CropImageView(
     var zoom = 1f
         private set
 
-    var cropImageMode = CropImageMode.DRAG_WINDOW
-        private set
+    private var cropImageMode = CropImageMode.DRAG_WINDOW
 
     private fun setCropImageMode(mode: CropImageMode) {
         cropImageMode = mode
