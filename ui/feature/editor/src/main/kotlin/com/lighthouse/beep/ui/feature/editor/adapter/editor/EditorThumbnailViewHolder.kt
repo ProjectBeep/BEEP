@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
+import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorThumbnailBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
@@ -23,9 +24,15 @@ internal class EditorThumbnailViewHolder(
     }
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Property) {
-        listener.getCropDataFlow().collect(lifecycleOwner) { data ->
+        listener.getThumbnailFlow().collect(lifecycleOwner) { data ->
             requestManager.loadThumbnail(data)
                 .into(binding.imageThumbnail)
+        }
+    }
+
+    override fun onSetUpClickEvent(item: EditorChip.Property) {
+        binding.iconShowEditorThumbnail.setOnThrottleClickListener {
+            listener.showBuiltInThumbnail()
         }
     }
 }

@@ -18,4 +18,49 @@
         android:backgroundTint="@color/light_gray"
         android:background="@drawable/bg_rect_r8"/>
 
+    <TextView
+        android:id="@+id/text_thumbnail_recommend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        app:layout_constraintTop_toTopOf="@id/image_thumbnail"
+        app:layout_constraintStart_toStartOf="@id/divider"
+        android:textAppearance="@style/Text.Body5"
+        android:textColor="@color/font_gray"
+        android:text="@string/editor_gifticon_preview_thumbnail_recommend"/>
+
+    <TextView
+        android:id="@+id/text_thumbnail_built_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:includeFontPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/text_thumbnail_recommend"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="@id/divider"
+        android:textAppearance="@style/Text.Body1"
+        android:textColor="@color/font_medium_gray"
+        android:text="@string/editor_gifticon_preview_thumbnail_built_in"/>
+
+    <ImageView
+        android:id="@+id/icon_show_editor_thumbnail"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintEnd_toEndOf="@id/divider"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_editor_expand_right"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintStart_toEndOf="@id/image_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/image_thumbnail"
+        android:background="@color/light_gray"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

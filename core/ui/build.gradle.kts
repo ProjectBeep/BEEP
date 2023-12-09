@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.android.material)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.recyclerview)
 }

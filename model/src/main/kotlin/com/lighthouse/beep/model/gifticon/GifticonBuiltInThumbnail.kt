@@ -2,8 +2,10 @@ package com.lighthouse.beep.model.gifticon
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.recyclerview.widget.DiffUtil
 import com.lighthouse.beep.model.R
 
+@Suppress("unused")
 enum class GifticonBuiltInThumbnail(
     @DrawableRes val iconRes: Int,
     @StringRes val titleRes: Int,
@@ -56,4 +58,20 @@ enum class GifticonBuiltInThumbnail(
         iconRes = R.drawable.icon_thumbnail_etc,
         titleRes = R.string.title_thumbnail_etc,
     );
+}
+
+class GifticonBuiltInThumbnailDiff : DiffUtil.ItemCallback<GifticonBuiltInThumbnail>() {
+    override fun areItemsTheSame(
+        oldItem: GifticonBuiltInThumbnail,
+        newItem: GifticonBuiltInThumbnail
+    ): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(
+        oldItem: GifticonBuiltInThumbnail,
+        newItem: GifticonBuiltInThumbnail
+    ): Boolean {
+        return oldItem == newItem
+    }
 }

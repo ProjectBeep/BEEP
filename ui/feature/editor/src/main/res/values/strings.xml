@@ -5,6 +5,9 @@
     <string name="editor_gifticon_preview_cash">금액권</string>
     <string name="editor_gifticon_preview_memo_hint">함께 저장 할 메모를 입력해 주세요.</string>
 
+    <string name="editor_gifticon_preview_thumbnail_recommend">마땅한 썸네일이 없다면?</string>
+    <string name="editor_gifticon_preview_thumbnail_built_in">썸네일 에셋 사용하기</string>
+
     <string name="editor_gifticon_preview">미리보기</string>
     <string name="editor_gifticon_property_memo">메모</string>
     <string name="editor_gifticon_property_thumbnail">썸네일</string>

@@ -1,7 +1,6 @@
 package com.lighthouse.beep.ui.feature.editor
 
 import android.app.Activity
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
@@ -43,6 +42,7 @@ import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdap
 import com.lighthouse.beep.ui.feature.editor.adapter.preview.EditorPreviewAdapter
 import com.lighthouse.beep.ui.feature.editor.adapter.preview.OnEditorPreviewListener
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
+import com.lighthouse.beep.ui.feature.editor.dialog.BuiltInThumbnailDialog
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditType
@@ -226,16 +226,14 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     }
 
     private val onEditorThumbnailListener = object : OnEditorThumbnailListener {
-        override fun getThumbnailFlow(): Flow<Uri> {
-            return viewModel.selectedGifticonDataFlow
-                .map { it.originUri }
-                .distinctUntilChanged()
-        }
-
-        override fun getCropDataFlow(): Flow<GifticonThumbnail> {
+        override fun getThumbnailFlow(): Flow<GifticonThumbnail> {
             return viewModel.selectedGifticonDataFlow
                 .map { it.thumbnail }
                 .distinctUntilChanged()
+        }
+
+        override fun showBuiltInThumbnail() {
+            showBuiltInThumbnailDialog()
         }
     }
 
@@ -474,6 +472,12 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
             } else {
                 remove(fragment)
             }
+        }
+    }
+
+    private fun showBuiltInThumbnailDialog() {
+        show(BuiltInThumbnailDialog.TAG) {
+            BuiltInThumbnailDialog()
         }
     }
 
