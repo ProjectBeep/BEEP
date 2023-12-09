@@ -2,7 +2,7 @@ package com.lighthouse.beep.ui.designsystem.cropview
 
 import android.graphics.RectF
 
-interface OnCropImagePenListener {
+internal interface OnCropImagePenListener {
 
     fun onPenTouchComplete(viewCropRect: RectF)
 }
