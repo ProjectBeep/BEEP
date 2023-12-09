@@ -28,7 +28,11 @@
     <string name="editor_gifticon_register">쿠폰 등록하기</string>
     <string name="editor_gifticon_register_valid">%d개 쿠폰 등록하기</string>
 
-    <string name="editor_gifticon_delete_message">정말 삭제하시겠습니까?</string>
-    <string name="editor_gifticon_delete_ok">예</string>
-    <string name="editor_gifticon_delete_cancel">아니오</string>
+    <string name="editor_gifticon_delete_message">사진을 삭제하시겠습니까?</string>
+    <string name="editor_gifticon_delete_ok">네,삭제할래요</string>
+    <string name="editor_gifticon_delete_cancel">아니요</string>
+
+    <string name="editor_gifticon_exit_message">쿠폰을 등록하지 않고 나가시겠어요?</string>
+    <string name="editor_gifticon_exit_ok">네,나갈래요</string>
+    <string name="editor_gifticon_exit_cancel">아니요</string>
 </resources>

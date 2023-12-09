@@ -1,20 +1,21 @@
 package com.lighthouse.beep.ui.dialog.confirmation
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.WindowManager
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import com.lighthouse.beep.core.ui.binding.viewBindings
+import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
+import com.lighthouse.beep.theme.R
 import com.lighthouse.beep.ui.dialog.confirmation.databinding.DialogConfirmationBinding
 
-class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
+class ConfirmationDialog : DialogFragment() {
 
     companion object {
+        const val TAG = "Confirmation"
+
         fun newInstance(params: ConfirmationParam): ConfirmationDialog {
             return ConfirmationDialog().apply {
                 arguments = params.buildBundle()
@@ -22,7 +23,10 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
         }
     }
 
-    private val binding by viewBindings<DialogConfirmationBinding>()
+    private var _binding: DialogConfirmationBinding? = null
+
+    private val binding: DialogConfirmationBinding
+        get() = requireNotNull(_binding)
 
     private var onOkClickListener: OnClickListener? = null
     fun setOnOkClickListener(listener: OnClickListener?) {
@@ -34,19 +38,28 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
         onCancelClickListener = listener
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            window?.apply {
-                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            }
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = DialogConfirmationBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpRoot()
         setUpContent()
-        setUpOkButton()
-        setUpCancelButton()
     }
 
     private fun setUpRoot() {
@@ -56,18 +69,13 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
     }
 
     private fun setUpContent() {
-        binding.tvTitle.apply {
-            text = ConfirmationParam.getTitle(arguments)
-            isVisible = text.isNotEmpty()
-        }
+        binding.containerContent.preventTouchPropagation()
 
         binding.tvMessage.apply {
             text = ConfirmationParam.getMessage(arguments)
             isVisible = text.isNotEmpty()
         }
-    }
 
-    private fun setUpOkButton() {
         binding.tvOk.apply {
             text = ConfirmationParam.getOkText(arguments)
             isVisible = text.isNotEmpty()
@@ -78,9 +86,7 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
                 dismiss()
             }
         }
-    }
 
-    private fun setUpCancelButton() {
         binding.tvCancel.apply {
             text = ConfirmationParam.getCancelText(arguments)
             isVisible = text.isNotEmpty()
@@ -89,17 +95,6 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
                     onCancelClickListener?.onClick(v)
                 }
                 dismiss()
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        dialog?.window?.apply {
-            attributes = attributes.apply {
-                width = WindowManager.LayoutParams.MATCH_PARENT
-                height = WindowManager.LayoutParams.MATCH_PARENT
             }
         }
     }

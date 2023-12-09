@@ -64,6 +64,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
     companion object {
         private const val TAG_SELECTED_GIFTICON_DELETE = "Tag.SelectedGifticonDelete"
+        private const val TAG_EXIT_EDITOR = "Tag.ExitEditor"
     }
 
     private lateinit var binding: ActivityEditorBinding
@@ -309,7 +310,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 viewModel.selectEditorChip(EditorChip.Preview)
                 return@addCallback
             }
-            cancelEditor()
+            showExitEditorDialog()
         }
     }
 
@@ -441,7 +442,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
     private fun setUpOnClickEvent() {
         binding.btnBack.setOnClickListener(createThrottleClickListener {
-            cancelEditor()
+            showExitEditorDialog()
         })
 
         binding.btnPreview.setOnClickListener(createThrottleClickListener {
@@ -478,6 +479,21 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     private fun showBuiltInThumbnailDialog() {
         show(BuiltInThumbnailDialog.TAG) {
             BuiltInThumbnailDialog()
+        }
+    }
+
+    private fun showExitEditorDialog() {
+        show(TAG_EXIT_EDITOR) {
+            val param = ConfirmationParam(
+                message = getString(R.string.editor_gifticon_exit_message),
+                okText = getString(R.string.editor_gifticon_exit_ok),
+                cancelText = getString(R.string.editor_gifticon_exit_cancel)
+            )
+            ConfirmationDialog.newInstance(param).apply {
+                setOnOkClickListener {
+                    cancelEditor()
+                }
+            }
         }
     }
 
