@@ -4,5 +4,5 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 
 fun interface OnChangeCropRectListener {
-    fun onChange(originBitmap: Bitmap, rect: RectF)
+    fun onChange(originBitmap: Bitmap, rect: RectF, zoom: Float)
 }

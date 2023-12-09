@@ -34,6 +34,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     THUMBNAIL(R.string.editor_gifticon_property_thumbnail) {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF): EditData {
+            return EditData.Thumbnail(bitmap, rect)
+        }
+
         override fun getCropRectF(data: GifticonData?): RectF {
             return when (val thumbnail = data?.thumbnail) {
                 is GifticonThumbnail.Crop -> thumbnail.rect

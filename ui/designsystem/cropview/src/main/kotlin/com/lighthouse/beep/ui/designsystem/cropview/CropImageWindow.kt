@@ -62,8 +62,8 @@ internal class CropImageWindow(
 
     val curCropRect = RectF()
 
-    private var cropInitHorizontalMarginPercent = DEFAULT_MARGIN_PERCENT
-    private var cropInitVerticalMarginPercent = DEFAULT_MARGIN_PERCENT
+    private var cropInitHorizontalMarginPercent = 0f
+    private var cropInitVerticalMarginPercent = 0f
 
     fun initRect(
         bitmap: Bitmap? = null,
@@ -161,62 +161,62 @@ internal class CropImageWindow(
     private fun drawCorner(canvas: Canvas) {
         val line = CORNER_THICKNESS / 2
         canvas.drawLine(
-            curCropRect.left + CORNER_THICKNESS,
-            curCropRect.top + line,
+            curCropRect.left - CORNER_THICKNESS,
+            curCropRect.top - line,
             curCropRect.left + CORNER_LENGTH + CORNER_THICKNESS,
-            curCropRect.top + line,
+            curCropRect.top - line,
             cornerPaint,
         )
         canvas.drawLine(
-            curCropRect.left + line,
-            curCropRect.top,
-            curCropRect.left + line,
+            curCropRect.left - line,
+            curCropRect.top - CORNER_THICKNESS,
+            curCropRect.left - line,
             curCropRect.top + CORNER_LENGTH + CORNER_THICKNESS,
             cornerPaint,
         )
 
         canvas.drawLine(
-            curCropRect.right - CORNER_THICKNESS,
-            curCropRect.top + line,
+            curCropRect.right + CORNER_THICKNESS,
+            curCropRect.top - line,
             curCropRect.right - CORNER_LENGTH - CORNER_THICKNESS,
-            curCropRect.top + line,
+            curCropRect.top - line,
             cornerPaint,
         )
         canvas.drawLine(
-            curCropRect.right - line,
-            curCropRect.top,
-            curCropRect.right - line,
+            curCropRect.right + line,
+            curCropRect.top - CORNER_THICKNESS,
+            curCropRect.right + line,
             curCropRect.top + CORNER_LENGTH + CORNER_THICKNESS,
             cornerPaint,
         )
 
         canvas.drawLine(
-            curCropRect.left + CORNER_THICKNESS,
-            curCropRect.bottom - line,
+            curCropRect.left - CORNER_THICKNESS,
+            curCropRect.bottom + line,
             curCropRect.left + CORNER_LENGTH + CORNER_THICKNESS,
-            curCropRect.bottom - line,
+            curCropRect.bottom + line,
             cornerPaint,
         )
         canvas.drawLine(
-            curCropRect.left + line,
-            curCropRect.bottom,
-            curCropRect.left + line,
+            curCropRect.left - line,
             curCropRect.bottom - CORNER_LENGTH - CORNER_THICKNESS,
+            curCropRect.left - line,
+            curCropRect.bottom + CORNER_THICKNESS,
             cornerPaint,
         )
 
         canvas.drawLine(
-            curCropRect.right - CORNER_THICKNESS,
-            curCropRect.bottom - line,
+            curCropRect.right + CORNER_THICKNESS,
+            curCropRect.bottom + line,
             curCropRect.right - CORNER_LENGTH - CORNER_THICKNESS,
-            curCropRect.bottom - line,
+            curCropRect.bottom + line,
             cornerPaint,
         )
         canvas.drawLine(
-            curCropRect.right - line,
-            curCropRect.bottom,
-            curCropRect.right - line,
+            curCropRect.right + line,
             curCropRect.bottom - CORNER_LENGTH - CORNER_THICKNESS,
+            curCropRect.right + line,
+            curCropRect.bottom + CORNER_THICKNESS,
             cornerPaint,
         )
     }
