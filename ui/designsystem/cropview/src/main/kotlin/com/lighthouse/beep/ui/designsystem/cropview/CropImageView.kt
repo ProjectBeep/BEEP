@@ -57,6 +57,12 @@ class CropImageView(
         private set
 
     var cropImageMode = CropImageMode.DRAG_WINDOW
+        private set
+
+    private fun setCropImageMode(mode: CropImageMode) {
+        cropImageMode = mode
+        onCropImageModeChangeListener?.onChange(mode)
+    }
 
     private var onCropImageModeChangeListener: OnCropImageModeChangeListener? = null
 
@@ -91,12 +97,12 @@ class CropImageView(
         cropImageWindow.initRect(originBitmap, cropRect)
         // aspectRatio 가 설정되 있으면 Pen 모드를 쓸 수 없다
         if (!enableAspectRatio && cropRect == EMPTY_RECT_F) {
-            cropImageMode = CropImageMode.DRAW_PEN
+            setCropImageMode(CropImageMode.DRAW_PEN)
             this.zoom = 1f
             calculateMatrix(RectF(realImageRect))
             invalidate()
         } else {
-            cropImageMode = CropImageMode.DRAG_WINDOW
+            setCropImageMode(CropImageMode.DRAG_WINDOW)
             if (zoom != 0f) {
                 this.zoom = zoom
             }
@@ -117,7 +123,7 @@ class CropImageView(
     private val onCropPenListener = object : OnCropImagePenListener {
         override fun onPenTouchComplete(viewCropRect: RectF) {
             val cropRect = calculateRealCropRect(originBitmap, viewCropRect)
-            cropImageMode = CropImageMode.DRAG_WINDOW
+            setCropImageMode(CropImageMode.DRAG_WINDOW)
             calculateMatrixByViewCropRect(viewCropRect)
             applyZoom(viewCropRect, animate = true)
             val bitmap = originBitmap

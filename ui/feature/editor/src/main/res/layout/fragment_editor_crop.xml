@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +11,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginVertical="16dp"
-        android:background="@color/bg"/>
+        android:background="@color/bg"
+        tools:background="@color/black_30"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_crop_touch_mode_tutorial"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="icon_crop_mode_tutorial,text_crop_mode_tutorial"/>
+
+    <ImageView
+        android:id="@+id/icon_crop_mode_tutorial"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="14dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="@id/crop_gifticon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/text_crop_mode_tutorial"
+        android:contentDescription="@null"
+        tools:src="@drawable/icon_crop_touch_mode_small"/>
+
+    <TextView
+        android:id="@+id/text_crop_mode_tutorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/icon_crop_mode_tutorial"
+        app:layout_constraintBottom_toBottomOf="@id/icon_crop_mode_tutorial"
+        app:layout_constraintStart_toEndOf="@id/icon_crop_mode_tutorial"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textAppearance="@style/Text.Title5"
+        android:textColor="@color/white"
+        tools:text="@string/editor_crop_touch_mode_tutorial"/>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_crop_touch_mode"
@@ -41,5 +73,4 @@
         app:layout_constraintBottom_toBottomOf="@id/crop_gifticon"
         android:contentDescription="@null"
         android:src="@drawable/icon_crop_touch_mode"/>
-    
 </androidx.constraintlayout.widget.ConstraintLayout>

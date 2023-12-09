@@ -13,12 +13,4 @@ internal class EditorCropViewModel: ViewModel() {
     fun setCropImageMode(mode: CropImageMode) {
         _cropImageMode.value = mode
     }
-
-    fun toggleCropImageMode() {
-        _cropImageMode.value = when(_cropImageMode.value) {
-            CropImageMode.DRAW_PEN -> CropImageMode.DRAG_WINDOW
-            CropImageMode.DRAG_WINDOW -> CropImageMode.DRAW_PEN
-            CropImageMode.NONE -> CropImageMode.NONE
-        }
-    }
 }

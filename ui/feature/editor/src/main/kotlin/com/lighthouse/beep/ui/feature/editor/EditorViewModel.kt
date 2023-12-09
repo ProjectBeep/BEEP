@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.domain.usecase.recognize.RecognizeGifticonUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.ui.designsystem.cropview.CropImageMode
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
@@ -90,13 +89,6 @@ internal class EditorViewModel @Inject constructor(
 
     fun selectEditorChip(item: EditorChip) {
         _selectedEditorChip.value = item
-    }
-
-    private val _cropImageMode = MutableStateFlow(CropImageMode.DRAW_PEN)
-    val cropImageMode = _cropImageMode.asStateFlow()
-
-    fun setCropImageMode(value: CropImageMode) {
-        _cropImageMode.value = value
     }
 
     private val gifticonDataMap = mutableMapOf<Long, GifticonData>()
