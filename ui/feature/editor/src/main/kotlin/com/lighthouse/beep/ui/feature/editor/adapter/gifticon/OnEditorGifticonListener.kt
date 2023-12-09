@@ -1,7 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.gifticon
 
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.ui.feature.editor.model.ThumbnailCropData
+import com.lighthouse.beep.ui.feature.editor.model.GifticonThumbnail
 import kotlinx.coroutines.flow.Flow
 
 internal interface OnEditorGifticonListener {
@@ -10,7 +10,7 @@ internal interface OnEditorGifticonListener {
 
     fun isInvalidFlow(item: GalleryImage): Flow<Boolean>
 
-    fun getCropDataFlow(item: GalleryImage): Flow<ThumbnailCropData>
+    fun getCropDataFlow(item: GalleryImage): Flow<GifticonThumbnail>
 
     fun onClick(item: GalleryImage, position: Int)
 

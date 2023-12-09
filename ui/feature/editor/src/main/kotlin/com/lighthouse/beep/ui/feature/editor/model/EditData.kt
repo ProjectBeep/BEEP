@@ -1,5 +1,6 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
+import android.graphics.Bitmap
 import android.graphics.RectF
 import java.util.Date
 
@@ -16,14 +17,19 @@ internal sealed interface EditData {
         }
     }
 
-    data class Thumbnail(val rect: RectF): EditData {
+    data class Thumbnail(val bitmap: Bitmap, val rect: RectF): EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return rect != data.thumbnailCropData.rect
+            if (data.thumbnail !is GifticonThumbnail.Crop) {
+                return true
+            }
+            return bitmap != data.thumbnail.bitmap && rect != data.thumbnail.rect
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            val cropData = data.thumbnailCropData.copy(rect = rect)
-            return data.copy(thumbnailCropData = cropData)
+            return data.copy(thumbnail = GifticonThumbnail.Crop(
+                bitmap = bitmap,
+                rect = rect
+            ))
         }
     }
 

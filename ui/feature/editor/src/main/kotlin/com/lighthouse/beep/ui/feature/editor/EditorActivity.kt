@@ -43,12 +43,12 @@ import com.lighthouse.beep.ui.feature.editor.adapter.gifticon.EditorGifticonAdap
 import com.lighthouse.beep.ui.feature.editor.adapter.preview.EditorPreviewAdapter
 import com.lighthouse.beep.ui.feature.editor.adapter.preview.OnEditorPreviewListener
 import com.lighthouse.beep.ui.feature.editor.databinding.ActivityEditorBinding
-import com.lighthouse.beep.ui.feature.editor.model.ThumbnailCropData
 import com.lighthouse.beep.ui.feature.editor.model.EditData
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorPage
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
+import com.lighthouse.beep.ui.feature.editor.model.GifticonThumbnail
 import com.lighthouse.beep.ui.feature.editor.page.crop.EditorCropFragment
 import com.lighthouse.beep.ui.feature.editor.provider.OnEditorProvider
 import dagger.hilt.android.AndroidEntryPoint
@@ -113,9 +113,9 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 .distinctUntilChanged()
         }
 
-        override fun getCropDataFlow(item: GalleryImage): Flow<ThumbnailCropData> {
+        override fun getCropDataFlow(item: GalleryImage): Flow<GifticonThumbnail> {
             return viewModel.gifticonDataMapFlow
-                .map { map -> map[item.id]?.thumbnailCropData }
+                .map { map -> map[item.id]?.thumbnail }
                 .filterNotNull()
                 .distinctUntilChanged()
         }
@@ -232,9 +232,9 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 .distinctUntilChanged()
         }
 
-        override fun getCropDataFlow(): Flow<ThumbnailCropData> {
+        override fun getCropDataFlow(): Flow<GifticonThumbnail> {
             return viewModel.selectedGifticonDataFlow
-                .map { it.thumbnailCropData }
+                .map { it.thumbnail }
                 .distinctUntilChanged()
         }
     }

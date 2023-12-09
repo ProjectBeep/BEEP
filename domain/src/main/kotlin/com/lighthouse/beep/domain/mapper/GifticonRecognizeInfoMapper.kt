@@ -1,12 +1,12 @@
 package com.lighthouse.beep.domain.mapper
 
 import android.net.Uri
+import com.lighthouse.beep.core.common.exts.EMPTY_RECT
 import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
 
 internal fun GifticonRecognizeInfo.toGifticonRecognizerResult(
     originUri: Uri,
-    croppedUri: Uri?,
 ): GifticonRecognizeResult {
     return GifticonRecognizeResult(
         imageWidth = imageWidth,
@@ -18,7 +18,7 @@ internal fun GifticonRecognizeInfo.toGifticonRecognizerResult(
         isCashCard = isCashCard,
         balance = balance,
         originUri = originUri,
-        croppedUri = croppedUri,
-        croppedRect = croppedRect,
+        croppedImage = croppedImage,
+        croppedRect = croppedRect ?: EMPTY_RECT,
     )
 }

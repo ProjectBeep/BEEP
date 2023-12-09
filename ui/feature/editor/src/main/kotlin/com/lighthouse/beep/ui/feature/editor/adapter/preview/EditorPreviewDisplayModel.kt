@@ -15,7 +15,7 @@ internal class EditorPreviewDisplayModel(
 ) {
 
     val thumbnailCropData = gifticonDataFlow
-        .map { it.thumbnailCropData }
+        .map { it.thumbnail }
         .distinctUntilChanged()
 
     val gifticonName = gifticonDataFlow

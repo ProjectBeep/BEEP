@@ -1,5 +1,6 @@
 package com.lighthouse.beep.model.gifticon
 
+import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
 import java.util.Date
@@ -14,6 +15,6 @@ data class GifticonRecognizeResult(
     val isCashCard: Boolean,
     val balance: Int,
     val originUri: Uri,
-    val croppedUri: Uri?,
-    val croppedRect: Rect?,
+    val croppedImage: Bitmap?,
+    val croppedRect: Rect,
 )

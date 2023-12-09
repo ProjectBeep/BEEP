@@ -1,19 +1,17 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.preview
 
-import android.graphics.RectF
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
-import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorPreviewBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditType
+import com.lighthouse.beep.ui.feature.editor.model.loadThumbnail
 
 internal class EditorPreviewViewHolder(
     parent: ViewGroup,
@@ -24,19 +22,8 @@ internal class EditorPreviewViewHolder(
     ),
 ): LifecycleViewHolder<GalleryImage>(binding.root) {
 
-    companion object {
-        private val VIEW_RECT = RectF(0f, 0f, 96f.dp, 96f.dp)
-    }
-
     init {
         binding.imageThumbnail.clipToOutline = true
-    }
-
-    override fun bind(item: GalleryImage) {
-        super.bind(item)
-
-        requestManager.load(item.contentUri)
-            .into(binding.imageThumbnail)
     }
 
     override fun onSetUpClickEvent(item: GalleryImage) {
@@ -77,12 +64,8 @@ internal class EditorPreviewViewHolder(
         val model = EditorPreviewDisplayModel(listener.getGifticonDataFlow(item))
 
         model.thumbnailCropData.collect(lifecycleOwner) { data ->
-            if (data.isCropped) {
-                binding.imageThumbnail.scaleType = ImageView.ScaleType.MATRIX
-                binding.imageThumbnail.imageMatrix = data.calculateMatrix(VIEW_RECT)
-            } else {
-                binding.imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
-            }
+            requestManager.loadThumbnail(data)
+                .into(binding.imageThumbnail)
         }
 
         model.gifticonName.collect(lifecycleOwner) { name ->

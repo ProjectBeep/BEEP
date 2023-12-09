@@ -1,17 +1,15 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.gifticon
 
-import android.graphics.RectF
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
-import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorGifticonBinding
+import com.lighthouse.beep.ui.feature.editor.model.loadThumbnail
 
 internal class EditorGifticonViewHolder(
     parent: ViewGroup,
@@ -22,19 +20,8 @@ internal class EditorGifticonViewHolder(
     )
 ): LifecycleViewHolder<GalleryImage>(binding.root) {
 
-    companion object {
-        private val VIEW_RECT = RectF(0f, 0f, 48f.dp, 48f.dp)
-    }
-
     init {
         binding.imageGifticon.clipToOutline = true
-    }
-
-    override fun bind(item: GalleryImage) {
-        super.bind(item)
-
-        requestManager.load(item.contentUri)
-            .into(binding.imageGifticon)
     }
 
     override fun onSetUpClickEvent(item: GalleryImage) {
@@ -53,12 +40,8 @@ internal class EditorGifticonViewHolder(
         }
 
         listener.getCropDataFlow(item).collect(lifecycleOwner) { data ->
-            if (data.isCropped) {
-                binding.imageGifticon.scaleType = ImageView.ScaleType.MATRIX
-                binding.imageGifticon.imageMatrix = data.calculateMatrix(VIEW_RECT)
-            } else {
-                binding.imageGifticon.scaleType = ImageView.ScaleType.CENTER_CROP
-            }
+            requestManager.loadThumbnail(data)
+                .into(binding.imageGifticon)
         }
 
         listener.isInvalidFlow(item).collect(lifecycleOwner) { isInvalid ->
