@@ -11,14 +11,11 @@ import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.library.barcode.BarcodeGenerator
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorPreviewBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.loadThumbnail
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.withContext
 
 internal class EditorPreviewViewHolder(
     parent: ViewGroup,
@@ -97,7 +94,10 @@ internal class EditorPreviewViewHolder(
 
         model.gifticonName.collect(lifecycleOwner) { name ->
             val isEmpty = name.isEmpty()
-            binding.textName.isVisible = !isEmpty
+            binding.textName.visibility = when(!isEmpty) {
+                true -> View.VISIBLE
+                false -> View.INVISIBLE
+            }
             binding.iconNameEmpty.isVisible = isEmpty
             if (!isEmpty) {
                 binding.textName.text = name
@@ -106,7 +106,10 @@ internal class EditorPreviewViewHolder(
 
         model.brandName.collect(lifecycleOwner) { brand ->
             val isEmpty = brand.isEmpty()
-            binding.textBrand.isVisible = !isEmpty
+            binding.textBrand.visibility = when(!isEmpty) {
+                true -> View.VISIBLE
+                false -> View.INVISIBLE
+            }
             binding.iconBrandEmpty.isVisible = isEmpty
             if (!isEmpty) {
                 binding.textBrand.text = brand
@@ -115,7 +118,10 @@ internal class EditorPreviewViewHolder(
 
         model.displayExpired.collect(lifecycleOwner) { expired ->
             val isEmpty = expired.isEmpty()
-            binding.textExpired.isVisible = !isEmpty
+            binding.textExpired.visibility = when(!isEmpty) {
+                true -> View.VISIBLE
+                false -> View.INVISIBLE
+            }
             binding.iconExpiredEmpty.isVisible = isEmpty
             if (!isEmpty) {
                 binding.textExpired.text = expired
@@ -152,9 +158,7 @@ internal class EditorPreviewViewHolder(
                 binding.groupBarcode.isVisible = barcode.isNotEmpty()
                 if (barcode.isNotEmpty()) {
                     binding.textBarcode.text = barcode
-                    val image = withContext(Dispatchers.IO) {
-                        BarcodeGenerator.generate(barcode, 300.dp, 60.dp)
-                    }
+                    val image = BarcodeGenerator.loadBarcode(barcode, 300.dp, 60.dp)
                     binding.imageBarcode.setImageBitmap(image)
                 }
             }
