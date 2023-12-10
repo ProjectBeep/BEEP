@@ -43,7 +43,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:spanCount="3"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        android:background="@drawable/bg_built_in_list"
         tools:itemCount="12"
         tools:listitem="@layout/item_built_in_thumbnail"/>
 

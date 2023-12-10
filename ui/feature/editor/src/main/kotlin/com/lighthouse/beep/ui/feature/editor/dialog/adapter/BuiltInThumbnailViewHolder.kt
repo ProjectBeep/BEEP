@@ -16,11 +16,18 @@ internal class BuiltInThumbnailViewHolder(
     ),
 ): LifecycleViewHolder<GifticonBuiltInThumbnail>(binding.root) {
 
+    init {
+        parent.clipChildren = false
+    }
+
     override fun bind(item: GifticonBuiltInThumbnail) {
         super.bind(item)
 
         binding.iconThumbnail.setImageResource(item.iconRes)
         binding.textTitle.setText(item.titleRes)
+
+        val bgRes = listener.getBackgroundRes(absoluteAdapterPosition)
+        binding.view.setBackgroundResource(bgRes)
     }
 
     override fun onSetUpClickEvent(item: GifticonBuiltInThumbnail) {
@@ -31,7 +38,8 @@ internal class BuiltInThumbnailViewHolder(
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: GifticonBuiltInThumbnail) {
         listener.isSelectedFlow(item).collect(lifecycleOwner) { isSelected ->
-            binding.root.isSelected = isSelected
+            binding.view.isSelected = isSelected
+            binding.root.z = if (isSelected) 0.1f else 0f
         }
     }
 }
