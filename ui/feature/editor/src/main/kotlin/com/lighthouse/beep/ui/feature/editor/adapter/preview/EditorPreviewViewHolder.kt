@@ -94,10 +94,6 @@ internal class EditorPreviewViewHolder(
 
         model.gifticonName.collect(lifecycleOwner) { name ->
             val isEmpty = name.isEmpty()
-            binding.textName.visibility = when(!isEmpty) {
-                true -> View.VISIBLE
-                false -> View.INVISIBLE
-            }
             binding.iconNameEmpty.isVisible = isEmpty
             if (!isEmpty) {
                 binding.textName.text = name
@@ -106,10 +102,6 @@ internal class EditorPreviewViewHolder(
 
         model.brandName.collect(lifecycleOwner) { brand ->
             val isEmpty = brand.isEmpty()
-            binding.textBrand.visibility = when(!isEmpty) {
-                true -> View.VISIBLE
-                false -> View.INVISIBLE
-            }
             binding.iconBrandEmpty.isVisible = isEmpty
             if (!isEmpty) {
                 binding.textBrand.text = brand
@@ -118,10 +110,6 @@ internal class EditorPreviewViewHolder(
 
         model.displayExpired.collect(lifecycleOwner) { expired ->
             val isEmpty = expired.isEmpty()
-            binding.textExpired.visibility = when(!isEmpty) {
-                true -> View.VISIBLE
-                false -> View.INVISIBLE
-            }
             binding.iconExpiredEmpty.isVisible = isEmpty
             if (!isEmpty) {
                 binding.textExpired.text = expired
@@ -137,7 +125,7 @@ internal class EditorPreviewViewHolder(
             binding.switchCash.isChecked = isCash
             binding.textBalanceLabel.isVisible = isCash
             val isEmpty = balance.isEmpty()
-            binding.textBalance.isVisible = isCash && !isEmpty
+            binding.textBalance.isVisible = isCash
             binding.iconBalanceEmpty.isVisible = isCash && isEmpty
             if (isCash && !isEmpty) {
                 binding.textBalance.text = context.getString(R.string.editor_preview_balance, balance)
