@@ -6,6 +6,8 @@ import java.util.Properties
 plugins {
     id("beep.android.application")
     id("beep.android.hilt")
+    alias(libs.plugins.gms)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.ksp)
 }
 
@@ -92,6 +94,9 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.splashscreen)
+
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics.ktx)
 }
 
 kapt {
