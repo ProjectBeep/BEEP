@@ -22,7 +22,7 @@ internal class ExpiredBrandChipViewHolder(
         super.bind(item)
 
         binding.chip.text = when(item) {
-            is ExpiredBrandItem.All -> context.getString(R.string.brand_all)
+            is ExpiredBrandItem.All -> getString(R.string.brand_all)
             is ExpiredBrandItem.Item -> item.name
         }
     }

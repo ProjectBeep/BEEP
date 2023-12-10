@@ -1,7 +1,11 @@
 package com.lighthouse.beep.core.ui.recyclerview.viewholder
 
+import android.content.Context
+import android.content.res.Resources
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
 import androidx.core.view.doOnAttach
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -16,8 +20,15 @@ import kotlinx.coroutines.launch
 
 abstract class LifecycleViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
 
-    protected val context
+    protected val context: Context
         get() = itemView.context
+
+    private val resource: Resources
+        get() = itemView.resources
+
+    fun getColor(@ColorRes resId: Int): Int = resource.getColor(resId, null)
+
+    fun getString(@StringRes resId: Int): String = resource.getString(resId)
 
     private var lifecycleOwner: LifecycleOwner? = null
     private var boundItem: T? = null
