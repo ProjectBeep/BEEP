@@ -27,13 +27,14 @@ internal class EditorMemoViewHolder(
 
     @SuppressLint("SetTextI18n")
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Preview) {
+        val param = EditType.MEMO.createTextInputParam(null)
         listener.getMemoFlow().collect(lifecycleOwner) { memo ->
             if (memo.isEmpty()) {
                 binding.textMemo.setText(R.string.editor_gifticon_preview_memo_hint)
             } else {
                 binding.textMemo.text = memo
             }
-            binding.textMemoLength.text = "${memo.length}/${EditType.MEMO.maxLength}"
+            binding.textMemoLength.text = "${memo.length}/${param.maxLength}"
         }
     }
 }

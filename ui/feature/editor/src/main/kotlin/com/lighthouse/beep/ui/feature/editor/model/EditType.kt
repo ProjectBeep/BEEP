@@ -14,16 +14,14 @@ import com.lighthouse.beep.ui.feature.editor.R
 @Suppress("unused")
 internal enum class EditType(@StringRes val textResId: Int) {
     MEMO(R.string.editor_gifticon_property_memo) {
-        override val maxLength: Int = 20
-
         override fun createEditDataWithText(value: String): EditData {
             return EditData.Memo(value)
         }
 
-        override fun createTextInputParam(data: GifticonData): TextInputParam {
+        override fun createTextInputParam(data: GifticonData?): TextInputParam {
             return TextInputParam(
-                text = data.memo,
-                maxLength = maxLength,
+                text = data?.memo ?: "",
+                maxLength = 20,
                 inputFormat = TextInputFormat.TEXT,
             )
         }
@@ -53,9 +51,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.CropName(value, rect, zoom)
         }
 
-        override fun createTextInputParam(data: GifticonData): TextInputParam {
+        override fun createTextInputParam(data: GifticonData?): TextInputParam {
             return TextInputParam(
-                text = data.name,
+                text = data?.name ?: "",
                 inputFormat = TextInputFormat.TEXT,
             )
         }
@@ -84,9 +82,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.CropBrand(value, rect, zoom)
         }
 
-        override fun createTextInputParam(data: GifticonData): TextInputParam {
+        override fun createTextInputParam(data: GifticonData?): TextInputParam {
             return TextInputParam(
-                text = data.brand,
+                text = data?.brand ?: "",
                 inputFormat = TextInputFormat.TEXT,
             )
         }
@@ -116,9 +114,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.CropBarcode(value, rect, zoom)
         }
 
-        override fun createTextInputParam(data: GifticonData): TextInputParam {
+        override fun createTextInputParam(data: GifticonData?): TextInputParam {
             return TextInputParam(
-                text = data.barcode,
+                text = data?.barcode ?: "",
                 inputFormat = TextInputFormat.BARCODE,
             )
         }
@@ -150,6 +148,10 @@ internal enum class EditType(@StringRes val textResId: Int) {
         override fun getCropData(data: GifticonData?): GifticonCropData {
             return data?.expiredCropData ?: GifticonCropData.None
         }
+
+        override fun isInvalid(data: GifticonData): Boolean {
+            return data.displayExpired.isEmpty()
+        }
     },
     BALANCE(R.string.editor_gifticon_property_balance) {
         private val balanceRecognizer = BalanceRecognizer()
@@ -163,9 +165,9 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.CropBalance(value, rect, zoom)
         }
 
-        override fun createTextInputParam(data: GifticonData): TextInputParam {
+        override fun createTextInputParam(data: GifticonData?): TextInputParam {
             return TextInputParam(
-                text = data.balance,
+                text = data?.balance ?: "",
                 inputFormat = TextInputFormat.BALANCE,
             )
         }
@@ -183,14 +185,12 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     };
 
-    open val maxLength = Int.MAX_VALUE
-
     open fun createEditDataWithText(value: String): EditData = EditData.None
 
     open suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData =
         EditData.None
 
-    open fun createTextInputParam(data: GifticonData) = TextInputParam.None
+    open fun createTextInputParam(data: GifticonData?) = TextInputParam.None
 
     open fun isInvalid(data: GifticonData): Boolean = false
 

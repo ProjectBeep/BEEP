@@ -1,17 +1,24 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.preview
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
+import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.library.barcode.BarcodeGenerator
 import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorPreviewBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.loadThumbnail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.withContext
 
 internal class EditorPreviewViewHolder(
     parent: ViewGroup,
@@ -35,20 +42,40 @@ internal class EditorPreviewViewHolder(
             listener.onEditClick(EditType.THUMBNAIL)
         }
 
-        binding.containerName.setOnThrottleClickListener {
+        binding.textName.setOnThrottleClickListener {
             listener.onEditClick(EditType.NAME)
         }
 
-        binding.containerBrand.setOnThrottleClickListener {
+        binding.iconNameEmpty.setOnThrottleClickListener {
+            listener.onEditClick(EditType.NAME)
+        }
+
+        binding.textBrand.setOnThrottleClickListener {
             listener.onEditClick(EditType.BRAND)
         }
 
-        binding.containerExpired.setOnThrottleClickListener {
+        binding.iconBrandEmpty.setOnThrottleClickListener {
+            listener.onEditClick(EditType.BRAND)
+        }
+
+        binding.textExpired.setOnThrottleClickListener {
             listener.onEditClick(EditType.EXPIRED)
         }
 
-        binding.containerBalance.setOnThrottleClickListener {
+        binding.iconExpiredEmpty.setOnThrottleClickListener {
+            listener.onEditClick(EditType.EXPIRED)
+        }
+
+        binding.textBalance.setOnThrottleClickListener {
             listener.onEditClick(EditType.BALANCE)
+        }
+
+        binding.iconBalanceEmpty.setOnThrottleClickListener {
+            listener.onEditClick(EditType.BALANCE)
+        }
+
+        binding.containerBarcodeEmpty.setOnThrottleClickListener {
+            listener.onEditClick(EditType.BARCODE)
         }
 
         binding.imageBarcode.setOnThrottleClickListener {
@@ -95,26 +122,42 @@ internal class EditorPreviewViewHolder(
             }
         }
 
-        model.isCash.collect(lifecycleOwner) { isCash ->
+        combine(
+            model.isCash,
+            model.displayBalance
+        ) { isCash, balance ->
+            isCash to balance
+        }.collect(lifecycleOwner) { (isCash, balance) ->
             binding.switchCash.isChecked = isCash
-            binding.containerBalance.isVisible = isCash
-        }
-
-        model.displayBalance.collect(lifecycleOwner) { balance ->
+            binding.textBalanceLabel.isVisible = isCash
             val isEmpty = balance.isEmpty()
-            binding.textBalance.isVisible = !isEmpty
-            binding.iconBalanceEmpty.isVisible = isEmpty
-            if (!isEmpty) {
+            binding.textBalance.isVisible = isCash && !isEmpty
+            binding.iconBalanceEmpty.isVisible = isCash && isEmpty
+            if (isCash && !isEmpty) {
                 binding.textBalance.text = context.getString(R.string.editor_preview_balance, balance)
             }
         }
 
-        model.barcodeImage.collect(lifecycleOwner) { image ->
-            binding.imageBarcode.setImageBitmap(image)
-        }
-
-        model.displayBarcode.collect(lifecycleOwner) { barcode ->
-            binding.textBarcode.text = barcode
-        }
+        model.displayBarcode.collect(
+            lifecycleOwner = lifecycleOwner,
+            defaultBlock = {
+                binding.textBarcode.text = ""
+                binding.imageBarcode.setImageBitmap(null)
+            },
+            block = { barcode ->
+                binding.containerBarcodeEmpty.visibility = when(barcode.isEmpty()) {
+                    true -> View.VISIBLE
+                    false -> View.INVISIBLE
+                }
+                binding.groupBarcode.isVisible = barcode.isNotEmpty()
+                if (barcode.isNotEmpty()) {
+                    binding.textBarcode.text = barcode
+                    val image = withContext(Dispatchers.IO) {
+                        BarcodeGenerator.generate(barcode, 300.dp, 60.dp)
+                    }
+                    binding.imageBarcode.setImageBitmap(image)
+                }
+            }
+        )
     }
 }
