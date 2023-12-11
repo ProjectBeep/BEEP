@@ -2,6 +2,9 @@ package com.lighthouse.beep.ui.feature.editor.model
 
 import android.net.Uri
 import com.lighthouse.beep.core.common.exts.EMPTY_DATE
+import com.lighthouse.beep.core.common.exts.ofDate
+import com.lighthouse.beep.core.common.exts.ofMonth
+import com.lighthouse.beep.core.common.exts.ofYear
 import com.lighthouse.beep.core.common.exts.toFormattedString
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
 import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
@@ -29,6 +32,14 @@ internal data class GifticonData(
     val displayExpired: String = if (expired == EMPTY_DATE) "" else expired.toFormattedString()
 
     val displayBalance: String = TextInputFormat.BALANCE.valueToTransformed(balance)
+
+    val expiredYear: String = if (expired == EMPTY_DATE) "" else expired.ofYear().toString()
+
+    val expiredMonth: String =
+        if (expired == EMPTY_DATE) "" else String.format("%02d", expired.ofMonth())
+
+    val expiredDate: String =
+        if (expired == EMPTY_DATE) "" else String.format("%02d", expired.ofDate())
 
     val isInvalid
         get() = EditType.entries.any { it.isInvalid(this) }

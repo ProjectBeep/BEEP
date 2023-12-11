@@ -13,21 +13,23 @@ internal class EditorAdapter(
     private val onEditorMemoListener: OnEditorMemoListener,
     private val onEditorThumbnailListener: OnEditorThumbnailListener,
     private val onEditorTextListener: OnEditorTextListener,
+    private val onEditorExpiredListener: OnEditorExpiredListener
 ) : ListAdapter<EditorChip, RecyclerView.ViewHolder>(EditorChipDiff()){
 
     companion object {
         private const val TYPE_PREVIEW = 1
         private const val TYPE_THUMBNAIL = 2
         private const val TYPE_TEXT = 3
+        private const val TYPE_EXPIRED = 4
     }
 
     override fun getItemViewType(position: Int): Int {
         return when(val item = getItem(position)) {
             is EditorChip.Preview -> TYPE_PREVIEW
-            is EditorChip.Property -> if (item.type == EditType.THUMBNAIL) {
-                TYPE_THUMBNAIL
-            } else {
-                TYPE_TEXT
+            is EditorChip.Property -> when(item.type) {
+                EditType.THUMBNAIL -> TYPE_THUMBNAIL
+                EditType.EXPIRED -> TYPE_EXPIRED
+                else -> TYPE_TEXT
             }
         }
     }
@@ -37,6 +39,7 @@ internal class EditorAdapter(
             TYPE_PREVIEW -> EditorMemoViewHolder(parent, onEditorMemoListener)
             TYPE_THUMBNAIL -> EditorThumbnailViewHolder(parent, requestManager, onEditorThumbnailListener)
             TYPE_TEXT -> EditorTextViewHolder(parent, onEditorTextListener)
+            TYPE_EXPIRED -> EditorExpiredViewHolder(parent, onEditorExpiredListener)
             else -> throw RuntimeException("${javaClass.simpleName}에 정의 되지 않는 item 입니다")
         }
     }
@@ -47,6 +50,7 @@ internal class EditorAdapter(
             holder is EditorMemoViewHolder && item is EditorChip.Preview -> holder.bind(item)
             holder is EditorThumbnailViewHolder && item is EditorChip.Property -> holder.bind(item)
             holder is EditorTextViewHolder && item is EditorChip.Property -> holder.bind(item)
+            holder is EditorExpiredViewHolder && item is EditorChip.Property -> holder.bind(item)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.lighthouse.beep.core.common.exts
 
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -25,4 +26,22 @@ fun Date.calculateNextDayRemainingTime(): Long {
     val oneDay = 24 * 60 * 60 * 1000L
     val nextDay = time + oneDay
     return nextDay - nextDay % oneDay - time
+}
+
+fun Date.ofYear(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.YEAR)
+}
+
+fun Date.ofMonth(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.MONTH)
+}
+
+fun Date.ofDate(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.DATE)
 }

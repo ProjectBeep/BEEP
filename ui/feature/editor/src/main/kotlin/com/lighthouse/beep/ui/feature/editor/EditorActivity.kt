@@ -34,6 +34,7 @@ import com.lighthouse.beep.ui.dialog.textinput.TextInputResult
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.EditorPropertyChipAdapter
 import com.lighthouse.beep.ui.feature.editor.adapter.chip.OnEditorPropertyChipListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.EditorAdapter
+import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorExpiredListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorMemoListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorTextListener
 import com.lighthouse.beep.ui.feature.editor.adapter.editor.OnEditorThumbnailListener
@@ -226,6 +227,12 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         }
     }
 
+    private fun showBuiltInThumbnailDialog() {
+        show(BuiltInThumbnailDialog.TAG) {
+            BuiltInThumbnailDialog()
+        }
+    }
+
     private val onEditorThumbnailListener = object : OnEditorThumbnailListener {
         override fun getThumbnailFlow(): Flow<GifticonThumbnail> {
             return viewModel.selectedGifticonDataFlow
@@ -277,12 +284,28 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         }
     }
 
+    private fun showExpiredDialog() {
+
+    }
+
+    private val onEditorExpiredListener = object: OnEditorExpiredListener {
+        override fun getGifticonDataFlow(): Flow<GifticonData> {
+            return viewModel.selectedGifticonDataFlow
+                .distinctUntilChanged()
+        }
+
+        override fun showExpired() {
+            showExpiredDialog()
+        }
+    }
+
     private val editorAdapter by lazy {
         EditorAdapter(
             requestManager = requestManager,
             onEditorMemoListener = onEditorMemoListener,
             onEditorThumbnailListener = onEditorThumbnailListener,
             onEditorTextListener = onEditorTextListener,
+            onEditorExpiredListener = onEditorExpiredListener,
         )
     }
 
@@ -481,12 +504,6 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
             } else {
                 remove(fragment)
             }
-        }
-    }
-
-    private fun showBuiltInThumbnailDialog() {
-        show(BuiltInThumbnailDialog.TAG) {
-            BuiltInThumbnailDialog()
         }
     }
 
