@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.ui.dialog.progress)
     implementation(projects.ui.dialog.confirmation)
     implementation(projects.ui.dialog.textinput)
+//    implementation(projects.ui.dialog.datepicker)
     implementation(projects.ui.designsystem.cropview)
 
     implementation(projects.library.barcode)

@@ -2,17 +2,16 @@ package com.lighthouse.beep.ui.feature.editor.page.crop
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.RectF
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import androidx.core.graphics.toRect
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.RequestManager
-import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
+import com.lighthouse.beep.core.common.exts.EMPTY_RECT
 import com.lighthouse.beep.core.common.exts.cast
 import com.lighthouse.beep.core.common.exts.crop
 import com.lighthouse.beep.core.ui.binding.viewBindings
@@ -65,11 +64,11 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
         binding.cropGifticon.setOnChangeCropRectListener(object : OnChangeCropRectListener {
             private var job: Job? = null
 
-            override fun onChange(originBitmap: Bitmap, rect: RectF, zoom: Float) {
+            override fun onChange(originBitmap: Bitmap, rect: Rect, zoom: Float) {
                 val editType = editorViewModel.selectedEditType ?: return
                 job?.cancel()
                 job = lifecycleScope.launch(Dispatchers.IO) {
-                    val bitmap = originBitmap.crop(rect.toRect())
+                    val bitmap = originBitmap.crop(rect)
                     val editData = editType.createEditDataWithCrop(bitmap, rect, zoom)
                     editorViewModel.updateGifticonData(editData = editData)
                 }
@@ -149,7 +148,7 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                     return@combine CropImageMode.NONE
                 }
                 val cropData = type.type.getCropData(data)
-                if (cropData.rect == EMPTY_RECT_F) {
+                if (cropData.rect == EMPTY_RECT) {
                     return@combine CropImageMode.NONE
                 }
                 when (currentMode) {
@@ -186,7 +185,7 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                     binding.cropGifticon.setCropInfo(cropData.rect, cropData.zoom)
                 }
                 CropImageMode.DRAG_WINDOW -> {
-                    binding.cropGifticon.setCropInfo(EMPTY_RECT_F, 0f)
+                    binding.cropGifticon.setCropInfo(EMPTY_RECT, 0f)
                 }
                 CropImageMode.NONE -> Unit
             }

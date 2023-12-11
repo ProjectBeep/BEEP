@@ -1,7 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.Bitmap
-import android.graphics.RectF
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import com.bumptech.glide.RequestBuilder
@@ -24,7 +24,7 @@ sealed interface GifticonThumbnail {
 
     data class Crop(
         val bitmap: Bitmap,
-        val rect: RectF,
+        val rect: Rect,
     ) : GifticonThumbnail {
 
         override fun load(requestManager: RequestManager): RequestBuilder<Drawable> {

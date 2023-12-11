@@ -1,10 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
-import android.graphics.RectF
 import android.net.Uri
-import androidx.core.graphics.toRectF
 import com.lighthouse.beep.core.common.exts.EMPTY_DATE
-import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 import com.lighthouse.beep.core.common.exts.toFormattedString
 import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
 import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
@@ -44,12 +41,12 @@ internal fun GifticonRecognizeResult?.toGifticonData(originUri: Uri): GifticonDa
         thumbnail = croppedImage?.let {
             GifticonThumbnail.Crop(
                 bitmap = it,
-                rect = croppedRect.toRectF()
+                rect = croppedRect
             )
         } ?: GifticonThumbnail.Default(originUri),
         thumbnailCropData = croppedImage?.let {
             GifticonCropData(
-                rect = croppedRect.toRectF(),
+                rect = croppedRect,
             )
         } ?: GifticonCropData.None,
         name = name,

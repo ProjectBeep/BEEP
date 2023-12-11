@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -12,6 +13,8 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import androidx.core.graphics.toRectF
+import com.lighthouse.beep.core.common.exts.EMPTY_RECT
 import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,11 +76,14 @@ class CropImageView(
         mainInverseMatrix.mapRect(this)
     }
 
-    fun setCropInfo(cropRect: RectF, zoom: Float) {
+    fun setCropInfo(rect: Rect, zoom: Float) {
+        val cropRect = rect.toRectF()
+
         val curCropRect = calculateRealCropRect(cropImageWindow.curCropRect)
-        if (cropRect == curCropRect && cropRect != EMPTY_RECT_F && this.zoom == zoom) {
+        if (cropRect == curCropRect && rect != EMPTY_RECT && this.zoom == zoom) {
             return
         }
+
         cropImageWindow.initRect(originBitmap, cropRect)
         // aspectRatio 가 설정되 있으면 Pen 모드를 쓸 수 없다
         if (!enableAspectRatio && cropRect == EMPTY_RECT_F) {
@@ -112,7 +118,13 @@ class CropImageView(
             applyZoom(viewCropRect, animate = true)
             val bitmap = originBitmap
             if (bitmap != null) {
-                onChangeCropRectListener?.onChange(bitmap, cropRect, zoom)
+                val rect = Rect(
+                    maxOf(cropRect.left.toInt(), 0),
+                    maxOf(cropRect.top.toInt(), 0),
+                    minOf(cropRect.right.toInt(), bitmap.width),
+                    minOf(cropRect.bottom.toInt(), bitmap.height),
+                )
+                onChangeCropRectListener?.onChange(bitmap, rect, zoom)
             }
         }
     }
@@ -151,7 +163,13 @@ class CropImageView(
             val bitmap = originBitmap
             if (bitmap != null) {
                 val cropRect = calculateRealCropRect(viewCropRect)
-                onChangeCropRectListener?.onChange(bitmap, cropRect, zoom)
+                val rect = Rect(
+                    maxOf(cropRect.left.toInt(), 0),
+                    maxOf(cropRect.top.toInt(), 0),
+                    minOf(cropRect.right.toInt(), bitmap.width),
+                    minOf(cropRect.bottom.toInt(), bitmap.height),
+                )
+                onChangeCropRectListener?.onChange(bitmap, rect, zoom)
             }
         }
     }
@@ -225,7 +243,7 @@ class CropImageView(
         originBitmap = bitmap
         realImageRect.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         curImageRect.set(realImageRect)
-        setCropInfo(EMPTY_RECT_F, 1f)
+        setCropInfo(EMPTY_RECT, 1f)
     }
 
     private fun applyZoom(

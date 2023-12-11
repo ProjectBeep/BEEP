@@ -1,10 +1,10 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
-import android.graphics.RectF
-import com.lighthouse.beep.core.common.exts.EMPTY_RECT_F
+import android.graphics.Rect
+import com.lighthouse.beep.core.common.exts.EMPTY_RECT
 
 internal data class GifticonCropData(
-    val rect: RectF = EMPTY_RECT_F,
+    val rect: Rect = EMPTY_RECT,
     val zoom: Float = 0f,
 ) {
     companion object {

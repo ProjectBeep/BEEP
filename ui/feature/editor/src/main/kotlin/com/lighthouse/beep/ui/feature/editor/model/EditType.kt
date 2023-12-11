@@ -1,7 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.Bitmap
-import android.graphics.RectF
+import android.graphics.Rect
 import androidx.annotation.StringRes
 import com.lighthouse.beep.library.recognizer.BalanceRecognizer
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
@@ -31,7 +31,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
         }
     },
     THUMBNAIL(R.string.editor_gifticon_property_thumbnail) {
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData {
             return EditData.CropThumbnail(bitmap, rect, zoom)
         }
 
@@ -46,7 +46,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Name(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData {
             val value = textRecognizer.recognize(bitmap).joinToString("")
             return EditData.CropName(value, rect, zoom)
         }
@@ -77,7 +77,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Brand(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData {
             val value = textRecognizer.recognize(bitmap).joinToString("")
             return EditData.CropBrand(value, rect, zoom)
         }
@@ -109,7 +109,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Barcode(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData {
             val value = barcodeRecognizer.recognize(bitmap)
             return EditData.CropBarcode(value, rect, zoom)
         }
@@ -136,7 +136,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
     EXPIRED(R.string.editor_gifticon_property_expired) {
         private val expiredRecognizer = ExpiredRecognizer()
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData {
             val value = expiredRecognizer.recognize(bitmap)
             return EditData.CropExpired(value, rect, zoom)
         }
@@ -160,7 +160,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
             return EditData.Balance(value)
         }
 
-        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData {
+        override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData {
             val value = balanceRecognizer.recognize(bitmap).toString()
             return EditData.CropBalance(value, rect, zoom)
         }
@@ -187,7 +187,7 @@ internal enum class EditType(@StringRes val textResId: Int) {
 
     open fun createEditDataWithText(value: String): EditData = EditData.None
 
-    open suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: RectF, zoom: Float): EditData =
+    open suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData =
         EditData.None
 
     open fun createTextInputParam(data: GifticonData?) = TextInputParam.None

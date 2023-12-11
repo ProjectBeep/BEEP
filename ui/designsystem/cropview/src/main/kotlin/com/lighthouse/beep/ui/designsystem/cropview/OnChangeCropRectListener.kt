@@ -1,8 +1,8 @@
 package com.lighthouse.beep.ui.designsystem.cropview
 
 import android.graphics.Bitmap
-import android.graphics.RectF
+import android.graphics.Rect
 
 fun interface OnChangeCropRectListener {
-    fun onChange(originBitmap: Bitmap, rect: RectF, zoom: Float)
+    fun onChange(originBitmap: Bitmap, rect: Rect, zoom: Float)
 }

@@ -4,17 +4,17 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
+import android.view.ViewGroup
 import android.widget.NumberPicker
 import android.widget.NumberPicker.OnValueChangeListener
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import com.lighthouse.beep.ui.core.binding.viewBindings
-import com.lighthouse.beep.ui.core.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.ui.dialog.bottomsheet.BeepBottomSheetDialog
 import com.lighthouse.beep.ui.dialog.datepicker.databinding.DialogSpinnerDatePickerBinding
 
-class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
+class DatePickerDialog : BeepBottomSheetDialog() {
 
     companion object {
         fun newInstance(params: DatePickerParams): DatePickerDialog {
@@ -24,7 +24,9 @@ class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
         }
     }
 
-    private val binding by viewBindings<DialogSpinnerDatePickerBinding>()
+    private var _binding: DialogSpinnerDatePickerBinding? = null
+    private val binding: DialogSpinnerDatePickerBinding
+        get() = requireNotNull(_binding)
 
     private val viewModel: DatePickerViewModel by viewModels(
         factoryProducer = {
@@ -43,6 +45,19 @@ class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
                 setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             }
         }
+    }
+
+    override fun onCreateContentView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = DialogSpinnerDatePickerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyContentView() {
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,17 +129,6 @@ class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.maxDayOfMonth.collect { newValue ->
                 binding.npDayOfMonth.maxValue = newValue
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        dialog?.window?.apply {
-            attributes = attributes.apply {
-                width = WindowManager.LayoutParams.MATCH_PARENT
-                height = WindowManager.LayoutParams.MATCH_PARENT
             }
         }
     }

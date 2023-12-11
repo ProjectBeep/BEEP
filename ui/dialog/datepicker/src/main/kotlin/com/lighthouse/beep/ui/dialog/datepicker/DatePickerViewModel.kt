@@ -42,8 +42,8 @@ internal class DatePickerViewModel(
 
         private val dayOfMonthPreset = arrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
-        const val MIN_YEAR = 1900
-        const val MAX_YEAR = 3000
+        const val MIN_YEAR = 2000
+        const val MAX_YEAR = 2100
 
         const val MIN_MONTH = 1
         const val MAX_MONTH = 12

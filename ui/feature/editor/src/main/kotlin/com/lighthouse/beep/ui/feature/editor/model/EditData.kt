@@ -1,7 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.Bitmap
-import android.graphics.RectF
+import android.graphics.Rect
 import com.lighthouse.beep.model.gifticon.GifticonBuiltInThumbnail
 import java.util.Date
 
@@ -18,7 +18,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropThumbnail(val bitmap: Bitmap, val rect: RectF, val zoom: Float) : EditData {
+    data class CropThumbnail(val bitmap: Bitmap, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             if (data.thumbnail !is GifticonThumbnail.Crop) {
                 return true
@@ -72,7 +72,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropName(val name: String, val rect: RectF, val zoom: Float) : EditData {
+    data class CropName(val name: String, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.name != name ||
                     data.nameCropData.rect != rect ||
@@ -100,7 +100,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropBrand(val brand: String, val rect: RectF, val zoom: Float) : EditData {
+    data class CropBrand(val brand: String, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.brand != brand ||
                     data.brandCropData.rect != rect ||
@@ -128,7 +128,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropBarcode(val barcode: String, val rect: RectF, val zoom: Float) : EditData {
+    data class CropBarcode(val barcode: String, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.barcode != barcode ||
                     data.barcodeCropData.rect != rect ||
@@ -156,7 +156,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropExpired(val date: Date, val rect: RectF, val zoom: Float) : EditData {
+    data class CropExpired(val date: Date, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.expired != date ||
                     data.expiredCropData.rect != rect ||
@@ -195,7 +195,7 @@ internal sealed interface EditData {
         }
     }
 
-    data class CropBalance(val balance: String, val rect: RectF, val zoom: Float) : EditData {
+    data class CropBalance(val balance: String, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.balance != balance ||
                     data.balanceCropData.rect != rect ||
