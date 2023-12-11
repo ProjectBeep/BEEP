@@ -75,9 +75,8 @@ class BuiltInThumbnailDialog : BeepBottomSheetDialog() {
         return binding.root
     }
 
-    override fun onDestroyView() {
+    override fun onDestroyContentView() {
         _binding = null
-        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

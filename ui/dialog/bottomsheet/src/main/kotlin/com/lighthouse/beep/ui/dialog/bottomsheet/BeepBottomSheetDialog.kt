@@ -57,7 +57,7 @@ abstract class BeepBottomSheetDialog : DialogFragment() {
         setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
     }
 
-    override fun onCreateView(
+    final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,7 +71,8 @@ abstract class BeepBottomSheetDialog : DialogFragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
+    final override fun onDestroyView() {
+        onDestroyContentView()
         _binding = null
         viewHandle = null
         super.onDestroyView()
@@ -82,6 +83,8 @@ abstract class BeepBottomSheetDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View
+
+    open fun onDestroyContentView() = Unit
 
     override fun onDismiss(dialog: DialogInterface) {
         hideDialog()
