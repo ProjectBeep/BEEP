@@ -1,7 +1,6 @@
 package com.lighthouse.beep.ui.feature.editor.adapter.preview
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
@@ -139,10 +138,7 @@ internal class EditorPreviewViewHolder(
                 binding.imageBarcode.setImageBitmap(null)
             },
             block = { barcode ->
-                binding.containerBarcodeEmpty.visibility = when(barcode.isEmpty()) {
-                    true -> View.VISIBLE
-                    false -> View.INVISIBLE
-                }
+                binding.containerBarcodeEmpty.isVisible = barcode.isEmpty()
                 binding.groupBarcode.isVisible = barcode.isNotEmpty()
                 if (barcode.isNotEmpty()) {
                     binding.textBarcode.text = barcode
