@@ -6,35 +6,41 @@
     android:layout_width="match_parent"
     android:layout_height="86dp">
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/text_memo"
+        app:layout_constraintBottom_toBottomOf="@id/text_memo"
+        app:layout_constraintStart_toStartOf="@id/text_memo"
+        app:layout_constraintEnd_toEndOf="@id/text_memo"
+        android:background="@drawable/bg_text"/>
+
     <TextView
         android:id="@+id/text_memo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="44dp"
-        android:paddingVertical="10dp"
-        android:paddingHorizontal="15dp"
-        android:includeFontPadding="false"
+        android:paddingVertical="12dp"
         android:layout_marginHorizontal="24dp"
+        android:includeFontPadding="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAppearance="@style/Text.Body5"
+        android:textAppearance="@style/Text.Body1"
         android:textColor="@color/font_gray"
-        android:gravity="center_vertical"
-        android:background="@drawable/bg_rect_r8_gray_l1"
-        tools:text="글자글자를글자글자를글자글자를글자글자를"/>
+        android:textColorHint="@color/gray"
+        android:hint="@string/editor_gifticon_preview_memo_hint"
+        android:gravity="center_vertical"/>
 
     <TextView
         android:id="@+id/text_memo_length"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintEnd_toEndOf="@id/text_memo"
         app:layout_constraintBottom_toBottomOf="@id/text_memo"
-        android:textAppearance="@style/Text.Body5"
-        android:textColor="@color/font_gray"
-        tools:text="0/20"/>
+        android:textAppearance="@style/Text.Body1"
+        android:textColor="@color/gray"
+        tools:text="0/25"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

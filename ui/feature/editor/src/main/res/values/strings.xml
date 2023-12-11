@@ -4,6 +4,11 @@
 
     <string name="editor_gifticon_preview_cash">금액권</string>
     <string name="editor_gifticon_preview_memo_hint">함께 저장 할 메모를 입력해 주세요.</string>
+    <string name="editor_gifticon_preview_name_hint">제품명을 등록해 주세요.</string>
+    <string name="editor_gifticon_preview_brand_hint">브랜드를 등록해 주세요.</string>
+    <string name="editor_gifticon_preview_barcode_hint">바코드를 등록해 주세요.</string>
+    <string name="editor_gifticon_preview_expired_hint">유효기간을 등록해 주세요.</string>
+    <string name="editor_gifticon_preview_balance_hint">금액을 등록해 주세요.</string>
 
     <string name="editor_gifticon_preview_thumbnail_recommend">마땅한 썸네일이 없다면?</string>
     <string name="editor_gifticon_preview_thumbnail_built_in">썸네일 에셋 사용하기</string>
@@ -15,7 +20,7 @@
     <string name="editor_gifticon_property_brand">브랜드</string>
     <string name="editor_gifticon_property_barcode">바코드</string>
     <string name="editor_gifticon_property_expired">유효기간</string>
-    <string name="editor_gifticon_property_balance">남은 금액</string>
+    <string name="editor_gifticon_property_balance">금액</string>
 
     <string name="editor_crop_touch_mode_tutorial">%s 영역을 직접 터치해 보세요.</string>
     <string name="editor_crop_window_mode_tutorial">%s 영역을 직접 크롭해 보세요.</string>

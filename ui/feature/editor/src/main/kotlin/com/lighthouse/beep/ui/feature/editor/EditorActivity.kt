@@ -267,6 +267,10 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         override fun onEditClick(type: EditType) {
             showTextInputDialog(type)
         }
+
+        override fun onClearClick(type: EditType) {
+            viewModel.updateGifticonData(editData = type.createEditDataWithText(""))
+        }
     }
 
     private val editorAdapter by lazy {
