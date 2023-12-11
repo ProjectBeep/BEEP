@@ -2,12 +2,11 @@ package com.lighthouse.beep.ui.feature.editor.adapter.editor
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
-import com.lighthouse.beep.ui.feature.editor.R
-import com.lighthouse.beep.theme.R as ThemeR
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorThumbnailBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.GifticonThumbnail
@@ -28,26 +27,25 @@ internal class EditorThumbnailViewHolder(
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Property) {
         listener.getThumbnailFlow().collect(lifecycleOwner) { data ->
+            binding.groupRecommend.isVisible = data !is GifticonThumbnail.BuiltIn
+            binding.groupThumbnail.isVisible = data is GifticonThumbnail.BuiltIn
+
             requestManager.loadThumbnail(data)
                 .into(binding.imageThumbnail)
 
-            when (data) {
-                is GifticonThumbnail.BuiltIn -> {
-                    binding.textThumbnailBuiltIn.setText(data.builtIn.titleRes)
-                    binding.textThumbnailBuiltIn.setTextColor(getColor(ThemeR.color.font_dark_gray))
-                }
-
-                else -> {
-                    binding.textThumbnailBuiltIn.setText(R.string.editor_gifticon_preview_thumbnail_built_in)
-                    binding.textThumbnailBuiltIn.setTextColor(getColor(ThemeR.color.font_medium_gray))
-                }
+            if (data is GifticonThumbnail.BuiltIn) {
+                binding.textThumbnail.setText(data.builtIn.titleRes)
             }
         }
     }
 
     override fun onSetUpClickEvent(item: EditorChip.Property) {
-        binding.viewShowBuiltInThumbnailDialog.setOnThrottleClickListener {
+        binding.containerThumbnailInfo.setOnThrottleClickListener {
             listener.showBuiltInThumbnail()
+        }
+
+        binding.iconClear.setOnThrottleClickListener {
+            listener.clearThumbnail()
         }
     }
 }

@@ -236,6 +236,10 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         override fun showBuiltInThumbnail() {
             showBuiltInThumbnailDialog()
         }
+
+        override fun clearThumbnail() {
+            viewModel.updateGifticonData(editData = EditData.ClearThumbnail)
+        }
     }
 
     private fun showTextInputDialog(type: EditType) {

@@ -35,6 +35,7 @@ internal sealed interface EditData {
                     rect = rect
                 ),
                 thumbnailCropData = GifticonCropData(
+                    bitmap = bitmap,
                     rect = rect,
                     zoom = zoom,
                 )
@@ -58,6 +59,21 @@ internal sealed interface EditData {
                 thumbnail = GifticonThumbnail.BuiltIn(
                     builtIn = builtIn
                 ),
+            )
+        }
+    }
+
+    data object ClearThumbnail : EditData {
+        override fun isModified(data: GifticonData): Boolean = true
+
+        override fun updatedGifticon(data: GifticonData): GifticonData {
+            return data.copy(
+                thumbnail = data.thumbnailCropData.bitmap?.let { cropBitmap ->
+                    GifticonThumbnail.Crop(
+                        bitmap = cropBitmap,
+                        rect = data.thumbnailCropData.rect,
+                    )
+                } ?: GifticonThumbnail.Default(data.originUri)
             )
         }
     }

@@ -46,6 +46,7 @@ internal fun GifticonRecognizeResult?.toGifticonData(originUri: Uri): GifticonDa
         } ?: GifticonThumbnail.Default(originUri),
         thumbnailCropData = croppedImage?.let {
             GifticonCropData(
+                bitmap = it,
                 rect = croppedRect,
             )
         } ?: GifticonCropData.None,

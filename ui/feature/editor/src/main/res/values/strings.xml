@@ -10,8 +10,8 @@
     <string name="editor_gifticon_preview_expired_hint">유효기간을 등록해 주세요.</string>
     <string name="editor_gifticon_preview_balance_hint">금액을 등록해 주세요.</string>
 
-    <string name="editor_gifticon_preview_thumbnail_recommend">마땅한 썸네일이 없다면?</string>
-    <string name="editor_gifticon_preview_thumbnail_built_in">썸네일 에셋 사용하기</string>
+    <string name="editor_gifticon_preview_thumbnail_recommend1">마땅한 썸네일이 없다면?</string>
+    <string name="editor_gifticon_preview_thumbnail_recommend2">썸네일 에셋 사용하기</string>
 
     <string name="editor_gifticon_preview">미리보기</string>
     <string name="editor_gifticon_property_memo">메모</string>

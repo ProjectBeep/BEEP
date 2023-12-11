@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toBottomOf="@id/text_memo"
         app:layout_constraintStart_toStartOf="@id/text_memo"
         app:layout_constraintEnd_toEndOf="@id/text_memo"
-        android:background="@drawable/bg_text"/>
+        android:background="@drawable/bg_editor_text"/>
 
     <TextView
         android:id="@+id/text_memo"

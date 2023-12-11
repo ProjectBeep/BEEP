@@ -8,4 +8,6 @@ internal interface OnEditorThumbnailListener {
     fun getThumbnailFlow(): Flow<GifticonThumbnail>
 
     fun showBuiltInThumbnail()
+
+    fun clearThumbnail()
 }
