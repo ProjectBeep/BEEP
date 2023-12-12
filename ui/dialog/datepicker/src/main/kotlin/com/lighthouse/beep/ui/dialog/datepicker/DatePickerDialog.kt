@@ -1,23 +1,22 @@
 package com.lighthouse.beep.ui.dialog.datepicker
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.NumberPicker
-import android.widget.NumberPicker.OnValueChangeListener
 import androidx.fragment.app.viewModels
-import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.ui.dialog.bottomsheet.BeepBottomSheetDialog
+import com.lighthouse.beep.ui.dialog.datepicker.adapter.DatePickerAdapter
+import com.lighthouse.beep.ui.dialog.datepicker.adapter.DatePickerLayoutManager
 import com.lighthouse.beep.ui.dialog.datepicker.databinding.DialogSpinnerDatePickerBinding
 
 class DatePickerDialog : BeepBottomSheetDialog() {
 
     companion object {
-        fun newInstance(params: DatePickerParams): DatePickerDialog {
+        const val TAG = "DatePicker"
+
+        fun newInstance(params: DatePickerParam): DatePickerDialog {
             return DatePickerDialog().apply {
                 arguments = params.buildBundle()
             }
@@ -34,18 +33,9 @@ class DatePickerDialog : BeepBottomSheetDialog() {
         },
     )
 
-    private var onDatePickListener: OnDatePickListener? = null
-    fun setOnDatePickerListener(listener: OnDatePickListener?) {
-        onDatePickListener = listener
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            window?.apply {
-                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            }
-        }
-    }
+    private val yearAdapter = DatePickerAdapter()
+    private val monthAdapter = DatePickerAdapter()
+    private val dateAdapter = DatePickerAdapter()
 
     override fun onCreateContentView(
         inflater: LayoutInflater,
@@ -61,74 +51,38 @@ class DatePickerDialog : BeepBottomSheetDialog() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setUpRoot()
-        setUpPickers()
-        setUpBtnOk()
-        bindData()
+        attachHandle(binding.viewHandle)
+        setUpSpinner()
     }
 
-    private fun setUpRoot() {
-        binding.root.setOnClickListener {
-            dismiss()
-        }
-    }
+    private fun setUpSpinner() {
+        val yearList = (2013 .. 2033).toList()
+        yearAdapter.submitList(yearList)
 
-    private fun setUpBtnOk() {
-        binding.btnOk.setOnClickListener {
-            onDatePickListener?.onDatePick(viewModel.year, viewModel.month, viewModel.dayOfMonth)
-            dismiss()
-        }
-    }
-
-    private fun setUpPicker(
-        picker: NumberPicker,
-        min: Int,
-        max: Int,
-        initValue: Int,
-        listener: OnValueChangeListener,
-    ) {
-        picker.apply {
-            wrapSelectorWheel = false
-            minValue = min
-            maxValue = max
-            value = initValue
-            setOnValueChangedListener(listener)
-        }
-    }
-
-    private fun setUpPickers() {
-        setUpPicker(
-            binding.npYear,
-            DatePickerViewModel.MIN_YEAR,
-            DatePickerViewModel.MAX_YEAR,
-            viewModel.year,
-        ) { _, _, newValue ->
-            viewModel.year = newValue
+        binding.spinnerYear.apply {
+            adapter = yearAdapter
+            layoutManager = DatePickerLayoutManager(context) {
+                Log.d("TEST", "selected Year : ${yearList[it]}")
+            }
         }
 
-        setUpPicker(
-            binding.npMonth,
-            DatePickerViewModel.MIN_MONTH,
-            DatePickerViewModel.MAX_MONTH,
-            viewModel.month,
-        ) { _, _, newValue ->
-            viewModel.month = newValue
+        val monthList = (1 .. 12).toList()
+        monthAdapter.submitList(monthList)
+
+        binding.spinnerMonth.apply {
+            adapter = monthAdapter
+            layoutManager = DatePickerLayoutManager(context) {
+                Log.d("TEST", "selected Month : ${monthList[it]}")
+            }
         }
 
-        setUpPicker(
-            binding.npDayOfMonth,
-            DatePickerViewModel.MIN_DAY_OF_MONTH,
-            DatePickerViewModel.MAX_DAY_OF_MONTH,
-            viewModel.dayOfMonth,
-        ) { _, _, newValue ->
-            viewModel.dayOfMonth = newValue
-        }
-    }
+        val dateList = (1 .. 31).toList()
+        dateAdapter.submitList(dateList)
 
-    private fun bindData() {
-        viewLifecycleOwner.repeatOnStarted {
-            viewModel.maxDayOfMonth.collect { newValue ->
-                binding.npDayOfMonth.maxValue = newValue
+        binding.spinnerDate.apply {
+            adapter = dateAdapter
+            layoutManager = DatePickerLayoutManager(context) {
+                Log.d("TEST", "selected Date : ${dateList[it]}")
             }
         }
     }

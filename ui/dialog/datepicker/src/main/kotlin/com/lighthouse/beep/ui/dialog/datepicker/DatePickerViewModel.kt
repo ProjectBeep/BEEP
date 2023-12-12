@@ -12,19 +12,19 @@ internal class DatePickerViewModel(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    var year = DatePickerParams.getYear(savedStateHandle)
+    var year = DatePickerParam.getYear(savedStateHandle)
         set(value) {
             field = value
             _maxDayOfMonth.value = getMaxDayOfMonth(value, month)
         }
 
-    var month = DatePickerParams.getMonth(savedStateHandle)
+    var month = DatePickerParam.getMonth(savedStateHandle)
         set(value) {
             field = value
             _maxDayOfMonth.value = getMaxDayOfMonth(year, value)
         }
 
-    var dayOfMonth = DatePickerParams.getDayOfMonth(savedStateHandle)
+    var dayOfMonth = DatePickerParam.getDayOfMonth(savedStateHandle)
 
     private val _maxDayOfMonth = MutableStateFlow(getMaxDayOfMonth(year, month))
     val maxDayOfMonth = _maxDayOfMonth.asStateFlow()

@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import java.util.Calendar
 import java.util.Date
 
-data class DatePickerParams(
+data class DatePickerParam(
     val year: Int,
     val month: Int,
     val dayOfMonth: Int,

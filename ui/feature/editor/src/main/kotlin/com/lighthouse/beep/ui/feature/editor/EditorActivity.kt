@@ -27,6 +27,8 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
+import com.lighthouse.beep.ui.dialog.datepicker.DatePickerDialog
+import com.lighthouse.beep.ui.dialog.datepicker.DatePickerParam
 import com.lighthouse.beep.ui.dialog.progress.ProgressDialog
 import com.lighthouse.beep.ui.dialog.progress.ProgressParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputDialog
@@ -57,6 +59,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import java.util.Date
 import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
@@ -285,7 +288,11 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     }
 
     private fun showExpiredDialog() {
-
+        show(DatePickerDialog.TAG) {
+            val expired = viewModel.selectedGifticonData.value?.expired ?: Date()
+            val param = DatePickerParam(expired)
+            DatePickerDialog.newInstance(param)
+        }
     }
 
     private val onEditorExpiredListener = object: OnEditorExpiredListener {

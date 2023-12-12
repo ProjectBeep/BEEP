@@ -6,8 +6,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toBottomOf="parent"
-    android:background="@drawable/bg_built_in_dialog">
+    android:layout_gravity="bottom"
+    android:background="@drawable/bg_bottom_sheet_content">
 
     <View
         android:id="@+id/view_handle"
