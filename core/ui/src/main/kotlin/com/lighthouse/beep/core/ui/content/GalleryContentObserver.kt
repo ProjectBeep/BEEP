@@ -11,6 +11,8 @@ import androidx.activity.ComponentActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 
 internal class GalleryContentObserver(
     lifecycleOwner: LifecycleOwner,
@@ -21,6 +23,7 @@ internal class GalleryContentObserver(
 
     private val contentObserver = object: ContentObserver(handler) {
         override fun onChange(selfChange: Boolean, uri: Uri?, flags: Int) {
+            Firebase.crashlytics.log("contentObserver : $uri, lastPathSegment : ${uri?.lastPathSegment}")
             val id = getContentId(uri) ?: return
             when {
                 flags and ContentResolver.NOTIFY_INSERT == ContentResolver.NOTIFY_INSERT -> {
