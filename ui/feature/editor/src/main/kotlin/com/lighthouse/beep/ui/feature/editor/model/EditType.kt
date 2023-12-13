@@ -27,7 +27,7 @@ internal enum class EditType(
         override fun createTextInputParam(data: GifticonData?): TextInputParam {
             return TextInputParam(
                 text = data?.memo ?: "",
-                maxLength = 20,
+                maxLength = 25,
                 inputFormat = TextInputFormat.TEXT,
             )
         }

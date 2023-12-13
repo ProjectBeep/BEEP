@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewPropertyAnimator
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -292,28 +293,24 @@ internal class GalleryActivity : AppCompatActivity() {
 
         repeatOnStarted {
             var animator: ViewPropertyAnimator? = null
-            var init = true
             viewModel.showRecognizeProgress.collect { isShow ->
                 val translationY = if (isShow) (-150f).dp else 60f.dp
-                if (init) {
-                    init = false
-                    binding.progressRecognize.translationY = translationY
-                } else {
-                    animator?.cancel()
-                    animator = binding.progressRecognize.animate()
-                        .translationY(translationY)
-                        .setDuration(300)
-                        .setListener(object : SimpleAnimatorListener() {
-                            override fun onAnimationStart(animator: Animator) {
-                                binding.progressRecognize.isVisible = true
-                            }
+                animator?.cancel()
+                animator = binding.progressRecognize.animate()
+                    .setInterpolator(DecelerateInterpolator())
+                    .translationY(translationY)
+                    .setDuration(300)
+                    .setListener(object : SimpleAnimatorListener() {
+                        override fun onAnimationStart(animator: Animator) {
+                            binding.progressRecognize.isVisible = true
+                        }
 
-                            override fun onAnimationEnd(animator: Animator) {
-                                binding.progressRecognize.isVisible = isShow
-                            }
-                        })
-                    animator?.start()
-                }
+                        override fun onAnimationEnd(animator: Animator) {
+                            binding.progressRecognize.isVisible = isShow
+                        }
+                    }).also {
+                        it.start()
+                    }
             }
         }
 

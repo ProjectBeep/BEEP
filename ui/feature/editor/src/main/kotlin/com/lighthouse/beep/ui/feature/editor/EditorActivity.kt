@@ -502,6 +502,8 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         binding.btnRegister.setOnClickListener(createThrottleClickListener {
             if (viewModel.isRegisterActivated.value) {
 
+            } else {
+
             }
         })
     }

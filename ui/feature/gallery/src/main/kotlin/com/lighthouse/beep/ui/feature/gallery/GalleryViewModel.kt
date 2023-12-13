@@ -112,6 +112,7 @@ internal class GalleryViewModel @Inject constructor(
 
         lastVisible = currentLastVisible ?: lastVisible
         requestNextJob = viewModelScope.launch {
+            recognizing.value = true
             val targetSize = recommendList.value.size + pageCount
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
                 val images = getGalleryImagesUseCase(currentPage, limit, pageOffset)
@@ -126,9 +127,6 @@ internal class GalleryViewModel @Inject constructor(
                 }
 
                 if (requestRecognizeList.isNotEmpty()) {
-                    if (!recognizing.value) {
-                        recognizing.value = true
-                    }
                     list.addAll(getGalleryGifticonUseCase(requestRecognizeList))
                     list.sortBy { -it.dateAdded.time }
                 }
