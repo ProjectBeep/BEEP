@@ -12,4 +12,14 @@ internal class DatePickerAdapter : ListAdapter<Int, DatePickerViewHolder>(DatePi
     override fun onBindViewHolder(holder: DatePickerViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    fun getPosition(value: Int): Int {
+        return currentList.indexOfFirst { it == value }
+    }
+
+    fun getValue(position: Int): Int? {
+        return runCatching {
+            currentList[position]
+        }.getOrNull()
+    }
 }

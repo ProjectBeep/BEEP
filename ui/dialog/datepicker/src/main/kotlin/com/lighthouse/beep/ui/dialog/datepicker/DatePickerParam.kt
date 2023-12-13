@@ -2,6 +2,10 @@ package com.lighthouse.beep.ui.dialog.datepicker
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
+import com.lighthouse.beep.core.common.exts.EMPTY_DATE
+import com.lighthouse.beep.core.common.exts.ofDate
+import com.lighthouse.beep.core.common.exts.ofMonth
+import com.lighthouse.beep.core.common.exts.ofYear
 import java.util.Calendar
 import java.util.Date
 
@@ -12,7 +16,7 @@ data class DatePickerParam(
 ) {
     private constructor(calendar: Calendar) : this(
         calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.MONTH) + 1,
         calendar.get(Calendar.DAY_OF_MONTH),
     )
 
@@ -34,18 +38,27 @@ data class DatePickerParam(
         private const val KEY_DAY_OF_MONTH = "Key.DayOfMonth"
 
         fun getYear(savedStateHandle: SavedStateHandle): Int {
-            return savedStateHandle.get<Int>(KEY_YEAR)
-                ?: Calendar.getInstance().get(Calendar.YEAR)
+            val year = savedStateHandle.get<Int>(KEY_YEAR)
+            if (year == null || year == EMPTY_DATE.ofYear()) {
+                return Calendar.getInstance().get(Calendar.YEAR)
+            }
+            return year
         }
 
         fun getMonth(savedStateHandle: SavedStateHandle): Int {
-            return savedStateHandle.get<Int>(KEY_MONTH)
-                ?: Calendar.getInstance().get(Calendar.MONTH)
+            val month = savedStateHandle.get<Int>(KEY_MONTH)
+            if (month == null || month == EMPTY_DATE.ofMonth()) {
+                return Calendar.getInstance().get(Calendar.MONTH) + 1
+            }
+            return month
         }
 
         fun getDayOfMonth(savedStateHandle: SavedStateHandle): Int {
-            return savedStateHandle.get<Int>(KEY_DAY_OF_MONTH)
-                ?: Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            val dayOfMonth = savedStateHandle.get<Int>(KEY_DAY_OF_MONTH)
+            if (dayOfMonth == null || dayOfMonth == EMPTY_DATE.ofDate()) {
+                return Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            }
+            return dayOfMonth
         }
     }
 }

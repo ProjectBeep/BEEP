@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.lighthouse.beep.core.common.exts.EMPTY_DATE
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.content.OnContentChangeListener
 import com.lighthouse.beep.core.ui.content.registerGalleryContentObserver
@@ -29,6 +30,7 @@ import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
 import com.lighthouse.beep.ui.dialog.datepicker.DatePickerDialog
 import com.lighthouse.beep.ui.dialog.datepicker.DatePickerParam
+import com.lighthouse.beep.ui.dialog.datepicker.DatePickerResult
 import com.lighthouse.beep.ui.dialog.progress.ProgressDialog
 import com.lighthouse.beep.ui.dialog.progress.ProgressParam
 import com.lighthouse.beep.ui.dialog.textinput.TextInputDialog
@@ -59,7 +61,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import java.util.Date
 import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
@@ -289,7 +290,17 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
     private fun showExpiredDialog() {
         show(DatePickerDialog.TAG) {
-            val expired = viewModel.selectedGifticonData.value?.expired ?: Date()
+            supportFragmentManager.setFragmentResultListener(
+                DatePickerResult.KEY,
+                this,
+            ) { requestKey, data ->
+                val result = DatePickerResult(data)
+                val editData = EditData.Expired(result.date)
+                viewModel.updateGifticonData(editData = editData)
+                supportFragmentManager.clearFragmentResultListener(requestKey)
+            }
+
+            val expired = viewModel.selectedGifticonData.value?.expired ?: EMPTY_DATE
             val param = DatePickerParam(expired)
             DatePickerDialog.newInstance(param)
         }

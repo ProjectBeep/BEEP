@@ -1,11 +1,13 @@
 package com.lighthouse.beep.ui.dialog.datepicker
 
+import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.ui.dialog.bottomsheet.BeepBottomSheetDialog
 import com.lighthouse.beep.ui.dialog.datepicker.adapter.DatePickerAdapter
 import com.lighthouse.beep.ui.dialog.datepicker.adapter.DatePickerLayoutManager
@@ -56,34 +58,50 @@ class DatePickerDialog : BeepBottomSheetDialog() {
     }
 
     private fun setUpSpinner() {
-        val yearList = (2013 .. 2033).toList()
-        yearAdapter.submitList(yearList)
+        yearAdapter.submitList(viewModel.yearList)
 
+        val yearPosition = yearAdapter.getPosition(viewModel.year)
         binding.spinnerYear.apply {
             adapter = yearAdapter
             layoutManager = DatePickerLayoutManager(context) {
-                Log.d("TEST", "selected Year : ${yearList[it]}")
+                viewModel.setYear(yearAdapter.getValue(it))
             }
+            scrollToPosition(yearPosition)
         }
 
-        val monthList = (1 .. 12).toList()
-        monthAdapter.submitList(monthList)
+        monthAdapter.submitList(viewModel.monthList)
 
+        val monthPosition = monthAdapter.getPosition(viewModel.month)
         binding.spinnerMonth.apply {
             adapter = monthAdapter
             layoutManager = DatePickerLayoutManager(context) {
-                Log.d("TEST", "selected Month : ${monthList[it]}")
+                viewModel.setMonth(monthAdapter.getValue(it))
             }
+            scrollToPosition(monthPosition)
         }
 
-        val dateList = (1 .. 31).toList()
-        dateAdapter.submitList(dateList)
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.dateList.collect { dateList ->
+                dateAdapter.submitList(dateList)
+
+                val position = dateAdapter.getPosition(viewModel.dayOfMonth)
+                binding.spinnerDate.scrollToPosition(position)
+            }
+        }
 
         binding.spinnerDate.apply {
             adapter = dateAdapter
             layoutManager = DatePickerLayoutManager(context) {
-                Log.d("TEST", "selected Date : ${dateList[it]}")
+                viewModel.setDayOfMonth(dateAdapter.getValue(it))
             }
+            itemAnimator = null
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        val result = DatePickerResult(viewModel.year, viewModel.month, viewModel.dayOfMonth)
+        setFragmentResult(DatePickerResult.KEY, result.buildBundle())
+
+        super.onDismiss(dialog)
     }
 }

@@ -37,7 +37,7 @@ fun Date.ofYear(): Int {
 fun Date.ofMonth(): Int {
     val calendar = Calendar.getInstance()
     calendar.time = this
-    return calendar.get(Calendar.MONTH)
+    return calendar.get(Calendar.MONTH) + 1
 }
 
 fun Date.ofDate(): Int {
