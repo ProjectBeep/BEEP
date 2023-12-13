@@ -26,6 +26,7 @@ import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
+import com.lighthouse.beep.ui.designsystem.toast.BeepToast
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
 import com.lighthouse.beep.ui.dialog.datepicker.DatePickerDialog
@@ -501,9 +502,9 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
         binding.btnRegister.setOnClickListener(createThrottleClickListener {
             if (viewModel.isRegisterActivated.value) {
-
+                BeepToast.show(this, "쿠폰을 우선 등록했어요.")
             } else {
-
+                BeepToast.show(this, "등록할 수 없어요.")
             }
         })
     }
