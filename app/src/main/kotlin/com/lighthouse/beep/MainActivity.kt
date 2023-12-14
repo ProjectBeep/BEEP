@@ -3,21 +3,19 @@ package com.lighthouse.beep
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
+import com.lighthouse.beep.theme.R
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import com.lighthouse.beep.databinding.ActivityMainBinding
 import com.lighthouse.beep.model.user.AuthProvider
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,50 +27,25 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var navigator: AppNavigator
 
-    private val onExitAnimationListener = SplashScreen.OnExitAnimationListener { provider ->
-        val logo = ActivityCompat.getDrawable(this, R.drawable.anim_logo) as? AnimatedVectorDrawable
-        val iconView = runCatching {
-            provider.iconView as? ImageView
-        }.getOrNull()
-        if (logo == null || iconView == null) {
-            provider.remove()
-            return@OnExitAnimationListener
-        }
-
-        iconView.setImageDrawable(logo)
-        iconView.alpha = 0f
-        iconView.animate()
-            .alpha(1f)
-            .setDuration(300L)
-            .withEndAction {
-                logo.start()
-                logo.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                    override fun onAnimationEnd(drawable: Drawable?) {
-                        provider.remove()
-                        setUpPageNavigate()
-                    }
-                })
-            }.start()
-    }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
-        super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            splashScreen.setKeepOnScreenCondition {
-                viewModel.uiState.value is MainUiState.Success
-            }
-            splashScreen.setOnExitAnimationListener(onExitAnimationListener)
-        } else {
-            lifecycleScope.launch {
-                viewModel.uiState.filterIsInstance<MainUiState.Success>()
-                    .take(1)
-                    .collect {
-                        setUpPageNavigate()
-                    }
-            }
+        installSplashScreen().setKeepOnScreenCondition {
+            viewModel.uiState.value is MainUiState.Success
         }
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        window?.statusBarColor = getColor(R.color.beep_pink)
+
+        val logo = binding.imageLogo.drawable as? AnimatedVectorDrawable
+        logo?.registerAnimationCallback(object: Animatable2.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                setUpPageNavigate()
+            }
+        })
+        logo?.start()
     }
 
     private fun setUpPageNavigate() {

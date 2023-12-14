@@ -61,6 +61,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
 
     packaging {
@@ -92,6 +93,7 @@ dependencies {
     implementation(projects.navs)
 
     implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.splashscreen)
 
