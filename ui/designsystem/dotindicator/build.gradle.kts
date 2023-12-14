@@ -7,4 +7,11 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.common)
+    implementation(projects.core.ui)
+
+    implementation(projects.theme)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.recyclerview)
 }

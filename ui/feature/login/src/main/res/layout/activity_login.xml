@@ -37,16 +37,17 @@
         android:id="@+id/list_description"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="232dp"
+        android:layout_height="202dp"
         android:layout_marginTop="6dp"
         app:layout_constraintTop_toBottomOf="@id/text_app_name"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_app_description"/>
 
-    <View
+    <com.lighthouse.beep.ui.designsystem.dotindicator.DotIndicator
         android:id="@+id/indicator"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         app:layout_constraintEnd_toEndOf="@id/guide_end"
         app:layout_constraintTop_toBottomOf="@id/list_description"/>

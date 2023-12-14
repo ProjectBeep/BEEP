@@ -14,6 +14,8 @@ dependencies {
     implementation(projects.theme)
     implementation(projects.domain)
 
+    implementation(projects.ui.designsystem.dotindicator)
+
     implementation(projects.library.permission)
 
     implementation(projects.auth.google)
