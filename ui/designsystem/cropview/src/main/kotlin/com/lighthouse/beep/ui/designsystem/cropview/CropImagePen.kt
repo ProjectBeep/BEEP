@@ -56,11 +56,17 @@ internal class CropImagePen(
 
     fun onDraw(canvas: Canvas) {
         canvas.save()
-        val layerId = canvas.saveLayer(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), null)
+        val layerId =
+            canvas.saveLayer(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), null)
         canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), backgroundPaint)
         canvas.drawPath(drawPath, penPaint)
         if (pointerPos != POINT_F_EMPTY) {
-            canvas.drawCircle(pointerPos.x, pointerPos.y, penPaint.strokeWidth / 2f, penPointerPaint)
+            canvas.drawCircle(
+                pointerPos.x,
+                pointerPos.y,
+                penPaint.strokeWidth / 2f,
+                penPointerPaint
+            )
         }
         canvas.restoreToCount(layerId)
         canvas.restore()
@@ -101,6 +107,24 @@ internal class CropImagePen(
                     top = max(top, boundRect.top)
                     right = min(right, boundRect.right)
                     bottom = min(bottom, boundRect.bottom)
+                }
+                val minSize = view.minWindowSize
+                val halfSize = minSize / 2
+                val centerX = minOf(
+                    maxOf(drawRect.centerX(), boundRect.left + halfSize),
+                    boundRect.right - halfSize,
+                )
+                val centerY = minOf(
+                    maxOf(drawRect.centerY(), boundRect.top + halfSize),
+                    boundRect.bottom - halfSize,
+                )
+                if (drawRect.width() < minSize) {
+                    drawRect.left = centerX - halfSize
+                    drawRect.right = centerX + halfSize
+                }
+                if (drawRect.height() < minSize) {
+                    drawRect.top = centerY - halfSize
+                    drawRect.bottom = centerY + halfSize
                 }
 
                 activePointerId = null

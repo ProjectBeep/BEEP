@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,11 +16,11 @@ import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.EMPTY_RECT
 import com.lighthouse.beep.core.common.exts.cast
 import com.lighthouse.beep.core.common.exts.crop
-import com.lighthouse.beep.core.ui.binding.viewBindings
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.ui.designsystem.cropview.CropImageMode
 import com.lighthouse.beep.ui.designsystem.cropview.OnChangeCropRectListener
+import com.lighthouse.beep.ui.designsystem.cropview.OnCropImageModeListener
 import com.lighthouse.beep.ui.feature.editor.EditorViewModel
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.FragmentEditorCropBinding
@@ -44,7 +46,9 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
 
     private val viewModel by viewModels<EditorCropViewModel>()
 
-    private val binding by viewBindings<FragmentEditorCropBinding>()
+    private var _binding: FragmentEditorCropBinding? = null
+    private val binding: FragmentEditorCropBinding
+        get() = requireNotNull(_binding)
 
     private lateinit var requestManager: RequestManager
 
@@ -52,6 +56,20 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
         super.onAttach(context)
 
         requestManager = requireActivity().cast<OnEditorProvider>().requestManager
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEditorCropBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,9 +93,15 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
             }
         })
 
-        binding.cropGifticon.setOnCropImageModeChangeListener { currentMode ->
-            viewModel.setCropImageMode(currentMode)
-        }
+        binding.cropGifticon.setOnCropImageModeListener(object: OnCropImageModeListener {
+            override fun onChange(mode: CropImageMode) {
+                viewModel.setCropImageMode(mode)
+            }
+
+            override fun onPenTouchComplete() {
+                viewModel.setShowCropImagePenGuide(true)
+            }
+        })
     }
 
     private fun setUpCollectState() {
@@ -115,8 +139,7 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
 
         viewLifecycleOwner.repeatOnStarted {
             combine(
-                editorViewModel.selectedEditorChip
-                    .filterIsInstance<EditorChip.Property>(),
+                editorViewModel.selectedEditorChip.filterIsInstance<EditorChip.Property>(),
                 viewModel.cropImageMode,
             ) { type, cropImageMode ->
                 type.type to cropImageMode

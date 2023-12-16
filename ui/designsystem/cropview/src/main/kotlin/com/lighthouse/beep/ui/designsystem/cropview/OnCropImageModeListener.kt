@@ -1,6 +1,8 @@
 package com.lighthouse.beep.ui.designsystem.cropview
 
-fun interface OnCropImageModeChangeListener {
+interface OnCropImageModeListener {
 
     fun onChange(mode: CropImageMode)
+
+    fun onPenTouchComplete()
 }

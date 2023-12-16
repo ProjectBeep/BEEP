@@ -23,7 +23,7 @@ internal class CropImageWindow(
 
         private val CORNER_THICKNESS = 4f.dp
         private val CORNER_LENGTH = 20f.dp
-        private val MIN_SIZE = (CORNER_LENGTH + CORNER_THICKNESS) * 2
+        val MIN_SIZE = (CORNER_LENGTH + CORNER_THICKNESS) * 2
 
         private val EDGE_TOUCH_RANGE = 24.dp
     }

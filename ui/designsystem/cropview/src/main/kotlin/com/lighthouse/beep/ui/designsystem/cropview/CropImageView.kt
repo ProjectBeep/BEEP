@@ -52,6 +52,9 @@ class CropImageView(
     val boundRect
         get() = RectF(boundLeft, boundTop, boundRight, boundBottom)
 
+    val minWindowSize
+        get() = CropImageWindow.MIN_SIZE
+
     private val mainMatrix = Matrix()
     private val mainInverseMatrix = Matrix()
 
@@ -62,13 +65,13 @@ class CropImageView(
 
     private fun setCropImageMode(mode: CropImageMode) {
         cropImageMode = mode
-        onCropImageModeChangeListener?.onChange(mode)
+        onCropImageModeListener?.onChange(mode)
     }
 
-    private var onCropImageModeChangeListener: OnCropImageModeChangeListener? = null
+    private var onCropImageModeListener: OnCropImageModeListener? = null
 
-    fun setOnCropImageModeChangeListener(listener: OnCropImageModeChangeListener?) {
-        onCropImageModeChangeListener = listener
+    fun setOnCropImageModeListener(listener: OnCropImageModeListener?) {
+        onCropImageModeListener = listener
     }
 
     private fun calculateRealCropRect(viewCropRect: RectF) = RectF(viewCropRect).apply {
@@ -111,11 +114,11 @@ class CropImageView(
     }
 
     private val onCropPenListener = object : OnCropImagePenListener {
-        override fun onPenTouchComplete(viewCropRect: RectF) {
-            val cropRect = calculateRealCropRect(viewCropRect)
+        override fun onPenTouchComplete(penCropRect: RectF) {
+            val cropRect = calculateRealCropRect(penCropRect)
             setCropImageMode(CropImageMode.DRAG_WINDOW)
-            calculateMatrixByViewCropRect(viewCropRect)
-            applyZoom(viewCropRect, animate = true)
+            calculateMatrixByViewCropRect(penCropRect)
+            applyZoom(penCropRect, animate = true)
             val bitmap = originBitmap
             if (bitmap != null) {
                 val rect = Rect(
@@ -126,6 +129,7 @@ class CropImageView(
                 )
                 onChangeCropRectListener?.onChange(bitmap, rect, zoom)
             }
+            onCropImageModeListener?.onPenTouchComplete()
         }
     }
 
