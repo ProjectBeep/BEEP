@@ -16,7 +16,7 @@ dependencies {
 
     implementation(projects.ui.designsystem.dotindicator)
 
-    implementation(projects.library.permission)
+    implementation(projects.permission)
 
     implementation(projects.auth.google)
     implementation(projects.auth.kakao)

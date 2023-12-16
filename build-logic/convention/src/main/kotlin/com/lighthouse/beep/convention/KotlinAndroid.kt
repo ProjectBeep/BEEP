@@ -40,6 +40,7 @@ private fun Project.configureKotlin() {
                 "-opt-in=kotlin.RequiresOptIn",
                 "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-Xextended-compiler-checks"
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.lighthouse.beep.library.permission
+package com.lighthouse.beep.permission
 
 import android.Manifest
 import android.os.Build

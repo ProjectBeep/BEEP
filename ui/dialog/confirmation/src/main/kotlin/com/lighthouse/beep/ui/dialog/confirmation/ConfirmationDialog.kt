@@ -11,7 +11,7 @@ import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.theme.R
 import com.lighthouse.beep.ui.dialog.confirmation.databinding.DialogConfirmationBinding
 
-class ConfirmationDialog : DialogFragment() {
+open class ConfirmationDialog : DialogFragment() {
 
     companion object {
         const val TAG = "Confirmation"
@@ -72,29 +72,35 @@ class ConfirmationDialog : DialogFragment() {
         binding.containerContent.preventTouchPropagation()
 
         binding.tvMessage.apply {
-            text = ConfirmationParam.getMessage(arguments)
+            text = ConfirmationParam.getMessage(context, arguments)
             isVisible = text.isNotEmpty()
         }
 
         binding.tvOk.apply {
-            text = ConfirmationParam.getOkText(arguments)
+            text = ConfirmationParam.getOkText(context, arguments)
             isVisible = text.isNotEmpty()
+            val okDismiss = ConfirmationParam.isOkDismiss(arguments)
             setOnClickListener { v ->
                 if (onOkClickListener != null) {
                     onOkClickListener?.onClick(v)
                 }
-                dismiss()
+                if (okDismiss) {
+                    dismiss()
+                }
             }
         }
 
         binding.tvCancel.apply {
-            text = ConfirmationParam.getCancelText(arguments)
+            text = ConfirmationParam.getCancelText(context, arguments)
             isVisible = text.isNotEmpty()
+            val cancelDismiss = ConfirmationParam.isCancelDismiss(arguments)
             setOnClickListener { v ->
                 if (onCancelClickListener != null) {
                     onCancelClickListener?.onClick(v)
                 }
-                dismiss()
+                if (cancelDismiss) {
+                    dismiss()
+                }
             }
         }
     }

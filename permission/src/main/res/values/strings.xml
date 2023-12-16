@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="storage_permission_message">\'삡\'에서 사용자의 사진에 접근하도록 허용하겠습니까?</string>
+    <string name="location_permission_message">\'삡\'에서 사용자의 위치에 접근하도록 허용하겠습니까?</string>
+    <string name="notification_permission_message">\'삡\'에서 알람을 보낼 수 있도록 허용하겠습니까?</string>
+
+    <string name="permission_disallow">허용 안함</string>
+    <string name="permission_allow">허용</string>
+</resources>

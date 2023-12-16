@@ -2,7 +2,7 @@
 androidStudioGradlePlugin = "8.1.4"
 
 # AndroidX
-activity = "1.8.1"
+activity = "1.8.2"
 lifecycle = "2.6.2"
 paging = "3.2.1"
 room = "2.6.1"
@@ -51,6 +51,7 @@ androidx-core-ktx = "androidx.core:core-ktx:1.12.0"
 androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 androidx-recyclerview = "androidx.recyclerview:recyclerview:1.3.2"
+androidx-transition-ktx = "androidx.transition:transition-ktx:1.4.1"
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore"}
 
 androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.6.2"
@@ -72,7 +73,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 
-android-material = "com.google.android.material:material:1.10.0"
+android-material = "com.google.android.material:material:1.11.0"
 
 ## Kakao
 kakao-sdk-user = "com.kakao.sdk:v2-user:2.13.0"
@@ -99,7 +100,7 @@ gms-play-services-location = "com.google.android.gms:play-services-location:21.0
 gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.1"
 
 ## Firebase
-firebase-bom = "com.google.firebase:firebase-bom:32.6.0"
+firebase-bom = "com.google.firebase:firebase-bom:32.7.0"
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }

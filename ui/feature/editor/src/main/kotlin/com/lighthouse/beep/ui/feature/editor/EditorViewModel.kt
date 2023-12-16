@@ -109,7 +109,7 @@ internal class EditorViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun updateGifticonData(
-        selectedItem:GalleryImage? = selectedGifticon.value,
+        selectedItem: GalleryImage? = selectedGifticon.value,
         editData: EditData,
     ) {
         selectedItem ?: return
@@ -153,7 +153,6 @@ internal class EditorViewModel @Inject constructor(
     init {
         _recognizeLoading.value = true
         viewModelScope.launch {
-            _gifticonDataMapFlow.emit(emptyMap())
             galleryImage.value.map { gallery ->
                 launch {
                     val data = recognizeGifticonUseCase(gallery).getOrNull()

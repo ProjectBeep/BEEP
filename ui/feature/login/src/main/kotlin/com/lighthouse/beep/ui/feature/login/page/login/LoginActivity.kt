@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.lighthouse.beep.core.ui.exts.checkSelfPermissions
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
-import com.lighthouse.beep.library.permission.BeepPermission
+import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.ui.designsystem.dotindicator.AutoPagerSnapHelper

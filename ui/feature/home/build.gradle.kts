@@ -13,6 +13,9 @@ dependencies {
     implementation(projects.theme)
     implementation(projects.model)
 
+    implementation(projects.permission)
+    implementation(projects.ui.dialog.confirmation)
+
     implementation(projects.navs)
 
     implementation(libs.glide)

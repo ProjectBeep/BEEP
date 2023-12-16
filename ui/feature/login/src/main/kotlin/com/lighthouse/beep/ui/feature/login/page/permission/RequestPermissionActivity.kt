@@ -6,7 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
-import com.lighthouse.beep.library.permission.BeepPermission
+import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.ui.feature.login.databinding.ActivityRequestPermissionBinding
@@ -14,13 +14,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-internal class RequestPermissionActivity : AppCompatActivity(){
+internal class RequestPermissionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRequestPermissionBinding
 
-    private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        gotoHomePage()
-    }
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            gotoHomePage()
+        }
 
     @Inject
     lateinit var navigator: AppNavigator
