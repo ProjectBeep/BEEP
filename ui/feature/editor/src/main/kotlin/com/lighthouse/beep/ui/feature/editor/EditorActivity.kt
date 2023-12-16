@@ -26,6 +26,8 @@ import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
+import com.lighthouse.beep.permission.BeepPermission
+import com.lighthouse.beep.permission.ext.setUpRequirePermission
 import com.lighthouse.beep.ui.designsystem.toast.BeepToast
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
@@ -333,6 +335,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         binding = ActivityEditorBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        setUpRequirePermission(BeepPermission.storage)
         setUpGalleryContentObserver()
         setUpBackPress()
         setUpGifticonList()

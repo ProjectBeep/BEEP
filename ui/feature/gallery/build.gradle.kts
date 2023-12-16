@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.domain)
 
     implementation(projects.navs)
+    implementation(projects.permission)
 
     implementation(libs.androidx.paging.runtime)
     implementation(libs.glide)

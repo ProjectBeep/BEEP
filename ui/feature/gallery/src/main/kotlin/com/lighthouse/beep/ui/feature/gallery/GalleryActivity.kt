@@ -31,6 +31,8 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.navs.result.EditorResult
+import com.lighthouse.beep.permission.BeepPermission
+import com.lighthouse.beep.permission.ext.setUpRequirePermission
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryAllAdapter
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryRecommendAdapter
 import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.OnGalleryListener
@@ -119,6 +121,7 @@ internal class GalleryActivity : AppCompatActivity() {
         binding = ActivityGalleryBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        setUpRequirePermission(BeepPermission.storage)
         setUpGalleryContentObserver()
         setUpBucketTypeTab()
         setUpSelectedGalleryList()

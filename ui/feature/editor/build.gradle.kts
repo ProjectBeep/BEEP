@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.domain)
 
     implementation(projects.navs)
+    implementation(projects.permission)
 
     implementation(projects.ui.dialog.bottomsheet)
     implementation(projects.ui.dialog.progress)
