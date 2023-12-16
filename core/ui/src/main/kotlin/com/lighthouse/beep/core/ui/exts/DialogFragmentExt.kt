@@ -1,6 +1,5 @@
 package com.lighthouse.beep.core.ui.exts
 
-import android.content.pm.PackageManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -41,8 +40,4 @@ fun FragmentManager.dismiss(tag: String) {
     if (dialog?.isAdded == true) {
         dialog.dismiss()
     }
-}
-
-fun Fragment.checkSelfPermissions(permissions: Array<String>): Boolean {
-    return permissions.all { context?.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 }

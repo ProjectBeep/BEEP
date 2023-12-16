@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
-import com.lighthouse.beep.core.ui.exts.checkSelfPermissions
+import com.lighthouse.beep.permission.ext.checkSelfPermissions
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 
 open class PermissionDialog(

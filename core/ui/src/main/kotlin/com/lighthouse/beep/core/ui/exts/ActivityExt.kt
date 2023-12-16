@@ -1,6 +1,5 @@
 package com.lighthouse.beep.core.ui.exts
 
-import android.content.pm.PackageManager
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
@@ -37,8 +36,4 @@ fun ComponentActivity.setUpSystemInsetsPadding(root: View) {
             return@setOnApplyWindowInsetsListener windowInsets
         }
     }
-}
-
-fun ComponentActivity.checkSelfPermissions(permissions: Array<String>): Boolean {
-    return permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 }

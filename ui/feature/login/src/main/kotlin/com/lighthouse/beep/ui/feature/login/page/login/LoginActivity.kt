@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.lighthouse.beep.core.ui.exts.checkSelfPermissions
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
+import com.lighthouse.beep.permission.ext.checkSelfPermissions
 import com.lighthouse.beep.ui.designsystem.dotindicator.AutoPagerSnapHelper
 import com.lighthouse.beep.ui.feature.login.databinding.ActivityLoginBinding
 import com.lighthouse.beep.ui.feature.login.page.login.adapter.AppDescriptionAdapter

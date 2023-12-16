@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.lighthouse.beep.core.ui.exts.checkSelfPermissions
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
@@ -18,6 +17,7 @@ import com.lighthouse.beep.model.location.DmsPos
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.permission.dialog.StoragePermissionDialog
+import com.lighthouse.beep.permission.ext.checkSelfPermissions
 import com.lighthouse.beep.ui.feature.home.adapter.HomeAdapter
 import com.lighthouse.beep.ui.feature.home.adapter.expired.ExpiredHeaderViewHolder
 import com.lighthouse.beep.ui.feature.home.adapter.expired.OnExpiredBrandListener
