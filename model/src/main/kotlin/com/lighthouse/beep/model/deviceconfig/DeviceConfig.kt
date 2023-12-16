@@ -4,20 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeviceConfig(
-    val hash: RecentHash = RecentHash(
-        backup = "",
-    ),
-    val shownGuidePage: ShownGuidePage = ShownGuidePage(
+    val beepGuide: BeepGuide = BeepGuide(
         permission = false,
+        cropImagePen = false,
     ),
 )
 
 @Serializable
-data class RecentHash(
-    val backup: String,
-)
-
-@Serializable
-data class ShownGuidePage(
+data class BeepGuide(
     val permission: Boolean,
+    val cropImagePen: Boolean,
 )

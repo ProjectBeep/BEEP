@@ -5,7 +5,11 @@ import com.lighthouse.beep.ui.designsystem.cropview.CropImageMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-internal class EditorCropViewModel: ViewModel() {
+internal class EditorCropViewModel(
+
+): ViewModel() {
+
+
 
     private val _cropImageMode = MutableStateFlow(CropImageMode.NONE)
     val cropImageMode = _cropImageMode.asStateFlow()
