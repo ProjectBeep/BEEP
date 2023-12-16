@@ -82,6 +82,7 @@ internal class CropImagePen(
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                listener.onPenTouchStart()
                 drawPath.reset()
                 drawPath.moveTo(x, y)
                 drawRect.set(x, y, x, y)

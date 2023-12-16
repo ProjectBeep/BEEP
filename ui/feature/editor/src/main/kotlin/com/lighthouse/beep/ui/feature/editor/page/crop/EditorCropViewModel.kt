@@ -26,9 +26,9 @@ internal class EditorCropViewModel @Inject constructor(
         _cropImageMode.value = mode
     }
 
-    val isShowCropImagePenGuide = getBeepGuideUseCase().map { it.cropImagePen }
+    val isShownCropImagePenGuide = getBeepGuideUseCase().map { it.cropImagePen }
 
-    fun setShowCropImagePenGuide(value: Boolean) {
+    fun setShownCropImagePenGuide(value: Boolean) {
         viewModelScope.launch {
             setBeepGuideUseCase {
                 it.copy(cropImagePen = value)

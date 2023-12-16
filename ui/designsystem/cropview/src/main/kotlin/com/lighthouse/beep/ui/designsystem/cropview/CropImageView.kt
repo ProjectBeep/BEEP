@@ -114,6 +114,10 @@ class CropImageView(
     }
 
     private val onCropPenListener = object : OnCropImagePenListener {
+        override fun onPenTouchStart() {
+            onCropImageModeListener?.onPenTouchStart()
+        }
+
         override fun onPenTouchComplete(penCropRect: RectF) {
             val cropRect = calculateRealCropRect(penCropRect)
             setCropImageMode(CropImageMode.DRAG_WINDOW)
@@ -129,7 +133,6 @@ class CropImageView(
                 )
                 onChangeCropRectListener?.onChange(bitmap, rect, zoom)
             }
-            onCropImageModeListener?.onPenTouchComplete()
         }
     }
 

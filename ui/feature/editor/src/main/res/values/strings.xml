@@ -22,6 +22,8 @@
     <string name="editor_gifticon_property_expired">유효기간</string>
     <string name="editor_gifticon_property_balance">금액</string>
 
+    <string name="editor_crop_touch_mode_guide">인식할 구역을 문질러\n직접 선택해 보세요</string>
+
     <string name="editor_crop_touch_mode_tutorial">%s 영역을 직접 터치해 보세요.</string>
     <string name="editor_crop_window_mode_tutorial">%s 영역을 직접 크롭해 보세요.</string>
 

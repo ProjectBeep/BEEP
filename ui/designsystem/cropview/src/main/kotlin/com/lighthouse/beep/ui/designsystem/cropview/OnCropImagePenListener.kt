@@ -4,5 +4,7 @@ import android.graphics.RectF
 
 internal interface OnCropImagePenListener {
 
+    fun onPenTouchStart()
+
     fun onPenTouchComplete(penCropRect: RectF)
 }

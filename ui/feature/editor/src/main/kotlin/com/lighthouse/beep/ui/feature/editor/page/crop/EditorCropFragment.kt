@@ -98,8 +98,8 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
                 viewModel.setCropImageMode(mode)
             }
 
-            override fun onPenTouchComplete() {
-                viewModel.setShowCropImagePenGuide(true)
+            override fun onPenTouchStart() {
+                viewModel.setShownCropImagePenGuide(true)
             }
         })
     }
@@ -141,21 +141,29 @@ internal class EditorCropFragment : Fragment(R.layout.fragment_editor_crop) {
             combine(
                 editorViewModel.selectedEditorChip.filterIsInstance<EditorChip.Property>(),
                 viewModel.cropImageMode,
-            ) { type, cropImageMode ->
-                type.type to cropImageMode
-            }.collect { (type, cropImageMode) ->
-                binding.groupCropTouchModeTutorial.isVisible = cropImageMode != CropImageMode.NONE
-                val typeTitle = getString(type.textResId)
-                when(cropImageMode) {
-                    CropImageMode.DRAW_PEN -> {
-                        binding.textCropModeTutorial.text = getString(R.string.editor_crop_touch_mode_tutorial, typeTitle)
-                        binding.iconCropModeTutorial.setImageResource(R.drawable.icon_crop_touch_mode_small)
+                viewModel.isShownCropImagePenGuide,
+            ) { type, cropImageMode, isShowCropImagePendGuide ->
+                Triple(type.type, cropImageMode, isShowCropImagePendGuide)
+            }.collect { (type, cropImageMode, isShowCropImagePendGuide) ->
+                val isShowGuide = cropImageMode == CropImageMode.DRAW_PEN && !isShowCropImagePendGuide
+                val isShowTutorial = !isShowGuide && cropImageMode != CropImageMode.NONE
+
+                binding.groupCropTouchModeGuide.isVisible = isShowGuide
+                binding.groupCropTouchModeTutorial.isVisible = isShowTutorial
+
+                if (isShowTutorial) {
+                    val typeTitle = getString(type.textResId)
+                    when(cropImageMode) {
+                        CropImageMode.DRAW_PEN -> {
+                            binding.textCropModeTutorial.text = getString(R.string.editor_crop_touch_mode_tutorial, typeTitle)
+                            binding.iconCropModeTutorial.setImageResource(R.drawable.icon_crop_touch_mode_small)
+                        }
+                        CropImageMode.DRAG_WINDOW -> {
+                            binding.textCropModeTutorial.text = getString(R.string.editor_crop_window_mode_tutorial, typeTitle)
+                            binding.iconCropModeTutorial.setImageResource(R.drawable.icon_crop_window_mode_small)
+                        }
+                        else -> Unit
                     }
-                    CropImageMode.DRAG_WINDOW -> {
-                        binding.textCropModeTutorial.text = getString(R.string.editor_crop_window_mode_tutorial, typeTitle)
-                        binding.iconCropModeTutorial.setImageResource(R.drawable.icon_crop_window_mode_small)
-                    }
-                    CropImageMode.NONE -> Unit
                 }
             }
         }

@@ -4,5 +4,5 @@ interface OnCropImageModeListener {
 
     fun onChange(mode: CropImageMode)
 
-    fun onPenTouchComplete()
+    fun onPenTouchStart()
 }
