@@ -8,7 +8,7 @@ class SetBeepGuideUseCase @Inject constructor(
     private val deviceRepository: DeviceRepository,
 ){
 
-    suspend operator fun invoke(beepGuide: BeepGuide) {
+    suspend operator fun invoke(beepGuide: (BeepGuide) -> BeepGuide) {
         deviceRepository.setBeepGuide(beepGuide)
     }
 }
