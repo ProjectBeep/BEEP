@@ -5,6 +5,7 @@ import com.lighthouse.beep.data.local.serializer.DeviceConfigSerializer
 import com.lighthouse.beep.data.repository.device.LocalDeviceDataSource
 import com.lighthouse.beep.model.deviceconfig.BeepGuide
 import com.lighthouse.beep.model.deviceconfig.DeviceConfig
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 internal class LocalDeviceDataSourceImpl @Inject constructor(
@@ -13,9 +14,13 @@ internal class LocalDeviceDataSourceImpl @Inject constructor(
 
     override val deviceConfig = dataStore.data
 
-    override suspend fun setBeepGuide(beepGuide: BeepGuide) {
-        dataStore.updateData {
-            it.copy(beepGuide = beepGuide)
+    override suspend fun setBeepGuide(transform: (BeepGuide) -> BeepGuide) {
+        val oldValue = deviceConfig.firstOrNull()?.beepGuide ?: BeepGuide.Default
+        val newValue = transform(oldValue)
+        if (oldValue != newValue) {
+            dataStore.updateData {
+                it.copy(beepGuide = newValue)
+            }
         }
     }
 

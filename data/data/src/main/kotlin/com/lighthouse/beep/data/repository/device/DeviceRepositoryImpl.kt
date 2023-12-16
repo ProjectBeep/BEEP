@@ -12,7 +12,7 @@ internal class DeviceRepositoryImpl @Inject constructor(
     override val deviceConfig: Flow<DeviceConfig>
         get() = localDataSource.deviceConfig
 
-    override suspend fun setBeepGuide(beepGuide: BeepGuide) {
-        localDataSource.setBeepGuide(beepGuide)
+    override suspend fun setBeepGuide(transform: (BeepGuide) -> BeepGuide) {
+        localDataSource.setBeepGuide(transform)
     }
 }

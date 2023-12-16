@@ -9,7 +9,7 @@ import java.io.OutputStream
 @Suppress("BlockingMethodInNonBlockingContext")
 internal object DeviceConfigSerializer : Serializer<DeviceConfig> {
     override val defaultValue: DeviceConfig
-        get() = DeviceConfig()
+        get() = DeviceConfig.Default
 
     override suspend fun readFrom(input: InputStream): DeviceConfig {
         return runCatching {

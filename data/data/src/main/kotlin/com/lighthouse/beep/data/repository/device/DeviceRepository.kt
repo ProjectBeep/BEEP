@@ -8,5 +8,5 @@ interface DeviceRepository {
 
     val deviceConfig: Flow<DeviceConfig>
 
-    suspend fun setBeepGuide(beepGuide: BeepGuide)
+    suspend fun setBeepGuide(transform: (BeepGuide) -> BeepGuide)
 }
