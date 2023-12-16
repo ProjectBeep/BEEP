@@ -3,7 +3,9 @@ package com.lighthouse.beep.ui.feature.login.page.login
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.lighthouse.beep.core.ui.exts.checkSelfPermissions
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
@@ -16,10 +18,14 @@ import com.lighthouse.beep.ui.feature.login.page.login.adapter.AppDescriptionAda
 import com.lighthouse.beep.ui.feature.login.page.login.model.AppDescription
 import com.lighthouse.beep.ui.feature.login.page.permission.RequestPermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 internal class LoginActivity : AppCompatActivity() {
+
+    private val viewModel by viewModels<LoginViewModel>()
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -50,15 +56,20 @@ internal class LoginActivity : AppCompatActivity() {
 
     private fun setUpOnClickEvent() {
         binding.btnLoginGuest.setOnClickListener(createThrottleClickListener {
-            if (checkSelfPermissions(BeepPermission.all)) {
-                gotoHomePage()
-            } else {
-                gotoPermissionPage()
+            lifecycleScope.launch {
+                val isShownPermissionPage = viewModel.isShownPermissionPage.firstOrNull() ?: false
+                if (!isShownPermissionPage && !checkSelfPermissions(BeepPermission.all)) {
+                    gotoPermissionPage()
+                } else {
+                    gotoHomePage()
+                }
             }
         })
     }
 
     private fun gotoPermissionPage() {
+        viewModel.setShownPermissionPage(true)
+
         val intent = Intent(this, RequestPermissionActivity::class.java)
         startActivity(intent)
         finish()

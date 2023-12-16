@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class EditorCropViewModel @Inject constructor(
-    private val getBeepGuideUseCase: GetBeepGuideUseCase,
+    getBeepGuideUseCase: GetBeepGuideUseCase,
     private val setBeepGuideUseCase: SetBeepGuideUseCase,
 ): ViewModel() {
 
