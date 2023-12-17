@@ -151,15 +151,20 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 setOnOkClickListener {
                     val data = viewModel.getGifticonData(item.id)
                     viewModel.deleteItem(item)
-                    beepSnackBar
-                        .setTextResId(R.string.editor_gifticon_delete_success)
-                        .setState(BeepSnackBarState.INFO)
-                        .setAction(BeepSnackBarAction.Text(
-                            textResId = R.string.editor_gifticon_register_revert,
-                            listener = {
-                                viewModel.revertDeleteItem(item, data)
-                            }
-                        )).show()
+
+                    if (viewModel.galleryImage.value.isNotEmpty()) {
+                        beepSnackBar
+                            .setTextResId(R.string.editor_gifticon_delete_success)
+                            .setState(BeepSnackBarState.INFO)
+                            .setAction(BeepSnackBarAction.Text(
+                                textResId = R.string.editor_gifticon_register_revert,
+                                listener = {
+                                    viewModel.revertDeleteItem(item, data)
+                                }
+                            )).show()
+                    } else {
+                        cancelEditor()
+                    }
                 }
             }
         }
@@ -453,9 +458,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
         repeatOnStarted {
             viewModel.galleryImage.collect {
-                if (it.isEmpty()) {
-                    cancelEditor()
-                } else {
+                if (it.isNotEmpty()) {
                     editorGifticonAdapter.submitList(it)
                     editorPreviewAdapter.submitList(it)
                 }
@@ -511,15 +514,19 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
             if (validMap.isNotEmpty()) {
                 viewModel.registerGifticon(validMap)
 
-                beepSnackBar
-                    .setText(getString(R.string.editor_gifticon_register_partial_success, validMap.size))
-                    .setState(BeepSnackBarState.INFO)
-                    .setAction(BeepSnackBarAction.Text(
-                        textResId = R.string.editor_gifticon_register_revert,
-                        listener = {
-                            viewModel.revertRegisterGifticon(validMap)
-                        }
-                    )).show()
+                if (viewModel.galleryImage.value.isNotEmpty()) {
+                    beepSnackBar
+                        .setText(getString(R.string.editor_gifticon_register_partial_success, validMap.size))
+                        .setState(BeepSnackBarState.INFO)
+                        .setAction(BeepSnackBarAction.Text(
+                            textResId = R.string.editor_gifticon_register_revert,
+                            listener = {
+                                viewModel.revertRegisterGifticon(validMap)
+                            }
+                        )).show()
+                } else {
+                    completeEditor()
+                }
             } else {
                 viewModel.selectInvalidEditType()
 
@@ -570,6 +577,11 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 }
             }
         }
+    }
+
+    private fun completeEditor() {
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
     private fun cancelEditor() {
