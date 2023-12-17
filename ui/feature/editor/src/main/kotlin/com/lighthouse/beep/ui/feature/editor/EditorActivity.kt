@@ -480,19 +480,19 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         }
 
         repeatOnStarted {
-            viewModel.validGifticonCount.collect { count ->
-                binding.btnRegister.text = when (count) {
+            viewModel.validGifticonList.collect { list ->
+                binding.btnRegister.isActivated = list.isNotEmpty()
+                binding.btnRegister.text = when (list.size) {
                     0 -> getString(R.string.editor_gifticon_register)
-                    else -> getString(R.string.editor_gifticon_register_valid, count)
+                    else -> getString(R.string.editor_gifticon_register_valid, list.size)
                 }
             }
         }
+    }
 
-        repeatOnStarted {
-            viewModel.isRegisterActivated.collect { isActivated ->
-                binding.btnRegister.isActivated = isActivated
-            }
-        }
+    private val beepSnackBar by lazy {
+        BeepSnackBar.Builder(this)
+            .setRootView(binding.root)
     }
 
     private fun setUpOnClickEvent() {
@@ -506,21 +506,24 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         })
 
         binding.btnRegister.setOnClickListener(createThrottleClickListener {
-            if (viewModel.isRegisterActivated.value) {
-                BeepSnackBar.Builder(this)
-                    .setRootView(binding.root)
-                    .setText("쿠폰을 우선 등록했어요.")
+            val validMap = viewModel.validGifticonList.value
+            if (validMap.isNotEmpty()) {
+                viewModel.registerGifticon(validMap)
+
+                beepSnackBar
+                    .setText(getString(R.string.editor_gifticon_register_partial_success, validMap.size))
+                    .setState(BeepSnackBarState.INFO)
                     .setAction(BeepSnackBarAction.Text(
-                        text = "취소",
+                        textResId = R.string.editor_gifticon_register_revert,
                         listener = {
-                            it.dismiss()
+                            viewModel.revertRegisterGifticon(validMap)
                         }
                     )).show()
             } else {
-                BeepSnackBar.Builder(this)
-                    .setRootView(binding.root)
-                    .setText("등록할 수 없어요.")
+                beepSnackBar
+                    .setTextResId(R.string.editor_gifticon_register_failed)
                     .setState(BeepSnackBarState.ERROR)
+                    .setAction(BeepSnackBarAction.None)
                     .show()
             }
         })

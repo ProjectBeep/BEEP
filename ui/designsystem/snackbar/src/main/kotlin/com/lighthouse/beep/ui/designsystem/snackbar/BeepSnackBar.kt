@@ -34,11 +34,7 @@ import java.lang.ref.WeakReference
 import kotlin.math.abs
 
 @Suppress("unused")
-@SuppressLint("ViewConstructor")
-class BeepSnackBar(
-    context: Context,
-    private val builder: Builder,
-) : ViewGroup(context) {
+class BeepSnackBar(context: Context) : ViewGroup(context) {
 
     companion object {
         private const val SHORT_DURATION_MS = 1500L
@@ -50,6 +46,8 @@ class BeepSnackBar(
         private const val DEFAULT_DISMISS_DURATION = 180L
     }
 
+    var builder = Builder(context)
+
     private var viewScope = CoroutineScope(Dispatchers.Main.immediate)
 
     private val binding: SnackbarBeepBinding =
@@ -57,7 +55,7 @@ class BeepSnackBar(
 
     private var onSnackBarDismissListener: OnSnackBarDismissListener? = null
 
-    private var snackBarDismissAnimator: ViewPropertyAnimator? = null
+    private var snackBarSwipeDismissAnimator: ViewPropertyAnimator? = null
 
     private val snackBarSwipeDismissListener = object : OnTouchListener {
         var touchStartX = 0f
@@ -74,14 +72,13 @@ class BeepSnackBar(
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    binding.containerSnackBar.translationX =
-                        event.rawX - touchStartX
+                    binding.root.translationX = event.rawX - touchStartX
                 }
 
                 MotionEvent.ACTION_UP,
                 MotionEvent.ACTION_CANCEL -> {
-                    val moveDistance = abs(binding.containerSnackBar.translationX)
-                    val isShow = moveDistance < binding.containerSnackBar.width * 0.1f
+                    val moveDistance = abs(binding.root.translationX)
+                    val isShow = moveDistance < binding.root.width * 0.1f
                     startAnimation(isShow)
                 }
             }
@@ -89,13 +86,14 @@ class BeepSnackBar(
         }
 
         private fun startAnimation(isShow: Boolean) {
-            val start = binding.containerSnackBar.translationX
+            val start = binding.root.translationX
             val end = when {
                 isShow -> 0f
-                binding.containerSnackBar.translationX < 0 -> -binding.root.width.toFloat()
+                binding.root.translationX < 0 -> -binding.root.width.toFloat()
                 else -> binding.root.width.toFloat()
             }
-            snackBarDismissAnimator = binding.containerSnackBar.animate()
+            snackBarSwipeDismissAnimator?.cancel()
+            snackBarSwipeDismissAnimator = binding.containerSnackBar.animate()
                 .setDuration(DEFAULT_SWIPE_ANIMATION_DURATION)
                 .setListener(object : SimpleAnimatorListener() {
                     override fun onAnimationStart(animator: Animator) {
@@ -111,6 +109,7 @@ class BeepSnackBar(
                     }
 
                     private fun clearAnimation() {
+                        snackBarSwipeDismissAnimator = null
                         binding.containerSnackBar.isEnabled = true
                         if (!isShow) {
                             dismiss()
@@ -118,7 +117,7 @@ class BeepSnackBar(
                     }
                 })
                 .setUpdateListener {
-                    binding.containerSnackBar.translationX =
+                    binding.root.translationX =
                         start - (start - end) * it.animatedFraction
                 }.also {
                     it.start()
@@ -139,20 +138,18 @@ class BeepSnackBar(
         }
     }
 
-    init  {
-        observeLifecycle()
-        initializeSnackBarContent()
-        initializeSnackBarListeners()
+    private val lifecycleObserver = LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_DESTROY) {
+            dismiss(runAnimation = false)
+        }
     }
 
-    private fun observeLifecycle() {
-        builder.lifecycleOwner?.lifecycle?.addObserver(object: LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_DESTROY) {
-                    dismiss(runAnimation = false)
-                }
-            }
-        })
+    private fun setUpObserveLifecycle() {
+        builder.lifecycleOwner?.lifecycle?.addObserver(lifecycleObserver)
+    }
+
+    private fun removeObserveLifecycle() {
+        builder.lifecycleOwner?.lifecycle?.removeObserver(lifecycleObserver)
     }
 
     private fun initializeSnackBarContent() {
@@ -181,7 +178,8 @@ class BeepSnackBar(
         if (action is BeepSnackBarAction.Icon) {
             binding.iconAction.setImageResource(action.drawableResId)
             binding.iconAction.setOnThrottleClickListener {
-                action.listener?.onActionClick(this)
+                action.listener?.onActionClick()
+                dismiss()
             }
         }
 
@@ -189,7 +187,8 @@ class BeepSnackBar(
         if (action is BeepSnackBarAction.Text) {
             binding.textAction.text = action.getText(context)
             binding.textAction.setOnThrottleClickListener {
-                action.listener?.onActionClick(this)
+                action.listener?.onActionClick()
+                dismiss()
             }
         }
     }
@@ -249,12 +248,17 @@ class BeepSnackBar(
     private var showAnimator: ViewPropertyAnimator? = null
 
     fun show() {
-        dismiss(runAnimation = false)
+        clearAnimator()
+
+        setUpObserveLifecycle()
+        initializeSnackBarContent()
+        initializeSnackBarListeners()
+
         isActive = true
+
         val rootView = findRootView() ?: return
         rootView.addView(this, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
 
-        showAnimator?.cancel()
         showAnimator = animate()
             .setDuration(DEFAULT_SHOW_DURATION)
             .setUpdateListener {
@@ -272,20 +276,35 @@ class BeepSnackBar(
     private var dismissAnimator: ViewPropertyAnimator? = null
 
     private fun release() {
+        if (isActive){
+            return
+        }
+
+        removeObserveLifecycle()
+        binding.root.translationX = 0f
+
         val parent = parent as? ViewGroup
         parent?.removeView(this)
 
         onSnackBarDismissListener?.onDismiss()
     }
+
+    private fun clearAnimator() {
+        snackBarSwipeDismissAnimator?.cancel()
+        snackBarSwipeDismissAnimator = null
+        showAnimator?.cancel()
+        showAnimator = null
+        dismissAnimator?.cancel()
+        dismissAnimator = null
+    }
+
     fun dismiss(runAnimation: Boolean = true) {
         if (!isActive) {
             return
         }
         isActive = false
 
-        snackBarDismissAnimator?.cancel()
-        showAnimator?.cancel()
-        dismissAnimator?.cancel()
+        clearAnimator()
 
         if (runAnimation) {
             dismissAnimator = animate()
@@ -294,7 +313,6 @@ class BeepSnackBar(
                     override fun onAnimationEnd(animator: Animator) {
                         release()
                     }
-
                     override fun onAnimationCancel(animator: Animator) {
                         release()
                     }
@@ -336,9 +354,11 @@ class BeepSnackBar(
 
         fun setText(text: String) = apply {
             this.text = text
+            this.textResId = 0
         }
 
         fun setTextResId(@StringRes textResId: Int) = apply {
+            this.text = ""
             this.textResId = textResId
         }
 
@@ -413,7 +433,7 @@ class BeepSnackBar(
 
         fun build(): BeepSnackBar {
             snackBar.get()?.dismiss()
-            return BeepSnackBar(context = context, builder = this).also {
+            return BeepSnackBar(context = context).also {
                 snackBar = WeakReference(it)
             }
         }
@@ -421,6 +441,7 @@ class BeepSnackBar(
         fun show() {
             val snackBar = snackBar.get() ?: build()
             if (!snackBar.isActive || !snackBar.isVisible || !snackBar.isAttachedToWindow) {
+                snackBar.builder = this
                 snackBar.show()
             }
         }

@@ -100,13 +100,16 @@ internal class EditorViewModel @Inject constructor(
     private val _gifticonDataMapFlow = MutableSharedFlow<Map<Long, GifticonData>>(replay = 1)
     val gifticonDataMapFlow = _gifticonDataMapFlow.asSharedFlow()
 
-    val validGifticonCount = gifticonDataMapFlow
-        .map { map -> map.count { !it.value.isInvalid } }
-        .distinctUntilChanged()
+    val validGifticonList = gifticonDataMapFlow.map { map ->
+        map.filter { !it.value.isInvalid }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
-    val isRegisterActivated = gifticonDataMapFlow
-        .map { map -> map.values.any { !it.isInvalid } }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    fun registerGifticon(map: Map<Long, GifticonData>) {
+
+    }
+
+    fun revertRegisterGifticon(map: Map<Long, GifticonData>) {
+    }
 
     fun updateGifticonData(
         selectedItem: GalleryImage? = selectedGifticon.value,
