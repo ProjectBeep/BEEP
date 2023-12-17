@@ -44,6 +44,8 @@
     <string name="editor_gifticon_exit_cancel">아니요</string>
 
     <string name="editor_gifticon_delete_success">해당 이미지를 제거 했습니다</string>
+    <string name="editor_gifticon_delete_revert">취소</string>
+
     <string name="editor_gifticon_register_partial_success">%d개의 쿠폰을 우선 등록했어요</string>
     <string name="editor_gifticon_register_revert">취소</string>
     <string name="editor_gifticon_register_failed">등록할 수 없어요.</string>

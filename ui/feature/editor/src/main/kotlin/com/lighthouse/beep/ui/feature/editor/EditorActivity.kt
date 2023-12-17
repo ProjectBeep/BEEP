@@ -30,7 +30,6 @@ import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.permission.ext.setUpRequirePermission
 import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBar
 import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBarAction
-import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBarState
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
 import com.lighthouse.beep.ui.dialog.datepicker.DatePickerDialog
@@ -87,6 +86,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
     private val beepSnackBar by lazy {
         BeepSnackBar.Builder(this)
+            .setLifecycleOwner(this)
             .setRootView(binding.root)
     }
 
@@ -153,11 +153,10 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                     viewModel.deleteItem(item)
 
                     if (viewModel.galleryImage.value.isNotEmpty()) {
-                        beepSnackBar
+                        beepSnackBar.info()
                             .setTextResId(R.string.editor_gifticon_delete_success)
-                            .setState(BeepSnackBarState.INFO)
                             .setAction(BeepSnackBarAction.Text(
-                                textResId = R.string.editor_gifticon_register_revert,
+                                textResId = R.string.editor_gifticon_delete_revert,
                                 listener = {
                                     viewModel.revertDeleteItem(item, data)
                                 }
@@ -515,9 +514,8 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 viewModel.registerGifticon(validMap)
 
                 if (viewModel.galleryImage.value.isNotEmpty()) {
-                    beepSnackBar
+                    beepSnackBar.info()
                         .setText(getString(R.string.editor_gifticon_register_partial_success, validMap.size))
-                        .setState(BeepSnackBarState.INFO)
                         .setAction(BeepSnackBarAction.Text(
                             textResId = R.string.editor_gifticon_register_revert,
                             listener = {
@@ -536,10 +534,8 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                     binding.listEditorChip.smoothScrollToPosition(position)
                 }
 
-                beepSnackBar
+                beepSnackBar.error()
                     .setTextResId(R.string.editor_gifticon_register_failed)
-                    .setState(BeepSnackBarState.ERROR)
-                    .setAction(BeepSnackBarAction.None)
                     .show()
             }
         })

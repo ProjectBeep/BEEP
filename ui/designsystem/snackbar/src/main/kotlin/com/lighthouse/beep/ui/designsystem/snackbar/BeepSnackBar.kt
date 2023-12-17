@@ -366,6 +366,20 @@ class BeepSnackBar(context: Context) : ViewGroup(context) {
             this.state = state
         }
 
+        // SnackBar 의 상태를 초기화 할때 사용
+        fun info() = apply {
+            setText("")
+            setState(BeepSnackBarState.INFO)
+            setAction(BeepSnackBarAction.None)
+        }
+
+        // SnackBar 의 상태를 초기화 할때 사용
+        fun error() = apply {
+            setText("")
+            setState(BeepSnackBarState.ERROR)
+            setAction(BeepSnackBarAction.None)
+        }
+
         fun setAction(action: BeepSnackBarAction) = apply {
             this.action = action
         }
