@@ -28,7 +28,9 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.permission.ext.setUpRequirePermission
-import com.lighthouse.beep.ui.designsystem.toast.BeepToast
+import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBar
+import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBarAction
+import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBarState
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
 import com.lighthouse.beep.ui.dialog.datepicker.DatePickerDialog
@@ -309,7 +311,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         }
     }
 
-    private val onEditorExpiredListener = object: OnEditorExpiredListener {
+    private val onEditorExpiredListener = object : OnEditorExpiredListener {
         override fun getGifticonDataFlow(): Flow<GifticonData> {
             return viewModel.selectedGifticonDataFlow
                 .distinctUntilChanged()
@@ -505,9 +507,21 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
 
         binding.btnRegister.setOnClickListener(createThrottleClickListener {
             if (viewModel.isRegisterActivated.value) {
-                BeepToast.show(this, "쿠폰을 우선 등록했어요.")
+                BeepSnackBar.Builder(this)
+                    .setRootView(binding.root)
+                    .setText("쿠폰을 우선 등록했어요.")
+                    .setAction(BeepSnackBarAction.Text(
+                        text = "취소",
+                        listener = {
+                            it.dismiss()
+                        }
+                    )).show()
             } else {
-                BeepToast.show(this, "등록할 수 없어요.")
+                BeepSnackBar.Builder(this)
+                    .setRootView(binding.root)
+                    .setText("등록할 수 없어요.")
+                    .setState(BeepSnackBarState.ERROR)
+                    .show()
             }
         })
     }

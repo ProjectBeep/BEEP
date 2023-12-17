@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/snack_bar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_snack_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_snackbar_default">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/text"
+            android:contentDescription="@null"
+            android:visibility="gone"
+            tools:src="@drawable/icon_snack_bar_info"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginVertical="16dp"
+            app:layout_goneMarginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/icon"
+            app:layout_constraintEnd_toEndOf="@id/barrier_action"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="start|center_vertical"
+            android:textAppearance="@style/Text.Title5"
+            android:textColor="@color/font_gray"
+            tools:text="1개의 쿠폰을 우선 등록했어요." />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_action"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="text_action,icon_action,guide_end"/>
+
+        <TextView
+            android:id="@+id/text_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textAppearance="@style/Text.Body2"
+            android:textColor="@color/font_medium_gray"
+            android:visibility="gone"
+            tools:visibility="gone"
+            tools:text="취소"/>
+
+        <ImageView
+            android:id="@+id/icon_action"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:paddingVertical="15dp"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            android:contentDescription="@null"
+            tools:visibility="visible"
+            tools:src="@drawable/icon_snack_bar_error"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_end"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintGuide_end="16dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

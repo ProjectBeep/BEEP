@@ -23,7 +23,7 @@ dependencies {
     implementation(projects.ui.dialog.textinput)
     implementation(projects.ui.dialog.datepicker)
     implementation(projects.ui.designsystem.cropview)
-    implementation(projects.ui.designsystem.toast)
+    implementation(projects.ui.designsystem.snackbar)
 
     implementation(projects.library.barcode)
     implementation(projects.library.recognizer)
