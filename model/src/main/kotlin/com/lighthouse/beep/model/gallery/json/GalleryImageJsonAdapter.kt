@@ -1,4 +1,4 @@
-package com.lighthouse.beep.model.gallery.adapter
+package com.lighthouse.beep.model.gallery.json
 
 import android.net.Uri
 import com.lighthouse.beep.model.gallery.GalleryImage

@@ -2,7 +2,7 @@ package com.lighthouse.beep.navs.result
 
 import android.content.Intent
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.model.gallery.adapter.toJson
+import com.lighthouse.beep.model.gallery.json.toJson
 
 class EditorResult(
     val list: List<GalleryImage>

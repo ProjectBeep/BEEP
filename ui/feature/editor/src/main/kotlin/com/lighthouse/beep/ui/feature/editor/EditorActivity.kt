@@ -85,27 +85,24 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         Glide.with(this)
     }
 
+    private val beepSnackBar by lazy {
+        BeepSnackBar.Builder(this)
+            .setRootView(binding.root)
+    }
+
     private val onPreviewScrollListener = object : RecyclerView.OnScrollListener() {
         private var lastPosition = -1
-        private var isLock = false
-
-        fun lockScroll() {
-            isLock = true
-        }
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (!isLock) {
-                    val offset = recyclerView.computeHorizontalScrollOffset()
-                    val extent = recyclerView.computeHorizontalScrollExtent()
-                    val position = offset / extent
-                    if (position != lastPosition) {
-                        lastPosition = position
-                        binding.listSelected.smoothScrollToPosition(position)
-                        viewModel.selectGifticon(position)
-                    }
+                val offset = recyclerView.computeHorizontalScrollOffset()
+                val extent = recyclerView.computeHorizontalScrollExtent()
+                val position = offset / extent
+                if (position != lastPosition) {
+                    lastPosition = position
+                    binding.listSelected.smoothScrollToPosition(position)
+                    viewModel.selectGifticon(position)
                 }
-                isLock = false
             }
         }
     }
@@ -132,10 +129,9 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         }
 
         override fun onClick(item: GalleryImage, position: Int) {
-            onPreviewScrollListener.lockScroll()
             viewModel.selectGifticon(item)
             binding.listSelected.smoothScrollToPosition(position)
-            binding.listPreview.smoothScrollToPosition(position)
+            binding.listPreview.scrollToPosition(position)
             selectEditorChip(EditorChip.Preview)
         }
 
@@ -153,7 +149,17 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
             )
             ConfirmationDialog.newInstance(param).apply {
                 setOnOkClickListener {
+                    val data = viewModel.getGifticonData(item.id)
                     viewModel.deleteItem(item)
+                    beepSnackBar
+                        .setTextResId(R.string.editor_gifticon_delete_success)
+                        .setState(BeepSnackBarState.INFO)
+                        .setAction(BeepSnackBarAction.Text(
+                            textResId = R.string.editor_gifticon_register_revert,
+                            listener = {
+                                viewModel.revertDeleteItem(item, data)
+                            }
+                        )).show()
                 }
             }
         }
@@ -490,11 +496,6 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
         }
     }
 
-    private val beepSnackBar by lazy {
-        BeepSnackBar.Builder(this)
-            .setRootView(binding.root)
-    }
-
     private fun setUpOnClickEvent() {
         binding.btnBack.setOnClickListener(createThrottleClickListener {
             showExitEditorDialog()
@@ -520,6 +521,14 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                         }
                     )).show()
             } else {
+                viewModel.selectInvalidEditType()
+
+                val selectedEditChip = viewModel.selectedEditorChip.value as? EditorChip.Property
+                if (selectedEditChip != null) {
+                    val position = editorPropertyChipAdapter.getPosition(selectedEditChip)
+                    binding.listEditorChip.smoothScrollToPosition(position)
+                }
+
                 beepSnackBar
                     .setTextResId(R.string.editor_gifticon_register_failed)
                     .setState(BeepSnackBarState.ERROR)

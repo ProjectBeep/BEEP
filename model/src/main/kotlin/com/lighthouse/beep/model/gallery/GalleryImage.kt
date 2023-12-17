@@ -2,7 +2,7 @@ package com.lighthouse.beep.model.gallery
 
 import android.net.Uri
 import androidx.recyclerview.widget.DiffUtil
-import com.lighthouse.beep.model.gallery.adapter.getGalleryImageListAdapter
+import com.lighthouse.beep.model.gallery.json.getGalleryImageListAdapter
 import com.squareup.moshi.JsonClass
 import java.util.Date
 

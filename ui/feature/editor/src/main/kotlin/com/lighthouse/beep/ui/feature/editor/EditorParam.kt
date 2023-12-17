@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.SavedStateHandle
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.model.gallery.adapter.toJson
+import com.lighthouse.beep.model.gallery.json.toJson
 import com.lighthouse.beep.navs.AppNavParam
 
 class EditorParam private constructor(

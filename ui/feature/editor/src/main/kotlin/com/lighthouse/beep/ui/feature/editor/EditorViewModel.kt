@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.abs
 
 @HiltViewModel
 internal class EditorViewModel @Inject constructor(
@@ -32,23 +33,75 @@ internal class EditorViewModel @Inject constructor(
     private val recognizeGifticonUseCase: RecognizeGifticonUseCase,
 ) : ViewModel() {
 
-    private val _galleryImage = MutableStateFlow(EditorParam.getGalleryList(savedStateHandle))
+    private val originGalleryImage = EditorParam.getGalleryList(savedStateHandle)
+
+    private val _galleryImage = MutableStateFlow(originGalleryImage)
     val galleryImage = _galleryImage.asStateFlow()
 
     fun deleteItem(item: GalleryImage) {
-        val oldList = _galleryImage.value
+        val oldList = galleryImage.value
         val index = oldList.indexOfFirst { it.id == item.id }
-        val newSelectItem = when {
-            index + 1 < oldList.size -> oldList[index + 1]
-            index - 1 >= 0 -> oldList[index - 1]
-            else -> null
-        }
-        if (newSelectItem != null) {
-            selectGifticon(newSelectItem)
+
+        val selectedItem = selectedGifticon.value
+        if (item.id == selectedItem?.id) {
+            val newSelectItem = when {
+                index + 1 < oldList.size -> oldList[index + 1]
+                index - 1 >= 0 -> oldList[index - 1]
+                else -> null
+            }
+            if (newSelectItem != null) {
+                selectGifticon(newSelectItem)
+            }
         }
 
         _galleryImage.value = oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
         gifticonDataMap.remove(item.id)
+        viewModelScope.launch {
+            _gifticonDataMapFlow.emit(gifticonDataMap)
+        }
+    }
+
+    fun revertDeleteItem(item: GalleryImage, data: GifticonData?) {
+        data ?: return
+        restoreList(mapOf(item.id to data))
+    }
+
+    private fun deleteList(list: List<Long>) {
+        val oldList = galleryImage.value
+        val newList = oldList.filter { oldItem -> list.none { it == oldItem.id } }
+
+        val selectedItem = selectedGifticon.value
+        if (list.any { it == selectedItem?.id }) {
+            val index = oldList.indexOfFirst { it.id == selectedItem?.id }
+            val newSelect = oldList
+                .mapIndexed { i, galleryImage -> abs(index - i) to galleryImage }
+                .filter { (_, image) -> image.id !in list }
+                .minByOrNull { it.first }
+
+            if (newSelect != null) {
+                selectGifticon(newSelect.second)
+            }
+        }
+
+        _galleryImage.value = newList
+        list.forEach {
+            gifticonDataMap.remove(it)
+        }
+        viewModelScope.launch {
+            _gifticonDataMapFlow.emit(gifticonDataMap)
+        }
+    }
+
+    private fun restoreList(map: Map<Long, GifticonData>) {
+        val oldList = galleryImage.value
+        val newList = originGalleryImage.filter { origin ->
+            oldList.find { it.id == origin.id } != null ||
+                    map.containsKey(origin.id)
+        }
+        _galleryImage.value = newList
+        map.forEach { (id, data) ->
+            gifticonDataMap[id] = data
+        }
         viewModelScope.launch {
             _gifticonDataMapFlow.emit(gifticonDataMap)
         }
@@ -105,10 +158,20 @@ internal class EditorViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     fun registerGifticon(map: Map<Long, GifticonData>) {
-
+        deleteList(map.map { it.key })
+        selectEditorChip(EditorChip.Preview)
     }
 
     fun revertRegisterGifticon(map: Map<Long, GifticonData>) {
+        restoreList(map)
+    }
+
+    fun selectInvalidEditType() {
+        val selectedItem = selectedGifticon.value ?: return
+        val data = getGifticonData(selectedItem.id) ?: return
+        val type = EditType.entries.find { it.isInvalid(data) } ?: return
+
+        selectEditorChip(EditorChip.Property(type))
     }
 
     fun updateGifticonData(
