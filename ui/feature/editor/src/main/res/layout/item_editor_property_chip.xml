@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:paddingVertical="6dp"
-        android:paddingHorizontal="13dp"
+        android:paddingHorizontal="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,8 +25,8 @@
 
     <View
         android:id="@+id/icon_invalid"
-        android:layout_width="6dp"
-        android:layout_height="6dp"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
         android:layout_marginStart="9dp"
         android:layout_marginBottom="5dp"
         android:visibility="invisible"
@@ -34,6 +34,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:backgroundTint="@color/beep_pink"
         android:background="@drawable/bg_oval"
-        tools:visibility="gone"/>
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
