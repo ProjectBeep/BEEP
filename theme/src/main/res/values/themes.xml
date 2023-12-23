@@ -21,7 +21,7 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
-    <style name="Theme.Dialog" parent="">
+    <style name="Theme.Dialog" parent="Theme.BEEP">
         <item name="colorPrimary">@color/beep_pink</item>
         <item name="colorSecondary">@color/beep_pink</item>
         <item name="colorAccent">@color/beep_pink</item>

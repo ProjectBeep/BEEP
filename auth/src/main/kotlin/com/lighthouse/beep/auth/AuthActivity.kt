@@ -1,31 +1,28 @@
 package com.lighthouse.beep.auth
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.os.PersistableBundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.lighthouse.beep.auth.client.GoogleClient
 import com.lighthouse.beep.auth.client.KakaoClient
 import com.lighthouse.beep.auth.client.NaverClient
-import com.lighthouse.beep.auth.extension.mapJson
 import com.lighthouse.beep.auth.model.OAuthTokenResult
-import com.lighthouse.beep.auth.network.NetworkRequest
-import com.lighthouse.beep.auth.network.NetworkTask
-import com.lighthouse.beep.auth.network.RequestMethod
+import com.lighthouse.beep.core.ui.exts.dismiss
+import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.model.user.AuthProvider
+import com.lighthouse.beep.ui.dialog.progress.ProgressDialog
+import com.lighthouse.beep.ui.dialog.progress.ProgressParam
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import okhttp3.OkHttpClient
+import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-class AuthActivity : ComponentActivity() {
+class AuthActivity : AppCompatActivity() {
 
     companion object {
         const val RESULT_OK = 1001
@@ -39,6 +36,7 @@ class AuthActivity : ComponentActivity() {
 
     private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         lifecycleScope.launch {
+            viewModel.setLoadingPostpone(false)
             signInWithTokenResult(AuthProvider.GOOGLE, googleClient.getAccessToken(result))
         }
     }
@@ -53,6 +51,7 @@ class AuthActivity : ComponentActivity() {
 
     private val naverAuthenticateLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         lifecycleScope.launch {
+            viewModel.setLoadingPostpone(false)
             signInWithTokenResult(AuthProvider.NAVER, naverClient.getAccessToken(result))
         }
     }
@@ -62,12 +61,32 @@ class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        showProgress()
+        setUpCollectState()
+
         lifecycleScope.launch {
             when(val param = AuthParam.getParam(intent)) {
                 is AuthParam.SignIn -> signIn(param.provider)
                 is AuthParam.SignOut -> signOut()
                 is AuthParam.Withdrawal -> withdrawal()
                 is AuthParam.None -> finish()
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        hideProgress()
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+    private fun setUpCollectState() {
+        lifecycleScope.launch {
+            viewModel.loadingPostpone.collect { isLoadingPostpone ->
+                if (isLoadingPostpone) {
+                    hideProgress()
+                } else {
+                    showProgress()
+                }
             }
         }
     }
@@ -108,6 +127,7 @@ class AuthActivity : ComponentActivity() {
             runCatching {
                 signInNaver(naverClient.getAccessToken())
             }.onFailure {
+                viewModel.setLoadingPostpone(true)
                 naverClient.authenticate(this, naverAuthenticateLauncher)
             }
         } else {
@@ -121,12 +141,13 @@ class AuthActivity : ComponentActivity() {
     }
 
     private fun signInGoogle() {
+        viewModel.setLoadingPostpone(true)
         googleSignInLauncher.launch(googleClient.signInIntent)
     }
 
     private suspend fun signInGuest() {
         runCatching {
-            FirebaseAuth.getInstance().signInAnonymously().await()
+            viewModel.requestGuestSignIn()
             setResult(RESULT_OK)
         }.onFailure {
             setResult(RESULT_FAILED)
@@ -135,7 +156,7 @@ class AuthActivity : ComponentActivity() {
     }
 
     private suspend fun signOutAuthInfo() {
-        when(BeepAuth.authInfo.provider) {
+        when(BeepAuth.authInfo?.provider) {
             AuthProvider.NAVER -> {
                 naverClient.signOut()
             }
@@ -176,5 +197,17 @@ class AuthActivity : ComponentActivity() {
             setResult(RESULT_FAILED)
         }
         finish()
+    }
+
+    private fun showProgress() {
+        show(ProgressDialog.TAG) {
+            ProgressDialog.newInstance(ProgressParam(
+                backgroundColor = getColor(ThemeR.color.black_30)
+            ))
+        }
+    }
+
+    private fun hideProgress() {
+        dismiss(ProgressDialog.TAG)
     }
 }

@@ -36,8 +36,12 @@ fun Fragment.dismiss(tag: String) {
 }
 
 fun FragmentManager.dismiss(tag: String) {
-    val dialog = findFragmentByTag(tag) as? DialogFragment
-    if (dialog?.isAdded == true) {
-        dialog.dismiss()
+    try {
+        val dialog = findFragmentByTag(tag) as? DialogFragment
+        if (dialog?.isAdded == true) {
+            dialog.dismiss()
+        }
+    } catch (e: IllegalStateException) {
+        e.printStackTrace()
     }
 }

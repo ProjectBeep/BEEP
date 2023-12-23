@@ -57,10 +57,13 @@ android {
 
 dependencies {
     implementation(projects.core.common)
+    implementation(projects.core.ui)
     implementation(projects.model)
     implementation(projects.data.data)
 
     implementation(projects.theme)
+
+    implementation(projects.ui.dialog.progress)
 
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.kotlin.coroutine.core)

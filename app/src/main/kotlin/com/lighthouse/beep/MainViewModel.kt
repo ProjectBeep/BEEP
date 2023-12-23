@@ -8,6 +8,7 @@ import com.lighthouse.beep.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -18,10 +19,8 @@ internal class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    val uiState = BeepAuth.authInfoFlow.flatMapLatest { newAuthInfo ->
-        userRepository.setAuthInfo {
-            newAuthInfo
-        }
+    val uiState = BeepAuth.authInfoFlow.filterNotNull().flatMapLatest { newAuthInfo ->
+        userRepository.setAuthInfo { newAuthInfo }
         combine(
             userRepository.userConfig,
             deviceRepository.deviceConfig,

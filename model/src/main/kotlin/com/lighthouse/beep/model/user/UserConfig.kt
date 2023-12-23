@@ -32,20 +32,20 @@ data class AuthInfo(
 enum class AuthProvider(
     val firebaseName: String,
 ) {
-    @SerialName("none")
-    NONE(firebaseName = "none"),
+    @SerialName("NONE")
+    NONE(firebaseName = "NONE"),
 
-    @SerialName("naver")
-    NAVER(firebaseName = "naver"),
+    @SerialName("NAVER")
+    NAVER(firebaseName = "NAVER"),
 
-    @SerialName("kakao")
-    KAKAO(firebaseName = "kakao"),
+    @SerialName("KAKAO")
+    KAKAO(firebaseName = "KAKAO"),
 
-    @SerialName("google")
-    GOOGLE(firebaseName = "google"),
+    @SerialName("GOOGLE")
+    GOOGLE(firebaseName = "GOOGLE"),
 
-    @SerialName("guest")
-    GUEST(firebaseName = "anonymous");
+    @SerialName("GUEST")
+    GUEST(firebaseName = "GUEST");
 
     companion object {
         fun of(firebaseName: String): AuthProvider {
