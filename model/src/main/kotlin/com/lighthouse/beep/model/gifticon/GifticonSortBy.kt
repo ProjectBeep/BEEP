@@ -1,6 +1,6 @@
 package com.lighthouse.beep.model.gifticon
 
-enum class GifticonSortBy {
-    RECENT,
-    DEADLINE,
+enum class GifticonSortBy(val code: Int) {
+    RECENT(0),
+    DEADLINE(1),
 }

@@ -12,6 +12,7 @@ dependencies {
     implementation(projects.core.ui)
     implementation(projects.core.common)
     implementation(projects.theme)
+    implementation(projects.data.data)
     implementation(projects.domain)
 
     implementation(projects.navs)

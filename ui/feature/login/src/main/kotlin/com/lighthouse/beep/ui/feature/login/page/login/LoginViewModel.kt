@@ -2,8 +2,7 @@ package com.lighthouse.beep.ui.feature.login.page.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.beep.domain.usecase.setting.GetBeepGuideUseCase
-import com.lighthouse.beep.domain.usecase.setting.SetBeepGuideUseCase
+import com.lighthouse.beep.data.repository.device.DeviceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -11,15 +10,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class LoginViewModel @Inject constructor(
-    getBeepGuideUseCase: GetBeepGuideUseCase,
-    private val setBeepGuideUseCase: SetBeepGuideUseCase,
+    private val deviceRepository: DeviceRepository,
 ): ViewModel() {
 
-    val isShownPermissionPage = getBeepGuideUseCase().map { it.permission }
+    val isShownPermissionPage = deviceRepository.deviceConfig.map {
+        it.beepGuide.permission
+    }
 
     fun setShownPermissionPage(value: Boolean) {
         viewModelScope.launch {
-            setBeepGuideUseCase {
+            deviceRepository.setBeepGuide {
                 it.copy(permission = value)
             }
         }

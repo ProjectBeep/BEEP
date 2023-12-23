@@ -9,7 +9,7 @@ import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorThumbnailBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
-import com.lighthouse.beep.ui.feature.editor.model.GifticonThumbnail
+import com.lighthouse.beep.ui.feature.editor.model.EditGifticonThumbnail
 import com.lighthouse.beep.ui.feature.editor.model.loadThumbnail
 
 internal class EditorThumbnailViewHolder(
@@ -27,13 +27,13 @@ internal class EditorThumbnailViewHolder(
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Property) {
         listener.getThumbnailFlow().collect(lifecycleOwner) { data ->
-            binding.groupRecommend.isVisible = data !is GifticonThumbnail.BuiltIn
-            binding.groupThumbnail.isVisible = data is GifticonThumbnail.BuiltIn
+            binding.groupRecommend.isVisible = data !is EditGifticonThumbnail.BuiltIn
+            binding.groupThumbnail.isVisible = data is EditGifticonThumbnail.BuiltIn
 
             requestManager.loadThumbnail(data)
                 .into(binding.imageThumbnail)
 
-            if (data is GifticonThumbnail.BuiltIn) {
+            if (data is EditGifticonThumbnail.BuiltIn) {
                 binding.textThumbnail.setText(data.builtIn.titleRes)
             }
         }

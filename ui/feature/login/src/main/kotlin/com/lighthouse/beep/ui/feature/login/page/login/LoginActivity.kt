@@ -3,11 +3,16 @@ package com.lighthouse.beep.ui.feature.login.page.login
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.lighthouse.beep.auth.AuthActivity
+import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
+import com.lighthouse.beep.model.user.AuthProvider
 import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
@@ -34,6 +39,26 @@ internal class LoginActivity : AppCompatActivity() {
 
     private val appDescriptionAdapter = AppDescriptionAdapter()
 
+    private val loginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when(result.resultCode) {
+                AuthActivity.RESULT_OK -> lifecycleScope.launch {
+                    val isShownPermissionPage = viewModel.isShownPermissionPage.firstOrNull() ?: false
+                    if (!isShownPermissionPage && !checkSelfPermissions(BeepPermission.all)) {
+                        gotoPermissionPage()
+                    } else {
+                        gotoHomePage()
+                    }
+                }
+                AuthActivity.RESULT_CANCELED -> {
+
+                }
+                AuthActivity.RESULT_FAILED -> {
+
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(LayoutInflater.from(this))
@@ -55,16 +80,26 @@ internal class LoginActivity : AppCompatActivity() {
     }
 
     private fun setUpOnClickEvent() {
-        binding.btnLoginGuest.setOnClickListener(createThrottleClickListener {
-            lifecycleScope.launch {
-                val isShownPermissionPage = viewModel.isShownPermissionPage.firstOrNull() ?: false
-                if (!isShownPermissionPage && !checkSelfPermissions(BeepPermission.all)) {
-                    gotoPermissionPage()
-                } else {
-                    gotoHomePage()
-                }
-            }
-        })
+        binding.btnLoginNaver.setOnThrottleClickListener {
+            val intent = BeepAuth.getSignInIntent(this, AuthProvider.NAVER)
+            loginLauncher.launch(intent)
+        }
+
+        binding.btnLoginKakao.setOnThrottleClickListener {
+            val intent = BeepAuth.getSignInIntent(this, AuthProvider.KAKAO)
+            loginLauncher.launch(intent)
+        }
+
+        binding.btnLoginGoogle.setOnThrottleClickListener {
+            val intent = BeepAuth.getSignInIntent(this, AuthProvider.GOOGLE)
+            loginLauncher.launch(intent)
+
+        }
+
+        binding.btnLoginGuest.setOnThrottleClickListener {
+            val intent = BeepAuth.getSignInIntent(this, AuthProvider.GUEST)
+            loginLauncher.launch(intent)
+        }
     }
 
     private fun gotoPermissionPage() {

@@ -1,6 +1,5 @@
 package com.lighthouse.beep.data.local.repository.device
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import com.lighthouse.beep.data.local.serializer.DeviceConfigSerializer
 import com.lighthouse.beep.data.repository.device.LocalDeviceDataSource
@@ -18,7 +17,6 @@ internal class LocalDeviceDataSourceImpl @Inject constructor(
     override suspend fun setBeepGuide(transform: (BeepGuide) -> BeepGuide) {
         val oldValue = deviceConfig.firstOrNull()?.beepGuide ?: BeepGuide.Default
         val newValue = transform(oldValue)
-        Log.d("TEST", "update $oldValue $newValue" )
         if (oldValue != newValue) {
             dataStore.updateData {
                 it.copy(beepGuide = newValue)

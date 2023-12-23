@@ -7,52 +7,155 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.lighthouse.beep.data.local.database.entity.DBGifticonEntity
-import com.lighthouse.beep.data.local.database.entity.DBUsageHistoryEntity
 import com.lighthouse.beep.data.local.database.model.DBBrandCategory
 import com.lighthouse.beep.data.local.database.model.DBGifticonDetail
+import com.lighthouse.beep.data.local.database.model.DBGifticonEditInfo
 import com.lighthouse.beep.data.local.database.model.DBGifticonListItem
-import com.lighthouse.beep.data.local.database.model.DBGifticonNotification
+import com.lighthouse.beep.data.local.database.model.DBGifticonResource
 import com.lighthouse.beep.model.exception.common.NotFoundException
 import com.lighthouse.beep.model.exception.db.UpdateException
+import com.lighthouse.beep.model.gifticon.GifticonType
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 @Dao
 internal interface GifticonDao {
 
-    /**
-     * 기프티콘과 크롭정보를 합쳐서 가져오기
-     * */
     @Query(
-        "SELECT * FROM gifticon_table  " +
-            "WHERE user_id = :userId AND id = :gifticonId " +
-            "LIMIT 1",
+        "SELECT id, " +
+                "user_id, " +
+                "thumbnail_type, " +
+                "thumbnail_built_in_code, " +
+                "thumbnail_uri, " +
+                "thumbnail_rect, " +
+                "name, " +
+                "display_brand, " +
+                "barcode, " +
+                "is_cash_card, " +
+                "total_cash, " +
+                "remain_cash, " +
+                "memo, " +
+                "is_used, " +
+                "expire_at " +
+                "FROM gifticon_table " +
+                "WHERE user_id = :userId AND id = :gifticonId " +
+                "LIMIT 1",
     )
     suspend fun getGifticonDetail(
         userId: String,
         gifticonId: Long,
     ): DBGifticonDetail?
 
-    /**
-     * 기프티콘 정보를 추가한다
-     * */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGifticon(gifticon: DBGifticonEntity)
-
-    @Update
-    suspend fun updateGifticon(gifticon: DBGifticonEntity)
-
-    /**
-     * 기프티콘 정보 삭제한다
-     * */
     @Query(
-        "DELETE FROM gifticon_table WHERE user_id = :userId AND id = :gifticonId",
+        "SELECT thumbnail_uri, " +
+                "gifticon_uri " +
+                "FROM gifticon_table " +
+                "WHERE user_id = :userId AND id = :gifticonId " +
+                "LIMIT 1"
     )
+    suspend fun getGifticonResource(
+        userId: String,
+        gifticonId: Long,
+    ): DBGifticonResource?
+
+    @Query(
+        "SELECT thumbnail_uri, " +
+                "gifticon_uri " +
+                "FROM gifticon_table " +
+                "WHERE user_id = :userId"
+    )
+    suspend fun getGifticonResourceList(
+        userId: String,
+    ): List<DBGifticonResource>?
+
+    @Query(
+        "SELECT id, " +
+                "user_id, " +
+                "thumbnail_type, " +
+                "thumbnail_built_in_code, " +
+                "thumbnail_uri, " +
+                "thumbnail_rect, " +
+                "name, " +
+                "display_brand, " +
+                "is_cash_card, " +
+                "total_cash, " +
+                "remain_cash, " +
+                "is_used, " +
+                "expire_at " +
+                "FROM gifticon_table " +
+                "WHERE user_id = :userId AND is_used = 0 " +
+                "ORDER BY " +
+                "CASE WHEN :sortCode = 0 AND :isAsc = 0 THEN created_at END DESC, " +
+                "CASE WHEN :sortCode = 0 AND :isAsc = 1 THEN created_at END ASC, " +
+                "CASE WHEN :sortCode = 1 AND :isAsc = 0 THEN expire_at END DESC, " +
+                "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC",
+    )
+    fun getGifticonList(
+        userId: String,
+        sortCode: Int,
+        isAsc: Int,
+    ): Flow<List<DBGifticonListItem>>
+
+    @Query(
+        "SELECT id, " +
+                "user_id, " +
+                "thumbnail_type, " +
+                "thumbnail_built_in_code, " +
+                "thumbnail_uri, " +
+                "thumbnail_rect, " +
+                "name, " +
+                "display_brand, " +
+                "is_cash_card, " +
+                "total_cash, " +
+                "remain_cash, " +
+                "is_used, " +
+                "expire_at " +
+                "FROM gifticon_table " +
+                "WHERE user_id = :userId AND is_used = 0 AND brand = :brand " +
+                "ORDER BY " +
+                "CASE WHEN :sortCode = 0 AND :isAsc = 0 THEN created_at END DESC, " +
+                "CASE WHEN :sortCode = 0 AND :isAsc = 1 THEN created_at END ASC, " +
+                "CASE WHEN :sortCode = 1 AND :isAsc = 0 THEN expire_at END DESC, " +
+                "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC",
+    )
+    fun getGifticonListByBrand(
+        userId: String,
+        brand: String,
+        sortCode: Int,
+        isAsc: Int,
+    ): Flow<List<DBGifticonListItem>>
+
+    @Query(
+        "SELECT id, " +
+                "user_id, " +
+                "thumbnail_type, " +
+                "thumbnail_built_in_code, " +
+                "thumbnail_uri, " +
+                "thumbnail_rect, " +
+                "name, " +
+                "display_brand, " +
+                "is_cash_card, " +
+                "total_cash, " +
+                "remain_cash, " +
+                "is_used, " +
+                "expire_at " +
+                "FROM gifticon_table " +
+                "WHERE user_id = :userId AND is_used = 1 " +
+                "ORDER BY used_at DESC"
+    )
+    fun getUsedGifticonList(userId: String): Flow<List<DBGifticonListItem>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGifticon(list: DBGifticonEntity)
+
+    @Update(entity = DBGifticonEntity::class)
+    suspend fun updateGifticon(editInfo: DBGifticonEditInfo)
+
+    @Query("DELETE FROM gifticon_table WHERE user_id = :userId")
+    suspend fun deleteGifticon(userId: String): Int
+
+    @Query("DELETE FROM gifticon_table WHERE user_id = :userId AND id = :gifticonId")
     suspend fun deleteGifticon(userId: String, gifticonId: Long): Int
 
-    /**
-     * 특정 유저의 기프티콘 정보를 다른 유저에게 넘긴다
-     * */
     @Query(
         "UPDATE gifticon_table " +
             "SET user_id = :newUserId " +
@@ -60,316 +163,41 @@ internal interface GifticonDao {
     )
     suspend fun transferGifticon(oldUserId: String, newUserId: String)
 
-    /**
-     * 브랜드 존재여부 확인
-     * */
-    @Query(
-        "SELECT EXISTS(" +
-            "SELECT 1 from gifticon_table " +
-            "WHERE user_id = :userId AND brand=:brand)",
-    )
-    suspend fun hasGifticonBrand(
-        userId: String,
-        brand: String,
-    ): Boolean
-
-    /**
-     * 기프티콘 정보를 가져온다
-     * sortCode : SortBy 참고
-     * 0 : Recent
-     * 1 : Deadline
-     * */
-    @Query(
-        "SELECT id, cropped_uri, name, display_brand, is_cash_card, total_cash, remain_cash, " +
-            "Cast(" +
-            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
-            "JulianDay(date('now')) as Integer" +
-            ") as d_day, is_used, expire_at, created_at " +
-            "FROM gifticon_table " +
-            "WHERE CASE " +
-            "WHEN :excludeExpire = 1 THEN user_id = :userId AND (is_used = :isUsed OR updated_at > :updatedAt) AND d_day > 0 " +
-            "ELSE user_id = :userId AND is_used = 0 " +
-            "END " +
-            "ORDER BY " +
-            "CASE WHEN :sortCode = 0 AND :isAsc = 0 THEN created_at END DESC, " +
-            "CASE WHEN :sortCode = 0 AND :isAsc = 1 THEN created_at END ASC, " +
-            "CASE WHEN :sortCode = 1 AND :isAsc = 0 THEN expire_at END DESC, " +
-            "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC " +
-            "LIMIT :offset, :limit",
-    )
-    suspend fun getGifticonList(
-        userId: String,
-        isUsed: Boolean,
-        updatedAt: Date,
-        excludeExpire: Int,
-        sortCode: Int,
-        isAsc: Int,
-        offset: Int,
-        limit: Int,
-    ): List<DBGifticonListItem>
-
-    /**
-     * 기프티콘 정보를 브랜드이름으로 가져온다
-     * brand == "" : 전체 리스트
-     * sortCode : SortBy 참고
-     * 0 : Recent
-     * 1 : Deadline
-     * */
-    @Query(
-        "SELECT id, cropped_uri, name, display_brand, is_cash_card, total_cash, remain_cash, " +
-            "Cast(" +
-            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
-            "JulianDay(date('now')) as Integer" +
-            ") as d_day, is_used, expire_at, created_at " +
-            "FROM gifticon_table " +
-            "WHERE CASE " +
-            "WHEN IFNULL(:filters, '') = '' THEN " +
-            "CASE WHEN :excludeExpire = 1 THEN user_id = :userId AND (is_used = :isUsed OR updated_at > :updatedAt) AND d_day > 0 " +
-            "ELSE user_id = :userId AND is_used = 0 " +
-            "END " +
-            "ELSE " +
-            "CASE WHEN :excludeExpire = 1 THEN brand = (:filters) AND user_id = :userId AND (is_used = :isUsed OR updated_at > :updatedAt) AND d_day > 0 " +
-            "ELSE brand IN (:filters) AND user_id = :userId AND is_used = 0 " +
-            "END " +
-            "END " +
-            "ORDER BY " +
-            "CASE WHEN :sortCode = 0 AND :isAsc = 0 THEN created_at END DESC, " +
-            "CASE WHEN :sortCode = 0 AND :isAsc = 1 THEN created_at END ASC, " +
-            "CASE WHEN :sortCode = 1 AND :isAsc = 0 THEN expire_at END DESC, " +
-            "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC " +
-            "LIMIT :offset, :limit",
-    )
-    suspend fun getGifticonByBrand(
-        userId: String,
-        filters: Set<String>?,
-        isUsed: Boolean,
-        updatedAt: Date,
-        excludeExpire: Int,
-        sortCode: Int,
-        isAsc: Int,
-        offset: Int,
-        limit: Int,
-    ): List<DBGifticonListItem>
-
-    /**
-     * Notification 에서 보여주기위해 DDay Set에 있는 Gifticon 정보를 가져옴
-     */
-    @Query(
-        "SELECT id, name, " +
-            "Cast(" +
-            "JulianDay(date(expire_at / 1000), 'unixepoch') - " +
-            "JulianDay(date('now')) as Integer" +
-            ") as d_day " +
-            "FROM gifticon_table " +
-            "WHERE user_id = :userId AND is_used = 0 AND d_day in (:dDaySet) " +
-            "ORDER BY expire_at",
-    )
-    suspend fun getGifticonNotifications(
-        userId: String,
-        dDaySet: Set<Int>,
-    ): List<DBGifticonNotification>
-
-    /**
-     * 브랜드 이름과 해당 브랜드의 기프티콘 개수를 가져오기
-     * 개수를 기준으로 정렬
-     * */
     @Query(
         "SELECT display_brand, COUNT(*) AS count FROM gifticon_table " +
-            "WHERE CASE " +
-            "WHEN :isUsed = 1 THEN user_id = :userId AND is_used = :isUsed " +
-            "WHEN :excludeExpire = 1 THEN user_id = :userId AND is_used = :isUsed AND expire_at > :now " +
-            "ELSE user_id = :userId AND is_used = :isUsed " +
-            "END " +
-            "GROUP BY brand ORDER BY count DESC",
+                "WHERE user_id = :userId AND is_used = 0 " +
+                "GROUP BY brand ORDER BY count DESC"
     )
-    fun getBrandCategoryList(
-        userId: String,
-        isUsed: Int,
-        excludeExpire: Int,
-        now: Date,
-    ): Flow<List<DBBrandCategory>>
+    fun getBrandCategoryList(userId: String): Flow<List<DBBrandCategory>>
 
-    /**
-     * 기프티콘의 잔액을 반환한다
-     * */
-    @Query(
-        "SELECT remain_cash FROM gifticon_table " +
-            "WHERE user_id = :userId AND id = :gifticonId",
-    )
-    suspend fun getCurrentGifticonRemainCash(
-        userId: String,
-        gifticonId: Long,
-    ): Int
-
-    /**
-     * 현재 금액과 사용기록을 합쳐서 총 금액을 반환한다
-     * */
-    @Query(
-        "SELECT SUM(remain_cash + " +
-            "(SELECT SUM(amount) FROM usage_history_table " +
-            "WHERE gifticon_id = :gifticonId " +
-            "GROUP BY gifticon_id)) " +
-            "FROM gifticon_table " +
-            "WHERE user_id = :userId AND id = :gifticonId " +
-            "LIMIT 1",
-    )
-    suspend fun getTotalGifticonRemainCash(
-        userId: String,
-        gifticonId: Long,
-    ): Int
-
-    /**
-     * 기프티콘이 금액권인지 확인한다
-     * */
-    @Query(
-        "SELECT is_cash_card FROM gifticon_table " +
-            "WHERE user_id = :userId AND id = :gifticonId",
-    )
-    suspend fun getGifticonIsCashCard(
-        userId: String,
-        gifticonId: Long,
-    ): Boolean
-
-    /**
-     * 기프티콘을 사용 상태를 변경한다
-     * */
     @Query(
         "UPDATE gifticon_table " +
-            "SET is_used = :isUsed " +
-            "WHERE user_id = :userId AND id = :gifticonId",
+                "SET is_used = 1 AND remain_cash = 0 " +
+                "WHERE user_id = :userId AND id = :gifticonId",
     )
-    suspend fun updateGifticonUsed(
+    suspend fun useGifticon(
         userId: String,
         gifticonId: Long,
-        isUsed: Boolean,
-    ): Int
+    )
 
-    /**
-     * 금액권 기프티콘의 잔액을 변경한다
-     * */
     @Query(
         "UPDATE gifticon_table " +
-            "SET remain_cash = :remainCash " +
-            "WHERE user_id = :userId AND id = :gifticonId",
+                "SET is_used = 1 AND remain_cash = :remainCash " +
+                "WHERE user_id = :userId AND id = :gifticonId",
     )
-    suspend fun updateGifticonRemainCash(
+    suspend fun useCashGifticon(
         userId: String,
         gifticonId: Long,
         remainCash: Int,
     ): Int
 
-    /**
-     * 기프티콘의 사용 기록을 추가한다
-     * */
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertUsageHistory(usageHistory: DBUsageHistoryEntity)
-
-    /**
-     * 기프티콘을 사용, 사용기록 추가
-     *
-     * DBNotFoundException
-     * 업데이트 된 정보가 없을 경우 에러
-     * */
-    @Transaction
-    suspend fun useGifticonAndInsertHistory(
-        userId: String,
-        usageHistory: DBUsageHistoryEntity,
-    ) {
-        val gifticonId = usageHistory.gifticonId
-
-        if (updateGifticonUsed(userId, gifticonId, true) == 0) {
-            throw NotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
-        }
-
-        insertUsageHistory(usageHistory)
-    }
-
-    /**
-     * 금액권 기프티콘을 사용, 사용기록 추가
-     *
-     * DBUpdateException
-     * 사용할 금액이 잔액보다 많은 경우 에러
-     *
-     * DBNotFoundException
-     * 업데이트 된 정보가 없을 경우 에러
-     * */
-    @Transaction
-    suspend fun useCashCardGifticonAndInsertHistory(
-        userId: String,
-        amount: Int,
-        usageHistory: DBUsageHistoryEntity,
-    ) {
-        val gifticonId = usageHistory.gifticonId
-        val balance = getCurrentGifticonRemainCash(userId, gifticonId)
-
-        if (balance < amount) {
-            throw UpdateException("사용할 금액이 잔액보다 많습니다.")
-        }
-
-        if (updateGifticonRemainCash(userId, gifticonId, balance - amount) == 0) {
-            throw NotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
-        }
-
-        insertUsageHistory(usageHistory)
-
-        if (balance == amount) {
-            if (updateGifticonUsed(userId, gifticonId, true) == 0) {
-                throw NotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
-            }
-        }
-    }
-
-    /**
-     * 기프티콘 사용을 되돌립니다.
-     *
-     * DBNotFoundException
-     * 업데이트 된 정보가 없을 경우 에러
-     * */
-    @Transaction
-    suspend fun revertUsedGifticonAndDeleteHistory(
-        userId: String,
-        gifticonId: Long,
-    ) {
-        val isCashCard = getGifticonIsCashCard(userId, gifticonId)
-        if (isCashCard) {
-            val totalBalance = getTotalGifticonRemainCash(userId, gifticonId)
-            if (updateGifticonRemainCash(userId, gifticonId, totalBalance) == 0) {
-                throw NotFoundException("기프티콘의 정보를 찾을 수 없습니다.")
-            }
-        }
-        if (updateGifticonUsed(userId, gifticonId, false) == 0) {
-            throw NotFoundException("기프티콘의 정보를 찾을 수 없습니다.")
-        }
-        deleteUsageHistory(userId, gifticonId)
-    }
-
-    /**
-     * 기프티콘의 사용 기록을 조회한다
-     * */
     @Query(
-        "SELECT * FROM usage_history_table " +
-            "WHERE gifticon_id = :gifticonId AND " +
-            "EXISTS(" +
-            "SELECT 1 FROM gifticon_table AS gt " +
-            "WHERE gt.user_id = :userId AND gt.id = :gifticonId)",
+        "UPDATE gifticon_table " +
+                "SET is_used = 1 AND total_cash = remain_cash " +
+                "WHERE user_id = :userId AND id = :gifticonId",
     )
-    fun getUsageHistory(
+    suspend fun revertUsedGifticon(
         userId: String,
         gifticonId: Long,
-    ): Flow<List<DBUsageHistoryEntity>>
-
-    /**
-     * 기프티콘을 삭제한다
-     * */
-    @Query(
-        "DELETE FROM usage_history_table " +
-            "WHERE gifticon_id = :gifticonId AND " +
-            "EXISTS(" +
-            "SELECT 1 FROM gifticon_table AS gt " +
-            "WHERE gt.user_id = :userId AND gt.id = :gifticonId)",
-    )
-    fun deleteUsageHistory(
-        userId: String,
-        gifticonId: Long,
-    )
+    ): Int
 }

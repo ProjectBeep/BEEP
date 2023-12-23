@@ -1,20 +1,24 @@
 package com.lighthouse.beep.data.repository.gifticon
 
+import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
-import com.lighthouse.beep.model.gifticon.GifticonImageCreateResult
-import com.lighthouse.beep.model.gifticon.GifticonImageUpdateResult
+import com.lighthouse.beep.data.model.gifticon.GifticonOriginImageResult
+import com.lighthouse.beep.data.model.gifticon.GifticonThumbnailImageResult
 
 interface LocalGifticonStorage {
 
-    suspend fun createGifticonImage(
-        inputOriginUri: Uri,
-        inputCropUri: Uri?,
-        inputCropRect: Rect,
-    ): Result<GifticonImageCreateResult>
+    suspend fun saveGifticonOriginImage(
+        originUri: Uri,
+    ): GifticonOriginImageResult
 
-    suspend fun updateGifticonImage(
-        inputCropUri: Uri,
-        inputCropRect: Rect,
-    ): Result<GifticonImageUpdateResult?>
+    suspend fun cropAndSaveGifticonThumbnailImage(
+        gifticonImage: Bitmap,
+    ): GifticonThumbnailImageResult
+
+    suspend fun saveGifticonThumbnailImage(
+        thumbnailImage: Bitmap,
+    ): Uri
+
+    suspend fun deleteFile(uri: Uri?)
 }

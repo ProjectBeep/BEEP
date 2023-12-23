@@ -221,9 +221,12 @@ internal class EditorViewModel @Inject constructor(
         viewModelScope.launch {
             galleryImage.value.map { gallery ->
                 launch {
-                    val data = recognizeGifticonUseCase(gallery).getOrNull()
-                        .toGifticonData(gallery.contentUri)
-                    gifticonDataMap[gallery.id] = data
+                    recognizeGifticonUseCase(gallery.contentUri).onSuccess {
+                        gifticonDataMap[gallery.id] = it.toGifticonData(
+                            originUri = gallery.contentUri,
+                            imagePath = gallery.imagePath,
+                        )
+                    }
                 }
             }.joinAll()
             _gifticonDataMapFlow.emit(gifticonDataMap)

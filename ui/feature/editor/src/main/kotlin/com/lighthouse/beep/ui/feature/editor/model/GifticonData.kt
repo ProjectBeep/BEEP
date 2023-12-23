@@ -6,13 +6,14 @@ import com.lighthouse.beep.core.common.exts.ofDate
 import com.lighthouse.beep.core.common.exts.ofMonth
 import com.lighthouse.beep.core.common.exts.ofYear
 import com.lighthouse.beep.core.common.exts.toFormattedString
-import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
+import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
 import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import java.util.Date
 
 internal data class GifticonData(
     val originUri: Uri,
-    val thumbnail: GifticonThumbnail = GifticonThumbnail.Default(originUri),
+    val imagePath: String,
+    val thumbnail: EditGifticonThumbnail = EditGifticonThumbnail.Default(originUri),
     val thumbnailCropData: GifticonCropData = GifticonCropData.None,
     val name: String = "",
     val nameCropData: GifticonCropData = GifticonCropData.None,
@@ -45,16 +46,23 @@ internal data class GifticonData(
         get() = EditType.entries.any { it.isInvalid(this) }
 }
 
-internal fun GifticonRecognizeResult?.toGifticonData(originUri: Uri): GifticonData {
-    this ?: return GifticonData(originUri)
+internal fun GifticonRecognizeInfo?.toGifticonData(
+    originUri: Uri,
+    imagePath: String,
+): GifticonData {
+    this ?: return GifticonData(
+        originUri = originUri,
+        imagePath = imagePath,
+    )
     return GifticonData(
         originUri = originUri,
+        imagePath = imagePath,
         thumbnail = croppedImage?.let {
-            GifticonThumbnail.Crop(
+            EditGifticonThumbnail.Crop(
                 bitmap = it,
                 rect = croppedRect
             )
-        } ?: GifticonThumbnail.Default(originUri),
+        } ?: EditGifticonThumbnail.Default(originUri),
         thumbnailCropData = croppedImage?.let {
             GifticonCropData(
                 bitmap = it,
@@ -62,7 +70,7 @@ internal fun GifticonRecognizeResult?.toGifticonData(originUri: Uri): GifticonDa
             )
         } ?: GifticonCropData.None,
         name = name,
-        brand = brandName,
+        brand = brand,
         barcode = barcode,
         expired = expiredAt,
         isCashCard = isCashCard,

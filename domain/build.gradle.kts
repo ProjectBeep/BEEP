@@ -10,7 +10,6 @@ android {
 dependencies {
     implementation(projects.core.common)
     implementation(projects.model)
-    implementation(projects.auth.auth)
 
     implementation(projects.data.data)
 

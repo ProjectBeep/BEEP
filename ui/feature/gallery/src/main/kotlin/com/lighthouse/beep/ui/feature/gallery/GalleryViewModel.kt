@@ -9,11 +9,8 @@ import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.common.exts.remove
 import com.lighthouse.beep.core.common.exts.removeAt
 import com.lighthouse.beep.core.ui.model.ScrollInfo
-import com.lighthouse.beep.domain.usecase.gallery.GetGalleryGifticonUseCase
-import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImageSizeUseCase
-import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImageUseCase
-import com.lighthouse.beep.domain.usecase.gallery.GetGalleryImagesUseCase
-import com.lighthouse.beep.domain.usecase.gallery.GetGalleryRecognizeDataUseCase
+import com.lighthouse.beep.data.repository.gallery.GalleryImageRepository
+import com.lighthouse.beep.domain.usecase.recognize.RecognizeBarcodeUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gallery.GalleryImageRecognizeData
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
@@ -26,17 +23,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.ceil
 
 @HiltViewModel
 internal class GalleryViewModel @Inject constructor(
-    getGalleryImageSizeUseCase: GetGalleryImageSizeUseCase,
-    private val getGalleryImageUseCase: GetGalleryImageUseCase,
-    private val getGalleryImagesUseCase: GetGalleryImagesUseCase,
-    private val getGalleryRecognizeDataUseCase: GetGalleryRecognizeDataUseCase,
-    private val getGalleryGifticonUseCase: GetGalleryGifticonUseCase,
+    private val galleryRepository: GalleryImageRepository,
+    private val recognizeBarcodeUseCase: RecognizeBarcodeUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -78,7 +73,7 @@ internal class GalleryViewModel @Inject constructor(
     private var pageOffset = 0
 
     private var currentPage = 0
-    private val maxPage = ceil(getGalleryImageSizeUseCase() / limit.toFloat()).toInt()
+    private val maxPage = ceil(galleryRepository.getImageSize() / limit.toFloat()).toInt()
 
     private var lastVisible = 0
 
@@ -115,11 +110,11 @@ internal class GalleryViewModel @Inject constructor(
             recognizing.value = true
             val targetSize = recommendList.value.size + pageCount
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
-                val images = getGalleryImagesUseCase(currentPage, limit, pageOffset)
+                val images = galleryRepository.getImages(currentPage, limit, pageOffset)
                 val list = mutableListOf<GalleryImage>()
                 val requestRecognizeList = images.filter {
                     recommendSearchIdSet.add(it.id)
-                    val recognize = getGalleryRecognizeDataUseCase(it)
+                    val recognize = galleryRepository.getRecognizeData(it)
                     if (recognize == GalleryImageRecognizeData.GIFTICON) {
                         list.add(it)
                     }
@@ -127,7 +122,16 @@ internal class GalleryViewModel @Inject constructor(
                 }
 
                 if (requestRecognizeList.isNotEmpty()) {
-                    list.addAll(getGalleryGifticonUseCase(requestRecognizeList))
+                    requestRecognizeList.map {
+                        launch {
+                            val isGifticon =
+                                recognizeBarcodeUseCase(it.contentUri).getOrDefault("").isNotEmpty()
+                            galleryRepository.saveRecognizeData(it, isGifticon)
+                            if (isGifticon) {
+                                list.add(it)
+                            }
+                        }
+                    }.joinAll()
                     list.sortBy { -it.dateAdded.time }
                 }
                 _recommendList.value += list
@@ -144,7 +148,7 @@ internal class GalleryViewModel @Inject constructor(
         requestNextJob?.cancel()
     }
 
-    val allList = getGalleryImagesUseCase(pageCount)
+    val allList = galleryRepository.getImages(pageCount)
 
     private val _selectedList = MutableStateFlow<List<GalleryImage>>(emptyList())
     val selectedList = _selectedList.asStateFlow()
@@ -201,13 +205,16 @@ internal class GalleryViewModel @Inject constructor(
 
     fun insertGalleryContent(id: Long) {
         viewModelScope.launch {
-            val item = getGalleryImageUseCase(id) ?: return@launch
+            val item = galleryRepository.getImage(id)  ?: return@launch
+
             pageOffset += 1
 
             recommendSearchIdSet.add(item.id)
-            val list = getGalleryGifticonUseCase(listOf(item))
-            if (list.isNotEmpty()) {
-                _recommendList.value = list + _recommendList.value
+            val isGifticon =
+                recognizeBarcodeUseCase(item.contentUri).getOrDefault("").isNotEmpty()
+            galleryRepository.saveRecognizeData(item, isGifticon)
+            if (isGifticon) {
+                _recommendList.value = listOf(item) + _recommendList.value
             }
         }
     }

@@ -14,17 +14,16 @@ import com.lighthouse.beep.data.local.database.entity.DBBrandLocationEntity
 import com.lighthouse.beep.data.local.database.entity.DBBrandSectionEntity
 import com.lighthouse.beep.data.local.database.entity.DBGalleryRecognizeEntity
 import com.lighthouse.beep.data.local.database.entity.DBGifticonEntity
-import com.lighthouse.beep.data.local.database.entity.DBUsageHistoryEntity
 
 @Database(
     entities = [
         DBGifticonEntity::class,
         DBBrandSectionEntity::class,
         DBBrandLocationEntity::class,
-        DBUsageHistoryEntity::class,
         DBGalleryRecognizeEntity::class,
     ],
     version = 1,
+    exportSchema = false,
 )
 @TypeConverters(
     DateConverter::class,

@@ -1,11 +1,10 @@
 package com.lighthouse.beep.domain.usecase.recognize
 
 import android.content.Context
+import android.net.Uri
 import com.lighthouse.beep.core.common.exts.decodeBitmap
-import com.lighthouse.beep.domain.mapper.toGifticonRecognizerResult
 import com.lighthouse.beep.library.recognizer.GifticonRecognizer
-import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
+import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,12 +15,11 @@ class RecognizeGifticonUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
 
-    suspend operator fun invoke(gallery: GalleryImage): Result<GifticonRecognizeResult> = withContext(Dispatchers.Default){
+    suspend operator fun invoke(uri: Uri): Result<GifticonRecognizeInfo> = withContext(Dispatchers.IO){
         runCatching {
-            val bitmap = context.decodeBitmap(gallery.contentUri)
-                ?: throw IOException("${gallery.contentUri} decode Failed")
-            val info = GifticonRecognizer().recognize(bitmap)
-            info.toGifticonRecognizerResult(gallery.contentUri)
+            val bitmap = context.decodeBitmap(uri)
+                ?: throw IOException("$uri decode Failed")
+            GifticonRecognizer().recognize(bitmap)
         }
     }
 }

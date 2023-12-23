@@ -2,10 +2,9 @@ package com.lighthouse.beep
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.beep.domain.usecase.auth.GetAuthInfoUseCase
-import com.lighthouse.beep.domain.usecase.setting.GetDeviceConfigUseCase
-import com.lighthouse.beep.domain.usecase.user.GetUserConfigUseCase
-import com.lighthouse.beep.domain.usecase.user.UpdateAuthInfoUseCase
+import com.lighthouse.beep.auth.BeepAuth
+import com.lighthouse.beep.data.repository.device.DeviceRepository
+import com.lighthouse.beep.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -15,17 +14,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class MainViewModel @Inject constructor(
-    getAuthInfoUseCase: GetAuthInfoUseCase,
-    getUserConfigUseCase: GetUserConfigUseCase,
-    getDeviceConfigUseCase: GetDeviceConfigUseCase,
-    updateAuthInfoUseCase: UpdateAuthInfoUseCase,
+    private val deviceRepository: DeviceRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    val uiState = getAuthInfoUseCase().flatMapLatest {
-        updateAuthInfoUseCase(it)
+    val uiState = BeepAuth.authInfoFlow.flatMapLatest { newAuthInfo ->
+        userRepository.setAuthInfo {
+            newAuthInfo
+        }
         combine(
-            getUserConfigUseCase(),
-            getDeviceConfigUseCase(),
+            userRepository.userConfig,
+            deviceRepository.deviceConfig,
         ) { userConfig, deviceConfig ->
             MainUiState.Success(userConfig, deviceConfig)
         }

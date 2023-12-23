@@ -14,7 +14,7 @@ import com.lighthouse.beep.ui.feature.editor.databinding.DialogBuiltInThumbnailB
 import com.lighthouse.beep.ui.feature.editor.dialog.adapter.BuiltInThumbnailAdapter
 import com.lighthouse.beep.ui.feature.editor.dialog.adapter.OnBuiltInThumbnailListener
 import com.lighthouse.beep.ui.feature.editor.model.EditData
-import com.lighthouse.beep.ui.feature.editor.model.GifticonThumbnail
+import com.lighthouse.beep.ui.feature.editor.model.EditGifticonThumbnail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -35,7 +35,7 @@ class BuiltInThumbnailDialog : BeepBottomSheetDialog() {
         listener = object : OnBuiltInThumbnailListener {
             override fun isSelectedFlow(item: GifticonBuiltInThumbnail): Flow<Boolean> {
                 return editorViewModel.selectedGifticonDataFlow.map {
-                    val builtIn = it.thumbnail as? GifticonThumbnail.BuiltIn
+                    val builtIn = it.thumbnail as? EditGifticonThumbnail.BuiltIn
                     builtIn?.builtIn == item
                 }.distinctUntilChanged()
             }

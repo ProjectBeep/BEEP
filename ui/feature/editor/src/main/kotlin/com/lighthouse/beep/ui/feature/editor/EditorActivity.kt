@@ -57,7 +57,7 @@ import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorPage
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
-import com.lighthouse.beep.ui.feature.editor.model.GifticonThumbnail
+import com.lighthouse.beep.ui.feature.editor.model.EditGifticonThumbnail
 import com.lighthouse.beep.ui.feature.editor.page.crop.EditorCropFragment
 import com.lighthouse.beep.ui.feature.editor.provider.OnEditorProvider
 import dagger.hilt.android.AndroidEntryPoint
@@ -121,7 +121,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 .distinctUntilChanged()
         }
 
-        override fun getCropDataFlow(item: GalleryImage): Flow<GifticonThumbnail> {
+        override fun getCropDataFlow(item: GalleryImage): Flow<EditGifticonThumbnail> {
             return viewModel.gifticonDataMapFlow
                 .map { map -> map[item.id]?.thumbnail }
                 .filterNotNull()
@@ -253,7 +253,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     }
 
     private val onEditorThumbnailListener = object : OnEditorThumbnailListener {
-        override fun getThumbnailFlow(): Flow<GifticonThumbnail> {
+        override fun getThumbnailFlow(): Flow<EditGifticonThumbnail> {
             return viewModel.selectedGifticonDataFlow
                 .map { it.thumbnail }
                 .distinctUntilChanged()

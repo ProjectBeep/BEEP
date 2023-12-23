@@ -12,15 +12,13 @@ dependencies {
     implementation(projects.core.ui)
     implementation(projects.core.common)
     implementation(projects.theme)
-    implementation(projects.domain)
+    implementation(projects.data.data)
 
     implementation(projects.ui.designsystem.dotindicator)
 
     implementation(projects.permission)
 
-    implementation(projects.auth.google)
-    implementation(projects.auth.kakao)
-    implementation(projects.auth.naver)
+    implementation(projects.auth)
 
     implementation(projects.navs)
 }

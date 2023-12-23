@@ -20,7 +20,7 @@ internal sealed interface EditData {
 
     data class CropThumbnail(val bitmap: Bitmap, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            if (data.thumbnail !is GifticonThumbnail.Crop) {
+            if (data.thumbnail !is EditGifticonThumbnail.Crop) {
                 return true
             }
             return bitmap != data.thumbnail.bitmap ||
@@ -30,7 +30,7 @@ internal sealed interface EditData {
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(
-                thumbnail = GifticonThumbnail.Crop(
+                thumbnail = EditGifticonThumbnail.Crop(
                     bitmap = bitmap,
                     rect = rect
                 ),
@@ -48,7 +48,7 @@ internal sealed interface EditData {
     ) : EditData {
 
         override fun isModified(data: GifticonData): Boolean {
-            if (data.thumbnail !is GifticonThumbnail.BuiltIn) {
+            if (data.thumbnail !is EditGifticonThumbnail.BuiltIn) {
                 return true
             }
             return data.thumbnail.builtIn != builtIn
@@ -56,7 +56,7 @@ internal sealed interface EditData {
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(
-                thumbnail = GifticonThumbnail.BuiltIn(
+                thumbnail = EditGifticonThumbnail.BuiltIn(
                     builtIn = builtIn
                 ),
             )
@@ -69,11 +69,11 @@ internal sealed interface EditData {
         override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(
                 thumbnail = data.thumbnailCropData.bitmap?.let { cropBitmap ->
-                    GifticonThumbnail.Crop(
+                    EditGifticonThumbnail.Crop(
                         bitmap = cropBitmap,
                         rect = data.thumbnailCropData.rect,
                     )
-                } ?: GifticonThumbnail.Default(data.originUri)
+                } ?: EditGifticonThumbnail.Default(data.originUri)
             )
         }
     }

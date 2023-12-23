@@ -15,5 +15,5 @@ data class GifticonRecognizeInfo(
     val balance: Int = 0,
     val candidate: List<String> = listOf(),
     val croppedImage: Bitmap? = null,
-    val croppedRect: Rect? = null,
+    val croppedRect: Rect = Rect(),
 )

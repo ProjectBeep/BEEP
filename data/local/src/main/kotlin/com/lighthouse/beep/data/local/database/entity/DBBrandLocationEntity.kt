@@ -3,6 +3,7 @@ package com.lighthouse.beep.data.local.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.lighthouse.beep.model.location.Dms
 
@@ -16,6 +17,7 @@ import com.lighthouse.beep.model.location.Dms
             onDelete = ForeignKey.CASCADE,
         ),
     ],
+    indices = [Index(value = ["parent_section_id"], unique = true)]
 )
 internal data class DBBrandLocationEntity(
     @PrimaryKey

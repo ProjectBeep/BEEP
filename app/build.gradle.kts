@@ -74,16 +74,12 @@ dependencies {
     implementation(projects.core.ui)
     implementation(projects.model)
     implementation(projects.theme)
-    implementation(projects.domain)
 
     implementation(projects.data.data)
     implementation(projects.data.remote)
     implementation(projects.data.local)
 
-    implementation(projects.auth.auth)
-    implementation(projects.auth.google)
-    implementation(projects.auth.kakao)
-    implementation(projects.auth.naver)
+    implementation(projects.auth)
 
     implementation(projects.ui.feature.login)
     implementation(projects.ui.feature.home)

@@ -17,7 +17,7 @@ class DotIndicator(context: Context, attrs: AttributeSet) : View(context, attrs)
 
     companion object {
         private val DEFAULT_DOT_SIZE = 8.dp
-        private val DEFAULT_DOT_GAP = 8.dp
+        private val DEFAULT_DOT_GAP = 10.dp
     }
 
     private var dotSize = DEFAULT_DOT_SIZE

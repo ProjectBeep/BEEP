@@ -4,10 +4,9 @@ import androidx.datastore.core.DataStore
 import com.lighthouse.beep.data.local.serializer.UserConfigSerializer
 import com.lighthouse.beep.data.repository.user.LocalUserDataSource
 import com.lighthouse.beep.model.user.AuthInfo
-import com.lighthouse.beep.model.user.Security
-import com.lighthouse.beep.model.user.Subscription
 import com.lighthouse.beep.model.user.ThemeOption
 import com.lighthouse.beep.model.user.UserConfig
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 internal class LocalUserDataSourceImpl @Inject constructor(
@@ -16,27 +15,22 @@ internal class LocalUserDataSourceImpl @Inject constructor(
 
     override val userConfig = dataStore.data
 
-    override suspend fun setAuthInfo(authInfo: AuthInfo) {
-        dataStore.updateData {
-            it.copy(authInfo = authInfo)
+    override suspend fun setAuthInfo(transform: (AuthInfo) -> AuthInfo) {
+        val oldValue = userConfig.firstOrNull()?.authInfo ?: AuthInfo.Default
+        val newValue = transform(oldValue)
+        if (oldValue != newValue) {
+            dataStore.updateData {
+                it.copy(authInfo = newValue)
+            }
         }
     }
 
-    override suspend fun setSubscription(subscription: Subscription) {
-        dataStore.updateData {
-            it.copy(subscription = subscription)
-        }
-    }
-
-    override suspend fun setSecurity(security: Security) {
-        dataStore.updateData {
-            it.copy(security = security)
-        }
-    }
-
-    override suspend fun setThemeOption(themeOption: ThemeOption) {
-        dataStore.updateData {
-            it.copy(themeOption = themeOption)
+    override suspend fun setThemeOption(newValue: ThemeOption) {
+        val oldValue = userConfig.firstOrNull()?.themeOption ?: ThemeOption.SYSTEM
+        if (oldValue != newValue) {
+            dataStore.updateData {
+                it.copy(themeOption = newValue)
+            }
         }
     }
 

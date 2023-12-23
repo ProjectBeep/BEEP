@@ -2,8 +2,7 @@ package com.lighthouse.beep.ui.feature.editor.page.crop
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.beep.domain.usecase.setting.GetBeepGuideUseCase
-import com.lighthouse.beep.domain.usecase.setting.SetBeepGuideUseCase
+import com.lighthouse.beep.data.repository.device.DeviceRepository
 import com.lighthouse.beep.ui.designsystem.cropview.CropImageMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class EditorCropViewModel @Inject constructor(
-    getBeepGuideUseCase: GetBeepGuideUseCase,
-    private val setBeepGuideUseCase: SetBeepGuideUseCase,
+    private val deviceRepository: DeviceRepository,
 ): ViewModel() {
 
 
@@ -26,11 +24,13 @@ internal class EditorCropViewModel @Inject constructor(
         _cropImageMode.value = mode
     }
 
-    val isShownCropImagePenGuide = getBeepGuideUseCase().map { it.cropImagePen }
+    val isShownCropImagePenGuide = deviceRepository.deviceConfig.map{
+        it.beepGuide.cropImagePen
+    }
 
     fun setShownCropImagePenGuide(value: Boolean) {
         viewModelScope.launch {
-            setBeepGuideUseCase {
+            deviceRepository.setBeepGuide {
                 it.copy(cropImagePen = value)
             }
         }
