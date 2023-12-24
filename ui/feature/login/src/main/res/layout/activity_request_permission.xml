@@ -24,10 +24,10 @@
         android:id="@+id/text_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guide_start"
-        android:textAppearance="@style/Text.Title2"
+        android:textAppearance="@style/Text.Title1"
         android:textColor="@color/font_dark_gray"
         android:text="@string/app_name"/>
 
@@ -35,7 +35,7 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="27dp"
         app:layout_constraintTop_toBottomOf="@id/text_app_name"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         android:textAppearance="@style/Text.HighlightText2"
@@ -46,25 +46,25 @@
         android:id="@+id/text_permission_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="47dp"
-        android:layout_marginStart="29dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginStart="38dp"
         app:layout_constraintTop_toBottomOf="@id/text_title"
         app:layout_constraintStart_toStartOf="@id/guide_start"
-        android:textAppearance="@style/Text.Title5"
+        android:textAppearance="@style/Text.Title4"
         android:textColor="@color/font_dark_gray"
         android:text="@string/guide_permission_list"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_notification_permission"
         android:layout_width="0dp"
-        android:layout_height="76dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="29dp"
+        android:layout_height="84dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="38dp"
         android:elevation="4dp"
         app:layout_constraintTop_toBottomOf="@id/text_permission_list"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         app:layout_constraintEnd_toEndOf="@id/guide_end"
-        app:cardCornerRadius="12dp"
+        app:cardCornerRadius="13.2dp"
         app:cardBackgroundColor="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,12 +88,12 @@
                 android:id="@+id/text_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="16dp"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/icon_notification"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/text_notification_description"
-                android:textAppearance="@style/Text.SubTitle2"
+                android:textAppearance="@style/Text.Title6"
                 android:textColor="@color/font_dark_gray"
                 android:text="@string/guide_permission_notification"/>
 
@@ -105,7 +105,7 @@
                 app:layout_constraintStart_toStartOf="@id/text_notification"
                 app:layout_constraintTop_toBottomOf="@id/text_notification"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:textAppearance="@style/Text.Body4"
+                android:textAppearance="@style/Text.Body2"
                 android:textColor="@color/font_medium_gray"
                 android:text="@string/guide_permission_notification_description"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -114,14 +114,14 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_storage_permission"
         android:layout_width="0dp"
-        android:layout_height="76dp"
+        android:layout_height="84dp"
         android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="29dp"
+        android:layout_marginHorizontal="38dp"
         android:elevation="4dp"
         app:layout_constraintTop_toBottomOf="@id/card_notification_permission"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         app:layout_constraintEnd_toEndOf="@id/guide_end"
-        app:cardCornerRadius="12dp"
+        app:cardCornerRadius="13.2dp"
         app:cardBackgroundColor="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -145,12 +145,12 @@
                 android:id="@+id/text_storage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="16dp"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/icon_storage"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/text_storage_description"
-                android:textAppearance="@style/Text.SubTitle2"
+                android:textAppearance="@style/Text.Title6"
                 android:textColor="@color/font_dark_gray"
                 android:text="@string/guide_permission_storage"/>
 
@@ -162,7 +162,7 @@
                 app:layout_constraintStart_toStartOf="@id/text_storage"
                 app:layout_constraintTop_toBottomOf="@id/text_storage"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:textAppearance="@style/Text.Body4"
+                android:textAppearance="@style/Text.Body2"
                 android:textColor="@color/font_medium_gray"
                 android:text="@string/guide_permission_storage_description"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -171,14 +171,14 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_location_permission"
         android:layout_width="0dp"
-        android:layout_height="76dp"
+        android:layout_height="84dp"
         android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="29dp"
+        android:layout_marginHorizontal="38dp"
         android:elevation="4dp"
         app:layout_constraintTop_toBottomOf="@id/card_storage_permission"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         app:layout_constraintEnd_toEndOf="@id/guide_end"
-        app:cardCornerRadius="12dp"
+        app:cardCornerRadius="13.2dp"
         app:cardBackgroundColor="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -202,12 +202,12 @@
                 android:id="@+id/text_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="16dp"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/icon_location"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/text_location_description"
-                android:textAppearance="@style/Text.SubTitle2"
+                android:textAppearance="@style/Text.Title6"
                 android:textColor="@color/font_dark_gray"
                 android:text="@string/guide_permission_location"/>
 
@@ -219,8 +219,8 @@
                 app:layout_constraintStart_toStartOf="@id/text_location"
                 app:layout_constraintTop_toBottomOf="@id/text_location"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:textAppearance="@style/Text.Body4"
-                android:textColor="@color/font_medium_gray"
+                android:textAppearance="@style/Text.Body2"
+                android:textColor="@color/font_gray"
                 android:text="@string/guide_permission_location_description"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -241,13 +241,13 @@
     <TextView
         android:id="@+id/btn_agree"
         android:layout_width="0dp"
-        android:layout_height="54dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         app:layout_constraintEnd_toEndOf="@id/guide_end"
         android:gravity="center"
-        android:textAppearance="@style/Text.Title5"
+        android:textAppearance="@style/Text.Title4"
         android:textColor="@color/white"
         android:text="@string/guide_permission_agree"
         android:backgroundTint="@color/beep_pink"
