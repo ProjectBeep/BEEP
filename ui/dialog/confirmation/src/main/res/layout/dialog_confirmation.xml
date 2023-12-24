@@ -28,13 +28,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="24dp" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="0dp" />
-
         <TextView
             android:id="@+id/tv_message"
             style="@style/Text.Title4"
@@ -60,8 +53,8 @@
             android:focusable="true"
             android:text="@string/confirmation_cancel"
             android:gravity="center"
-            android:textAppearance="@style/Text.Title5"
-            android:textColor="@color/font_medium_gray"
+            android:textAppearance="@style/Text.Title4"
+            android:textColor="@color/medium_gray"
             android:backgroundTint="@color/light_gray"
             android:background="@drawable/bg_rect_r16"
             app:layout_constraintBottom_toBottomOf="@id/tv_ok"
@@ -73,14 +66,14 @@
             android:layout_width="0dp"
             android:layout_height="54dp"
             android:includeFontPadding="false"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:layout_marginBottom="20dp"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
             android:text="@string/confirmation_ok"
             android:textColor="@color/white"
-            android:textAppearance="@style/Text.Title5"
+            android:textAppearance="@style/Text.Title4"
             android:backgroundTint="@color/beep_pink"
             android:background="@drawable/bg_rect_r16"
             app:layout_constraintBottom_toBottomOf="parent"
