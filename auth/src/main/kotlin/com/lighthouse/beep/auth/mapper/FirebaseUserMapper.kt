@@ -9,10 +9,10 @@ internal suspend fun FirebaseUser?.toAuthInfo(): AuthInfo {
     this ?: return AuthInfo(provider = AuthProvider.NONE)
 
     val provider = runCatching {
+        val result = getIdToken(true).await()
         if (isAnonymous) {
             AuthProvider.GUEST
         } else {
-            val result = getIdToken(true).await()
             val providerName = result.claims["provider"] as? String ?: ""
             AuthProvider.of(providerName)
         }

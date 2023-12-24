@@ -1,7 +1,6 @@
 package com.lighthouse.beep.auth
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -61,7 +60,6 @@ class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        showProgress()
         setUpCollectState()
 
         lifecycleScope.launch {
@@ -72,11 +70,6 @@ class AuthActivity : AppCompatActivity() {
                 is AuthParam.None -> finish()
             }
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        hideProgress()
-        super.onSaveInstanceState(outState, outPersistentState)
     }
 
     private fun setUpCollectState() {

@@ -7,17 +7,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.beep.auth.extension.mapJson
-import com.lighthouse.beep.auth.mapper.toAuthInfo
 import com.lighthouse.beep.auth.network.NetworkRequest
 import com.lighthouse.beep.auth.network.NetworkTask
 import com.lighthouse.beep.auth.network.RequestMethod
-import com.lighthouse.beep.core.common.utils.flow.MutableEventFlow
-import com.lighthouse.beep.core.common.utils.flow.asEventFlow
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.data.repository.user.UserRepository
 import com.lighthouse.beep.model.user.AuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -37,8 +36,8 @@ class AuthViewModel @Inject constructor(
         private const val RESPONSE_TOKEN = "token"
     }
 
-    private val _loadingPostpone = MutableEventFlow<Boolean>(replay = 1)
-    val loadingPostpone = _loadingPostpone.asEventFlow()
+    private val _loadingPostpone = MutableStateFlow(false)
+    val loadingPostpone = _loadingPostpone.asStateFlow()
 
     fun setLoadingPostpone(value: Boolean) {
         viewModelScope.launch {
@@ -71,9 +70,8 @@ class AuthViewModel @Inject constructor(
     }
 
     suspend fun requestGuestSignIn() = withContext(Dispatchers.IO) {
-        val result = FirebaseAuth.getInstance().signInAnonymously().await()
-        val authInfo = result.user?.toAuthInfo()
-
+        FirebaseAuth.getInstance().signInAnonymously().await()
+        val authInfo = BeepAuth.authInfo
         if (authInfo != null) {
             userRepository.setAuthInfo { authInfo }
         }
