@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     private fun setUpPageNavigate() {
         lifecycleScope.launch {
             val uiState = viewModel.uiState.filterIsInstance<MainUiState.Success>().first()
-            val provider = uiState.userConfig.authInfo.provider
+            val provider = uiState.authInfo.provider
             if (provider == AuthProvider.NONE) {
                 gotoLoginPage()
             } else {

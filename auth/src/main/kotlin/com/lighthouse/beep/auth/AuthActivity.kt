@@ -165,7 +165,6 @@ class AuthActivity : AppCompatActivity() {
 
     private suspend fun signOut() {
         runCatching {
-            viewModel.signOutAndChangeUserInfo()
             signOutClient()
             FirebaseAuth.getInstance().signOut()
             setResult(RESULT_OK)

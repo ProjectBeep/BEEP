@@ -77,6 +77,9 @@ object BeepAuth {
     val authInfo: AuthInfo?
         get() = authInfoFlow.value
 
+    val authProvider: AuthProvider
+        get() = authInfo?.provider ?: AuthProvider.NONE
+
     val userUid: String
         get() = authInfo?.userUid ?: ""
 }

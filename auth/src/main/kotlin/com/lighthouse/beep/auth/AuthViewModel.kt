@@ -12,7 +12,6 @@ import com.lighthouse.beep.auth.network.NetworkRequest
 import com.lighthouse.beep.auth.network.NetworkTask
 import com.lighthouse.beep.auth.network.RequestMethod
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
-import com.lighthouse.beep.data.repository.user.UserRepository
 import com.lighthouse.beep.model.user.AuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +26,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val gifticonRepository: GifticonRepository,
-    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     companion object {
@@ -76,20 +74,9 @@ class AuthViewModel @Inject constructor(
         BeepAuth.updateProfile(userProfileChangeRequest {
             displayName = "게스트"
         })
-
-
-        val authInfo = BeepAuth.authInfo
-        if (authInfo != null) {
-            userRepository.setAuthInfo { authInfo }
-        }
-    }
-
-    suspend fun signOutAndChangeUserInfo() = withContext(Dispatchers.IO) {
-//        userRepository.logout()
     }
 
     suspend fun withdrawalAndDeleteUserInfo() = withContext(Dispatchers.IO) {
         gifticonRepository.deleteGifticon(BeepAuth.userUid)
-//        userRepository.logout()
     }
 }

@@ -1,6 +1,5 @@
 package com.lighthouse.beep.data.repository.user
 
-import com.lighthouse.beep.model.user.AuthInfo
 import com.lighthouse.beep.model.user.ThemeOption
 import com.lighthouse.beep.model.user.UserConfig
 import kotlinx.coroutines.flow.Flow
@@ -11,10 +10,6 @@ internal class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     override val userConfig: Flow<UserConfig> = localDataSource.userConfig
-
-    override suspend fun setAuthInfo(transform: (AuthInfo) -> AuthInfo) {
-        localDataSource.setAuthInfo(transform)
-    }
 
     override suspend fun setThemeOption(newValue: ThemeOption) {
         localDataSource.setThemeOption(newValue)
