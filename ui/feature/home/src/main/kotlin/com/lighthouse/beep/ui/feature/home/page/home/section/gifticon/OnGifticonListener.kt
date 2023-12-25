@@ -10,7 +10,7 @@ internal interface OnGifticonListener {
 
     fun isSelectedFlow(item: HomeItem.GifticonItem): Flow<Boolean>
 
-    fun getViewMode(): Flow<GifticonViewMode>
+    fun getViewModeFlow(): Flow<GifticonViewMode>
 
     fun onClick(item: HomeItem.GifticonItem)
 }

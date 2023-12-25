@@ -12,9 +12,11 @@ import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.ui.feature.home.R
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredHeaderBinding
 import com.lighthouse.beep.ui.feature.home.model.BrandItem
 import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
+import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
 
 internal class GifticonHeaderViewHolder(
@@ -62,10 +64,6 @@ internal class GifticonHeaderViewHolder(
         binding.listBrand.addItemDecoration(LinearItemDecoration(8.dp))
         binding.listBrand.addOnScrollListener(brandScrollListener)
 
-        binding.btnEdit.setOnThrottleClickListener {
-            listener.onGotoEditClick()
-        }
-
         binding.tabExpired.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab ?: return
@@ -92,6 +90,14 @@ internal class GifticonHeaderViewHolder(
             binding.tabExpired.selectTab(tab)
         }
 
+        listener.getViewModeFlow().collect(lifecycleOwner) { mode ->
+            val resId = when(mode) {
+                GifticonViewMode.VIEW -> R.string.edit_gifticon
+                GifticonViewMode.EDIT -> R.string.edit_cancel
+            }
+            binding.textEdit.setText(resId)
+        }
+
         listener.getBrandListFlow().collect(lifecycleOwner) { list ->
             brandAdapter.submitList(list)
         }
@@ -101,6 +107,12 @@ internal class GifticonHeaderViewHolder(
                 return@collect
             }
             brandLayoutManager.scrollToPositionWithOffset(info.position, info.offset)
+        }
+    }
+
+    override fun onSetUpClickEvent(item: HomeItem.GifticonHeader) {
+        binding.btnEdit.setOnThrottleClickListener {
+            listener.onGotoEditClick()
         }
     }
 

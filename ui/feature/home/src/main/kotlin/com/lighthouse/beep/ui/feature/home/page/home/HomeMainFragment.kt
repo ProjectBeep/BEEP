@@ -104,6 +104,10 @@ class HomeMainFragment : Fragment() {
             return viewModel.selectedExpiredOrder
         }
 
+        override fun getViewModeFlow(): Flow<GifticonViewMode> {
+            return viewModel.gifticonViewMode
+        }
+
         override fun getBrandScrollInfo(): Flow<ScrollInfo> {
             return viewModel.brandScrollInfo
         }
@@ -140,7 +144,7 @@ class HomeMainFragment : Fragment() {
                 .distinctUntilChanged()
         }
 
-        override fun getViewMode(): Flow<GifticonViewMode> {
+        override fun getViewModeFlow(): Flow<GifticonViewMode> {
             return viewModel.gifticonViewMode
         }
 

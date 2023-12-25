@@ -83,7 +83,7 @@ internal class GifticonViewHolder(
             },
         )
 
-        listener.getViewMode().collect(lifecycleOwner){ mode, init ->
+        listener.getViewModeFlow().collect(lifecycleOwner){ mode, init ->
             val set = when (mode) {
                 GifticonViewMode.VIEW -> gifticonViewModeSet
                 GifticonViewMode.EDIT -> gifticonEditModeSet
