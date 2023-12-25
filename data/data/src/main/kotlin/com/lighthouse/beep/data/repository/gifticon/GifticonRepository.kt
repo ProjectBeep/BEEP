@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface GifticonRepository {
 
+    fun isExistGifticon(
+        userId: String,
+        isUsed: Boolean,
+    ): Flow<Boolean>
+
     suspend fun getGifticonDetail(
         userId: String,
         gifticonId: Long,

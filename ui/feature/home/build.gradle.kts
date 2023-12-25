@@ -12,6 +12,8 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.theme)
     implementation(projects.model)
+    implementation(projects.data.data)
+    implementation(projects.auth)
 
     implementation(projects.permission)
     implementation(projects.ui.dialog.confirmation)

@@ -14,6 +14,10 @@ internal class GifticonRepositoryImpl @Inject constructor(
     private val gifticonStorage: LocalGifticonStorage,
 ) : GifticonRepository {
 
+    override fun isExistGifticon(userId: String, isUsed: Boolean): Flow<Boolean> {
+        return localGifticonDataSource.isExistGifticon(userId, isUsed)
+    }
+
     override suspend fun getGifticonDetail(
         userId: String,
         gifticonId: Long,

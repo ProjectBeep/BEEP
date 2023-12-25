@@ -13,4 +13,8 @@ sealed interface ActivityNavItem {
     data class Editor(
         val list: List<GalleryImage> = emptyList()
     ) : ActivityNavItem
+
+    data object Archive : ActivityNavItem
+
+    data object Setting : ActivityNavItem
 }

@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.lighthouse.beep.data.local.database.entity.DBGifticonEntity
 import com.lighthouse.beep.data.local.database.model.DBBrandCategory
@@ -12,13 +11,20 @@ import com.lighthouse.beep.data.local.database.model.DBGifticonDetail
 import com.lighthouse.beep.data.local.database.model.DBGifticonEditInfo
 import com.lighthouse.beep.data.local.database.model.DBGifticonListItem
 import com.lighthouse.beep.data.local.database.model.DBGifticonResource
-import com.lighthouse.beep.model.exception.common.NotFoundException
-import com.lighthouse.beep.model.exception.db.UpdateException
-import com.lighthouse.beep.model.gifticon.GifticonType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface GifticonDao {
+
+    @Query(
+        "SELECT EXISTS (" +
+                "SELECT 1 from gifticon_table " +
+                "WHERE user_id = :userId AND is_used = :isUsed)"
+    )
+    fun isExistGifticon(
+        userId: String,
+        isUsed: Boolean
+    ): Flow<Boolean>
 
     @Query(
         "SELECT id, " +

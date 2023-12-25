@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.BEEP.SettingTextView" parent="Widget.AppCompat.TextView">
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="android:textAppearance">@style/BEEP.TextStyle.Caption</item>
-    </style>
-
-    <style name="Theme.BEEP.OSS" parent="Theme.MaterialComponents.DayNight">
-        <item name="colorPrimary">@color/beep_pink</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSurface">@color/white</item>
-        <item name="android:statusBarColor">@color/beep_pink</item>
-        <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>
-        <item name="navigationIconTint">@color/white</item>
-        <item name="toolbarNavigationButtonStyle">@style/BEEP.AppTheme.Actionbar</item>
-    </style>
+<!--    <style name="Theme.BEEP.OSS" parent="Theme.MaterialComponents.DayNight">-->
+<!--        <item name="colorPrimary">@color/beep_pink</item>-->
+<!--        <item name="colorOnPrimary">@color/white</item>-->
+<!--        <item name="colorOnSurface">@color/white</item>-->
+<!--        <item name="android:statusBarColor">@color/beep_pink</item>-->
+<!--        <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>-->
+<!--        <item name="navigationIconTint">@color/white</item>-->
+<!--        <item name="toolbarNavigationButtonStyle">@style/BEEP.AppTheme.Actionbar</item>-->
+<!--    </style>-->
 </resources>

@@ -5,40 +5,29 @@ import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
-import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
+import com.lighthouse.beep.core.ui.exts.replace
+import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.core.ui.exts.show
-import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.permission.BeepPermission
-import com.lighthouse.beep.model.location.DmsPos
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.permission.dialog.StoragePermissionDialog
 import com.lighthouse.beep.permission.ext.checkSelfPermissions
-import com.lighthouse.beep.ui.feature.home.adapter.HomeAdapter
-import com.lighthouse.beep.ui.feature.home.adapter.expired.ExpiredHeaderViewHolder
-import com.lighthouse.beep.ui.feature.home.adapter.expired.OnExpiredBrandListener
-import com.lighthouse.beep.ui.feature.home.adapter.expired.OnExpiredGifticonListener
-import com.lighthouse.beep.ui.feature.home.adapter.expired.OnExpiredHeaderListener
-import com.lighthouse.beep.ui.feature.home.adapter.map.OnMapGifticonListener
-import com.lighthouse.beep.ui.feature.home.adapter.map.OnMapGifticonSectionListener
 import com.lighthouse.beep.ui.feature.home.databinding.ActivityHomeBinding
-import com.lighthouse.beep.ui.feature.home.decorator.HomeItemDecoration
-import com.lighthouse.beep.ui.feature.home.decorator.HomeItemDecorationCallback
-import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
-import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
-import com.lighthouse.beep.ui.feature.home.model.HomeItem
-import com.lighthouse.beep.ui.feature.home.model.MapGifticonItem
+import com.lighthouse.beep.ui.feature.home.page.empty.HomeEmptyFragment
+import com.lighthouse.beep.ui.feature.home.page.home.HomeMainFragment
+import com.lighthouse.beep.ui.feature.home.provider.HomeNavigation
+import com.lighthouse.beep.ui.feature.home.provider.OnHomeRequestManagerProvider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-internal class HomeActivity : AppCompatActivity() {
+internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequestManagerProvider {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -46,6 +35,10 @@ internal class HomeActivity : AppCompatActivity() {
 
     @Inject
     lateinit var navigator: AppNavigator
+
+    override val requestManager: RequestManager by lazy {
+        Glide.with(this)
+    }
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
@@ -57,142 +50,74 @@ internal class HomeActivity : AppCompatActivity() {
             }
         }
 
-    private val homeAdapter by lazy {
-        HomeAdapter(
-            onMapGifticonSectionListener = onMapGifticonSectionListener,
-            onMapGifticonListener = onMapGifticonListener,
-            onExpiredHeaderListener = onExpiredHeaderListener,
-            onExpiredBrandListener = onExpiredBrandListener,
-            onExpiredGifticonListener = onExpiredGifticonListener,
-        )
-    }
-
-    private val onMapGifticonSectionListener = object : OnMapGifticonSectionListener {
-        override fun getMapGifticonListFlow(): Flow<List<MapGifticonItem>> {
-            return viewModel.mapGifticonList
-        }
-
-        override fun onGotoMapClick() {
-        }
-    }
-
-    private val onMapGifticonListener = object : OnMapGifticonListener {
-        override fun getCurrentDmsPosFlow(): Flow<DmsPos> {
-            return flow {
-                emit(DmsPos(0.0, 0.0))
-            }
-        }
-
-        override fun onClick(item: MapGifticonItem) {
-        }
-    }
-
-    private val onExpiredHeaderListener = object : OnExpiredHeaderListener {
-        override fun getBrandListFlow(): Flow<List<ExpiredBrandItem>> {
-            return viewModel.brandList
-        }
-
-        override fun getSelectedOrder(): Flow<ExpiredOrder> {
-            return viewModel.selectedExpiredOrder
-        }
-
-        override fun getBrandScrollInfo(): Flow<ScrollInfo> {
-            return viewModel.brandScrollInfo
-        }
-
-        override fun onOrderClick(order: ExpiredOrder) {
-            viewModel.setSelectExpiredOrder(order)
-        }
-
-        override fun onBrandClick(item: ExpiredBrandItem) {
-            viewModel.setSelectBrand(item)
-        }
-
-        override fun onGotoEditClick() {
-        }
-
-        override fun onBrandScroll(scrollInfo: ScrollInfo) {
-            viewModel.setBrandScrollInfo(scrollInfo)
-        }
-    }
-
-    private val onExpiredBrandListener = object : OnExpiredBrandListener {
-        override fun getSelectedFlow(): Flow<ExpiredBrandItem> {
-            return viewModel.selectedBrand
-        }
-    }
-
-    private val onExpiredGifticonListener = object : OnExpiredGifticonListener {
-        override fun getNextDayEventFlow(): Flow<Unit> {
-            return viewModel.nextDayRemainingTimeFlow
-        }
-
-        override fun onClick(item: HomeItem.ExpiredGifticonItem) {
-
-        }
-    }
-
-    private val homeItemDecorationCallback = object : HomeItemDecorationCallback {
-        override fun onTopItemPosition(position: Int) {
-            val isShow = viewModel.expiredHeaderIndex <= position
-            binding.containerStickyHeader.isVisible = isShow
-        }
-
-        override fun getExpiredGifticonFirstIndex(): Int {
-            return viewModel.expiredGifticonFirstIndex
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
         setUpSystemInsetsPadding(binding.root)
-        setUpExpiredStickyHeader()
-        setUpHomeList()
         setUpCollectState()
         setUpClickEvent()
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        Log.d("TEST", "result : ${checkSelfPermissions(BeepPermission.storage)}")
-//    }
-
-    private fun setUpExpiredStickyHeader() {
-        val header =
-            ExpiredHeaderViewHolder(binding.list, onExpiredHeaderListener, onExpiredBrandListener)
-        header.bind(HomeItem.ExpiredHeader)
-        binding.containerStickyHeader.addView(header.itemView)
-        binding.containerStickyHeader.preventTouchPropagation()
-    }
-
-    private fun setUpHomeList() {
-        binding.list.adapter = homeAdapter
-        binding.list.addItemDecoration(HomeItemDecoration(homeItemDecorationCallback))
-    }
-
     private fun setUpCollectState() {
         repeatOnStarted {
-            viewModel.homeList.collect {
-                homeAdapter.submitList(it)
+            viewModel.isExistGifticon.collect { isExistGifticon ->
+                if (isExistGifticon) {
+                    replaceMainPage()
+                } else {
+                    replaceEmptyPage()
+                }
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.isExistUsedGifticon.collect { isExistUsedGifticon ->
+                binding.btnGotoArchive.apply {
+                    isEnabled = isExistUsedGifticon
+                    alpha = if (isExistUsedGifticon) 1f else 0.4f
+                }
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.authInfoFlow.collect {
+                requestManager
+                    .load(it.photoUrl)
+                    .placeholder(ThemeR.drawable.icon_default_profile)
+                    .into(binding.imageUserProfile)
+
+                binding.textUsername.text = it.displayName
             }
         }
     }
 
+    private fun replaceMainPage() {
+        replace(
+            containerId = binding.containerFragment.id,
+            tag = HomeMainFragment.TAG,
+        ) {
+            HomeMainFragment()
+        }
+    }
+
+    private fun replaceEmptyPage() {
+        replace(
+            containerId = binding.containerFragment.id,
+            tag = HomeEmptyFragment.TAG,
+        ) {
+            HomeEmptyFragment()
+        }
+    }
+
     private fun setUpClickEvent() {
-        binding.btnGotoSetting.setOnClickListener(createThrottleClickListener {
+        binding.btnGotoArchive.setOnThrottleClickListener {
+            gotoArchive()
+        }
 
-        })
-
-        binding.btnGotoGifticonAdd.setOnClickListener(createThrottleClickListener {
-            if (checkSelfPermissions(BeepPermission.storage)) {
-                gotoGallery()
-            } else {
-                requestPermissions(BeepPermission.storage)
-            }
-        })
+        binding.btnGotoSetting.setOnThrottleClickListener {
+            gotoSetting()
+        }
     }
 
     private fun showRequestPermissionDialog() {
@@ -207,12 +132,22 @@ internal class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun gotoGallery() {
-        val intent = navigator.getIntent(this, ActivityNavItem.Gallery)
+    override fun gotoGallery() {
+        if (checkSelfPermissions(BeepPermission.storage)) {
+            val intent = navigator.getIntent(this, ActivityNavItem.Gallery)
+            startActivity(intent)
+        } else {
+            galleryLauncher.launch(BeepPermission.storage)
+        }
+    }
+
+    private fun gotoSetting() {
+        val intent = navigator.getIntent(this, ActivityNavItem.Setting)
         startActivity(intent)
     }
 
-    private fun requestPermissions(permissions: Array<String>) {
-        galleryLauncher.launch(permissions)
+    private fun gotoArchive() {
+        val intent = navigator.getIntent(this, ActivityNavItem.Archive)
+        startActivity(intent)
     }
 }

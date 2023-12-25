@@ -21,6 +21,10 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
     private val gifticonDao: GifticonDao,
 ) : LocalGifticonDataSource {
 
+    override fun isExistGifticon(userId: String, isUsed: Boolean): Flow<Boolean> {
+        return gifticonDao.isExistGifticon(userId, isUsed)
+    }
+
     override suspend fun getGifticonDetail(
         userId: String,
         gifticonId: Long,

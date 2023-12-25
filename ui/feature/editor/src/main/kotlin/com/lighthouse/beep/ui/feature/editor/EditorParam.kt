@@ -7,14 +7,12 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gallery.json.toJson
 import com.lighthouse.beep.navs.AppNavParam
 
-class EditorParam private constructor(
+class EditorParam(
     private val list: List<GalleryImage> = emptyList()
 ): AppNavParam {
 
     companion object {
         private const val KEY_GALLERY_IMAGE_LIST = "Key.GalleryImageList"
-
-        fun createParam(list: List<GalleryImage> = emptyList()) = EditorParam(list)
 
         fun getGalleryList(savedStateHandle: SavedStateHandle): List<GalleryImage> {
             val json = savedStateHandle.get<String>(KEY_GALLERY_IMAGE_LIST) ?: ""

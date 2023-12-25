@@ -85,6 +85,8 @@ dependencies {
     implementation(projects.ui.feature.home)
     implementation(projects.ui.feature.gallery)
     implementation(projects.ui.feature.editor)
+    implementation(projects.ui.feature.archive)
+    implementation(projects.ui.feature.setting)
 
     implementation(projects.navs)
 

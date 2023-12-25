@@ -46,14 +46,25 @@
             app:layout_constraintStart_toEndOf="@id/image_user_profile"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textAppearance="@style/Text.Title2"
+            android:textAppearance="@style/Text.Title6"
             android:textColor="@color/font_dark_gray"
             tools:text="김명석님"/>
-        
+
+        <ImageView
+            android:id="@+id/btn_goto_archive"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintEnd_toStartOf="@id/btn_goto_setting"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_archive"/>
+
         <ImageView
             android:id="@+id/btn_goto_setting"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guide_header_end"
@@ -62,39 +73,13 @@
         
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/line_header"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        app:layout_constraintTop_toBottomOf="@id/container_header"
-        android:background="@color/bg"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingBottom="116dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/line_header"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
     <FrameLayout
-        android:id="@+id/container_sticky_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/line_header"/>
-
-    <ImageView
-        android:id="@+id/btn_goto_gifticon_add"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="46dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/container_fragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/container_header"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="@null"
-        android:src="@drawable/icon_gifticon_add"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

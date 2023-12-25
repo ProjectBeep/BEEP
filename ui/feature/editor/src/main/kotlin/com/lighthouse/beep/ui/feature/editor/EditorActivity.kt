@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.commit
@@ -416,7 +417,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
             orientation = RecyclerView.HORIZONTAL,
             offset = (-12).dp
         )
-        binding.btnPreview.post {
+        binding.btnPreview.doOnPreDraw {
             binding.btnPreview.maxWidth = binding.btnPreview.viewWidth
             binding.listEditorChip.addItemDecoration(
                 LinearItemDecoration(
@@ -436,7 +437,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     private fun showProgress(isLoading: Boolean) {
         if (isLoading) {
             show(ProgressDialog.TAG) {
-                val param = ProgressParam(getColor(ThemeR.color.black_60))
+                val param = ProgressParam(getColor(ThemeR.color.black_30))
                 ProgressDialog.newInstance(param).apply {
                     setOnCancelListener {
                         cancelEditor()
