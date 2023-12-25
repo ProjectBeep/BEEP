@@ -60,10 +60,10 @@ internal class HomeMainViewModel @Inject constructor(
     val selectedGifticonListFlow = _selectedGifticonListFlow.asSharedFlow()
 
     fun selectGifticon(item: HomeItem.GifticonItem) {
-        if (selectedGifticonList.contains(item)) {
-            selectedGifticonList.add(item)
-        } else {
+        if (selectedGifticonList.find { it.id == item.id } != null) {
             selectedGifticonList.remove(item)
+        } else {
+            selectedGifticonList.add(item)
         }
         viewModelScope.launch {
             _selectedGifticonListFlow.emit(selectedGifticonList)
@@ -133,13 +133,13 @@ internal class HomeMainViewModel @Inject constructor(
             is BrandItem.All -> gifticonRepository.getGifticonList(
                 userId = BeepAuth.userUid,
                 gifticonSortBy = order.sortBy,
-                isAsc = false,
+                isAsc = true,
             )
             is BrandItem.Item -> gifticonRepository.getGifticonListByBrand(
                 userId = BeepAuth.userUid,
                 brand = brand.name,
                 gifticonSortBy = order.sortBy,
-                isAsc = false,
+                isAsc = true,
             )
         }
     }

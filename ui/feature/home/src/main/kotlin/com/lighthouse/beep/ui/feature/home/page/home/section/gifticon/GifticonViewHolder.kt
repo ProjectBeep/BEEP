@@ -1,16 +1,16 @@
 package com.lighthouse.beep.ui.feature.home.page.home.section.gifticon
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.DecelerateInterpolator
-import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
-import androidx.transition.ChangeBounds
-import androidx.transition.TransitionManager
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredGifticonBinding
 import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
@@ -39,8 +39,12 @@ internal class GifticonViewHolder(
 
         binding.textBrand.text = item.brand
         binding.textGifticonName.text = item.name
-        binding.textExpired.text = item.formattedExpiredDate
+        binding.textExpiredDate.text = item.formattedExpiredDate
         binding.textDday.text = "D-${item.dday}"
+
+        val isExpired = item.dday < 0
+        binding.containerExpired.isVisible = isExpired
+        binding.textDday.isVisible = !isExpired
     }
 
     override fun onSetUpClickEvent(item: HomeItem.GifticonItem) {
@@ -48,28 +52,6 @@ internal class GifticonViewHolder(
             listener.onClick(item)
         }
     }
-
-    private val gifticonViewModeSet: ConstraintSet
-        get() = ConstraintSet().apply {
-            clone(binding.root)
-            connect(
-                binding.containerGifticon.id,
-                ConstraintSet.START,
-                binding.root.id,
-                ConstraintSet.START
-            )
-        }
-
-    private val gifticonEditModeSet: ConstraintSet
-        get() = ConstraintSet().apply {
-            clone(binding.root)
-            connect(
-                binding.containerGifticon.id,
-                ConstraintSet.START,
-                binding.root.id,
-                ConstraintSet.END
-            )
-        }
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: HomeItem.GifticonItem) {
         listener.getNextDayEventFlow().collect(lifecycleOwner) { _ ->
@@ -86,18 +68,28 @@ internal class GifticonViewHolder(
             },
         )
 
-        listener.getViewModeFlow().collect(lifecycleOwner){ mode, init ->
-            Log.d("TEST", "mode : $mode")
-            val set = when (mode) {
-                GifticonViewMode.VIEW -> gifticonViewModeSet
-                GifticonViewMode.EDIT -> gifticonEditModeSet
+        listener.getViewModeFlow().collect(lifecycleOwner) { mode, init ->
+            val layoutParams =
+                binding.containerGifticon.layoutParams as? MarginLayoutParams ?: return@collect
+            val start = layoutParams.marginStart
+            val end = when (mode) {
+                GifticonViewMode.VIEW -> 0
+                GifticonViewMode.EDIT -> binding.btnSelector.viewWidth
             }
-            set.applyTo(binding.root)
-            val trans = ChangeBounds().apply {
-                duration = 300L
-                interpolator = DecelerateInterpolator()
+            if (!init) {
+                binding.containerGifticon.animate()
+                    .setDuration(300)
+                    .setInterpolator(DecelerateInterpolator())
+                    .setUpdateListener {
+                        binding.containerGifticon.updateLayoutParams<MarginLayoutParams> {
+                            marginStart = (start - (start - end) * it.animatedFraction).toInt()
+                        }
+                    }.start()
+            } else {
+                binding.containerGifticon.updateLayoutParams<MarginLayoutParams> {
+                    marginStart = end
+                }
             }
-            TransitionManager.beginDelayedTransition(binding.root, trans)
         }
     }
 }

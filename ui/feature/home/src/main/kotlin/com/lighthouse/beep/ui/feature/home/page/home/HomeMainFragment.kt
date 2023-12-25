@@ -1,27 +1,26 @@
 package com.lighthouse.beep.ui.feature.home.page.home
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.DecelerateInterpolator
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.ChangeBounds
-import androidx.transition.TransitionManager
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.cast
-import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.viewHeight
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.model.location.DmsPos
@@ -231,24 +230,6 @@ class HomeMainFragment : Fragment() {
         }
     }
 
-    private val gifticonViewModeSet: ConstraintSet
-        get() = ConstraintSet().apply {
-            clone(binding.root)
-            connect(binding.containerEdit.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-            clear(binding.containerEdit.id, ConstraintSet.BOTTOM)
-            connect(binding.btnGotoRegister.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            clear(binding.btnGotoRegister.id, ConstraintSet.START)
-        }
-
-    private val gifticonEditModeSet: ConstraintSet
-        get() = ConstraintSet().apply {
-            clone(binding.root)
-            connect(binding.containerEdit.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 12.dp)
-            clear(binding.containerEdit.id, ConstraintSet.TOP)
-            connect(binding.btnGotoRegister.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            clear(binding.btnGotoRegister.id, ConstraintSet.END)
-        }
-
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.homeList.collect {
@@ -259,17 +240,36 @@ class HomeMainFragment : Fragment() {
         repeatOnStarted {
             var init = true
             viewModel.gifticonViewMode.collect { mode ->
-                when (mode) {
-                    GifticonViewMode.VIEW -> gifticonViewModeSet
-                    GifticonViewMode.EDIT -> gifticonEditModeSet
-                }.applyTo(binding.root)
+                val registerParams = binding.btnGotoRegister.layoutParams as? MarginLayoutParams
+                val endMarginRegister = registerParams?.marginEnd ?: 0
+                val startRegister = binding.btnGotoRegister.translationX
+                val endRegister = when (mode) {
+                    GifticonViewMode.VIEW -> 0
+                    GifticonViewMode.EDIT -> binding.btnGotoRegister.viewWidth + endMarginRegister
+                }
+
+                val editParams = binding.containerEdit.layoutParams as? MarginLayoutParams
+                val bottomMarginEdit = editParams?.bottomMargin ?: 0
+                val startEdit = binding.containerEdit.translationY
+                val endEdit = when (mode) {
+                    GifticonViewMode.VIEW -> 0
+                    GifticonViewMode.EDIT -> -binding.containerEdit.viewHeight - bottomMarginEdit
+                }
 
                 if (!init) {
-                    val trans = ChangeBounds().apply {
+                    ValueAnimator.ofFloat(0f, 1f).apply {
                         duration = 300L
                         interpolator = DecelerateInterpolator()
-                    }
-                    TransitionManager.beginDelayedTransition(binding.root, trans)
+                        addUpdateListener {
+                            binding.btnGotoRegister.translationX =
+                                startRegister - (startRegister - endRegister) * it.animatedFraction
+                            binding.containerEdit.translationY =
+                                startEdit - (startEdit - endEdit) * it.animatedFraction
+                        }
+                    }.start()
+                } else {
+                    binding.btnGotoRegister.translationX = endRegister.toFloat()
+                    binding.containerEdit.translationY = endEdit.toFloat()
                 }
                 init = false
             }
