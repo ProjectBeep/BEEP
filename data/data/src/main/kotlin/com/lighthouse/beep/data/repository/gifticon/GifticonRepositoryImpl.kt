@@ -49,8 +49,8 @@ internal class GifticonRepositoryImpl @Inject constructor(
     override suspend fun insertGifticonList(
         userId: String,
         gifticonInfoList: List<GifticonEditInfo>,
-    ): Result<Unit> = runCatching {
-        gifticonInfoList.forEach {
+    ): List<Long> {
+        return gifticonInfoList.map {
             val originResult = gifticonStorage.saveGifticonOriginImage(it.originUri)
             val thumbnail = it.thumbnailBitmap
             val editInfo = if (thumbnail != null) {
@@ -68,7 +68,7 @@ internal class GifticonRepositoryImpl @Inject constructor(
                     thumbnailRect = thumbnailResult.thumbnailRect,
                 )
             }
-            localGifticonDataSource.insertGifticonList(userId, editInfo)
+            localGifticonDataSource.insertGifticon(userId, editInfo)
         }
     }
 

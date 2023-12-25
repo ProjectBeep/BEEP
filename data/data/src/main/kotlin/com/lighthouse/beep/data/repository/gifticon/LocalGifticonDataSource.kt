@@ -45,10 +45,10 @@ interface LocalGifticonDataSource {
 
     fun getUsedGifticonList(userId: String): Flow<List<GifticonListItem>>
 
-    suspend fun insertGifticonList(
+    suspend fun insertGifticon(
         userId: String,
         editInfo: GifticonEditInfo,
-    )
+    ): Long
 
     suspend fun updateGifticon(
         gifticonId: Long,

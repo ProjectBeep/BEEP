@@ -68,11 +68,11 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
             .map { it.toModel() }
     }
 
-    override suspend fun insertGifticonList(
+    override suspend fun insertGifticon(
         userId: String,
         editInfo: GifticonEditInfo,
-    ) {
-        gifticonDao.insertGifticon(editInfo.toEntityForCreate(userId))
+    ): Long {
+        return gifticonDao.insertGifticon(editInfo.toEntityForCreate(userId))
     }
 
     override suspend fun updateGifticon(

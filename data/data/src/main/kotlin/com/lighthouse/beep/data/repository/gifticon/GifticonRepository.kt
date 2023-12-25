@@ -40,7 +40,7 @@ interface GifticonRepository {
     suspend fun insertGifticonList(
         userId: String,
         gifticonInfoList: List<GifticonEditInfo>,
-    ): Result<Unit>
+    ): List<Long>
 
     suspend fun updateGifticon(
         gifticonId: Long,

@@ -150,7 +150,7 @@ internal interface GifticonDao {
     fun getUsedGifticonList(userId: String): Flow<List<DBGifticonListItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGifticon(list: DBGifticonEntity)
+    suspend fun insertGifticon(list: DBGifticonEntity): Long
 
     @Update(entity = DBGifticonEntity::class)
     suspend fun updateGifticon(editInfo: DBGifticonEditInfo)

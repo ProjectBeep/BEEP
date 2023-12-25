@@ -161,11 +161,12 @@ internal class EditorViewModel @Inject constructor(
         map.filter { !it.value.isInvalid }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
+    private var recentInsertGifticonIdList = emptyList<Long>()
     fun registerGifticon(map: Map<Long, GifticonData>) {
         deleteList(map.map { it.key })
         selectEditorChip(EditorChip.Preview)
         viewModelScope.launch {
-            gifticonRepository.insertGifticonList(
+            recentInsertGifticonIdList = gifticonRepository.insertGifticonList(
                 userId = BeepAuth.userUid,
                 gifticonInfoList = map.map {
                     it.value.toEditInfo()
@@ -176,14 +177,13 @@ internal class EditorViewModel @Inject constructor(
 
     fun revertRegisterGifticon(map: Map<Long, GifticonData>) {
         restoreList(map)
-//        viewModelScope.launch {
-//            gifticonRepository.deleteGifticon(
-//                userId = BeepAuth,
-//                gifticonIdList = map.map {
-//
-//                }
-//            )
-//        }
+        viewModelScope.launch {
+            gifticonRepository.deleteGifticon(
+                userId = BeepAuth.userUid,
+                gifticonIdList = recentInsertGifticonIdList
+            )
+            recentInsertGifticonIdList = emptyList()
+        }
     }
 
     fun selectInvalidEditType() {
