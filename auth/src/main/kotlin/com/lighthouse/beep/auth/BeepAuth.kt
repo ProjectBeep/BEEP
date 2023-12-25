@@ -4,18 +4,15 @@ import android.content.Context
 import android.content.Intent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.lighthouse.beep.auth.mapper.toAuthInfo
+import com.google.firebase.auth.GetTokenResult
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.lighthouse.beep.model.user.AuthInfo
 import com.lighthouse.beep.model.user.AuthProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 object BeepAuth {
-
-    private val authScope = CoroutineScope(Dispatchers.IO)
 
     fun getSignInIntent(context: Context, provider: AuthProvider): Intent {
         return AuthParam.SignIn(provider).getIntent(context)
@@ -34,20 +31,52 @@ object BeepAuth {
 
     init {
         FirebaseAuth.getInstance().addAuthStateListener {
-            authScope.launch {
-                val info = it.currentUser.toAuthInfo()
-                authInfo = info
-                _authInfoFlow.value = info
+            val currentUser = it.currentUser
+            if (currentUser == null) {
+                _authInfoFlow.value = AuthInfo.Default
+            } else {
+                currentUser.getIdToken(true).addOnSuccessListener { result ->
+                    val info = getAuthInfo(currentUser, result)
+                    _authInfoFlow.value = info
+                }
             }
         }
     }
 
-    var authInfo: AuthInfo? = null
-        private set
+    private fun getAuthInfo(
+        user: FirebaseUser,
+        result: GetTokenResult
+    ): AuthInfo {
+        val provider = runCatching {
+            if (user.isAnonymous) {
+                AuthProvider.GUEST
+            } else {
+                val providerName = result.claims["provider"] as? String ?: ""
+                AuthProvider.of(providerName)
+            }
+        }.getOrDefault(AuthProvider.NONE)
+
+        return AuthInfo(
+            userUid = user.uid,
+            provider = provider,
+            displayName = user.displayName ?: "",
+            email = user.email ?: "",
+            photoUrl = user.photoUrl,
+        )
+    }
+
+    suspend fun updateProfile(request: UserProfileChangeRequest) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            currentUser.updateProfile(request).await()
+            val result = currentUser.getIdToken(false).await()
+            _authInfoFlow.value = getAuthInfo(currentUser, result)
+        }
+    }
+
+    val authInfo: AuthInfo?
+        get() = authInfoFlow.value
 
     val userUid: String
         get() = authInfo?.userUid ?: ""
-
-    val currentUser: FirebaseUser?
-        get() = FirebaseAuth.getInstance().currentUser
 }

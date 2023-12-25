@@ -148,7 +148,7 @@ class AuthActivity : AppCompatActivity() {
         finish()
     }
 
-    private suspend fun signOutAuthInfo() {
+    private suspend fun signOutClient() {
         when(BeepAuth.authInfo?.provider) {
             AuthProvider.NAVER -> {
                 naverClient.signOut()
@@ -161,13 +161,13 @@ class AuthActivity : AppCompatActivity() {
             }
             else -> Unit
         }
-        FirebaseAuth.getInstance().signOut()
     }
 
     private suspend fun signOut() {
         runCatching {
             viewModel.signOutAndChangeUserInfo()
-            signOutAuthInfo()
+            signOutClient()
+            FirebaseAuth.getInstance().signOut()
             setResult(RESULT_OK)
         }.onFailure {
             setResult(RESULT_FAILED)
@@ -178,10 +178,10 @@ class AuthActivity : AppCompatActivity() {
     private suspend fun withdrawal() {
         runCatching {
             viewModel.withdrawalAndDeleteUserInfo()
-            signOutAuthInfo()
-            val user = BeepAuth.currentUser
-            if (user != null) {
-                user.delete().await()
+            signOutClient()
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            if (currentUser != null) {
+                currentUser.delete().await()
                 setResult(RESULT_OK)
             } else {
                 setResult(RESULT_FAILED)

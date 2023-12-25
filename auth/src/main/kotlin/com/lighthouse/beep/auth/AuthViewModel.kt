@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.beep.auth.extension.mapJson
 import com.lighthouse.beep.auth.network.NetworkRequest
@@ -70,7 +71,13 @@ class AuthViewModel @Inject constructor(
     }
 
     suspend fun requestGuestSignIn() = withContext(Dispatchers.IO) {
-        FirebaseAuth.getInstance().signInAnonymously().await()
+        val auth = FirebaseAuth.getInstance()
+        auth.signInAnonymously().await()
+        BeepAuth.updateProfile(userProfileChangeRequest {
+            displayName = "게스트"
+        })
+
+
         val authInfo = BeepAuth.authInfo
         if (authInfo != null) {
             userRepository.setAuthInfo { authInfo }
@@ -78,11 +85,11 @@ class AuthViewModel @Inject constructor(
     }
 
     suspend fun signOutAndChangeUserInfo() = withContext(Dispatchers.IO) {
-        userRepository.logout()
+//        userRepository.logout()
     }
 
     suspend fun withdrawalAndDeleteUserInfo() = withContext(Dispatchers.IO) {
         gifticonRepository.deleteGifticon(BeepAuth.userUid)
-        userRepository.logout()
+//        userRepository.logout()
     }
 }
