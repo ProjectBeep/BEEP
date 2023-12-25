@@ -7,6 +7,8 @@
 
     <string name="home_goto_register">쿠폰 등록</string>
 
+    <string name="home_expired_gifticon">기간 만료</string>
+
     <string name="map_title">근처에서 사용할 수 있어요</string>
 
     <string name="goto_profile_description">내정보 가기</string>
@@ -15,7 +17,6 @@
     <string name="goto_map">지도 보러가기</string>
 
     <string name="expired_title">사용 기한이 임박했어요</string>
-    <string name="date_description">30일 이내 기한이 종료돼요</string>
 
     <string name="dday_order">디데이순</string>
     <string name="recent_order">최신순</string>
@@ -26,6 +27,6 @@
     <string name="edit_cancel">취소</string>
     <string name="goto_add_description">기프티콘 등록 가기</string>
 
-    <string name="delete_gifticon">삭제하기</string>
-    <string name="use_gifticon">사용완료</string>
+    <string name="home_delete_gifticon">삭제</string>
+    <string name="home_use_gifticon">사용 완료</string>
 </resources>

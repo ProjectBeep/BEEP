@@ -51,7 +51,7 @@ interface GifticonRepository {
 
     suspend fun deleteGifticon(
         userId: String,
-        gifticonId: Long,
+        gifticonIdList: List<Long>,
     ): Result<Unit>
 
     suspend fun transferGifticon(
@@ -64,6 +64,11 @@ interface GifticonRepository {
     suspend fun useGifticon(
         userId: String,
         gifticonId: Long,
+    ): Result<Unit>
+
+    suspend fun useGifticonList(
+        userId: String,
+        gifticonIdList: List<Long>,
     ): Result<Unit>
 
     suspend fun useCashGifticon(

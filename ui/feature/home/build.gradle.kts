@@ -16,7 +16,9 @@ dependencies {
     implementation(projects.auth)
 
     implementation(projects.permission)
+
     implementation(projects.ui.dialog.confirmation)
+    implementation(projects.ui.designsystem.dotindicator)
 
     implementation(projects.navs)
 

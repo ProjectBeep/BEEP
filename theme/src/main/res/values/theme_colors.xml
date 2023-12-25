@@ -13,6 +13,7 @@
     <color name="bg">#F8F8F8</color>
     <color name="light_gray">#DEE0E1</color>
     <color name="gray">#AEB0B1</color>
+    <color name="gray_50">#80AEB0B1</color>
     <color name="medium_gray">#838486</color>
     <color name="deep_gray">#525354</color>
     <color name="black_gray">#2C2C2E</color>

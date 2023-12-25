@@ -32,12 +32,12 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         return gifticonDao.getGifticonDetail(userId, gifticonId)?.toModel()
     }
 
-    override suspend fun getGifticonResource(userId: String, gifticonId: Long): GifticonResource? {
-        return gifticonDao.getGifticonResource(userId, gifticonId)?.toModel()
+    override suspend fun getGifticonResourceList(userId: String, gifticonIdList: List<Long>): List<GifticonResource>? {
+        return gifticonDao.getGifticonResourceList(userId, gifticonIdList)?.toModel()
     }
 
     override suspend fun getGifticonResourceList(userId: String): List<GifticonResource>? {
-        return gifticonDao.getGifticonResourceList(userId)?.map { it.toModel() }
+        return gifticonDao.getGifticonResourceList(userId)?.toModel()
     }
 
     override fun getGifticonList(
@@ -88,9 +88,9 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
 
     override suspend fun deleteGifticon(
         userId: String,
-        gifticonId: Long,
+        gifticonIdList: List<Long>,
     ) {
-        gifticonDao.deleteGifticon(userId, gifticonId)
+        gifticonDao.deleteGifticon(userId, gifticonIdList)
     }
 
     override suspend fun transferGifticon(
@@ -108,6 +108,10 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
 
     override suspend fun useGifticon(userId: String, gifticonId: Long) {
         gifticonDao.useGifticon(userId, gifticonId)
+    }
+
+    override suspend fun useGifticonList(userId: String, gifticonIdList: List<Long>) {
+        gifticonDao.useGifticonList(userId, gifticonIdList)
     }
 
     override suspend fun useCashGifticon(

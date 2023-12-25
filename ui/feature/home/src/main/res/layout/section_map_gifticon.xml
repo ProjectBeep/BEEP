@@ -30,7 +30,7 @@
         android:includeFontPadding="false"
         app:layout_constraintStart_toStartOf="@id/guide_map_start"
         app:layout_constraintTop_toTopOf="parent"
-        android:textAppearance="@style/Text.Title5"
+        android:textAppearance="@style/Text.Title1"
         android:textColor="@color/font_dark_gray"
         android:text="@string/map_title"/>
 

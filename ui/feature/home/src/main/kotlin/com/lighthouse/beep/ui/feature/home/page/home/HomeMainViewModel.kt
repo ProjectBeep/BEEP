@@ -1,41 +1,147 @@
 package com.lighthouse.beep.ui.feature.home.page.home
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.common.exts.calculateNextDayRemainingTime
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
-import com.lighthouse.beep.model.location.DmsPos
-import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
-import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
+import com.lighthouse.beep.ui.feature.home.R
+import com.lighthouse.beep.ui.feature.home.model.BrandItem
+import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
+import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
+import com.lighthouse.beep.ui.feature.home.model.HomeBannerItem
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
-import com.lighthouse.beep.ui.feature.home.model.MapGifticonItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 internal class HomeMainViewModel @Inject constructor(
     private val gifticonRepository: GifticonRepository,
 ) : ViewModel() {
 
-    private val _selectedExpiredOrder = MutableStateFlow(ExpiredOrder.D_DAY)
-    val selectedExpiredOrder = _selectedExpiredOrder.asStateFlow()
+    private val _selectedGifticonOrder = MutableStateFlow(GifticonOrder.D_DAY)
+    val selectedExpiredOrder = _selectedGifticonOrder.asStateFlow()
 
-    fun setSelectExpiredOrder(order: ExpiredOrder) {
-        _selectedExpiredOrder.value = order
+    fun setSelectGifticonOrder(order: GifticonOrder) {
+        _selectedGifticonOrder.value = order
     }
 
-    private val _selectedBrand = MutableStateFlow<ExpiredBrandItem>(ExpiredBrandItem.All)
+    val brandList = gifticonRepository.getBrandCategoryList(BeepAuth.userUid).map { brandList ->
+        listOf(BrandItem.All) + brandList.map { BrandItem.Item(it.displayBrand) }
+    }
+
+    private val _selectedBrand = MutableStateFlow<BrandItem>(BrandItem.All)
     val selectedBrand = _selectedBrand.asStateFlow()
 
-    fun setSelectBrand(item: ExpiredBrandItem) {
+    fun setSelectBrand(item: BrandItem) {
         _selectedBrand.value = item
+    }
+
+    private val _gifticonViewMode = MutableStateFlow(GifticonViewMode.VIEW)
+    val gifticonViewMode = _gifticonViewMode.asStateFlow()
+
+    private val selectedGifticonList = mutableListOf<HomeItem.GifticonItem>()
+
+    private val _selectedGifticonListFlow = MutableSharedFlow<List<HomeItem.GifticonItem>>(replay = 1)
+    val selectedGifticonListFlow = _selectedGifticonListFlow.asSharedFlow()
+
+    fun selectGifticon(item: HomeItem.GifticonItem) {
+        if (selectedGifticonList.contains(item)) {
+            selectedGifticonList.add(item)
+        } else {
+            selectedGifticonList.remove(item)
+        }
+        viewModelScope.launch {
+            _selectedGifticonListFlow.emit(selectedGifticonList)
+        }
+    }
+
+    fun deleteGifticon(id: Long) {
+        viewModelScope.launch {
+            val gifticonIdList = listOf(id)
+            gifticonRepository.deleteGifticon(BeepAuth.userUid, gifticonIdList)
+        }
+    }
+
+    fun deleteSelectedGifticon() {
+        viewModelScope.launch {
+            val gifticonIdList = selectedGifticonList.map { it.id }
+            gifticonRepository.deleteGifticon(BeepAuth.userUid, gifticonIdList)
+            setGifticonViewModel(GifticonViewMode.VIEW)
+        }
+    }
+
+    fun useGifticon(id: Long) {
+        viewModelScope.launch {
+            val gifticonIdList = listOf(id)
+            gifticonRepository.useGifticonList(BeepAuth.userUid, gifticonIdList)
+        }
+    }
+
+
+    fun useSelectedGifticon() {
+        viewModelScope.launch {
+            val gifticonIdList = selectedGifticonList.map { it.id }
+            gifticonRepository.useGifticonList(BeepAuth.userUid, gifticonIdList)
+            setGifticonViewModel(GifticonViewMode.VIEW)
+        }
+    }
+
+    private fun initSelectedGifticonList() {
+        selectedGifticonList.clear()
+        viewModelScope.launch {
+            _selectedGifticonListFlow.emit(emptyList())
+        }
+    }
+
+    fun toggleGifticonViewModel() {
+        val nextViewMode = when(gifticonViewMode.value) {
+            GifticonViewMode.VIEW -> GifticonViewMode.EDIT
+            GifticonViewMode.EDIT -> GifticonViewMode.VIEW
+        }
+        setGifticonViewModel(nextViewMode)
+    }
+
+    private fun setGifticonViewModel(mode: GifticonViewMode) {
+        if (mode == GifticonViewMode.VIEW) {
+            initSelectedGifticonList()
+        }
+        _gifticonViewMode.value = mode
+    }
+
+    private val gifticonList = combine(
+        selectedExpiredOrder,
+        selectedBrand,
+    ){ order, brand ->
+        order to brand
+    }.flatMapLatest { (order, brand) ->
+        when (brand) {
+            is BrandItem.All -> gifticonRepository.getGifticonList(
+                userId = BeepAuth.userUid,
+                gifticonSortBy = order.sortBy,
+                isAsc = false,
+            )
+            is BrandItem.Item -> gifticonRepository.getGifticonListByBrand(
+                userId = BeepAuth.userUid,
+                brand = brand.name,
+                gifticonSortBy = order.sortBy,
+                isAsc = false,
+            )
+        }
     }
 
     private val _brandScrollInfo = MutableStateFlow(ScrollInfo.None)
@@ -52,59 +158,39 @@ internal class HomeMainViewModel @Inject constructor(
         }
     }
 
-    val brandList = MutableStateFlow(
+    private val homeBannerList = listOf(
+        HomeBannerItem.BuiltIn(R.drawable.img_banner_location_coming_soon),
+    )
+
+    val homeList = gifticonList.map { gifticonList ->
         listOf(
-            ExpiredBrandItem.All,
-            ExpiredBrandItem.Item("스타벅스"),
-            ExpiredBrandItem.Item("CU"),
-            ExpiredBrandItem.Item("GS25"),
-            ExpiredBrandItem.Item("파리바게트"),
-            ExpiredBrandItem.Item("버거킹"),
-            ExpiredBrandItem.Item("투썸플레이스"),
-            ExpiredBrandItem.Item("롯데리아"),
-        )
-    )
-
-    val mapGifticonList = MutableStateFlow(loadMapGifticonList())
-
-    private fun loadMapGifticonList(): List<MapGifticonItem> {
-        val random = Random(System.currentTimeMillis())
-        val brandList = brandList.value
-        return IntRange(0, 10).map {
-            val brand = brandList[random.nextInt(brandList.size - 1) + 1] as ExpiredBrandItem.Item
-            val lat = random.nextDouble(0.01)
-            val lon = random.nextDouble(0.01)
-            MapGifticonItem(it.toLong(), Uri.parse(""), brand.name, "기프티콘 이름", DmsPos(lat, lon))
-        }.toList()
-    }
-
-    private fun loadExpiredGifticonList(): List<HomeItem.ExpiredGifticonItem> {
-        val random = Random(System.currentTimeMillis())
-        val oneDay = 24 * 60 * 60 * 1000L
-        val brandList = brandList.value
-        return IntRange(0, 10).map {
-            val brand = brandList[random.nextInt(brandList.size - 1) + 1] as ExpiredBrandItem.Item
-            val date = random.nextInt(100)
-            val expired = Date(System.currentTimeMillis() + oneDay * date)
-            val created = Date(System.currentTimeMillis() - oneDay * date)
-            HomeItem.ExpiredGifticonItem(it.toLong(), Uri.parse(""), brand.name, "기프티콘 이름", expired, created)
-        }.toList()
-    }
-
-    val homeList = MutableStateFlow(
-        mutableListOf<HomeItem>().apply {
-            add(HomeItem.MapGifticon)
-            add(HomeItem.ExpiredTitle)
-            add(HomeItem.ExpiredHeader)
-            addAll(loadExpiredGifticonList())
+            HomeItem.Banner(homeBannerList),
+            HomeItem.GifticonHeader
+        ) + gifticonList.map {
+            HomeItem.GifticonItem(
+                id = it.id,
+                thumbnail = it.thumbnail,
+                type = it.type,
+                brand = it.displayBrand,
+                name = it.name,
+                expiredDate = it.expireAt,
+            )
         }
-    )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val expiredHeaderIndex = homeList.value.indexOfFirst {
-        it is HomeItem.ExpiredHeader
-    }
+    val expiredHeaderIndex = homeList.map {homeList ->
+        homeList.indexOfFirst {
+            it is HomeItem.GifticonHeader
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, -1)
 
-    val expiredGifticonFirstIndex = homeList.value.indexOfFirst {
-        it is HomeItem.ExpiredGifticonItem
+    val expiredGifticonFirstIndex = homeList.map{ homeList ->
+        homeList.indexOfFirst {
+            it is HomeItem.GifticonItem
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, -1)
+
+    init {
+        initSelectedGifticonList()
     }
 }

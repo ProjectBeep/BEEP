@@ -5,10 +5,9 @@
     android:id="@+id/chip"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:includeFontPadding="false"
     android:paddingVertical="6dp"
-    android:paddingHorizontal="13dp"
+    android:paddingHorizontal="16dp"
     android:background="@drawable/chip"
     android:textColor="@color/chip_text"
-    android:textAppearance="@style/Text.Body1"
+    android:textAppearance="@style/Text.Title5"
     tools:text="전체"/>

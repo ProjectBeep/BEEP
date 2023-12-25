@@ -97,14 +97,13 @@ internal class GifticonRepositoryImpl @Inject constructor(
 
     override suspend fun deleteGifticon(
         userId: String,
-        gifticonId: Long,
+        gifticonIdList: List<Long>,
     ): Result<Unit> = runCatching {
-        val resource = localGifticonDataSource.getGifticonResource(userId, gifticonId)
-        if (resource != null) {
-            gifticonStorage.deleteFile(resource.gifticonUri)
-            gifticonStorage.deleteFile(resource.thumbnailUri)
+        localGifticonDataSource.getGifticonResourceList(userId, gifticonIdList)?.forEach {
+            gifticonStorage.deleteFile(it.gifticonUri)
+            gifticonStorage.deleteFile(it.thumbnailUri)
         }
-        localGifticonDataSource.deleteGifticon(userId, gifticonId)
+        localGifticonDataSource.deleteGifticon(userId, gifticonIdList)
     }
 
     override suspend fun transferGifticon(
@@ -123,6 +122,13 @@ internal class GifticonRepositoryImpl @Inject constructor(
         gifticonId: Long,
     ): Result<Unit> = runCatching {
         localGifticonDataSource.useGifticon(userId, gifticonId)
+    }
+
+    override suspend fun useGifticonList(
+        userId: String,
+        gifticonIdList: List<Long>,
+    ): Result<Unit> = runCatching {
+        localGifticonDataSource.useGifticonList(userId, gifticonIdList)
     }
 
     override suspend fun useCashGifticon(

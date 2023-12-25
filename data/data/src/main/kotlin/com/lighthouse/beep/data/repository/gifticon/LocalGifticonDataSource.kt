@@ -21,10 +21,10 @@ interface LocalGifticonDataSource {
         gifticonId: Long,
     ): GifticonDetail?
 
-    suspend fun getGifticonResource(
+    suspend fun getGifticonResourceList(
         userId: String,
-        gifticonId: Long,
-    ): GifticonResource?
+        gifticonIdList: List<Long>,
+    ): List<GifticonResource>?
 
     suspend fun getGifticonResourceList(
         userId: String
@@ -59,7 +59,7 @@ interface LocalGifticonDataSource {
 
     suspend fun deleteGifticon(
         userId: String,
-        gifticonId: Long,
+        gifticonIdList: List<Long>,
     )
 
     suspend fun transferGifticon(
@@ -72,6 +72,11 @@ interface LocalGifticonDataSource {
     suspend fun useGifticon(
         userId: String,
         gifticonId: Long,
+    )
+
+    suspend fun useGifticonList(
+        userId: String,
+        gifticonIdList: List<Long>,
     )
 
     suspend fun useCashGifticon(

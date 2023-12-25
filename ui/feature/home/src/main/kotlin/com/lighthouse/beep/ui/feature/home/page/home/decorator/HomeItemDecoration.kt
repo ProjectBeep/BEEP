@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.home.decorator
+package com.lighthouse.beep.ui.feature.home.page.home.decorator
 
 import android.graphics.Canvas
 import android.graphics.Rect

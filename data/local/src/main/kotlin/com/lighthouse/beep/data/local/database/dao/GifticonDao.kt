@@ -55,13 +55,12 @@ internal interface GifticonDao {
         "SELECT thumbnail_uri, " +
                 "gifticon_uri " +
                 "FROM gifticon_table " +
-                "WHERE user_id = :userId AND id = :gifticonId " +
-                "LIMIT 1"
+                "WHERE user_id = :userId AND id in (:gifticonIdList)"
     )
-    suspend fun getGifticonResource(
+    suspend fun getGifticonResourceList(
         userId: String,
-        gifticonId: Long,
-    ): DBGifticonResource?
+        gifticonIdList: List<Long>,
+    ): List<DBGifticonResource>?
 
     @Query(
         "SELECT thumbnail_uri, " +
@@ -159,8 +158,8 @@ internal interface GifticonDao {
     @Query("DELETE FROM gifticon_table WHERE user_id = :userId")
     suspend fun deleteGifticon(userId: String): Int
 
-    @Query("DELETE FROM gifticon_table WHERE user_id = :userId AND id = :gifticonId")
-    suspend fun deleteGifticon(userId: String, gifticonId: Long): Int
+    @Query("DELETE FROM gifticon_table WHERE user_id = :userId AND id in (:gifticonId)")
+    suspend fun deleteGifticon(userId: String, gifticonId: List<Long>): Int
 
     @Query(
         "UPDATE gifticon_table " +
@@ -184,6 +183,16 @@ internal interface GifticonDao {
     suspend fun useGifticon(
         userId: String,
         gifticonId: Long,
+    )
+
+    @Query(
+        "UPDATE gifticon_table " +
+                "SET is_used = 1 AND remain_cash = 0 " +
+                "WHERE user_id = :userId AND id in (:gifticonId)",
+    )
+    suspend fun useGifticonList(
+        userId: String,
+        gifticonId: List<Long>,
     )
 
     @Query(

@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.home.page.home.section.expired
+package com.lighthouse.beep.ui.feature.home.page.home.section.header
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,20 +13,19 @@ import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredHeaderBinding
-import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
-import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
+import com.lighthouse.beep.ui.feature.home.model.BrandItem
+import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
 
-internal class ExpiredHeaderViewHolder(
+internal class GifticonHeaderViewHolder(
     parent: ViewGroup,
-    private val listener: OnExpiredHeaderListener,
-    private val onExpiredBrandListener: OnExpiredBrandListener,
+    private val listener: OnGifticonHeaderSectionListener,
     private val binding: ItemExpiredHeaderBinding = ItemExpiredHeaderBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
     )
-): LifecycleViewHolder<HomeItem.ExpiredHeader>(binding.root) {
+): LifecycleViewHolder<HomeItem.GifticonHeader>(binding.root) {
 
-    private val brandAdapter = ExpiredBrandChipAdapter(onExpiredBrandListener, ::onBrandItemClick)
+    private val brandAdapter = GifticonBrandChipAdapter(listener, ::onBrandItemClick)
     private val brandLayoutManager = CenterScrollLayoutManager(context, RecyclerView.HORIZONTAL, false)
     private val brandScrollListener = object: RecyclerView.OnScrollListener() {
         var isScrollSyncActivated = false
@@ -70,13 +69,13 @@ internal class ExpiredHeaderViewHolder(
         binding.tabExpired.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab ?: return
-                listener.onOrderClick(ExpiredOrder.entries[tab.position])
+                listener.onOrderClick(GifticonOrder.entries[tab.position])
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
             override fun onTabReselected(tab: TabLayout.Tab?) = Unit
         })
 
-        ExpiredOrder.entries.forEach {
+        GifticonOrder.entries.forEach {
             val tab = binding.tabExpired.newTab().apply {
                 setText(it.titleRes)
             }
@@ -84,7 +83,7 @@ internal class ExpiredHeaderViewHolder(
         }
     }
 
-    override fun onCollectState(lifecycleOwner: LifecycleOwner, item: HomeItem.ExpiredHeader) {
+    override fun onCollectState(lifecycleOwner: LifecycleOwner, item: HomeItem.GifticonHeader) {
         listener.getSelectedOrder().collect(lifecycleOwner) { order ->
             if (binding.tabExpired.selectedTabPosition == order.ordinal){
                 return@collect
@@ -105,7 +104,7 @@ internal class ExpiredHeaderViewHolder(
         }
     }
 
-    private fun onBrandItemClick(item: ExpiredBrandItem, position: Int) {
+    private fun onBrandItemClick(item: BrandItem, position: Int) {
         brandScrollListener.syncScrollActive()
         listener.onBrandClick(item)
         binding.listBrand.smoothScrollToPosition(position)

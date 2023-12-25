@@ -5,37 +5,46 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
+import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.cast
-import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.model.location.DmsPos
 import com.lighthouse.beep.ui.feature.home.databinding.FragmentMainHomeBinding
-import com.lighthouse.beep.ui.feature.home.decorator.HomeItemDecoration
-import com.lighthouse.beep.ui.feature.home.decorator.HomeItemDecorationCallback
-import com.lighthouse.beep.ui.feature.home.model.ExpiredBrandItem
-import com.lighthouse.beep.ui.feature.home.model.ExpiredOrder
+import com.lighthouse.beep.ui.feature.home.page.home.decorator.HomeItemDecoration
+import com.lighthouse.beep.ui.feature.home.page.home.decorator.HomeItemDecorationCallback
+import com.lighthouse.beep.ui.feature.home.model.BrandItem
+import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
+import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
+import com.lighthouse.beep.ui.feature.home.model.HomeBannerItem
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
 import com.lighthouse.beep.ui.feature.home.model.MapGifticonItem
 import com.lighthouse.beep.ui.feature.home.page.home.section.HomeAdapter
-import com.lighthouse.beep.ui.feature.home.page.home.section.expired.ExpiredHeaderViewHolder
-import com.lighthouse.beep.ui.feature.home.page.home.section.expired.OnExpiredBrandListener
-import com.lighthouse.beep.ui.feature.home.page.home.section.expired.OnExpiredGifticonListener
-import com.lighthouse.beep.ui.feature.home.page.home.section.expired.OnExpiredHeaderListener
-import com.lighthouse.beep.ui.feature.home.page.home.section.map.OnMapGifticonListener
+import com.lighthouse.beep.ui.feature.home.page.home.section.banner.OnHomeBannerSectionListener
+import com.lighthouse.beep.ui.feature.home.page.home.section.header.GifticonHeaderViewHolder
+import com.lighthouse.beep.ui.feature.home.page.home.section.gifticon.OnGifticonListener
+import com.lighthouse.beep.ui.feature.home.page.home.section.header.OnGifticonHeaderSectionListener
 import com.lighthouse.beep.ui.feature.home.page.home.section.map.OnMapGifticonSectionListener
 import com.lighthouse.beep.ui.feature.home.provider.HomeNavigation
+import com.lighthouse.beep.ui.feature.home.provider.OnHomeRequestManagerProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlin.math.max
 
 @AndroidEntryPoint
@@ -53,42 +62,45 @@ class HomeMainFragment : Fragment() {
 
     private lateinit var navigationProvider: HomeNavigation
 
+    private lateinit var requestManager: RequestManager
+
     private val homeAdapter by lazy {
         HomeAdapter(
+            requestManager = requestManager,
+            onHomeBannerSectionListener = onHomeBannerSectionListener,
             onMapGifticonSectionListener = onMapGifticonSectionListener,
-            onMapGifticonListener = onMapGifticonListener,
-            onExpiredHeaderListener = onExpiredHeaderListener,
-            onExpiredBrandListener = onExpiredBrandListener,
-            onExpiredGifticonListener = onExpiredGifticonListener,
+            onGifticonHeaderSectionListener = onGifticonHeaderSectionListener,
+            onGifticonListener = onGifticonListener,
         )
+    }
+
+    private val onHomeBannerSectionListener = object: OnHomeBannerSectionListener {
+        override fun onClick(item: HomeBannerItem) {
+        }
     }
 
     private val onMapGifticonSectionListener = object : OnMapGifticonSectionListener {
         override fun getMapGifticonListFlow(): Flow<List<MapGifticonItem>> {
-            return viewModel.mapGifticonList
+            return flow { emit(emptyList()) }
+        }
+
+        override fun getCurrentDmsPosFlow(): Flow<DmsPos> {
+            return flow { emit(DmsPos(0.0, 0.0)) }
         }
 
         override fun onGotoMapClick() {
-        }
-    }
-
-    private val onMapGifticonListener = object : OnMapGifticonListener {
-        override fun getCurrentDmsPosFlow(): Flow<DmsPos> {
-            return flow {
-                emit(DmsPos(0.0, 0.0))
-            }
         }
 
         override fun onClick(item: MapGifticonItem) {
         }
     }
 
-    private val onExpiredHeaderListener = object : OnExpiredHeaderListener {
-        override fun getBrandListFlow(): Flow<List<ExpiredBrandItem>> {
+    private val onGifticonHeaderSectionListener = object : OnGifticonHeaderSectionListener {
+        override fun getBrandListFlow(): Flow<List<BrandItem>> {
             return viewModel.brandList
         }
 
-        override fun getSelectedOrder(): Flow<ExpiredOrder> {
+        override fun getSelectedOrder(): Flow<GifticonOrder> {
             return viewModel.selectedExpiredOrder
         }
 
@@ -96,15 +108,20 @@ class HomeMainFragment : Fragment() {
             return viewModel.brandScrollInfo
         }
 
-        override fun onOrderClick(order: ExpiredOrder) {
-            viewModel.setSelectExpiredOrder(order)
+        override fun onOrderClick(order: GifticonOrder) {
+            viewModel.setSelectGifticonOrder(order)
         }
 
-        override fun onBrandClick(item: ExpiredBrandItem) {
+        override fun onBrandClick(item: BrandItem) {
             viewModel.setSelectBrand(item)
         }
 
         override fun onGotoEditClick() {
+            viewModel.toggleGifticonViewModel()
+        }
+
+        override fun getSelectedFlow(): Flow<BrandItem> {
+            return viewModel.selectedBrand
         }
 
         override fun onBrandScroll(scrollInfo: ScrollInfo) {
@@ -112,36 +129,48 @@ class HomeMainFragment : Fragment() {
         }
     }
 
-    private val onExpiredBrandListener = object : OnExpiredBrandListener {
-        override fun getSelectedFlow(): Flow<ExpiredBrandItem> {
-            return viewModel.selectedBrand
-        }
-    }
-
-    private val onExpiredGifticonListener = object : OnExpiredGifticonListener {
+    private val onGifticonListener = object : OnGifticonListener {
         override fun getNextDayEventFlow(): Flow<Unit> {
             return viewModel.nextDayRemainingTimeFlow
         }
 
-        override fun onClick(item: HomeItem.ExpiredGifticonItem) {
+        override fun isSelectedFlow(item: HomeItem.GifticonItem): Flow<Boolean> {
+            return viewModel.selectedGifticonListFlow
+                .map { list -> list.find { it.id == item.id } != null }
+                .distinctUntilChanged()
+        }
 
+        override fun getViewMode(): Flow<GifticonViewMode> {
+            return viewModel.gifticonViewMode
+        }
+
+        override fun onClick(item: HomeItem.GifticonItem) {
+            when (viewModel.gifticonViewMode.value) {
+                GifticonViewMode.VIEW -> {
+                    // Dialog 실행
+                }
+                GifticonViewMode.EDIT -> {
+                    viewModel.selectGifticon(item)
+                }
+            }
         }
     }
 
     private val homeItemDecorationCallback = object : HomeItemDecorationCallback {
         override fun onTopItemPosition(position: Int) {
-            val isShow = viewModel.expiredHeaderIndex <= position
+            val isShow = viewModel.expiredHeaderIndex.value <= position
             binding.containerStickyHeader.isVisible = isShow
         }
 
         override fun getExpiredGifticonFirstIndex(): Int {
-            return viewModel.expiredGifticonFirstIndex
+            return viewModel.expiredGifticonFirstIndex.value
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        requestManager = requireActivity().cast<OnHomeRequestManagerProvider>().requestManager
         navigationProvider = requireActivity().cast()
     }
 
@@ -160,7 +189,6 @@ class HomeMainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         setUpExpiredStickyHeader()
         setUpHomeList()
         setUpCollectState()
@@ -169,8 +197,8 @@ class HomeMainFragment : Fragment() {
 
     private fun setUpExpiredStickyHeader() {
         val header =
-            ExpiredHeaderViewHolder(binding.list, onExpiredHeaderListener, onExpiredBrandListener)
-        header.bind(HomeItem.ExpiredHeader)
+            GifticonHeaderViewHolder(binding.list, onGifticonHeaderSectionListener)
+        header.bind(HomeItem.GifticonHeader)
         binding.containerStickyHeader.addView(header.itemView)
         binding.containerStickyHeader.preventTouchPropagation()
     }
@@ -196,17 +224,64 @@ class HomeMainFragment : Fragment() {
         }
     }
 
+    private val gifticonViewModeSet by lazy {
+        ConstraintSet().apply {
+            clone(binding.root)
+            connect(binding.containerEdit.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            clear(binding.containerEdit.id, ConstraintSet.BOTTOM)
+            connect(binding.btnGotoRegister.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            clear(binding.btnGotoRegister.id, ConstraintSet.START)
+        }
+    }
+
+    private val gifticonEditModeSet by lazy {
+        ConstraintSet().apply {
+            clone(binding.root)
+            connect(binding.containerEdit.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            clear(binding.containerEdit.id, ConstraintSet.TOP)
+            connect(binding.btnGotoRegister.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            clear(binding.btnGotoRegister.id, ConstraintSet.END)
+        }
+    }
+
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.homeList.collect {
                 homeAdapter.submitList(it)
             }
         }
+
+        repeatOnStarted {
+            var init = true
+            viewModel.gifticonViewMode.collect { mode ->
+                when (mode) {
+                    GifticonViewMode.VIEW -> gifticonViewModeSet
+                    GifticonViewMode.EDIT -> gifticonEditModeSet
+                }.applyTo(binding.root)
+
+                if (!init) {
+                    val trans = ChangeBounds().apply {
+                        duration = 300L
+                        interpolator = DecelerateInterpolator()
+                    }
+                    TransitionManager.beginDelayedTransition(binding.root, trans)
+                }
+                init = false
+            }
+        }
     }
 
     private fun setUpClickEvent() {
-        binding.btnGotoRegister.setOnClickListener(createThrottleClickListener {
+        binding.btnGotoRegister.setOnThrottleClickListener {
             navigationProvider.gotoGallery()
-        })
+        }
+
+        binding.btnDelete.setOnThrottleClickListener {
+            viewModel.deleteSelectedGifticon()
+        }
+
+        binding.btnUse.setOnThrottleClickListener {
+            viewModel.useSelectedGifticon()
+        }
     }
 }

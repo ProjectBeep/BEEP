@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.replace
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
@@ -85,6 +86,7 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequest
                 requestManager
                     .load(it.photoUrl)
                     .placeholder(ThemeR.drawable.icon_default_profile)
+                    .transform(CircleCrop())
                     .into(binding.imageUserProfile)
 
                 binding.textUsername.text = it.displayName
