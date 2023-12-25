@@ -164,25 +164,25 @@ internal sealed interface EditData {
 
     data class Expired(val date: Date) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.expired != date
+            return data.expireAt != date
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(expired = date)
+            return data.copy(expireAt = date)
         }
     }
 
     data class CropExpired(val date: Date, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.expired != date ||
-                    data.expiredCropData.rect != rect ||
-                    data.expiredCropData.zoom != zoom
+            return data.expireAt != date ||
+                    data.expireAtCropData.rect != rect ||
+                    data.expireAtCropData.zoom != zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(
-                expired = date,
-                expiredCropData = GifticonCropData(
+                expireAt = date,
+                expireAtCropData = GifticonCropData(
                     rect = rect,
                     zoom = zoom
                 )

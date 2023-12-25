@@ -57,7 +57,8 @@ internal class HomeDiff : ItemCallback<HomeItem>() {
     override fun areItemsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
         return when {
             oldItem === newItem -> true
-            oldItem is HomeItem.GifticonItem && newItem is HomeItem.GifticonItem && oldItem.id == newItem.id -> true
+            oldItem is HomeItem.Banner && newItem is HomeItem.Banner -> oldItem.list == newItem.list
+            oldItem is HomeItem.GifticonItem && newItem is HomeItem.GifticonItem -> oldItem.id == newItem.id
             else -> false
         }
     }
@@ -65,6 +66,7 @@ internal class HomeDiff : ItemCallback<HomeItem>() {
     @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
         return when {
+            oldItem is HomeItem.Banner && newItem is HomeItem.Banner -> oldItem.list == newItem.list
             oldItem is HomeItem.GifticonItem && newItem is HomeItem.GifticonItem -> oldItem == newItem
             else -> false
         }

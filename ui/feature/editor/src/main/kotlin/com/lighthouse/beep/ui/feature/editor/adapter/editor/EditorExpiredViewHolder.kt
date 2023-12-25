@@ -24,9 +24,9 @@ internal class EditorExpiredViewHolder(
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: EditorChip.Property) {
         listener.getGifticonDataFlow().collect(lifecycleOwner) { data ->
-            binding.textYear.text = data.expiredYear
-            binding.textMonth.text = data.expiredMonth
-            binding.textDate.text = data.expiredDate
+            binding.textYear.text = data.expireYear
+            binding.textMonth.text = data.expireMonth
+            binding.textDate.text = data.expireDate
         }
     }
 }

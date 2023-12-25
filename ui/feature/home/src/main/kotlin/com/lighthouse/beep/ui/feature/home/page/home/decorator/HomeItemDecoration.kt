@@ -3,6 +3,7 @@ package com.lighthouse.beep.ui.feature.home.page.home.decorator
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.lighthouse.beep.core.common.exts.dp
@@ -12,13 +13,11 @@ internal class HomeItemDecoration(
 ) : ItemDecoration() {
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        val topChild = parent.getChildAt(0) ?: return
-
-        val topChildPosition = parent.getChildAdapterPosition(topChild)
+        val manager = parent.layoutManager as? LinearLayoutManager ?: return
+        val topChildPosition = manager.findFirstVisibleItemPosition()
         if (topChildPosition == RecyclerView.NO_POSITION) {
             return
         }
-
         callback.onTopItemPosition(topChildPosition)
     }
 
@@ -34,12 +33,10 @@ internal class HomeItemDecoration(
             return
         }
 
-        outRect.left = 20.dp
         outRect.top = when (adapterPosition) {
             callback.getExpiredGifticonFirstIndex() -> 0.dp
             else -> 4.dp
         }
-        outRect.right = 20.dp
         outRect.bottom = when(adapterPosition) {
             itemCount - 1 -> 0.dp
             else -> 4.dp

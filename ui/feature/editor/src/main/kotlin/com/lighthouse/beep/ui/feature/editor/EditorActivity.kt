@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.commit
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -22,6 +21,7 @@ import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.dismiss
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.exts.setVisible
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
@@ -316,7 +316,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                 supportFragmentManager.clearFragmentResultListener(requestKey)
             }
 
-            val expired = viewModel.selectedGifticonData.value?.expired ?: EMPTY_DATE
+            val expired = viewModel.selectedGifticonData.value?.expireAt ?: EMPTY_DATE
             val param = DatePickerParam(expired)
             DatePickerDialog.newInstance(param)
         }
@@ -543,21 +543,8 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     }
 
     private fun setVisibleCrop(visible: Boolean) {
-        var fragment = supportFragmentManager.findFragmentByTag(EditorPage.CROP.name)
-        if (fragment == null) {
-            fragment = EditorCropFragment()
-        }
-
-        if (visible && fragment.isAdded) {
-            return
-        }
-
-        supportFragmentManager.commit {
-            if (visible) {
-                add(binding.containerCrop.id, fragment, EditorPage.CROP.name)
-            } else {
-                remove(fragment)
-            }
+        setVisible(binding.containerCrop.id, EditorPage.CROP.name, visible) {
+            EditorCropFragment()
         }
     }
 

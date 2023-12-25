@@ -3,6 +3,8 @@ package com.lighthouse.beep.ui.feature.editor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.auth.BeepAuth
+import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.domain.usecase.recognize.RecognizeGifticonUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.model.EditData
@@ -10,6 +12,7 @@ import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.GifticonData
 import com.lighthouse.beep.ui.feature.editor.model.EditType
 import com.lighthouse.beep.ui.feature.editor.model.EditorPage
+import com.lighthouse.beep.ui.feature.editor.model.toEditInfo
 import com.lighthouse.beep.ui.feature.editor.model.toGifticonData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,6 +33,7 @@ import kotlin.math.abs
 @HiltViewModel
 internal class EditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val gifticonRepository: GifticonRepository,
     private val recognizeGifticonUseCase: RecognizeGifticonUseCase,
 ) : ViewModel() {
 
@@ -160,10 +164,26 @@ internal class EditorViewModel @Inject constructor(
     fun registerGifticon(map: Map<Long, GifticonData>) {
         deleteList(map.map { it.key })
         selectEditorChip(EditorChip.Preview)
+        viewModelScope.launch {
+            gifticonRepository.insertGifticonList(
+                userId = BeepAuth.userUid,
+                gifticonInfoList = map.map {
+                    it.value.toEditInfo()
+                }
+            )
+        }
     }
 
     fun revertRegisterGifticon(map: Map<Long, GifticonData>) {
         restoreList(map)
+//        viewModelScope.launch {
+//            gifticonRepository.deleteGifticon(
+//                userId = BeepAuth,
+//                gifticonIdList = map.map {
+//
+//                }
+//            )
+//        }
     }
 
     fun selectInvalidEditType() {

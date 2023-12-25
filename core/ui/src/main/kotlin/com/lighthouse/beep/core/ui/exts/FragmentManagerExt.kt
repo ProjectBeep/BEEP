@@ -64,3 +64,41 @@ fun FragmentManager.replace(containerId: Int, tag: String, factoryProducer: () -
         replace(containerId, fragment, tag)
     }
 }
+
+fun FragmentActivity.setVisible(
+    containerId: Int,
+    tag: String,
+    visible: Boolean,
+    factoryProducer: () -> Fragment,
+) {
+    supportFragmentManager.setVisible(containerId, tag, visible, factoryProducer)
+}
+
+fun Fragment.setVisible(
+    containerId: Int,
+    tag: String,
+    visible: Boolean,
+    factoryProducer: () -> Fragment,
+) {
+    childFragmentManager.setVisible(containerId, tag, visible, factoryProducer)
+}
+
+fun FragmentManager.setVisible(
+    containerId: Int,
+    tag: String,
+    visible: Boolean,
+    factoryProducer: () -> Fragment,
+) {
+    val fragment = findFragmentByTag(tag) ?: factoryProducer()
+    if (visible && fragment.isAdded) {
+        return
+    }
+
+    commit {
+        if (visible) {
+            add(containerId, fragment, tag)
+        } else {
+            remove(fragment)
+        }
+    }
+}

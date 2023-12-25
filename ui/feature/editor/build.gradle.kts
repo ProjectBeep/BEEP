@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.data.data)
     implementation(projects.domain)
 
+    implementation(projects.auth)
     implementation(projects.navs)
     implementation(projects.permission)
 

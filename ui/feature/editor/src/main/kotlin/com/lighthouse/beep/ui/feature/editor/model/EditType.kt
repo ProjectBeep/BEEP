@@ -166,7 +166,7 @@ internal enum class EditType(
         }
 
         override fun getCropData(data: GifticonData?): GifticonCropData {
-            return data?.expiredCropData ?: GifticonCropData.None
+            return data?.expireAtCropData ?: GifticonCropData.None
         }
 
         override fun isInvalid(data: GifticonData): Boolean {

@@ -2,6 +2,7 @@ package com.lighthouse.beep.ui.feature.home.page.home
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.cast
+import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
@@ -162,6 +164,7 @@ class HomeMainFragment : Fragment() {
 
     private val homeItemDecorationCallback = object : HomeItemDecorationCallback {
         override fun onTopItemPosition(position: Int) {
+            Log.d("TEST", "${viewModel.expiredHeaderIndex.value}, $position")
             val isShow = viewModel.expiredHeaderIndex.value <= position
             binding.containerStickyHeader.isVisible = isShow
         }
@@ -228,25 +231,23 @@ class HomeMainFragment : Fragment() {
         }
     }
 
-    private val gifticonViewModeSet by lazy {
-        ConstraintSet().apply {
+    private val gifticonViewModeSet: ConstraintSet
+        get() = ConstraintSet().apply {
             clone(binding.root)
             connect(binding.containerEdit.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
             clear(binding.containerEdit.id, ConstraintSet.BOTTOM)
             connect(binding.btnGotoRegister.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
             clear(binding.btnGotoRegister.id, ConstraintSet.START)
         }
-    }
 
-    private val gifticonEditModeSet by lazy {
-        ConstraintSet().apply {
+    private val gifticonEditModeSet: ConstraintSet
+        get() = ConstraintSet().apply {
             clone(binding.root)
-            connect(binding.containerEdit.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            connect(binding.containerEdit.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 12.dp)
             clear(binding.containerEdit.id, ConstraintSet.TOP)
-            connect(binding.btnGotoRegister.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(binding.btnGotoRegister.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.END)
             clear(binding.btnGotoRegister.id, ConstraintSet.END)
         }
-    }
 
     private fun setUpCollectState() {
         repeatOnStarted {

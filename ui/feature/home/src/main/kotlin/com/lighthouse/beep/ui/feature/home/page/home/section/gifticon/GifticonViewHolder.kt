@@ -1,6 +1,7 @@
 package com.lighthouse.beep.ui.feature.home.page.home.section.gifticon
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
@@ -26,6 +27,10 @@ internal class GifticonViewHolder(
     )
 ) : LifecycleViewHolder<HomeItem.GifticonItem>(binding.root) {
 
+    init {
+        binding.imageThumbnail.clipToOutline = true
+    }
+
     override fun bind(item: HomeItem.GifticonItem) {
         super.bind(item)
 
@@ -44,29 +49,27 @@ internal class GifticonViewHolder(
         }
     }
 
-    private val gifticonViewModeSet by lazy {
-        ConstraintSet().apply {
+    private val gifticonViewModeSet: ConstraintSet
+        get() = ConstraintSet().apply {
             clone(binding.root)
             connect(
                 binding.containerGifticon.id,
                 ConstraintSet.START,
-                ConstraintSet.PARENT_ID,
+                binding.root.id,
                 ConstraintSet.START
             )
         }
-    }
 
-    private val gifticonEditModeSet by lazy {
-        ConstraintSet().apply {
+    private val gifticonEditModeSet: ConstraintSet
+        get() = ConstraintSet().apply {
             clone(binding.root)
             connect(
                 binding.containerGifticon.id,
                 ConstraintSet.START,
-                binding.btnSelector.id,
+                binding.root.id,
                 ConstraintSet.END
             )
         }
-    }
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: HomeItem.GifticonItem) {
         listener.getNextDayEventFlow().collect(lifecycleOwner) { _ ->
@@ -84,18 +87,17 @@ internal class GifticonViewHolder(
         )
 
         listener.getViewModeFlow().collect(lifecycleOwner){ mode, init ->
+            Log.d("TEST", "mode : $mode")
             val set = when (mode) {
                 GifticonViewMode.VIEW -> gifticonViewModeSet
                 GifticonViewMode.EDIT -> gifticonEditModeSet
             }
             set.applyTo(binding.root)
-            if (!init) {
-                val trans = ChangeBounds().apply {
-                    duration = 300L
-                    interpolator = DecelerateInterpolator()
-                }
-                TransitionManager.beginDelayedTransition(binding.root, trans)
+            val trans = ChangeBounds().apply {
+                duration = 300L
+                interpolator = DecelerateInterpolator()
             }
+            TransitionManager.beginDelayedTransition(binding.root, trans)
         }
     }
 }

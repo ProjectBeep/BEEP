@@ -2,11 +2,14 @@ package com.lighthouse.beep.ui.feature.editor.model
 
 import android.net.Uri
 import com.lighthouse.beep.core.common.exts.EMPTY_DATE
+import com.lighthouse.beep.core.common.exts.EMPTY_RECT
 import com.lighthouse.beep.core.common.exts.ofDate
 import com.lighthouse.beep.core.common.exts.ofMonth
 import com.lighthouse.beep.core.common.exts.ofYear
 import com.lighthouse.beep.core.common.exts.toFormattedString
 import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
+import com.lighthouse.beep.model.gifticon.GifticonEditInfo
+import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import java.util.Date
 
@@ -21,8 +24,8 @@ internal data class GifticonData(
     val brandCropData: GifticonCropData = GifticonCropData.None,
     val barcode: String = "",
     val barcodeCropData: GifticonCropData = GifticonCropData.None,
-    val expired: Date = EMPTY_DATE,
-    val expiredCropData: GifticonCropData = GifticonCropData.None,
+    val expireAt: Date = EMPTY_DATE,
+    val expireAtCropData: GifticonCropData = GifticonCropData.None,
     val isCashCard: Boolean = false,
     val balance: String = "",
     val balanceCropData: GifticonCropData = GifticonCropData.None,
@@ -30,17 +33,17 @@ internal data class GifticonData(
 ) {
     val displayBarcode: String = TextInputFormat.BARCODE.valueToTransformed(barcode)
 
-    val displayExpired: String = if (expired == EMPTY_DATE) "" else expired.toFormattedString()
+    val displayExpired: String = if (expireAt == EMPTY_DATE) "" else expireAt.toFormattedString()
 
     val displayBalance: String = TextInputFormat.BALANCE.valueToTransformed(balance)
 
-    val expiredYear: String = if (expired == EMPTY_DATE) "" else expired.ofYear().toString()
+    val expireYear: String = if (expireAt == EMPTY_DATE) "" else expireAt.ofYear().toString()
 
-    val expiredMonth: String =
-        if (expired == EMPTY_DATE) "" else String.format("%02d", expired.ofMonth())
+    val expireMonth: String =
+        if (expireAt == EMPTY_DATE) "" else String.format("%02d", expireAt.ofMonth())
 
-    val expiredDate: String =
-        if (expired == EMPTY_DATE) "" else String.format("%02d", expired.ofDate())
+    val expireDate: String =
+        if (expireAt == EMPTY_DATE) "" else String.format("%02d", expireAt.ofDate())
 
     val isInvalid
         get() = EditType.entries.any { it.isInvalid(this) }
@@ -72,8 +75,41 @@ internal fun GifticonRecognizeInfo?.toGifticonData(
         name = name,
         brand = brand,
         barcode = barcode,
-        expired = expiredAt,
+        expireAt = expiredAt,
         isCashCard = isCashCard,
         balance = balance.toString(),
+    )
+}
+
+internal fun GifticonData.toEditInfo(): GifticonEditInfo {
+    return GifticonEditInfo(
+        thumbnailType = when(thumbnail) {
+            is EditGifticonThumbnail.BuiltIn -> GifticonThumbnail.TYPE_BUILT_IN
+            else -> GifticonThumbnail.TYPE_IMAGE
+        },
+        thumbnailBuiltInCode = when(thumbnail) {
+            is EditGifticonThumbnail.BuiltIn -> thumbnail.builtIn.code
+            else -> ""
+        },
+        thumbnailBitmap = when(thumbnail) {
+            is EditGifticonThumbnail.Crop -> thumbnail.bitmap
+            else -> null
+        },
+        thumbnailUri = null,
+        thumbnailRect = when(thumbnail) {
+            is EditGifticonThumbnail.Crop -> thumbnail.rect
+            else -> EMPTY_RECT
+        },
+        gifticonUri = null,
+        originUri = originUri,
+        imagePath = imagePath,
+        name = name,
+        displayBrand = brand,
+        barcode = displayBarcode,
+        isCashCard = isCashCard,
+        totalCash = balance.toIntOrNull() ?: 0,
+        remainCash = balance.toIntOrNull() ?: 0,
+        memo = memo,
+        expireAt = expireAt,
     )
 }
