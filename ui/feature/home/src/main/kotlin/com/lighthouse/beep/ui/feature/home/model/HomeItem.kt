@@ -56,9 +56,10 @@ internal fun RequestManager.loadThumbnail(item: HomeItem.GifticonItem): RequestB
 internal class HomeDiff : ItemCallback<HomeItem>() {
     override fun areItemsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
         return when {
-            oldItem === newItem -> true
             oldItem is HomeItem.Banner && newItem is HomeItem.Banner -> oldItem.list == newItem.list
             oldItem is HomeItem.GifticonItem && newItem is HomeItem.GifticonItem -> oldItem.id == newItem.id
+            oldItem is HomeItem.GifticonHeader && newItem is HomeItem.GifticonHeader -> true
+            oldItem is HomeItem.MapGifticon && newItem is HomeItem.MapGifticon -> true
             else -> false
         }
     }
@@ -68,6 +69,8 @@ internal class HomeDiff : ItemCallback<HomeItem>() {
         return when {
             oldItem is HomeItem.Banner && newItem is HomeItem.Banner -> oldItem.list == newItem.list
             oldItem is HomeItem.GifticonItem && newItem is HomeItem.GifticonItem -> oldItem == newItem
+            oldItem is HomeItem.GifticonHeader && newItem is HomeItem.GifticonHeader -> true
+            oldItem is HomeItem.MapGifticon && newItem is HomeItem.MapGifticon -> true
             else -> false
         }
     }
