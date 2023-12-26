@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
@@ -74,7 +75,7 @@ class HomeMainFragment : Fragment() {
         )
     }
 
-    private val onHomeBannerSectionListener = object: OnHomeBannerSectionListener {
+    private val onHomeBannerSectionListener = object : OnHomeBannerSectionListener {
         override fun onClick(item: HomeBannerItem) {
         }
     }
@@ -157,6 +158,7 @@ class HomeMainFragment : Fragment() {
                 GifticonViewMode.VIEW -> {
                     // Dialog 실행
                 }
+
                 GifticonViewMode.EDIT -> {
                     viewModel.selectGifticon(item)
                 }
@@ -201,13 +203,14 @@ class HomeMainFragment : Fragment() {
     }
 
     private fun setUpHomeList() {
-        binding.list.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        binding.list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val button = binding.btnGotoRegister
                 val offset = binding.list.computeVerticalScrollOffset()
                 val current = max(button.maxWidth - offset, button.minWidth)
                 if (current != button.width) {
-                    val progress = (current - button.minWidth).toFloat() / (button.maxWidth - button.minWidth)
+                    val progress =
+                        (current - button.minWidth).toFloat() / (button.maxWidth - button.minWidth)
                     binding.textGotoRegister.alpha = progress
                     button.updateLayoutParams { width = current }
                 }
@@ -230,7 +233,17 @@ class HomeMainFragment : Fragment() {
     private fun setUpCollectState() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.homeList.collect {
-                homeAdapter.submitList(it)
+                if (viewModel.requestStopAnimation) {
+                    binding.list.itemAnimator = null
+                }
+                homeAdapter.submitList(it) {
+                    if (viewModel.requestStopAnimation) {
+                        binding.list.post {
+                            binding.list.itemAnimator = DefaultItemAnimator()
+                            viewModel.completeStopAnimation()
+                        }
+                    }
+                }
             }
         }
 

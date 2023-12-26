@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.common.exts.calculateNextDayRemainingTime
-import com.lighthouse.beep.core.common.utils.flow.MutableEventFlow
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.ui.feature.home.R
@@ -33,6 +32,13 @@ internal class HomeMainViewModel @Inject constructor(
     private val gifticonRepository: GifticonRepository,
 ) : ViewModel() {
 
+    var requestStopAnimation = false
+        private set
+
+    fun completeStopAnimation() {
+        requestStopAnimation = false
+    }
+
     private val _gifticonQuery = MutableStateFlow(GifticonQuery.Default)
     val gifticonQuery = _gifticonQuery.asStateFlow()
 
@@ -41,6 +47,7 @@ internal class HomeMainViewModel @Inject constructor(
             return
         }
 
+        requestStopAnimation = true
         _gifticonQuery.value = gifticonQuery.value.copy(
             order = order,
         )
@@ -59,8 +66,6 @@ internal class HomeMainViewModel @Inject constructor(
             brandItem = item,
         )
     }
-
-    private val requestStopAnimation = MutableEventFlow<Boolean>()
 
     private val _gifticonViewMode = MutableStateFlow(GifticonViewMode.VIEW)
     val gifticonViewMode = _gifticonViewMode.asStateFlow()
