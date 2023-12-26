@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface OnGifticonBrandListener {
 
-    fun getSelectedFlow(): Flow<BrandItem>
+    fun getSelectedFlow(item: BrandItem): Flow<Boolean>
 }

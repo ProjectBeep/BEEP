@@ -9,7 +9,7 @@ internal sealed interface BrandItem {
     data class Item(val name: String) : BrandItem
 }
 
-internal class ExpiredBrandDiff : DiffUtil.ItemCallback<BrandItem>() {
+internal val BrandItemDiff = object: DiffUtil.ItemCallback<BrandItem>() {
     override fun areItemsTheSame(oldItem: BrandItem, newItem: BrandItem): Boolean {
         return when {
             oldItem === newItem -> true

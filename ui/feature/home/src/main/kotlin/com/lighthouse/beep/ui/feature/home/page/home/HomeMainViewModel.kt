@@ -1,5 +1,6 @@
 package com.lighthouse.beep.ui.feature.home.page.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.auth.BeepAuth
@@ -9,6 +10,7 @@ import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.ui.feature.home.R
 import com.lighthouse.beep.ui.feature.home.model.BrandItem
 import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
+import com.lighthouse.beep.ui.feature.home.model.GifticonQuery
 import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
 import com.lighthouse.beep.ui.feature.home.model.HomeBannerItem
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
@@ -16,14 +18,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -33,22 +33,23 @@ internal class HomeMainViewModel @Inject constructor(
     private val gifticonRepository: GifticonRepository,
 ) : ViewModel() {
 
-    private val _selectedGifticonOrder = MutableStateFlow(GifticonOrder.D_DAY)
-    val selectedExpiredOrder = _selectedGifticonOrder.asStateFlow()
+    private val _gifticonQuery = MutableStateFlow(GifticonQuery.Default)
+    val gifticonQuery = _gifticonQuery.asStateFlow()
 
-    fun setSelectGifticonOrder(order: GifticonOrder) {
-        _selectedGifticonOrder.value = order
+    fun selectGifticonOrder(order: GifticonOrder) {
+        _gifticonQuery.value = gifticonQuery.value.copy(
+            order = order,
+        )
     }
 
     val brandList = gifticonRepository.getBrandCategoryList(BeepAuth.userUid).map { brandList ->
         listOf(BrandItem.All) + brandList.map { BrandItem.Item(it.displayBrand) }
     }
 
-    private val _selectedBrand = MutableStateFlow<BrandItem>(BrandItem.All)
-    val selectedBrand = _selectedBrand.asStateFlow()
-
-    fun setSelectBrand(item: BrandItem) {
-        _selectedBrand.value = item
+    fun selectBrand(item: BrandItem) {
+        _gifticonQuery.value = gifticonQuery.value.copy(
+            brandItem = item,
+        )
     }
 
     private val _gifticonViewMode = MutableStateFlow(GifticonViewMode.VIEW)
@@ -123,12 +124,8 @@ internal class HomeMainViewModel @Inject constructor(
         _gifticonViewMode.value = mode
     }
 
-    val gifticonList = combine(
-        selectedExpiredOrder,
-        selectedBrand,
-    ){ order, brand ->
-        order to brand
-    }.flatMapLatest { (order, brand) ->
+    private val gifticonList = gifticonQuery.flatMapLatest { (order, brand) ->
+        Log.d("TEST", "gifticonList : $order $brand")
         when (brand) {
             is BrandItem.All -> gifticonRepository.getGifticonList(
                 userId = BeepAuth.userUid,
@@ -162,6 +159,12 @@ internal class HomeMainViewModel @Inject constructor(
         HomeBannerItem.BuiltIn(R.drawable.img_banner_location_coming_soon),
     )
 
+    var expiredHeaderIndex = -1
+        private set
+
+    var expiredGifticonFirstIndex = -1
+        private set
+
     val homeList = gifticonList.map { gifticonList ->
         listOf(
             HomeItem.Banner(homeBannerList),
@@ -176,19 +179,14 @@ internal class HomeMainViewModel @Inject constructor(
                 expiredDate = it.expireAt,
             )
         }
-    }
-
-    val expiredHeaderIndex = homeList.map {homeList ->
-        homeList.indexOfFirst {
+    }.onEach { homeList ->
+        expiredHeaderIndex = homeList.indexOfFirst {
             it is HomeItem.GifticonHeader
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, -1)
-
-    val expiredGifticonFirstIndex = homeList.map{ homeList ->
-        homeList.indexOfFirst {
+        expiredGifticonFirstIndex = homeList.indexOfFirst {
             it is HomeItem.GifticonItem
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, -1)
+    }
 
     init {
         initSelectedGifticonList()

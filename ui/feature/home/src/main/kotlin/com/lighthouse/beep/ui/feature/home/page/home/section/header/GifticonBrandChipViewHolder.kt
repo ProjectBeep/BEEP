@@ -34,8 +34,8 @@ internal class GifticonBrandChipViewHolder(
     }
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: BrandItem) {
-        onGifticonBrandListener.getSelectedFlow().collect(lifecycleOwner) { selected ->
-            binding.chip.isSelected = item == selected
+        onGifticonBrandListener.getSelectedFlow(item).collect(lifecycleOwner) { isSelected ->
+            binding.chip.isSelected = isSelected
         }
     }
 }

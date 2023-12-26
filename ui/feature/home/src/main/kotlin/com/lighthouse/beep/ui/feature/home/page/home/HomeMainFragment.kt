@@ -27,6 +27,7 @@ import com.lighthouse.beep.ui.feature.home.databinding.FragmentMainHomeBinding
 import com.lighthouse.beep.ui.feature.home.page.home.decorator.HomeItemDecoration
 import com.lighthouse.beep.ui.feature.home.page.home.decorator.HomeItemDecorationCallback
 import com.lighthouse.beep.ui.feature.home.model.BrandItem
+import com.lighthouse.beep.ui.feature.home.model.BrandItemDiff
 import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
 import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
 import com.lighthouse.beep.ui.feature.home.model.HomeBannerItem
@@ -101,7 +102,9 @@ class HomeMainFragment : Fragment() {
         }
 
         override fun getSelectedOrder(): Flow<GifticonOrder> {
-            return viewModel.selectedExpiredOrder
+            return viewModel.gifticonQuery
+                .map { it.order }
+                .distinctUntilChanged()
         }
 
         override fun getViewModeFlow(): Flow<GifticonViewMode> {
@@ -113,19 +116,21 @@ class HomeMainFragment : Fragment() {
         }
 
         override fun onOrderClick(order: GifticonOrder) {
-            viewModel.setSelectGifticonOrder(order)
+            viewModel.selectGifticonOrder(order)
         }
 
         override fun onBrandClick(item: BrandItem) {
-            viewModel.setSelectBrand(item)
+            viewModel.selectBrand(item)
         }
 
         override fun onGotoEditClick() {
             viewModel.toggleGifticonViewModel()
         }
 
-        override fun getSelectedFlow(): Flow<BrandItem> {
-            return viewModel.selectedBrand
+        override fun getSelectedFlow(item: BrandItem): Flow<Boolean> {
+            return viewModel.gifticonQuery
+                .map { BrandItemDiff.areItemsTheSame(item, it.brandItem) }
+                .distinctUntilChanged()
         }
 
         override fun onBrandScroll(scrollInfo: ScrollInfo) {
@@ -162,12 +167,12 @@ class HomeMainFragment : Fragment() {
 
     private val homeItemDecorationCallback = object : HomeItemDecorationCallback {
         override fun onTopItemPosition(position: Int) {
-            val isShow = viewModel.expiredHeaderIndex.value <= position
+            val isShow = viewModel.expiredHeaderIndex <= position
             binding.containerStickyHeader.isVisible = isShow
         }
 
         override fun getExpiredGifticonFirstIndex(): Int {
-            return viewModel.expiredGifticonFirstIndex.value
+            return viewModel.expiredGifticonFirstIndex
         }
     }
 
