@@ -77,9 +77,9 @@ internal class SettingActivity : AppCompatActivity() {
                 binding.textProfileEmail.text = it.email
 
                 if (it.provider.iconResId == 0) {
-                    binding.imageProfile.setImageDrawable(null)
+                    binding.iconProvider.setImageDrawable(null)
                 } else {
-                    binding.imageProfile.setImageResource(it.provider.iconResId)
+                    binding.iconProvider.setImageResource(it.provider.iconResId)
                 }
 
                 binding.btnAccountLogout.isVisible = it.provider.isAvailableLogout
