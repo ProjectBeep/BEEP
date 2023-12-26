@@ -30,9 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen().setKeepOnScreenCondition {
-            viewModel.uiState.value is MainUiState.Success
-        }
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -40,12 +38,16 @@ class MainActivity : AppCompatActivity() {
         window?.statusBarColor = getColor(R.color.beep_pink)
 
         val logo = binding.imageLogo.drawable as? AnimatedVectorDrawable
-        logo?.registerAnimationCallback(object: Animatable2.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                setUpPageNavigate()
-            }
-        })
-        logo?.start()
+        if (logo != null) {
+            logo.registerAnimationCallback(object: Animatable2.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    setUpPageNavigate()
+                }
+            })
+            logo.start()
+        } else {
+            setUpPageNavigate()
+        }
     }
 
     private fun setUpPageNavigate() {
