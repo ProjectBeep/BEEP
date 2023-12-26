@@ -16,6 +16,11 @@ interface LocalGifticonDataSource {
         isUsed: Boolean,
     ): Flow<Boolean>
 
+    fun getGifticonCount(
+        userId: String,
+        isUsed: Boolean,
+    ): Flow<Int>
+
     suspend fun getGifticonDetail(
         userId: String,
         gifticonId: Long,

@@ -25,6 +25,14 @@ internal interface GifticonDao {
     ): Flow<Boolean>
 
     @Query(
+        "SELECT COUNT(1) FROM gifticon_table WHERE user_id = :userId AND is_used = :isUsed"
+    )
+    fun getGifticonCount(
+        userId: String,
+        isUsed: Boolean,
+    ): Flow<Int>
+
+    @Query(
         "SELECT id, " +
                 "user_id, " +
                 "thumbnail_type, " +

@@ -19,7 +19,7 @@ internal class AppNavigatorImpl @Inject constructor() : AppNavigator {
 
     private fun createParam(navItem: ActivityNavItem): AppNavParam {
         return when(navItem) {
-            is ActivityNavItem.Login -> LoginParam()
+            is ActivityNavItem.Login -> LoginParam(navItem.clearTask)
             is ActivityNavItem.Home -> HomeParam()
             is ActivityNavItem.Gallery -> GalleryParam()
             is ActivityNavItem.Editor -> EditorParam(navItem.list)

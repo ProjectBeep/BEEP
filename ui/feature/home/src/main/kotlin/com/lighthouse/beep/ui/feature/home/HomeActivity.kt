@@ -83,8 +83,7 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequest
 
         repeatOnStarted {
             viewModel.authInfoFlow.collect {
-                requestManager
-                    .load(it.photoUrl)
+                requestManager.load(it.photoUrl)
                     .placeholder(ThemeR.drawable.icon_default_profile)
                     .transform(CircleCrop())
                     .into(binding.imageUserProfile)

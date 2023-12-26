@@ -4,6 +4,6 @@
     <application>
         <activity
             android:name=".SettingActivity"
-            android:theme="@style/Theme.BEEP"/>
+            android:theme="@style/Theme.BEEP.Setting"/>
     </application>
 </manifest>

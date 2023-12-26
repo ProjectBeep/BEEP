@@ -4,7 +4,9 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 
 sealed interface ActivityNavItem {
 
-    data object Login : ActivityNavItem
+    data class Login(
+        val clearTask: Boolean = false
+    ) : ActivityNavItem
 
     data object Home : ActivityNavItem
 

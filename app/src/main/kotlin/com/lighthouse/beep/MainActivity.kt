@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun gotoLoginPage() {
-        val intent = navigator.getIntent(this, ActivityNavItem.Login)
+        val intent = navigator.getIntent(this, ActivityNavItem.Login())
         startActivity(intent)
         finish()
     }

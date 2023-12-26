@@ -25,6 +25,10 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         return gifticonDao.isExistGifticon(userId, isUsed)
     }
 
+    override fun getGifticonCount(userId: String, isUsed: Boolean): Flow<Int> {
+        return gifticonDao.getGifticonCount(userId, isUsed)
+    }
+
     override suspend fun getGifticonDetail(
         userId: String,
         gifticonId: Long,

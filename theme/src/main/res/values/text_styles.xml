@@ -11,6 +11,13 @@
         <item name="android:fontFamily">@font/pretendard_bold</item>
     </style>
 
+    <style name="Text.LargeText2" parent="">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">26dp</item>
+        <item name="android:lineSpacingExtra">6dp</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+    </style>
+
     <style name="Text.HighlightText1" parent="">
         <item name="android:includeFontPadding">false</item>
         <item name="android:textSize">24dp</item>
@@ -64,10 +71,17 @@
         <item name="android:includeFontPadding">false</item>
         <item name="android:textSize">18dp</item>
         <item name="android:lineSpacingExtra">6dp</item>
-        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
     </style>
 
     <style name="Text.Title6" parent="">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:lineSpacingExtra">6dp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
+    <style name="Text.Title7" parent="">
         <item name="android:includeFontPadding">false</item>
         <item name="android:textSize">16dp</item>
         <item name="android:lineSpacingExtra">6dp</item>

@@ -18,6 +18,10 @@ internal class GifticonRepositoryImpl @Inject constructor(
         return localGifticonDataSource.isExistGifticon(userId, isUsed)
     }
 
+    override fun getGifticonCount(userId: String, isUsed: Boolean): Flow<Int> {
+        return localGifticonDataSource.getGifticonCount(userId, isUsed)
+    }
+
     override suspend fun getGifticonDetail(
         userId: String,
         gifticonId: Long,

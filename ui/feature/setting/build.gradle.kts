@@ -17,4 +17,6 @@ dependencies {
     implementation(projects.auth)
 
     implementation(projects.navs)
+
+    implementation(libs.glide)
 }
