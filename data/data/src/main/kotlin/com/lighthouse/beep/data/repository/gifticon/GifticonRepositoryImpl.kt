@@ -50,10 +50,10 @@ internal class GifticonRepositoryImpl @Inject constructor(
         userId: String,
         gifticonInfoList: List<GifticonEditInfo>,
     ): List<Long> {
-        return gifticonInfoList.map {
+        val editInfoList = gifticonInfoList.map {
             val originResult = gifticonStorage.saveGifticonOriginImage(it.originUri)
             val thumbnail = it.thumbnailBitmap
-            val editInfo = if (thumbnail != null) {
+            if (thumbnail != null) {
                 val thumbnailUri = gifticonStorage.saveGifticonThumbnailImage(thumbnail)
                 it.copy(
                     gifticonUri = originResult.gifticonUri,
@@ -68,8 +68,8 @@ internal class GifticonRepositoryImpl @Inject constructor(
                     thumbnailRect = thumbnailResult.thumbnailRect,
                 )
             }
-            localGifticonDataSource.insertGifticon(userId, editInfo)
         }
+        return localGifticonDataSource.insertGifticonList(userId, editInfoList)
     }
 
     override suspend fun updateGifticon(
@@ -88,7 +88,7 @@ internal class GifticonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteGifticon(userId: String): Result<Unit> = runCatching {
-        localGifticonDataSource.getGifticonResourceList(userId)?.forEach {
+        localGifticonDataSource.getGifticonResourceList(userId).forEach {
             gifticonStorage.deleteFile(it.gifticonUri)
             gifticonStorage.deleteFile(it.thumbnailUri)
         }
@@ -99,7 +99,7 @@ internal class GifticonRepositoryImpl @Inject constructor(
         userId: String,
         gifticonIdList: List<Long>,
     ): Result<Unit> = runCatching {
-        localGifticonDataSource.getGifticonResourceList(userId, gifticonIdList)?.forEach {
+        localGifticonDataSource.getGifticonResourceList(userId, gifticonIdList).forEach {
             gifticonStorage.deleteFile(it.gifticonUri)
             gifticonStorage.deleteFile(it.thumbnailUri)
         }

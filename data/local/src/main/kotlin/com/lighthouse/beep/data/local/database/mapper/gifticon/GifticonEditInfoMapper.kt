@@ -6,6 +6,10 @@ import com.lighthouse.beep.data.local.database.model.DBGifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import java.util.Date
 
+internal fun List<GifticonEditInfo>.toEntityForCreate(userId: String): List<DBGifticonEntity> {
+    return map { it.toEntityForCreate(userId) }
+}
+
 internal fun GifticonEditInfo.toEntityForCreate(
     userId: String,
 ): DBGifticonEntity {
