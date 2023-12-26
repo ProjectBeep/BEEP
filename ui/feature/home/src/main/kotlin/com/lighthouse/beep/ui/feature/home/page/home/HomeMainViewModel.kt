@@ -123,7 +123,7 @@ internal class HomeMainViewModel @Inject constructor(
         _gifticonViewMode.value = mode
     }
 
-    private val gifticonList = combine(
+    val gifticonList = combine(
         selectedExpiredOrder,
         selectedBrand,
     ){ order, brand ->
@@ -176,7 +176,7 @@ internal class HomeMainViewModel @Inject constructor(
                 expiredDate = it.expireAt,
             )
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    }
 
     val expiredHeaderIndex = homeList.map {homeList ->
         homeList.indexOfFirst {

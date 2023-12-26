@@ -17,9 +17,7 @@ import kotlinx.coroutines.flow.Flow
 internal interface GifticonDao {
 
     @Query(
-        "SELECT EXISTS (" +
-                "SELECT 1 from gifticon_table " +
-                "WHERE user_id = :userId AND is_used = :isUsed)"
+        "SELECT 1 FROM gifticon_table WHERE user_id = :userId AND is_used = :isUsed LIMIT 1"
     )
     fun isExistGifticon(
         userId: String,
@@ -177,7 +175,7 @@ internal interface GifticonDao {
 
     @Query(
         "UPDATE gifticon_table " +
-                "SET is_used = 1 AND remain_cash = 0 " +
+                "SET is_used = 1, remain_cash = 0 " +
                 "WHERE user_id = :userId AND id = :gifticonId",
     )
     suspend fun useGifticon(
@@ -187,7 +185,7 @@ internal interface GifticonDao {
 
     @Query(
         "UPDATE gifticon_table " +
-                "SET is_used = 1 AND remain_cash = 0 " +
+                "SET is_used = 1, remain_cash = 0 " +
                 "WHERE user_id = :userId AND id in (:gifticonId)",
     )
     suspend fun useGifticonList(
@@ -197,7 +195,7 @@ internal interface GifticonDao {
 
     @Query(
         "UPDATE gifticon_table " +
-                "SET is_used = 1 AND remain_cash = :remainCash " +
+                "SET is_used = 1, remain_cash = :remainCash " +
                 "WHERE user_id = :userId AND id = :gifticonId",
     )
     suspend fun useCashGifticon(

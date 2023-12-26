@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,9 +19,9 @@ import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.content.OnContentChangeListener
 import com.lighthouse.beep.core.ui.content.registerGalleryContentObserver
 import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
-import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.dismiss
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.setVisible
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewWidth
@@ -66,6 +67,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlin.math.max
 import com.lighthouse.beep.theme.R as ThemeR
 
@@ -500,31 +502,33 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     }
 
     private fun setUpOnClickEvent() {
-        binding.btnBack.setOnClickListener(createThrottleClickListener {
+        binding.btnBack.setOnThrottleClickListener {
             showExitEditorDialog()
-        })
+        }
 
-        binding.btnPreview.setOnClickListener(createThrottleClickListener {
+        binding.btnPreview.setOnThrottleClickListener {
             binding.listEditorChip.smoothScrollToPosition(0)
             viewModel.selectEditorChip(EditorChip.Preview)
-        })
+        }
 
-        binding.btnRegister.setOnClickListener(createThrottleClickListener {
+        binding.btnRegister.setOnThrottleClickListener {
             val validMap = viewModel.validGifticonList.value
             if (validMap.isNotEmpty()) {
-                viewModel.registerGifticon(validMap)
+                lifecycleScope.launch {
+                    viewModel.registerGifticon(validMap)
 
-                if (viewModel.galleryImage.value.isNotEmpty()) {
-                    beepSnackBar.info()
-                        .setText(getString(R.string.editor_gifticon_register_partial_success, validMap.size))
-                        .setAction(BeepSnackBarAction.Text(
-                            textResId = R.string.editor_gifticon_register_revert,
-                            listener = {
-                                viewModel.revertRegisterGifticon(validMap)
-                            }
-                        )).show()
-                } else {
-                    completeEditor()
+                    if (viewModel.galleryImage.value.isNotEmpty()) {
+                        beepSnackBar.info()
+                            .setText(getString(R.string.editor_gifticon_register_partial_success, validMap.size))
+                            .setAction(BeepSnackBarAction.Text(
+                                textResId = R.string.editor_gifticon_register_revert,
+                                listener = {
+                                    viewModel.revertRegisterGifticon(validMap)
+                                }
+                            )).show()
+                    } else {
+                        completeEditor()
+                    }
                 }
             } else {
                 viewModel.selectInvalidEditType()
@@ -539,7 +543,7 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
                     .setTextResId(R.string.editor_gifticon_register_failed)
                     .show()
             }
-        })
+        }
     }
 
     private fun setVisibleCrop(visible: Boolean) {

@@ -35,11 +35,11 @@ internal class HomeItemDecoration(
 
         outRect.top = when (adapterPosition) {
             callback.getExpiredGifticonFirstIndex() -> 0.dp
-            else -> 4.dp
+            else -> 8.dp
         }
         outRect.bottom = when(adapterPosition) {
             itemCount - 1 -> 0.dp
-            else -> 4.dp
+            else -> 8.dp
         }
     }
 }

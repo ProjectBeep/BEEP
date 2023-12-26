@@ -162,17 +162,15 @@ internal class EditorViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     private var recentInsertGifticonIdList = emptyList<Long>()
-    fun registerGifticon(map: Map<Long, GifticonData>) {
+    suspend fun registerGifticon(map: Map<Long, GifticonData>) {
+        recentInsertGifticonIdList = gifticonRepository.insertGifticonList(
+            userId = BeepAuth.userUid,
+            gifticonInfoList = map.map {
+                it.value.toEditInfo()
+            }
+        )
         deleteList(map.map { it.key })
         selectEditorChip(EditorChip.Preview)
-        viewModelScope.launch {
-            recentInsertGifticonIdList = gifticonRepository.insertGifticonList(
-                userId = BeepAuth.userUid,
-                gifticonInfoList = map.map {
-                    it.value.toEditInfo()
-                }
-            )
-        }
     }
 
     fun revertRegisterGifticon(map: Map<Long, GifticonData>) {

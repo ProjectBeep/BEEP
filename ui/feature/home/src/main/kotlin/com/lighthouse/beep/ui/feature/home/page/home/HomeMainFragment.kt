@@ -3,7 +3,6 @@ package com.lighthouse.beep.ui.feature.home.page.home
 import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -163,7 +162,6 @@ class HomeMainFragment : Fragment() {
 
     private val homeItemDecorationCallback = object : HomeItemDecorationCallback {
         override fun onTopItemPosition(position: Int) {
-            Log.d("TEST", "${viewModel.expiredHeaderIndex.value}, $position")
             val isShow = viewModel.expiredHeaderIndex.value <= position
             binding.containerStickyHeader.isVisible = isShow
         }
@@ -231,13 +229,13 @@ class HomeMainFragment : Fragment() {
     }
 
     private fun setUpCollectState() {
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.homeList.collect {
                 homeAdapter.submitList(it)
             }
         }
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             var init = true
             viewModel.gifticonViewMode.collect { mode ->
                 val registerParams = binding.btnGotoRegister.layoutParams as? MarginLayoutParams
