@@ -19,7 +19,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.lighthouse.beep.core.ui.binding.viewBindings
-import com.lighthouse.beep.core.ui.keyboard.keyboardProviders
+import com.lighthouse.beep.core.ui.keyboard.addKeyboardHeightCallback
 import com.lighthouse.beep.core.ui.text.SimpleTextWatcher
 import com.lighthouse.beep.ui.dialog.textinput.databinding.DialogTextInputBinding
 import kotlin.math.max
@@ -49,7 +49,6 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
         requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
     }
 
-    private val keyboardHeightProvider by keyboardProviders()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             window?.apply {
@@ -84,9 +83,9 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
     private var keyboardAnimator: ViewPropertyAnimator? = null
 
     private fun setUpKeyboardPadding() {
-        keyboardHeightProvider.setOnKeyboardHeightListener { height ->
+        addKeyboardHeightCallback { height ->
             if (!isAdded) {
-                return@setOnKeyboardHeightListener
+                return@addKeyboardHeightCallback
             }
             val start = binding.containerTextInput.paddingBottom
             keyboardAnimator = binding.containerTextInput.animate()

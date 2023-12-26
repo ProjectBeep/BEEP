@@ -14,8 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
 class KeyboardProvider(
     activity: ComponentActivity
@@ -26,7 +24,7 @@ class KeyboardProvider(
 
     private var onKeyboardHeightListener: OnKeyboardHeightListener? = null
 
-    fun setOnKeyboardHeightListener(listener: OnKeyboardHeightListener) {
+    fun setOnKeyboardHeightListener(listener: OnKeyboardHeightListener?) {
         onKeyboardHeightListener = listener
     }
 
@@ -84,25 +82,28 @@ fun interface OnKeyboardHeightListener {
 
 class FragmentKeyboardProvider(
     private val fragment: Fragment,
-) : ReadOnlyProperty<Fragment, KeyboardProvider> {
+    private val listener: OnKeyboardHeightListener?,
+) {
 
-    private var keyboardProvider: KeyboardProvider? = null
+    private var keyboardHeightProvider: KeyboardProvider? = null
 
-    private val fragmentObserver = object : DefaultLifecycleObserver {
+    private val fragmentObserver = object: DefaultLifecycleObserver {
         private val viewLifecycleOwnerObserver = Observer<LifecycleOwner?> { viewLifecycleOwner ->
             viewLifecycleOwner?.lifecycle?.addObserver(object : DefaultLifecycleObserver {
-                override fun onStop(owner: LifecycleOwner) {
-                    keyboardProvider?.release()
-                    if (keyboardProvider?.isShowing == true) {
-                        keyboardProvider?.dismiss()
+                override fun onStart(owner: LifecycleOwner) {
+                    if (keyboardHeightProvider == null) {
+                        keyboardHeightProvider = KeyboardProvider(fragment.requireActivity()).apply {
+                            setOnKeyboardHeightListener(listener)
+                        }
                     }
-                    keyboardProvider = null
                 }
 
-                override fun onStart(owner: LifecycleOwner) {
-                    if (keyboardProvider == null) {
-                        keyboardProvider = KeyboardProvider(fragment.requireActivity())
+                override fun onStop(owner: LifecycleOwner) {
+                    keyboardHeightProvider?.release()
+                    if (keyboardHeightProvider?.isShowing == true) {
+                        keyboardHeightProvider?.dismiss()
                     }
+                    keyboardHeightProvider = null
                 }
             })
         }
@@ -120,52 +121,45 @@ class FragmentKeyboardProvider(
     init {
         fragment.lifecycle.addObserver(fragmentObserver)
     }
-
-    override fun getValue(thisRef: Fragment, property: KProperty<*>): KeyboardProvider {
-        return keyboardProvider ?: KeyboardProvider(fragment.requireActivity()).also {
-            keyboardProvider = it
-        }
-    }
 }
 
 class ActivityKeyboardProvider(
     private val activity: ComponentActivity,
-) : ReadOnlyProperty<ComponentActivity, KeyboardProvider> {
-    private var keyboardProvider: KeyboardProvider? = null
+    private val listener: OnKeyboardHeightListener?,
+) {
+
+    private var keyboardHeightProvider: KeyboardProvider? = null
 
     private val activityObserver = object : DefaultLifecycleObserver {
-        override fun onStop(owner: LifecycleOwner) {
-            keyboardProvider?.release()
-            if (keyboardProvider?.isShowing == true) {
-                keyboardProvider?.dismiss()
-            }
-            keyboardProvider = null
+        override fun onDestroy(owner: LifecycleOwner) {
+            activity.lifecycle.removeObserver(this)
         }
 
         override fun onStart(owner: LifecycleOwner) {
-            if (keyboardProvider == null) {
-                keyboardProvider = KeyboardProvider(activity)
+            if (keyboardHeightProvider == null) {
+                keyboardHeightProvider = KeyboardProvider(activity).apply {
+                    setOnKeyboardHeightListener(listener)
+                }
             }
         }
 
-        override fun onDestroy(owner: LifecycleOwner) {
-            activity.lifecycle.removeObserver(this)
+        override fun onStop(owner: LifecycleOwner) {
+            keyboardHeightProvider?.release()
+            if(keyboardHeightProvider?.isShowing == true) {
+                keyboardHeightProvider?.dismiss()
+            }
+            keyboardHeightProvider = null
         }
     }
 
     init {
         activity.lifecycle.addObserver(activityObserver)
     }
-
-    override fun getValue(thisRef: ComponentActivity, property: KProperty<*>): KeyboardProvider {
-        return keyboardProvider ?: KeyboardProvider(activity).also {
-            keyboardProvider = it
-        }
-    }
 }
 
-fun Fragment.keyboardProviders() =
-    FragmentKeyboardProvider(this)
+fun Fragment.addKeyboardHeightCallback(listener: OnKeyboardHeightListener?) {
+    FragmentKeyboardProvider(this, listener)
+}
 
-fun ComponentActivity.keyboardProviders() =
-    ActivityKeyboardProvider(this)
+fun ComponentActivity.addKeyboardHeightCallback(listener: OnKeyboardHeightListener?) =
+    ActivityKeyboardProvider(this, listener)
