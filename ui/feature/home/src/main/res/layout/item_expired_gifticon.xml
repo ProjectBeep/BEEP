@@ -6,6 +6,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="94dp"
+    android:layout_marginVertical="8dp"
     android:layout_marginHorizontal="24dp">
 
     <ImageView

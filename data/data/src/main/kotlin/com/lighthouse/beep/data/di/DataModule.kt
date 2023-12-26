@@ -14,6 +14,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Suppress("unused")
 @Module
@@ -21,26 +22,31 @@ import dagger.hilt.components.SingletonComponent
 internal abstract class DataModule {
 
     @Binds
+    @Singleton
     abstract fun bindsBrandRepository(
         repository: BrandRepositoryImpl,
     ): BrandRepository
 
     @Binds
+    @Singleton
     abstract fun bindsGalleryImageRepository(
         repository: GalleryImageRepositoryImpl,
     ): GalleryImageRepository
 
     @Binds
-    abstract fun binsGifticonRepository(
+    @Singleton
+    abstract fun bindsGifticonRepository(
         repository: GifticonRepositoryImpl,
     ): GifticonRepository
 
     @Binds
+    @Singleton
     abstract fun bindsDeviceRepository(
         repository: DeviceRepositoryImpl,
     ): DeviceRepository
 
     @Binds
+    @Singleton
     abstract fun bindsUserRepository(
         repository: UserRepositoryImpl,
     ): UserRepository

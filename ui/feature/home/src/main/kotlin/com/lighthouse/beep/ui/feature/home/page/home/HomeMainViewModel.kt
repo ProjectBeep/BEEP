@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.common.exts.calculateNextDayRemainingTime
+import com.lighthouse.beep.core.common.utils.flow.MutableEventFlow
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.ui.feature.home.R
@@ -37,6 +38,10 @@ internal class HomeMainViewModel @Inject constructor(
     val gifticonQuery = _gifticonQuery.asStateFlow()
 
     fun selectGifticonOrder(order: GifticonOrder) {
+        if (order == gifticonQuery.value.order) {
+            return
+        }
+
         _gifticonQuery.value = gifticonQuery.value.copy(
             order = order,
         )
@@ -47,10 +52,16 @@ internal class HomeMainViewModel @Inject constructor(
     }
 
     fun selectBrand(item: BrandItem) {
+        if (item == gifticonQuery.value.brandItem) {
+            return
+        }
+
         _gifticonQuery.value = gifticonQuery.value.copy(
             brandItem = item,
         )
     }
+
+    private val requestStopAnimation = MutableEventFlow<Boolean>()
 
     private val _gifticonViewMode = MutableStateFlow(GifticonViewMode.VIEW)
     val gifticonViewMode = _gifticonViewMode.asStateFlow()
@@ -159,11 +170,14 @@ internal class HomeMainViewModel @Inject constructor(
         HomeBannerItem.BuiltIn(R.drawable.img_banner_location_coming_soon),
     )
 
-    var expiredHeaderIndex = -1
-        private set
+    private val _isShowStickyHeader = MutableStateFlow(false)
+    val isShowStickyHeader = _isShowStickyHeader.asStateFlow()
 
-    var expiredGifticonFirstIndex = -1
-        private set
+    private var expiredHeaderIndex = -1
+
+    fun setCurrentPosition(position: Int) {
+        _isShowStickyHeader.value = expiredHeaderIndex <= position
+    }
 
     val homeList = gifticonList.map { gifticonList ->
         listOf(
@@ -182,9 +196,6 @@ internal class HomeMainViewModel @Inject constructor(
     }.onEach { homeList ->
         expiredHeaderIndex = homeList.indexOfFirst {
             it is HomeItem.GifticonHeader
-        }
-        expiredGifticonFirstIndex = homeList.indexOfFirst {
-            it is HomeItem.GifticonItem
         }
     }
 

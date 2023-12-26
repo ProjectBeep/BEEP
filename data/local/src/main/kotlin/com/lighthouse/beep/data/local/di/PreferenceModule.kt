@@ -12,6 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Suppress("UNUSED")
 @Module
@@ -26,6 +27,7 @@ internal object PreferenceModule {
     )
 
     @Provides
+    @Singleton
     fun provideDeviceConfigDataStore(@ApplicationContext context: Context): DataStore<DeviceConfig> {
         return context.deviceConfigDataStore
     }
@@ -38,6 +40,7 @@ internal object PreferenceModule {
     )
 
     @Provides
+    @Singleton
     fun provideUserConfigDataStore(@ApplicationContext context: Context): DataStore<UserConfig> {
         return context.userConfigDataStore
     }

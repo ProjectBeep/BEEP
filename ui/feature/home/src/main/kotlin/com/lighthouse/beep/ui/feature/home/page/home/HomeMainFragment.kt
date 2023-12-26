@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.cast
@@ -24,8 +25,6 @@ import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.model.location.DmsPos
 import com.lighthouse.beep.ui.feature.home.databinding.FragmentMainHomeBinding
-import com.lighthouse.beep.ui.feature.home.page.home.decorator.HomeItemDecoration
-import com.lighthouse.beep.ui.feature.home.page.home.decorator.HomeItemDecorationCallback
 import com.lighthouse.beep.ui.feature.home.model.BrandItem
 import com.lighthouse.beep.ui.feature.home.model.BrandItemDiff
 import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
@@ -165,17 +164,6 @@ class HomeMainFragment : Fragment() {
         }
     }
 
-    private val homeItemDecorationCallback = object : HomeItemDecorationCallback {
-        override fun onTopItemPosition(position: Int) {
-            val isShow = viewModel.expiredHeaderIndex <= position
-            binding.containerStickyHeader.isVisible = isShow
-        }
-
-        override fun getExpiredGifticonFirstIndex(): Int {
-            return viewModel.expiredGifticonFirstIndex
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -223,11 +211,17 @@ class HomeMainFragment : Fragment() {
                     binding.textGotoRegister.alpha = progress
                     button.updateLayoutParams { width = current }
                 }
+
+                val manager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+                val topChildPosition = manager.findFirstVisibleItemPosition()
+                if (topChildPosition == RecyclerView.NO_POSITION) {
+                    return
+                }
+                viewModel.setCurrentPosition(topChildPosition)
             }
         })
 
         binding.list.adapter = homeAdapter
-        binding.list.addItemDecoration(HomeItemDecoration(homeItemDecorationCallback))
         binding.btnGotoRegister.doOnPreDraw {
             binding.btnGotoRegister.maxWidth = it.viewWidth
         }
@@ -237,6 +231,12 @@ class HomeMainFragment : Fragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.homeList.collect {
                 homeAdapter.submitList(it)
+            }
+        }
+
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.isShowStickyHeader.collect {
+                binding.containerStickyHeader.isVisible = it
             }
         }
 
@@ -264,10 +264,12 @@ class HomeMainFragment : Fragment() {
                         duration = 300L
                         interpolator = DecelerateInterpolator()
                         addUpdateListener {
-                            binding.btnGotoRegister.translationX =
-                                startRegister - (startRegister - endRegister) * it.animatedFraction
-                            binding.containerEdit.translationY =
-                                startEdit - (startEdit - endEdit) * it.animatedFraction
+                            if (isAdded) {
+                                binding.btnGotoRegister.translationX =
+                                    startRegister - (startRegister - endRegister) * it.animatedFraction
+                                binding.containerEdit.translationY =
+                                    startEdit - (startEdit - endEdit) * it.animatedFraction
+                            }
                         }
                     }.start()
                 } else {

@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Suppress("unused")
 @Module
@@ -15,6 +16,7 @@ import dagger.hilt.components.SingletonComponent
 internal object ContentModule {
 
     @Provides
+    @Singleton
     fun provideContentResolver(
         @ApplicationContext context: Context,
     ): ContentResolver {
@@ -22,6 +24,7 @@ internal object ContentModule {
     }
 
     @Provides
+    @Singleton
     fun providesGalleryImageDataSource(
         contentResolver: ContentResolver,
     ): GalleryDataSource = GalleryDataSource(contentResolver)

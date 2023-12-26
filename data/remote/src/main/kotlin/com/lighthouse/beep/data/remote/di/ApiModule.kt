@@ -12,6 +12,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object ApiModule {
+
     @Provides
     @Singleton
     fun provideApiService(
