@@ -32,12 +32,12 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         return gifticonDao.getGifticonDetail(userId, gifticonId)?.toModel()
     }
 
-    override suspend fun getGifticonResourceList(userId: String, gifticonIdList: List<Long>): List<GifticonResource>? {
-        return gifticonDao.getGifticonResourceList(userId, gifticonIdList)?.toModel()
+    override suspend fun getGifticonResourceList(userId: String, gifticonIdList: List<Long>): List<GifticonResource> {
+        return gifticonDao.getGifticonResourceList(userId, gifticonIdList).toModel()
     }
 
-    override suspend fun getGifticonResourceList(userId: String): List<GifticonResource>? {
-        return gifticonDao.getGifticonResourceList(userId)?.toModel()
+    override suspend fun getGifticonResourceList(userId: String): List<GifticonResource> {
+        return gifticonDao.getGifticonResourceList(userId).toModel()
     }
 
     override fun getGifticonList(
@@ -68,11 +68,11 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
             .map { it.toModel() }
     }
 
-    override suspend fun insertGifticon(
+    override suspend fun insertGifticonList(
         userId: String,
-        editInfo: GifticonEditInfo,
-    ): Long {
-        return gifticonDao.insertGifticon(editInfo.toEntityForCreate(userId))
+        editInfoList: List<GifticonEditInfo>,
+    ): List<Long> {
+        return gifticonDao.insertGifticonList(editInfoList.toEntityForCreate(userId))
     }
 
     override suspend fun updateGifticon(
