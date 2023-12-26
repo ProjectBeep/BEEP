@@ -1,6 +1,5 @@
 package com.lighthouse.beep.ui.feature.home.page.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.auth.BeepAuth
@@ -136,18 +135,17 @@ internal class HomeMainViewModel @Inject constructor(
     }
 
     private val gifticonList = gifticonQuery.flatMapLatest { (order, brand) ->
-        Log.d("TEST", "gifticonList : $order $brand")
         when (brand) {
             is BrandItem.All -> gifticonRepository.getGifticonList(
                 userId = BeepAuth.userUid,
                 gifticonSortBy = order.sortBy,
-                isAsc = true,
+                isAsc = order == GifticonOrder.D_DAY,
             )
             is BrandItem.Item -> gifticonRepository.getGifticonListByBrand(
                 userId = BeepAuth.userUid,
                 brand = brand.name,
                 gifticonSortBy = order.sortBy,
-                isAsc = true,
+                isAsc = order == GifticonOrder.D_DAY,
             )
         }
     }
