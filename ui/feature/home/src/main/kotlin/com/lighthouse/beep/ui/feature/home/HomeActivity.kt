@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.replace
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
@@ -19,11 +20,13 @@ import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.permission.dialog.StoragePermissionDialog
 import com.lighthouse.beep.permission.ext.checkSelfPermissions
 import com.lighthouse.beep.ui.feature.home.databinding.ActivityHomeBinding
+import com.lighthouse.beep.ui.feature.home.model.HomePageState
 import com.lighthouse.beep.ui.feature.home.page.empty.HomeEmptyFragment
 import com.lighthouse.beep.ui.feature.home.page.home.HomeMainFragment
 import com.lighthouse.beep.ui.feature.home.provider.HomeNavigation
 import com.lighthouse.beep.ui.feature.home.provider.OnHomeRequestManagerProvider
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
 import com.lighthouse.beep.theme.R as ThemeR
 
@@ -63,11 +66,11 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequest
 
     private fun setUpCollectState() {
         repeatOnStarted {
-            viewModel.isExistGifticon.collect { isExistGifticon ->
-                if (isExistGifticon) {
-                    replaceMainPage()
-                } else {
-                    replaceEmptyPage()
+            viewModel.homePageState.collect { state ->
+                when(state) {
+                    HomePageState.MAIN -> replaceMainPage()
+                    HomePageState.EMPTY -> replaceEmptyPage()
+                    else -> Unit
                 }
             }
         }
@@ -82,7 +85,7 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequest
         }
 
         repeatOnStarted {
-            viewModel.authInfoFlow.collect {
+            BeepAuth.authInfoFlow.filterNotNull().collect {
                 requestManager.load(it.photoUrl)
                     .placeholder(ThemeR.drawable.icon_default_profile)
                     .transform(CircleCrop())

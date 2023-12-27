@@ -1,5 +1,6 @@
 package com.lighthouse.beep.ui.feature.setting
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
@@ -126,6 +127,7 @@ internal class SettingActivity : AppCompatActivity() {
 
     private fun gotoLoginAndClearTask() {
         val intent = navigator.getIntent(this, ActivityNavItem.Login(true))
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 }

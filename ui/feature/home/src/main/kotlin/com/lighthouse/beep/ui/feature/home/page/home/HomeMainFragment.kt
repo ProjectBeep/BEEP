@@ -102,9 +102,7 @@ class HomeMainFragment : Fragment() {
         }
 
         override fun getSelectedOrder(): Flow<GifticonOrder> {
-            return viewModel.gifticonQuery
-                .map { it.order }
-                .distinctUntilChanged()
+            return viewModel.selectedOrder
         }
 
         override fun getViewModeFlow(): Flow<GifticonViewMode> {
@@ -128,8 +126,8 @@ class HomeMainFragment : Fragment() {
         }
 
         override fun getSelectedFlow(item: BrandItem): Flow<Boolean> {
-            return viewModel.gifticonQuery
-                .map { BrandItemDiff.areItemsTheSame(item, it.brandItem) }
+            return viewModel.selectedBrandItem
+                .map { BrandItemDiff.areItemsTheSame(item, it) }
                 .distinctUntilChanged()
         }
 

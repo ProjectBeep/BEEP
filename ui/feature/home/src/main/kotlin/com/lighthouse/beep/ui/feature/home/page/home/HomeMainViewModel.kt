@@ -8,6 +8,7 @@ import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.ui.feature.home.R
 import com.lighthouse.beep.ui.feature.home.model.BrandItem
+import com.lighthouse.beep.ui.feature.home.model.BrandItemDiff
 import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
 import com.lighthouse.beep.ui.feature.home.model.GifticonQuery
 import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -39,32 +41,33 @@ internal class HomeMainViewModel @Inject constructor(
         requestStopAnimation = false
     }
 
-    private val _gifticonQuery = MutableStateFlow(GifticonQuery.Default)
-    val gifticonQuery = _gifticonQuery.asStateFlow()
+    private val _selectedOrder = MutableStateFlow(GifticonOrder.D_DAY)
+    val selectedOrder = _selectedOrder.asStateFlow()
 
     fun selectGifticonOrder(order: GifticonOrder) {
-        if (order == gifticonQuery.value.order) {
+        if (order == selectedOrder.value) {
             return
         }
 
         requestStopAnimation = true
-        _gifticonQuery.value = gifticonQuery.value.copy(
-            order = order,
-        )
+        _selectedOrder.value = order
     }
 
-    val brandList = gifticonRepository.getBrandCategoryList(BeepAuth.userUid).map { brandList ->
-        listOf(BrandItem.All) + brandList.map { BrandItem.Item(it.displayBrand) }
+    private val _selectedBrandItem = MutableStateFlow<BrandItem>(BrandItem.All)
+    val selectedBrandItem = _selectedBrandItem.asStateFlow()
+
+    val brandList = BeepAuth.currentUid.flatMapLatest { userUid ->
+        gifticonRepository.getBrandCategoryList(userUid).map { brandList ->
+            listOf(BrandItem.All) + brandList.map { BrandItem.Item(it.displayBrand) }
+        }
     }
 
     fun selectBrand(item: BrandItem) {
-        if (item == gifticonQuery.value.brandItem) {
+        if (BrandItemDiff.areItemsTheSame(item, selectedBrandItem.value)) {
             return
         }
 
-        _gifticonQuery.value = gifticonQuery.value.copy(
-            brandItem = item,
-        )
+        _selectedBrandItem.value = item
     }
 
     private val _gifticonViewMode = MutableStateFlow(GifticonViewMode.VIEW)
@@ -72,7 +75,8 @@ internal class HomeMainViewModel @Inject constructor(
 
     private val selectedGifticonList = mutableListOf<HomeItem.GifticonItem>()
 
-    private val _selectedGifticonListFlow = MutableSharedFlow<List<HomeItem.GifticonItem>>(replay = 1)
+    private val _selectedGifticonListFlow =
+        MutableSharedFlow<List<HomeItem.GifticonItem>>(replay = 1)
     val selectedGifticonListFlow = _selectedGifticonListFlow.asSharedFlow()
 
     fun selectGifticon(item: HomeItem.GifticonItem) {
@@ -125,7 +129,7 @@ internal class HomeMainViewModel @Inject constructor(
     }
 
     fun toggleGifticonViewModel() {
-        val nextViewMode = when(gifticonViewMode.value) {
+        val nextViewMode = when (gifticonViewMode.value) {
             GifticonViewMode.VIEW -> GifticonViewMode.EDIT
             GifticonViewMode.EDIT -> GifticonViewMode.VIEW
         }
@@ -139,15 +143,21 @@ internal class HomeMainViewModel @Inject constructor(
         _gifticonViewMode.value = mode
     }
 
-    private val gifticonList = gifticonQuery.flatMapLatest { (order, brand) ->
+    private val gifticonList = combine(
+        BeepAuth.currentUid,
+        selectedOrder,
+        selectedBrandItem,
+    ){ userUid, order, brand ->
+        GifticonQuery(userUid, order, brand)
+    }.flatMapLatest { (userUid, order, brand) ->
         when (brand) {
             is BrandItem.All -> gifticonRepository.getGifticonList(
-                userId = BeepAuth.userUid,
+                userId = userUid,
                 gifticonSortBy = order.sortBy,
                 isAsc = order == GifticonOrder.D_DAY,
             )
             is BrandItem.Item -> gifticonRepository.getGifticonListByBrand(
-                userId = BeepAuth.userUid,
+                userId = userUid,
                 brand = brand.name,
                 gifticonSortBy = order.sortBy,
                 isAsc = order == GifticonOrder.D_DAY,

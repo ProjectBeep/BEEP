@@ -10,6 +10,8 @@ import com.lighthouse.beep.model.user.AuthInfo
 import com.lighthouse.beep.model.user.AuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
 object BeepAuth {
@@ -28,6 +30,8 @@ object BeepAuth {
 
     private val _authInfoFlow = MutableStateFlow<AuthInfo?>(null)
     val authInfoFlow = _authInfoFlow.asStateFlow()
+
+    val currentUid = authInfoFlow.filterNotNull().map { it.userUid }
 
     init {
         FirebaseAuth.getInstance().addAuthStateListener {
