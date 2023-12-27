@@ -64,7 +64,7 @@ jobs:
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: "team", "Boostcamp"
+          groups: "team, Boostcamp"
           file: beep.apk
 
       - name: Slack Notification
