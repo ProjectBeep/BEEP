@@ -13,8 +13,12 @@ import com.lighthouse.beep.auth.AuthActivity
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
+import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
+import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
+import com.lighthouse.beep.ui.dialog.withdrawal.WithdrawalDialog
 import com.lighthouse.beep.ui.feature.setting.databinding.ActivitySettingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
@@ -60,8 +64,6 @@ internal class SettingActivity : AppCompatActivity() {
     }
 
     private fun setUpContainer() {
-
-
         binding.containerGroupEtc.clipToOutline = true
         binding.containerGroupAccount.clipToOutline = true
     }
@@ -117,11 +119,36 @@ internal class SettingActivity : AppCompatActivity() {
         }
 
         binding.btnAccountLogout.setOnThrottleClickListener {
-            accountLauncher.launch(BeepAuth.getSignOutIntent(this))
+            showLogoutDialog()
         }
 
         binding.btnAccountWithdrawal.setOnThrottleClickListener {
-            accountLauncher.launch(BeepAuth.getWithdrawalIntent(this))
+            showWithdrawalDialog()
+        }
+    }
+
+    private fun showLogoutDialog() {
+        show(ConfirmationDialog.TAG) {
+            val param = ConfirmationParam(
+                messageResId = R.string.setting_logout_message,
+                okTextResId = R.string.setting_logout_ok,
+                cancelTextResId = R.string.setting_logout_cancel,
+            )
+            ConfirmationDialog.newInstance(param).apply {
+                setOnOkClickListener {
+                    accountLauncher.launch(BeepAuth.getSignOutIntent(applicationContext))
+                }
+            }
+        }
+    }
+
+    private fun showWithdrawalDialog() {
+        show(WithdrawalDialog.TAG) {
+            WithdrawalDialog().apply {
+                setOnOkClickListener {
+                    accountLauncher.launch(BeepAuth.getWithdrawalIntent(applicationContext))
+                }
+            }
         }
     }
 

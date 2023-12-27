@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="withdrawal_warning">탈퇴한 후에는 현재 계정으로 등록된\n쿠폰 및 사용 데이터를 복구할 수 없습니다.\n정말 탈퇴하시겠습니까?</string>
+    <string name="withdrawal_confirm">주의사항을 확인했어요.</string>
+    <string name="withdrawal_cancel">취소</string>
+    <string name="withdrawal_ok">탈퇴하기</string>
+</resources>

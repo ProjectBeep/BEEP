@@ -6,7 +6,7 @@
     <string name="dialog_gifticon_detail_memo">메모</string>
 
     <string name="dialog_gifticon_detail_delete">삭제</string>
-    <string name="dialog_gifticon_detail_use">사용완료</string>
+    <string name="dialog_gifticon_detail_use">사용하기</string>
     <string name="dialog_gifticon_detail_edit_expired">유효기간 편집</string>
     <string name="dialog_gifticon_detail_move_to_archive">보관함으로 이동</string>
     <string name="dialog_gifticon_detail_delete_used">내역 삭제</string>

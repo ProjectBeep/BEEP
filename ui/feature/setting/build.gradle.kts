@@ -18,5 +18,8 @@ dependencies {
 
     implementation(projects.navs)
 
+    implementation(projects.ui.dialog.confirmation)
+    implementation(projects.ui.dialog.withdrawal)
+
     implementation(libs.glide)
 }
