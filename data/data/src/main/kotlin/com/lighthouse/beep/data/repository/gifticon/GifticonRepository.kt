@@ -5,7 +5,6 @@ import com.lighthouse.beep.model.gifticon.GifticonDetail
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonListItem
 import com.lighthouse.beep.model.gifticon.GifticonSortBy
-import com.lighthouse.beep.model.gifticon.GifticonType
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonRepository {
@@ -66,25 +65,15 @@ interface GifticonRepository {
 
     fun getBrandCategoryList(userId: String): Flow<List<BrandCategory>>
 
-    suspend fun useGifticon(
-        userId: String,
-        gifticonId: Long,
-    ): Result<Unit>
-
     suspend fun useGifticonList(
         userId: String,
         gifticonIdList: List<Long>,
     ): Result<Unit>
 
-    suspend fun useCashGifticon(
+    suspend fun updateGifticonUseInfo(
         userId: String,
         gifticonId: Long,
-        cash: GifticonType.Cash,
-        amount: Int
-    ): Result<Unit>
-
-    suspend fun revertUsedGifticon(
-        userId: String,
-        gifticonId: Long,
+        isUsed: Boolean,
+        remain: Int,
     ): Result<Unit>
 }

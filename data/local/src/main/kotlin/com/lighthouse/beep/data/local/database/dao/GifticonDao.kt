@@ -184,16 +184,6 @@ internal interface GifticonDao {
     @Query(
         "UPDATE gifticon_table " +
                 "SET is_used = 1, remain_cash = 0 " +
-                "WHERE user_id = :userId AND id = :gifticonId",
-    )
-    suspend fun useGifticon(
-        userId: String,
-        gifticonId: Long,
-    )
-
-    @Query(
-        "UPDATE gifticon_table " +
-                "SET is_used = 1, remain_cash = 0 " +
                 "WHERE user_id = :userId AND id in (:gifticonId)",
     )
     suspend fun useGifticonList(
@@ -203,22 +193,13 @@ internal interface GifticonDao {
 
     @Query(
         "UPDATE gifticon_table " +
-                "SET is_used = 1, remain_cash = :remainCash " +
+                "SET is_used = :isUsed AND remain_cash = :remain " +
                 "WHERE user_id = :userId AND id = :gifticonId",
     )
-    suspend fun useCashGifticon(
+    suspend fun updateGifticonUseInfo(
         userId: String,
         gifticonId: Long,
-        remainCash: Int,
-    ): Int
-
-    @Query(
-        "UPDATE gifticon_table " +
-                "SET is_used = 1 AND total_cash = remain_cash " +
-                "WHERE user_id = :userId AND id = :gifticonId",
+        isUsed: Boolean,
+        remain: Int,
     )
-    suspend fun revertUsedGifticon(
-        userId: String,
-        gifticonId: Long,
-    ): Int
 }

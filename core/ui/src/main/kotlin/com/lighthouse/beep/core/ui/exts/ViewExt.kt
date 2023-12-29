@@ -1,6 +1,7 @@
 package com.lighthouse.beep.core.ui.exts
 
 import android.annotation.SuppressLint
+import android.graphics.Point
 import android.view.View
 import com.lighthouse.beep.core.ui.utils.throttle.OnThrottleClickListener
 
@@ -14,6 +15,12 @@ fun View.setOnThrottleClickListener(
 @SuppressLint("ClickableViewAccessibility")
 fun View.preventTouchPropagation() {
     setOnTouchListener { _, _ -> true }
+}
+
+fun View.getViewPointOnScreen(): Point {
+    val location = intArrayOf(0, 0)
+    getLocationOnScreen(location)
+    return Point(location[0], location[1])
 }
 
 val View.viewWidth: Int

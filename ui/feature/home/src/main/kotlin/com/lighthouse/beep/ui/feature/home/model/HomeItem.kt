@@ -7,7 +7,6 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.calculateDDay
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
-import com.lighthouse.beep.model.gifticon.GifticonType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -25,7 +24,9 @@ internal interface HomeItem {
     data class GifticonItem(
         val id: Long,
         val thumbnail: GifticonThumbnail,
-        val type: GifticonType,
+        val isCashCard: Boolean,
+        val remainCash: Int,
+        val totalCash: Int,
         val brand: String,
         val name: String,
         val expiredDate: Date,

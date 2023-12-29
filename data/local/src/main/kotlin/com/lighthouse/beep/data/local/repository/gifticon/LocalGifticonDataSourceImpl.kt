@@ -12,7 +12,6 @@ import com.lighthouse.beep.model.gifticon.GifticonDetail
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonListItem
 import com.lighthouse.beep.model.gifticon.GifticonSortBy
-import com.lighthouse.beep.model.gifticon.GifticonType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -110,31 +109,16 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun useGifticon(userId: String, gifticonId: Long) {
-        gifticonDao.useGifticon(userId, gifticonId)
-    }
-
     override suspend fun useGifticonList(userId: String, gifticonIdList: List<Long>) {
         gifticonDao.useGifticonList(userId, gifticonIdList)
     }
 
-    override suspend fun useCashGifticon(
+    override suspend fun updateGifticonUseInfo(
         userId: String,
         gifticonId: Long,
-        cash: GifticonType.Cash,
-        amount: Int
+        isUsed: Boolean,
+        remain: Int,
     ) {
-        when {
-            cash.remain < amount -> throw UpdateException("사용할 금액이 잔액보다 많습니다.")
-            cash.remain == amount -> gifticonDao.useGifticon(userId, gifticonId)
-            else -> gifticonDao.useCashGifticon(userId, gifticonId, cash.remain - amount)
-        }
-    }
-
-    override suspend fun revertUsedGifticon(
-        userId: String,
-        gifticonId: Long
-    ) {
-        gifticonDao.revertUsedGifticon(userId, gifticonId)
+        gifticonDao.updateGifticonUseInfo(userId, gifticonId, isUsed, remain)
     }
 }

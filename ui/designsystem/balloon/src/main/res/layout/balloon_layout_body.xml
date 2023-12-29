@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/balloon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/balloon_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/balloon_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:padding="12dp">
+
+            <FrameLayout
+                android:id="@+id/balloon_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:background="@color/black" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/balloon_arrow"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:contentDescription="@null"
+            android:rotation="90"
+            android:scaleType="fitXY"
+            android:visibility="invisible"
+            tools:layout_gravity="center_horizontal|bottom"
+            tools:tint="@color/black" />
+    </FrameLayout>
+</FrameLayout>

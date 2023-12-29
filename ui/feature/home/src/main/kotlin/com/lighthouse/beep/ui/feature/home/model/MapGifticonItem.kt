@@ -5,13 +5,14 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
-import com.lighthouse.beep.model.gifticon.GifticonType
 import com.lighthouse.beep.model.location.DmsPos
 
 internal data class MapGifticonItem(
     val id: Long,
     val thumbnail: GifticonThumbnail,
-    val type: GifticonType,
+    val isCashCard: Boolean,
+    val remainCash: Int,
+    val totalCash: Int,
     val brand: String,
     val name: String,
     val dms: DmsPos,

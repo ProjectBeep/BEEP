@@ -5,7 +5,9 @@ import java.util.Date
 data class GifticonDetail(
     val id: Long,
     val userId: String,
-    val type: GifticonType,
+    val isCashCard: Boolean,
+    val remainCash: Int,
+    val totalCash: Int,
     val thumbnail: GifticonThumbnail,
     val name: String,
     val displayBrand: String,
