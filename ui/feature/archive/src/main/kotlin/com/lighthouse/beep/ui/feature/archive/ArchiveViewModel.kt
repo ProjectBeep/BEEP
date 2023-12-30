@@ -88,7 +88,7 @@ internal class ArchiveViewModel @Inject constructor(
     fun revertSelectedGifticon() {
         viewModelScope.launch {
             val gifticonIdList = selectedGifticonList.map { it.id }
-            gifticonRepository.useGifticonList(BeepAuth.userUid, gifticonIdList)
+            gifticonRepository.revertGifticonList(BeepAuth.userUid, gifticonIdList)
             setGifticonViewModel(GifticonViewMode.VIEW)
         }
     }
