@@ -13,6 +13,7 @@ import com.lighthouse.beep.model.gifticon.GifticonListItem
 import com.lighthouse.beep.model.gifticon.GifticonSortBy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Date
 import javax.inject.Inject
 
 internal class LocalGifticonDataSourceImpl @Inject constructor(
@@ -44,10 +45,11 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
 
     override fun getGifticonList(
         userId: String,
+        isUsed: Boolean,
         gifticonSortBy: GifticonSortBy,
         isAsc: Boolean
     ): Flow<List<GifticonListItem>> {
-        return gifticonDao.getGifticonList(userId, gifticonSortBy.code, if (isAsc) 1 else 0)
+        return gifticonDao.getGifticonList(userId, isUsed, gifticonSortBy.code, if (isAsc) 1 else 0)
             .map { it.toModel() }
     }
 
@@ -109,7 +111,7 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
     }
 
     override suspend fun useGifticonList(userId: String, gifticonIdList: List<Long>) {
-        gifticonDao.useGifticonList(userId, gifticonIdList)
+        gifticonDao.useGifticonList(userId, gifticonIdList, Date())
     }
 
     override suspend fun updateGifticonUseInfo(
@@ -118,6 +120,6 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         isUsed: Boolean,
         remain: Int,
     ) {
-        gifticonDao.updateGifticonUseInfo(userId, gifticonId, isUsed, remain)
+        gifticonDao.updateGifticonUseInfo(userId, gifticonId, isUsed, remain, Date())
     }
 }

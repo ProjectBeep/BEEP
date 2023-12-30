@@ -30,10 +30,11 @@ internal class GifticonRepositoryImpl @Inject constructor(
 
     override fun getGifticonList(
         userId: String,
+        isUsed: Boolean,
         gifticonSortBy: GifticonSortBy,
         isAsc: Boolean
     ): Flow<List<GifticonListItem>> {
-        return localGifticonDataSource.getGifticonList(userId, gifticonSortBy, isAsc)
+        return localGifticonDataSource.getGifticonList(userId, isUsed, gifticonSortBy, isAsc)
     }
 
     override fun getGifticonListByBrand(

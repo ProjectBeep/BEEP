@@ -48,7 +48,6 @@ internal class HomeMainViewModel @Inject constructor(
         if (order == selectedOrder.value) {
             return
         }
-
         requestStopAnimation = true
         _selectedOrder.value = order
     }
@@ -90,13 +89,6 @@ internal class HomeMainViewModel @Inject constructor(
         }
     }
 
-    fun deleteGifticon(id: Long) {
-        viewModelScope.launch {
-            val gifticonIdList = listOf(id)
-            gifticonRepository.deleteGifticon(BeepAuth.userUid, gifticonIdList)
-        }
-    }
-
     fun deleteSelectedGifticon() {
         viewModelScope.launch {
             val gifticonIdList = selectedGifticonList.map { it.id }
@@ -104,14 +96,6 @@ internal class HomeMainViewModel @Inject constructor(
             setGifticonViewModel(GifticonViewMode.VIEW)
         }
     }
-
-    fun useGifticon(id: Long) {
-        viewModelScope.launch {
-            val gifticonIdList = listOf(id)
-            gifticonRepository.useGifticonList(BeepAuth.userUid, gifticonIdList)
-        }
-    }
-
 
     fun useSelectedGifticon() {
         viewModelScope.launch {
@@ -153,6 +137,7 @@ internal class HomeMainViewModel @Inject constructor(
         when (brand) {
             is BrandItem.All -> gifticonRepository.getGifticonList(
                 userId = userUid,
+                isUsed = false,
                 gifticonSortBy = order.sortBy,
                 isAsc = order == GifticonOrder.D_DAY,
             )

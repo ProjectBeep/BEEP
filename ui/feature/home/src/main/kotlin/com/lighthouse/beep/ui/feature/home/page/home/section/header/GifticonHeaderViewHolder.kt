@@ -18,6 +18,7 @@ import com.lighthouse.beep.ui.feature.home.model.BrandItem
 import com.lighthouse.beep.ui.feature.home.model.GifticonOrder
 import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
+import com.lighthouse.beep.theme.R as ThemeR
 
 internal class GifticonHeaderViewHolder(
     parent: ViewGroup,
@@ -91,11 +92,16 @@ internal class GifticonHeaderViewHolder(
         }
 
         listener.getViewModeFlow().collect(lifecycleOwner) { mode ->
-            val resId = when(mode) {
-                GifticonViewMode.VIEW -> R.string.edit_gifticon
-                GifticonViewMode.EDIT -> R.string.edit_cancel
+            when(mode) {
+                GifticonViewMode.VIEW -> {
+                    binding.textEdit.setText(R.string.edit_gifticon)
+                    binding.iconEdit.setImageResource(ThemeR.drawable.icon_edit)
+                }
+                GifticonViewMode.EDIT -> {
+                    binding.textEdit.setText(R.string.edit_cancel)
+                    binding.iconEdit.setImageResource(ThemeR.drawable.icon_edit_cancel)
+                }
             }
-            binding.textEdit.setText(resId)
         }
 
         listener.getBrandListFlow().collect(lifecycleOwner) { list ->

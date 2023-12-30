@@ -2,7 +2,9 @@
 <resources>
     <string name="archive_title">사용 완료 쿠폰</string>
 
-    <string name="archive_used_gifticon_count">%d개의 쿠폰을 사용했어요</string>
+    <string name="archive_used">사용 완료</string>
+
+    <string name="archive_used_gifticon_count">개의 쿠폰을 사용했어요</string>
     <string name="archive_edit_gifticon">편집</string>
     <string name="archive_edit_cancel">취소</string>
 

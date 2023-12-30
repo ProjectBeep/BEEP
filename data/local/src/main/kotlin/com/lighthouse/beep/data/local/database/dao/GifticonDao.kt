@@ -12,6 +12,7 @@ import com.lighthouse.beep.data.local.database.model.DBGifticonEditInfo
 import com.lighthouse.beep.data.local.database.model.DBGifticonListItem
 import com.lighthouse.beep.data.local.database.model.DBGifticonResource
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 internal interface GifticonDao {
@@ -93,15 +94,19 @@ internal interface GifticonDao {
                 "is_used, " +
                 "expire_at " +
                 "FROM gifticon_table " +
-                "WHERE user_id = :userId AND is_used = 0 " +
+                "WHERE user_id = :userId AND is_used = :isUsed " +
                 "ORDER BY " +
                 "CASE WHEN :sortCode = 0 AND :isAsc = 0 THEN created_at END DESC, " +
                 "CASE WHEN :sortCode = 0 AND :isAsc = 1 THEN created_at END ASC, " +
                 "CASE WHEN :sortCode = 1 AND :isAsc = 0 THEN expire_at END DESC, " +
-                "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC",
+                "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC, " +
+                "CASE WHEN :sortCode = 2 AND :isAsc = 0 THEN updated_at END DESC, " +
+                "CASE WHEN :sortCode = 2 AND :isAsc = 1 THEN updated_at END ASC"
+        ,
     )
     fun getGifticonList(
         userId: String,
+        isUsed: Boolean,
         sortCode: Int,
         isAsc: Int,
     ): Flow<List<DBGifticonListItem>>
@@ -126,7 +131,9 @@ internal interface GifticonDao {
                 "CASE WHEN :sortCode = 0 AND :isAsc = 0 THEN created_at END DESC, " +
                 "CASE WHEN :sortCode = 0 AND :isAsc = 1 THEN created_at END ASC, " +
                 "CASE WHEN :sortCode = 1 AND :isAsc = 0 THEN expire_at END DESC, " +
-                "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC",
+                "CASE WHEN :sortCode = 1 AND :isAsc = 1 THEN expire_at END ASC, " +
+                "CASE WHEN :sortCode = 2 AND :isAsc = 0 THEN updated_at END DESC, " +
+                "CASE WHEN :sortCode = 2 AND :isAsc = 1 THEN updated_at END ASC"
     )
     fun getGifticonListByBrand(
         userId: String,
@@ -183,17 +190,18 @@ internal interface GifticonDao {
 
     @Query(
         "UPDATE gifticon_table " +
-                "SET is_used = 1, remain_cash = 0 " +
+                "SET is_used = 1, remain_cash = 0, updated_at = :updated " +
                 "WHERE user_id = :userId AND id in (:gifticonId)",
     )
     suspend fun useGifticonList(
         userId: String,
         gifticonId: List<Long>,
+        updated: Date,
     )
 
     @Query(
         "UPDATE gifticon_table " +
-                "SET is_used = :isUsed, remain_cash = :remain " +
+                "SET is_used = :isUsed, remain_cash = :remain, updated_at = :updated " +
                 "WHERE user_id = :userId AND id = :gifticonId",
     )
     suspend fun updateGifticonUseInfo(
@@ -201,5 +209,6 @@ internal interface GifticonDao {
         gifticonId: Long,
         isUsed: Boolean,
         remain: Int,
+        updated: Date,
     )
 }

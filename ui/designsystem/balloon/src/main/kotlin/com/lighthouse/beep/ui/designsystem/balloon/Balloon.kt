@@ -15,7 +15,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -179,7 +178,7 @@ class Balloon private constructor(
             val current = anchorView?.getViewPointOnScreen()
             if (prevPos != current) {
                 prevPos = current
-                doLayout(left, top, right, bottom)
+                doLayout()
             }
             return true
         }
@@ -323,7 +322,7 @@ class Balloon private constructor(
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         if (changed) {
-            doLayout(l, t, r, b)
+            doLayout()
         }
     }
 
@@ -364,7 +363,7 @@ class Balloon private constructor(
         return rootRect
     }
 
-    private fun doLayout(l: Int, t: Int, r: Int, b: Int) {
+    private fun doLayout() {
         val anchor = anchorView ?: return
         val child = getChildAt(0)
         val rootContainerRect = getRootContainerRect()
@@ -501,7 +500,6 @@ class Balloon private constructor(
         val parent = parent as? ViewGroup
         parent?.removeView(this)
         rootView.addView(this, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-
         doOnAttach {
             anchorView = anchor.also {
                 it.viewTreeObserver.addOnPreDrawListener(anchorPreDrawListener)

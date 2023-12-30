@@ -26,6 +26,7 @@ interface GifticonRepository {
 
     fun getGifticonList(
         userId: String,
+        isUsed: Boolean,
         gifticonSortBy: GifticonSortBy,
         isAsc: Boolean,
     ): Flow<List<GifticonListItem>>
