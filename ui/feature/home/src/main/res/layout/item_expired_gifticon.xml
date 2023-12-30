@@ -72,7 +72,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:textAppearance="@style/Text.Title6"
+                android:textAppearance="@style/Text.SubTitle2"
                 android:textColor="@color/white"
                 android:text="@string/home_expired_gifticon"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

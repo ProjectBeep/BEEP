@@ -114,6 +114,10 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         gifticonDao.useGifticonList(userId, gifticonIdList, Date())
     }
 
+    override suspend fun revertGifticonList(userId: String, gifticonIdList: List<Long>) {
+        gifticonDao.revertGifticonList(userId, gifticonIdList, Date())
+    }
+
     override suspend fun updateGifticonUseInfo(
         userId: String,
         gifticonId: Long,

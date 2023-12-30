@@ -128,6 +128,13 @@ internal class GifticonRepositoryImpl @Inject constructor(
         localGifticonDataSource.useGifticonList(userId, gifticonIdList)
     }
 
+    override suspend fun revertGifticonList(
+        userId: String,
+        gifticonIdList: List<Long>,
+    ): Result<Unit> = runCatching {
+        localGifticonDataSource.revertGifticonList(userId, gifticonIdList)
+    }
+
     override suspend fun updateGifticonUseInfo(
         userId: String,
         gifticonId: Long,

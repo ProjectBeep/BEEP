@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
@@ -24,14 +23,13 @@ import com.lighthouse.beep.ui.feature.home.model.HomePageState
 import com.lighthouse.beep.ui.feature.home.page.empty.HomeEmptyFragment
 import com.lighthouse.beep.ui.feature.home.page.home.HomeMainFragment
 import com.lighthouse.beep.ui.feature.home.provider.HomeNavigation
-import com.lighthouse.beep.ui.feature.home.provider.OnHomeRequestManagerProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
 import com.lighthouse.beep.theme.R as ThemeR
 
 @AndroidEntryPoint
-internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequestManagerProvider {
+internal class HomeActivity : AppCompatActivity(), HomeNavigation {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -39,10 +37,6 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequest
 
     @Inject
     lateinit var navigator: AppNavigator
-
-    override val requestManager: RequestManager by lazy {
-        Glide.with(this)
-    }
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
@@ -86,7 +80,8 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation, OnHomeRequest
 
         repeatOnStarted {
             BeepAuth.authInfoFlow.filterNotNull().collect {
-                requestManager.load(it.photoUrl)
+                Glide.with(this)
+                    .load(it.photoUrl)
                     .placeholder(ThemeR.drawable.icon_default_profile)
                     .transform(CircleCrop())
                     .into(binding.imageUserProfile)

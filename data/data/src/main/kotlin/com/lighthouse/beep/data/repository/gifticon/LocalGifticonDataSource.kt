@@ -79,6 +79,11 @@ interface LocalGifticonDataSource {
         gifticonIdList: List<Long>,
     )
 
+    suspend fun revertGifticonList(
+        userId: String,
+        gifticonIdList: List<Long>,
+    )
+
     suspend fun updateGifticonUseInfo(
         userId: String,
         gifticonId: Long,

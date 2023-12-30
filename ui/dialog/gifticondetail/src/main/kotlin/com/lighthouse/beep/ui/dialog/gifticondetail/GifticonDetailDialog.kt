@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -19,7 +20,6 @@ import com.lighthouse.beep.library.barcode.BarcodeGenerator
 import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import com.lighthouse.beep.navs.AppNavigator
-import com.lighthouse.beep.ui.designsystem.balloon.Balloon
 import com.lighthouse.beep.ui.designsystem.balloon.BalloonHorizontalDirection
 import com.lighthouse.beep.ui.designsystem.balloon.TextBalloonBuilder
 import com.lighthouse.beep.theme.R as ThemeR
@@ -31,7 +31,6 @@ import javax.inject.Inject
 import com.lighthouse.beep.ui.dialog.gifticondetail.usecash.GifticonUseCashDialog
 import com.lighthouse.beep.ui.dialog.gifticondetail.usecash.GifticonUseCashParam
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
@@ -169,7 +168,8 @@ class GifticonDetailDialog : DialogFragment() {
                 binding.textExpire.text = it.formattedExpiredDate
                 binding.textMemo.text = it.memo
 
-                val image = BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 80.dp)
+                val bgColor = ContextCompat.getColor(requireContext(), ThemeR.color.bg)
+                val image = BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 80.dp, bgColor)
                 binding.imageBarcode.setImageBitmap(image)
                 binding.textBarcode.text = it.barcode
 

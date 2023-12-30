@@ -201,6 +201,17 @@ internal interface GifticonDao {
 
     @Query(
         "UPDATE gifticon_table " +
+                "SET is_used = 0, remain_cash = total_cash, updated_at = :updated " +
+                "WHERE user_id = :userId AND id in (:gifticonId)",
+    )
+    suspend fun revertGifticonList(
+        userId: String,
+        gifticonId: List<Long>,
+        updated: Date,
+    )
+
+    @Query(
+        "UPDATE gifticon_table " +
                 "SET is_used = :isUsed, remain_cash = :remain, updated_at = :updated " +
                 "WHERE user_id = :userId AND id = :gifticonId",
     )

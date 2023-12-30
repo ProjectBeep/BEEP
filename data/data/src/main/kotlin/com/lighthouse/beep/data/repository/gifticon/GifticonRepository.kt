@@ -71,6 +71,11 @@ interface GifticonRepository {
         gifticonIdList: List<Long>,
     ): Result<Unit>
 
+    suspend fun revertGifticonList(
+        userId: String,
+        gifticonIdList: List<Long>,
+    ): Result<Unit>
+
     suspend fun updateGifticonUseInfo(
         userId: String,
         gifticonId: Long,

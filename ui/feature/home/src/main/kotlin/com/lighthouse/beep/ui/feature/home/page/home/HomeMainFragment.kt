@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.cast
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
@@ -43,7 +44,6 @@ import com.lighthouse.beep.ui.feature.home.page.home.section.gifticon.OnGifticon
 import com.lighthouse.beep.ui.feature.home.page.home.section.header.OnGifticonHeaderSectionListener
 import com.lighthouse.beep.ui.feature.home.page.home.section.map.OnMapGifticonSectionListener
 import com.lighthouse.beep.ui.feature.home.provider.HomeNavigation
-import com.lighthouse.beep.ui.feature.home.provider.OnHomeRequestManagerProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -66,7 +66,9 @@ class HomeMainFragment : Fragment() {
 
     private lateinit var navigationProvider: HomeNavigation
 
-    private lateinit var requestManager: RequestManager
+    private val requestManager: RequestManager by lazy {
+        Glide.with(this)
+    }
 
     private val homeAdapter by lazy {
         HomeAdapter(
@@ -156,13 +158,8 @@ class HomeMainFragment : Fragment() {
 
         override fun onClick(item: HomeItem.GifticonItem) {
             when (viewModel.gifticonViewMode.value) {
-                GifticonViewMode.VIEW -> {
-                    showGifticonDetail(item)
-                }
-
-                GifticonViewMode.EDIT -> {
-                    viewModel.selectGifticon(item)
-                }
+                GifticonViewMode.VIEW -> showGifticonDetail(item)
+                GifticonViewMode.EDIT -> viewModel.selectGifticon(item)
             }
         }
     }
@@ -177,7 +174,6 @@ class HomeMainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        requestManager = requireActivity().cast<OnHomeRequestManagerProvider>().requestManager
         navigationProvider = requireActivity().cast()
     }
 
