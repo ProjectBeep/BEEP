@@ -52,10 +52,10 @@ internal interface GifticonDao {
                 "WHERE user_id = :userId AND id = :gifticonId " +
                 "LIMIT 1",
     )
-    suspend fun getGifticonDetail(
+    fun getGifticonDetail(
         userId: String,
         gifticonId: Long,
-    ): DBGifticonDetail?
+    ): Flow<DBGifticonDetail?>
 
     @Query(
         "SELECT thumbnail_uri, " +
@@ -193,7 +193,7 @@ internal interface GifticonDao {
 
     @Query(
         "UPDATE gifticon_table " +
-                "SET is_used = :isUsed AND remain_cash = :remain " +
+                "SET is_used = :isUsed, remain_cash = :remain " +
                 "WHERE user_id = :userId AND id = :gifticonId",
     )
     suspend fun updateGifticonUseInfo(

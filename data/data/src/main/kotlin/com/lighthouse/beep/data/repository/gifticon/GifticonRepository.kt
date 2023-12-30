@@ -19,10 +19,10 @@ interface GifticonRepository {
         isUsed: Boolean,
     ): Flow<Int>
 
-    suspend fun getGifticonDetail(
+    fun getGifticonDetail(
         userId: String,
         gifticonId: Long,
-    ): GifticonDetail?
+    ): Flow<GifticonDetail?>
 
     fun getGifticonList(
         userId: String,

@@ -1,6 +1,9 @@
 package com.lighthouse.beep.ui.dialog.gifticondetail.usecash
 
+import android.app.Dialog
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +52,12 @@ class GifticonUseCashDialog : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
     }
 
     override fun onCreateView(
@@ -109,7 +118,7 @@ class GifticonUseCashDialog : DialogFragment() {
     }
 
     private fun useCash() {
-        onUseCashListener?.onUseCash(viewModel.remainCash)
+        onUseCashListener?.onUseCash(viewModel.value.toInt())
         dismiss()
     }
 }

@@ -7,7 +7,6 @@ import com.lighthouse.beep.data.local.database.mapper.gifticon.toModel
 import com.lighthouse.beep.data.model.gifticon.GifticonResource
 import com.lighthouse.beep.data.repository.gifticon.LocalGifticonDataSource
 import com.lighthouse.beep.model.brand.BrandCategory
-import com.lighthouse.beep.model.exception.db.UpdateException
 import com.lighthouse.beep.model.gifticon.GifticonDetail
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonListItem
@@ -28,11 +27,11 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         return gifticonDao.getGifticonCount(userId, isUsed)
     }
 
-    override suspend fun getGifticonDetail(
+    override fun getGifticonDetail(
         userId: String,
         gifticonId: Long,
-    ): GifticonDetail? {
-        return gifticonDao.getGifticonDetail(userId, gifticonId)?.toModel()
+    ): Flow<GifticonDetail?> {
+        return gifticonDao.getGifticonDetail(userId, gifticonId).map{ it?.toModel() }
     }
 
     override suspend fun getGifticonResourceList(userId: String, gifticonIdList: List<Long>): List<GifticonResource> {

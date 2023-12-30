@@ -20,10 +20,10 @@ interface LocalGifticonDataSource {
         isUsed: Boolean,
     ): Flow<Int>
 
-    suspend fun getGifticonDetail(
+    fun getGifticonDetail(
         userId: String,
         gifticonId: Long,
-    ): GifticonDetail?
+    ): Flow<GifticonDetail?>
 
     suspend fun getGifticonResourceList(
         userId: String,

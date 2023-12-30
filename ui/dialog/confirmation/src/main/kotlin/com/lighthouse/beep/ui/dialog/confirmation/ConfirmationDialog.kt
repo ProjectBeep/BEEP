@@ -1,6 +1,8 @@
 package com.lighthouse.beep.ui.dialog.confirmation
 
+import android.app.Dialog
 import android.content.DialogInterface
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +50,13 @@ open class ConfirmationDialog : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            val color = ConfirmationParam.getWindowBackgroundColor(context, arguments)
+            window?.setBackgroundDrawable(ColorDrawable(color))
+        }
     }
 
     override fun onCreateView(

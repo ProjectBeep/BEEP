@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
@@ -26,13 +28,20 @@ import javax.inject.Inject
 import com.lighthouse.beep.ui.dialog.gifticondetail.usecash.GifticonUseCashDialog
 import com.lighthouse.beep.ui.dialog.gifticondetail.usecash.GifticonUseCashParam
 import kotlinx.coroutines.flow.filterNotNull
-import java.util.Date
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GifticonDetailDialog : DialogFragment() {
 
     companion object {
         const val TAG = "GifticonDetail"
+
+        fun newInstance(param: GifticonDetailParam): GifticonDetailDialog {
+            return GifticonDetailDialog().apply {
+                arguments = param.buildBundle()
+            }
+        }
     }
 
     private var _binding: DialogGifticonDetailBinding? = null
@@ -42,7 +51,6 @@ class GifticonDetailDialog : DialogFragment() {
     private val viewModel by viewModels<GifticonDetailViewModel>()
 
     private val balanceFormat = TextInputFormat.BALANCE
-    private val barcodeFormat = TextInputFormat.BARCODE
 
     @Inject
     lateinit var navigator: AppNavigator
@@ -76,6 +84,7 @@ class GifticonDetailDialog : DialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        hideDetail()
         setUpCollectState()
         setUpOnClickEvent()
     }
@@ -87,26 +96,34 @@ class GifticonDetailDialog : DialogFragment() {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.gifticonDetail.filterNotNull().take(1).collect {
+                fadeInDetail()
+            }
+        }
+
         viewLifecycleOwner.repeatOnStarted {
             viewModel.gifticonDetail.filterNotNull().collect {
                 when (val thumbnail = it.thumbnail) {
                     is GifticonThumbnail.Image -> {
                         Glide.with(this)
                             .load(thumbnail.uri)
+                            .transform(CircleCrop())
                             .into(binding.imageThumbnail)
                     }
 
                     is GifticonThumbnail.BuildIn -> {
                         Glide.with(this)
                             .load(thumbnail.icon.largeIconRes)
+                            .transform(CircleCrop())
                             .into(binding.imageThumbnail)
                     }
                 }
 
-                binding.containerCheck.isVisible = it.isUsed
+                binding.containerCheck.isVisible = it.isUsed || it.isExpired
                 when {
                     it.isUsed -> binding.textCheck.setText(R.string.dialog_gifticon_detail_thumbnail_used)
-                    Date() > it.expireAt -> binding.textCheck.setText(R.string.dialog_gifticon_detail_thumbnail_expired)
+                    it.isExpired -> binding.textCheck.setText(R.string.dialog_gifticon_detail_thumbnail_expired)
                     else -> Unit
                 }
 
@@ -114,15 +131,20 @@ class GifticonDetailDialog : DialogFragment() {
                 binding.textName.text = it.name
 
                 binding.groupCash.isVisible = it.isCashCard
-                binding.textRemainCash.text = balanceFormat.valueToTransformed(it.remainCash.toString())
-                binding.textTotalCash.text = balanceFormat.valueToTransformed(it.totalCash.toString())
+                val remain = balanceFormat.valueToTransformed(it.remainCash.toString())
+                binding.textRemainCash.text =
+                    getString(R.string.dialog_gifticon_detail_balance, remain)
+
+                val total = balanceFormat.valueToTransformed(it.totalCash.toString())
+                binding.textTotalCash.text =
+                    getString(R.string.dialog_gifticon_detail_balance, total)
 
                 binding.textExpire.text = it.formattedExpiredDate
                 binding.textMemo.text = it.memo
 
                 val image = BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 80.dp)
                 binding.imageBarcode.setImageBitmap(image)
-                binding.textBarcode.text = barcodeFormat.valueToTransformed(it.barcode)
+                binding.textBarcode.text = it.barcode
 
                 if (it.isUsed) {
                     binding.btnDelete.setText(R.string.dialog_gifticon_detail_delete_used)
@@ -162,26 +184,29 @@ class GifticonDetailDialog : DialogFragment() {
         binding.root.isEnabled = true
         binding.root.animate()
             .setDuration(300)
-            .alpha(1f)
-            .start()
+            .setUpdateListener {
+                if (isAdded) {
+                    binding.btnClose.alpha = it.animatedFraction
+                    binding.containerContent.alpha = it.animatedFraction
+                }
+            }.start()
     }
 
-    private fun fadeOutDetail() {
+    private fun hideDetail() {
         binding.root.isEnabled = false
-        binding.root.animate()
-            .setDuration(300)
-            .alpha(0f)
-            .start()
+        binding.btnClose.alpha = 0f
+        binding.containerContent.alpha = 0f
     }
 
     private fun showDeleteDialog() {
-        fadeOutDetail()
+        hideDetail()
 
         show(ConfirmationDialog.TAG) {
             val param = ConfirmationParam(
                 messageResId = R.string.dialog_gifticon_detail_delete_message,
                 cancelTextResId = R.string.dialog_gifticon_detail_delete_cancel,
                 okTextResId = R.string.dialog_gifticon_detail_delete_ok,
+                windowBackgroundColorResId = 0,
             )
             ConfirmationDialog.newInstance(param).apply {
                 setOnDismissListener {
@@ -195,7 +220,7 @@ class GifticonDetailDialog : DialogFragment() {
     }
 
     private fun showUseCashDialog() {
-        fadeOutDetail()
+        hideDetail()
         show(GifticonUseCashDialog.TAG) {
             val param = GifticonUseCashParam(viewModel.remainCash)
             GifticonUseCashDialog.newInstance(param).apply {

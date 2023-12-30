@@ -21,10 +21,10 @@ internal class GifticonRepositoryImpl @Inject constructor(
         return localGifticonDataSource.getGifticonCount(userId, isUsed)
     }
 
-    override suspend fun getGifticonDetail(
+    override fun getGifticonDetail(
         userId: String,
         gifticonId: Long,
-    ): GifticonDetail? {
+    ): Flow<GifticonDetail?> {
         return localGifticonDataSource.getGifticonDetail(userId, gifticonId)
     }
 

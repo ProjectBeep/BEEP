@@ -5,6 +5,7 @@
     <string name="dialog_gifticon_detail_remain_cash">남은 금액</string>
     <string name="dialog_gifticon_detail_expire">유효기간</string>
     <string name="dialog_gifticon_detail_memo">메모</string>
+    <string name="dialog_gifticon_detail_balance">%s원</string>
 
     <string name="dialog_gifticon_detail_delete">삭제</string>
     <string name="dialog_gifticon_detail_use">사용하기</string>

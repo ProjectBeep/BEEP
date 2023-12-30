@@ -19,6 +19,9 @@ data class GifticonDetail(
     val expireAt: Date,
 ) {
 
+    val isExpired: Boolean
+        get() = Date() >= expireAt
+
     val formattedExpiredDate: String
         get() {
             val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())

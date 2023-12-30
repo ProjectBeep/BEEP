@@ -21,10 +21,13 @@ import com.lighthouse.beep.core.common.exts.cast
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewHeight
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.model.location.DmsPos
+import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailDialog
+import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailParam
 import com.lighthouse.beep.ui.feature.home.databinding.FragmentMainHomeBinding
 import com.lighthouse.beep.ui.feature.home.model.BrandItem
 import com.lighthouse.beep.ui.feature.home.model.BrandItemDiff
@@ -154,13 +157,20 @@ class HomeMainFragment : Fragment() {
         override fun onClick(item: HomeItem.GifticonItem) {
             when (viewModel.gifticonViewMode.value) {
                 GifticonViewMode.VIEW -> {
-                    // Dialog 실행
+                    showGifticonDetail(item)
                 }
 
                 GifticonViewMode.EDIT -> {
                     viewModel.selectGifticon(item)
                 }
             }
+        }
+    }
+
+    private fun showGifticonDetail(item: HomeItem.GifticonItem) {
+        show(GifticonDetailDialog.TAG) {
+            val param = GifticonDetailParam(item.id)
+            GifticonDetailDialog.newInstance(param)
         }
     }
 
