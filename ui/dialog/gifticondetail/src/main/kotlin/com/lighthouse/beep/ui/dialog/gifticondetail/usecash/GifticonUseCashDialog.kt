@@ -11,6 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnAttach
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
@@ -50,10 +53,6 @@ class GifticonUseCashDialog : DialogFragment() {
 
     private val viewModel by viewModels<GifticonUseCashViewModel>()
 
-    private val imm by lazy {
-        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-    }
-
     private val format = TextInputFormat.BALANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,11 +86,11 @@ class GifticonUseCashDialog : DialogFragment() {
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        val windowToken = binding.editUseCash.windowToken
-        if (windowToken != null) {
-            imm?.hideSoftInputFromWindow(windowToken, 0)
+        val window = this.dialog?.window
+        if (window != null) {
+            WindowCompat.getInsetsController(window, binding.editUseCash)
+                .hide(WindowInsetsCompat.Type.ime())
         }
-
         onDismissListener?.onDismiss()
 
         super.onDismiss(dialog)
@@ -116,8 +115,11 @@ class GifticonUseCashDialog : DialogFragment() {
                 false
             }
         }
+
         binding.editUseCash.requestFocus()
-        imm?.showSoftInput(binding.editUseCash, InputMethodManager.SHOW_IMPLICIT)
+        val window = dialog?.window ?: return
+        WindowCompat.getInsetsController(window, binding.editUseCash)
+            .show(WindowInsetsCompat.Type.ime())
     }
 
     private fun setUpOnEventClick() {

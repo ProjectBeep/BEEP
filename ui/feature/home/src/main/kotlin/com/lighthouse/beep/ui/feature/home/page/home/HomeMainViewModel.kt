@@ -89,6 +89,8 @@ internal class HomeMainViewModel @Inject constructor(
         }
     }
 
+
+
     fun deleteSelectedGifticon() {
         viewModelScope.launch {
             val gifticonIdList = selectedGifticonList.map { it.id }

@@ -78,6 +78,12 @@ class GifticonDetailDialog : DialogFragment() {
     @Inject
     lateinit var navigator: AppNavigator
 
+    private var gifticonDetailListener: GifticonDetailListener? = null
+
+    fun setGifticonDetailListener(listener: GifticonDetailListener?) {
+        gifticonDetailListener = listener
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, ThemeR.style.Theme_Dialog)
@@ -199,9 +205,17 @@ class GifticonDetailDialog : DialogFragment() {
 
         binding.btnUseAndRevert.setOnThrottleClickListener {
             when {
-                viewModel.isUsed -> viewModel.revertUseGifticon()
-                viewModel.isCashCard -> showUseCashDialog()
-                else -> viewModel.useGifticon()
+                viewModel.isUsed -> {
+                    viewModel.revertUseGifticon()
+                    gifticonDetailListener?.onRevertGifticon()
+                }
+                viewModel.isCashCard -> {
+                    showUseCashDialog()
+                }
+                else -> {
+                    viewModel.useGifticon()
+                    gifticonDetailListener?.onUseGifticon()
+                }
             }
         }
     }
@@ -245,6 +259,7 @@ class GifticonDetailDialog : DialogFragment() {
                 }
                 setOnOkClickListener {
                     viewModel.deleteGifticon()
+                    gifticonDetailListener?.onDeleteGifticon()
                 }
             }
         }
@@ -260,6 +275,7 @@ class GifticonDetailDialog : DialogFragment() {
                 }
                 setOnUseCashListener {
                     viewModel.useCash(it)
+                    gifticonDetailListener?.onUseCash()
                 }
             }
         }

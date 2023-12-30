@@ -12,6 +12,8 @@ import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
@@ -40,10 +42,6 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
     }
 
     private val viewModel by viewModels<TextInputViewModel>()
-
-    private val imm by lazy {
-        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -183,6 +181,11 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
             }
         }
         binding.editText.requestFocus()
+        val window = dialog?.window
+        if (window != null) {
+            WindowCompat.getInsetsController(window, binding.editText)
+                .show(WindowInsetsCompat.Type.ime())
+        }
     }
 
     private fun setUpClickEvent() {
@@ -192,9 +195,10 @@ class TextInputDialog : DialogFragment(R.layout.dialog_text_input) {
     }
 
     private fun hideDialog() {
-        val windowToken = binding.editText.windowToken
-        if (windowToken != null) {
-            imm?.hideSoftInputFromWindow(windowToken, 0)
+        val window = this.dialog?.window
+        if (window != null) {
+            WindowCompat.getInsetsController(window, binding.editText)
+                .hide(WindowInsetsCompat.Type.ime())
         }
         dismiss()
     }
