@@ -11,7 +11,9 @@ import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewHeight
+import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBar
 import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailDialog
+import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailListener
 import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailParam
 import com.lighthouse.beep.ui.feature.archive.databinding.ActivityArchiveBinding
 import com.lighthouse.beep.ui.feature.archive.list.UsedGifticonAdapter
@@ -32,6 +34,12 @@ internal class ArchiveActivity : AppCompatActivity() {
 
     private val requestManager by lazy {
         Glide.with(this)
+    }
+
+    private val beepSnackBar by lazy {
+        BeepSnackBar.Builder(this)
+            .setLifecycleOwner(this)
+            .setRootView(binding.root)
     }
 
     private val usedGifticonAdapter by lazy {
@@ -63,7 +71,25 @@ internal class ArchiveActivity : AppCompatActivity() {
     private fun showGifticonDetail(item: UsedGifticonItem) {
         show(GifticonDetailDialog.TAG) {
             val param = GifticonDetailParam(item.id)
-            GifticonDetailDialog.newInstance(param)
+            GifticonDetailDialog.newInstance(param).apply {
+                setGifticonDetailListener(object: GifticonDetailListener {
+                    override fun onDeleteGifticon() {
+                        beepSnackBar.info()
+                            .setTextResId(R.string.archive_delete_gifticon_message)
+                            .show()
+                    }
+
+                    override fun onUseGifticon() = Unit
+
+                    override fun onUseCash() = Unit
+
+                    override fun onRevertGifticon() {
+                        beepSnackBar.info()
+                            .setTextResId(R.string.archive_revert_gifticon_message)
+                            .show()
+                    }
+                })
+            }
         }
     }
 
@@ -143,11 +169,19 @@ internal class ArchiveActivity : AppCompatActivity() {
         }
 
         binding.btnDelete.setOnThrottleClickListener {
+            val selectedCount = viewModel.selectedCount
             viewModel.deleteSelectedGifticon()
+            beepSnackBar.info()
+                .setText(getString(R.string.archive_delete_multi_gifticon_message, selectedCount))
+                .show()
         }
 
         binding.btnUse.setOnThrottleClickListener {
+            val selectedCount = viewModel.selectedCount
             viewModel.revertSelectedGifticon()
+            beepSnackBar.info()
+                .setText(getString(R.string.archive_revert_multi_gifticon_message, selectedCount))
+                .show()
         }
     }
 }

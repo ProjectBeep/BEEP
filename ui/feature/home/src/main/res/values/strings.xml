@@ -28,7 +28,7 @@
 
     <string name="home_edit_gifticon_message">쿠폰을 편집했어요.</string>
     <string name="home_use_gifticon_message">쿠폰을 사용했어요.</string>
-    <string name="home_use_cash_gifticon_message">쿠폰을 일부 금액을 사용했어요.</string>
+    <string name="home_use_cash_gifticon_message">금액권 쿠폰을 사용했어요.</string>
     <string name="home_use_multi_gifticon_message">%d개의 쿠폰을 사용했어요.</string>
     <string name="home_delete_gifticon_message">쿠폰을 삭제했어요.</string>
     <string name="home_delete_multi_gifticon_message">%d개의 쿠폰을 삭제했어요.</string>

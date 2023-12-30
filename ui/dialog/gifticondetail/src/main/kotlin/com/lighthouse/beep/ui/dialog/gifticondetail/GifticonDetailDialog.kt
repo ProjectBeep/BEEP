@@ -163,6 +163,7 @@ class GifticonDetailDialog : DialogFragment() {
                 binding.textName.text = it.name
 
                 binding.groupCash.isVisible = it.isCashCard
+                binding.textRemainCash.isVisible = it.isCashCard && !viewModel.isUsed
                 val remain = balanceFormat.valueToTransformed(it.remainCash.toString())
                 binding.textRemainCash.text =
                     getString(R.string.dialog_gifticon_detail_balance, remain)

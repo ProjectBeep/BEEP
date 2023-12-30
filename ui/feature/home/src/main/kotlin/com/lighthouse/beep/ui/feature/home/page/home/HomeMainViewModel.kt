@@ -74,6 +74,9 @@ internal class HomeMainViewModel @Inject constructor(
 
     private val selectedGifticonList = mutableListOf<HomeItem.GifticonItem>()
 
+    val selectedCount
+        get() = selectedGifticonList.size
+
     private val _selectedGifticonListFlow =
         MutableSharedFlow<List<HomeItem.GifticonItem>>(replay = 1)
     val selectedGifticonListFlow = _selectedGifticonListFlow.asSharedFlow()

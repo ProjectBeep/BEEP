@@ -27,8 +27,11 @@ import com.lighthouse.beep.core.ui.exts.viewHeight
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.model.location.DmsPos
+import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBar
 import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailDialog
+import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailListener
 import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailParam
+import com.lighthouse.beep.ui.feature.home.R
 import com.lighthouse.beep.ui.feature.home.databinding.FragmentMainHomeBinding
 import com.lighthouse.beep.ui.feature.home.model.BrandItem
 import com.lighthouse.beep.ui.feature.home.model.BrandItemDiff
@@ -65,6 +68,12 @@ class HomeMainFragment : Fragment() {
     private val viewModel by viewModels<HomeMainViewModel>()
 
     private lateinit var navigationProvider: HomeNavigation
+
+    private val beepSnackBar by lazy {
+        BeepSnackBar.Builder(requireContext())
+            .setLifecycleOwner(this)
+            .setRootView(binding.root)
+    }
 
     private val requestManager: RequestManager by lazy {
         Glide.with(this)
@@ -167,7 +176,29 @@ class HomeMainFragment : Fragment() {
     private fun showGifticonDetail(item: HomeItem.GifticonItem) {
         show(GifticonDetailDialog.TAG) {
             val param = GifticonDetailParam(item.id)
-            GifticonDetailDialog.newInstance(param)
+            GifticonDetailDialog.newInstance(param).apply {
+                setGifticonDetailListener(object: GifticonDetailListener {
+                    override fun onDeleteGifticon() {
+                        beepSnackBar.info()
+                            .setTextResId(R.string.home_delete_gifticon_message)
+                            .show()
+                    }
+
+                    override fun onUseGifticon() {
+                        beepSnackBar.info()
+                            .setTextResId(R.string.home_use_gifticon_message)
+                            .show()
+                    }
+
+                    override fun onUseCash() {
+                        beepSnackBar.info()
+                            .setTextResId(R.string.home_use_cash_gifticon_message)
+                            .show()
+                    }
+
+                    override fun onRevertGifticon() = Unit
+                })
+            }
         }
     }
 
@@ -304,11 +335,19 @@ class HomeMainFragment : Fragment() {
         }
 
         binding.btnDelete.setOnThrottleClickListener {
+            val selectedCount = viewModel.selectedCount
             viewModel.deleteSelectedGifticon()
+            beepSnackBar.info()
+                .setText(getString(R.string.home_delete_multi_gifticon_message, selectedCount))
+                .show()
         }
 
         binding.btnUse.setOnThrottleClickListener {
+            val selectedCount = viewModel.selectedCount
             viewModel.useSelectedGifticon()
+            beepSnackBar.info()
+                .setText(getString(R.string.home_use_multi_gifticon_message, selectedCount))
+                .show()
         }
     }
 }

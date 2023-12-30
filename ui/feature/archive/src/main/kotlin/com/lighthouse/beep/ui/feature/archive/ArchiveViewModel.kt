@@ -53,6 +53,8 @@ internal class ArchiveViewModel @Inject constructor(
     }
 
     private val selectedGifticonList = mutableListOf<UsedGifticonItem>()
+    val selectedCount
+        get() = selectedGifticonList.size
 
     private val _selectedGifticonListFlow =
         MutableSharedFlow<List<UsedGifticonItem>>(replay = 1)

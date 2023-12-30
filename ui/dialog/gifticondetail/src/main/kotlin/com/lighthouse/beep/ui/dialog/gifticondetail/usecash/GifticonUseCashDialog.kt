@@ -1,7 +1,6 @@
 package com.lighthouse.beep.ui.dialog.gifticondetail.usecash
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,17 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.doOnAttach
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.library.textformat.setInputFormat
 import com.lighthouse.beep.theme.R as ThemeR
-import com.lighthouse.beep.ui.dialog.gifticondetail.R
 import com.lighthouse.beep.ui.dialog.gifticondetail.databinding.DialogGifticonUseCashBinding
 
 class GifticonUseCashDialog : DialogFragment() {
@@ -133,7 +129,11 @@ class GifticonUseCashDialog : DialogFragment() {
     }
 
     private fun useCash() {
-        onUseCashListener?.onUseCash(viewModel.value.toInt())
+        var useCash = viewModel.value.toInt()
+        if (useCash == 0) {
+           useCash = viewModel.remainCash
+        }
+        onUseCashListener?.onUseCash(useCash)
         dismiss()
     }
 }
