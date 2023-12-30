@@ -6,6 +6,7 @@
     <string name="dialog_gifticon_detail_expire">유효기간</string>
     <string name="dialog_gifticon_detail_memo">메모</string>
     <string name="dialog_gifticon_detail_balance">%s원</string>
+    <string name="dialog_gifticon_detail_edit_tutorial">기한을 쉽게 편집할 수 있어요</string>
 
     <string name="dialog_gifticon_detail_delete">삭제</string>
     <string name="dialog_gifticon_detail_use">사용하기</string>

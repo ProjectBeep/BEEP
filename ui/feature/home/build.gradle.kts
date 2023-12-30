@@ -19,8 +19,9 @@ dependencies {
 
     implementation(projects.ui.dialog.gifticondetail)
     implementation(projects.ui.dialog.confirmation)
-    
+
     implementation(projects.ui.designsystem.dotindicator)
+    implementation(projects.ui.designsystem.snackbar)
 
     implementation(projects.navs)
 

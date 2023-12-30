@@ -21,6 +21,7 @@ dependencies {
     implementation(projects.data.data)
 
     implementation(projects.ui.dialog.confirmation)
+    implementation(projects.ui.designsystem.balloon)
 
     implementation(projects.library.textformat)
     implementation(projects.library.barcode)

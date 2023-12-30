@@ -43,23 +43,35 @@
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             android:text="@string/dialog_gifticon_detail_use_cash_message" />
 
-        <EditText
-            android:id="@+id/edit_use_cash"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_use_cash"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
-            android:paddingVertical="12dp"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintTop_toBottomOf="@id/tv_message"
             app:layout_constraintBottom_toTopOf="@id/btn_ok"
-            android:textAppearance="@style/Text.Title5"
-            android:textColorHint="@color/font_gray"
-            android:textColor="@color/font_dark_gray"
-            android:textCursorDrawable="@drawable/edit_text_cursor"
-            android:background="@drawable/bg_gifticon_use_cash_edit"
-            android:theme="@style/ViewPrimaryStyle"
-            tools:hint="10,000원"/>
+            android:background="@drawable/bg_gifticon_use_cash_edit">
+
+            <EditText
+                android:id="@+id/edit_use_cash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textAppearance="@style/Text.Title5"
+                android:textColorHint="@color/font_gray"
+                android:textColor="@color/font_dark_gray"
+                android:textCursorDrawable="@drawable/edit_text_cursor"
+                android:theme="@style/ViewPrimaryStyle"
+                android:background="@null"
+                tools:hint="10,000원"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <TextView
             android:id="@+id/btn_cancel"
@@ -96,7 +108,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_cancel"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
-            app:layout_constraintTop_toBottomOf="@id/edit_use_cash" />
+            app:layout_constraintTop_toBottomOf="@id/container_use_cash" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

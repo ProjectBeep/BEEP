@@ -1,6 +1,7 @@
 package com.lighthouse.beep.ui.dialog.gifticondetail.usecash
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -9,12 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.library.textformat.setInputFormat
-import com.lighthouse.beep.theme.R
+import com.lighthouse.beep.theme.R as ThemeR
+import com.lighthouse.beep.ui.dialog.gifticondetail.R
 import com.lighthouse.beep.ui.dialog.gifticondetail.databinding.DialogGifticonUseCashBinding
 
 class GifticonUseCashDialog : DialogFragment() {
@@ -47,11 +50,15 @@ class GifticonUseCashDialog : DialogFragment() {
 
     private val viewModel by viewModels<GifticonUseCashViewModel>()
 
+    private val imm by lazy {
+        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    }
+
     private val format = TextInputFormat.BALANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
+        setStyle(STYLE_NO_FRAME, ThemeR.style.Theme_Dialog)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -80,6 +87,11 @@ class GifticonUseCashDialog : DialogFragment() {
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        val windowToken = binding.editUseCash.windowToken
+        if (windowToken != null) {
+            imm?.hideSoftInputFromWindow(windowToken, 0)
+        }
+
         onDismissListener?.onDismiss()
 
         super.onDismiss(dialog)
@@ -105,6 +117,7 @@ class GifticonUseCashDialog : DialogFragment() {
             }
         }
         binding.editUseCash.requestFocus()
+        imm?.showSoftInput(binding.editUseCash, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun setUpOnEventClick() {

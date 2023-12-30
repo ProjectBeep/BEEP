@@ -14,6 +14,7 @@ data class DeviceConfig(
 @Serializable
 data class BeepGuide(
     val permission: Boolean = false,
+    val gifticonDetailEdit: Boolean = false,
     val cropImagePen: Boolean = false,
 ) {
     companion object {

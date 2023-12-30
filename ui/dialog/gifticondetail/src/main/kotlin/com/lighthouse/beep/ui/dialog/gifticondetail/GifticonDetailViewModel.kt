@@ -6,9 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.common.utils.flow.MutableEventFlow
 import com.lighthouse.beep.core.common.utils.flow.asEventFlow
+import com.lighthouse.beep.data.repository.device.DeviceRepository
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,6 +21,7 @@ import javax.inject.Inject
 internal class GifticonDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val gifticonRepository: GifticonRepository,
+    private val deviceRepository: DeviceRepository,
 ) : ViewModel() {
 
     private val gifticonId = GifticonDetailParam.getGifticonId(savedStateHandle)
@@ -32,6 +37,18 @@ internal class GifticonDetailViewModel @Inject constructor(
 
     val isUsed
         get() = gifticonDetail.value?.isUsed ?: false
+
+    suspend fun isShownGifticonDetailEdit() = deviceRepository.deviceConfig
+        .map { it.beepGuide.gifticonDetailEdit }
+        .first()
+
+    fun setShownGifticonDetailEdit(value: Boolean) {
+        viewModelScope.launch {
+            deviceRepository.setBeepGuide {
+                it.copy(gifticonDetailEdit = value)
+            }
+        }
+    }
 
     private val _requestDismissEvent = MutableEventFlow<Unit>()
     val requestDismissEvent = _requestDismissEvent.asEventFlow()

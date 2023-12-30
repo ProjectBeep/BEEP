@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -334,28 +335,28 @@ class Balloon private constructor(
         rootView.getGlobalVisibleRect(rootRect)
         val leftView = builder.leftConstraintTargetView
         if (leftView != null) {
-            rootView.left = when (builder.leftConstraintTargetDirection) {
+            rootRect.left = when (builder.leftConstraintTargetDirection) {
                 BalloonHorizontalDirection.LEFT -> leftView.left
                 BalloonHorizontalDirection.RIGHT -> leftView.right
             }
         }
         val topView = builder.topConstraintTargetView
         if (topView != null) {
-            rootView.top = when (builder.topConstraintTargetDirection) {
+            rootRect.top = when (builder.topConstraintTargetDirection) {
                 BalloonVerticalDirection.TOP -> topView.top
                 BalloonVerticalDirection.BOTTOM -> topView.bottom
             }
         }
         val rightView = builder.rightConstraintTargetView
         if (rightView != null) {
-            rootView.right = when (builder.rightConstraintTargetDirection) {
+            rootRect.right = when (builder.rightConstraintTargetDirection) {
                 BalloonHorizontalDirection.LEFT -> rightView.left
                 BalloonHorizontalDirection.RIGHT -> rightView.right
             }
         }
         val bottomView = builder.bottomConstraintTargetView
         if (bottomView != null) {
-            rootView.bottom = when (builder.bottomConstraintTargetDirection) {
+            rootRect.bottom = when (builder.bottomConstraintTargetDirection) {
                 BalloonVerticalDirection.TOP -> bottomView.left
                 BalloonVerticalDirection.BOTTOM -> bottomView.right
             }
@@ -387,45 +388,45 @@ class Balloon private constructor(
         val right = left + child.measuredWidth
         val bottom = top + child.measuredHeight
 
-        val centerX = (r - l) / 2
-        val centerY = (b - t) / 2
+        val centerX = (rootContainerRect.right - rootContainerRect.left) / 2
+        val centerY = (rootContainerRect.bottom - rootContainerRect.top) / 2
         val anchorCenterX = anchorRect.left + anchor.measuredWidth / 2
         val anchorCenterY = anchorRect.top + anchor.measuredHeight / 2
 
         val offsetX = when (builder.alignment) {
             BalloonAlignment.TOP,
             BalloonAlignment.BOTTOM -> when {
-                anchorCenterX < centerX && left < l -> l - left
-                anchorCenterX > centerX && right > r -> r - right
+                anchorCenterX < centerX && left < rootContainerRect.left -> rootContainerRect.left - left
+                anchorCenterX > centerX && right > rootContainerRect.right -> rootContainerRect.right - right
                 else -> 0
             }
 
             BalloonAlignment.LEFT -> when {
-                left < l -> l - left
+                left < rootContainerRect.left -> rootContainerRect.left - left
                 else -> 0
             }
 
             BalloonAlignment.RIGHT -> when {
-                right > r -> r - right
+                right > rootContainerRect.right -> rootContainerRect.right - right
                 else -> 0
             }
         }
 
         val offsetY = when (builder.alignment) {
             BalloonAlignment.TOP -> when {
-                top < t -> t - top
+                top < rootContainerRect.top -> rootContainerRect.top - top
                 else -> 0
             }
 
             BalloonAlignment.BOTTOM -> when {
-                bottom > b -> b - bottom
+                bottom > rootContainerRect.bottom -> rootContainerRect.bottom - bottom
                 else -> 0
             }
 
             BalloonAlignment.LEFT,
             BalloonAlignment.RIGHT -> when {
-                anchorCenterY < centerY && top < t -> t - top
-                anchorCenterY > centerY && bottom > b -> b - bottom
+                anchorCenterY < centerY && top < rootContainerRect.top -> rootContainerRect.top - top
+                anchorCenterY > centerY && bottom > rootContainerRect.bottom -> rootContainerRect.bottom - bottom
                 else -> 0
             }
         }
@@ -649,6 +650,10 @@ class Balloon private constructor(
             arrowRotation = rotation
         }
 
+        fun setArrowRotation(rotation: Int) = apply {
+            arrowRotation = rotation
+        }
+
         fun setArrowSize(@Px width: Float, height: Float) = apply {
             arrowWidth = width
             arrowHeight = height
@@ -709,22 +714,22 @@ class Balloon private constructor(
             setMargin(value, value, value, value)
         }
 
-        fun setLeftConstraint(target: View, direction: BalloonHorizontalDirection = BalloonHorizontalDirection.LEFT) {
+        fun setLeftConstraint(target: View, direction: BalloonHorizontalDirection = BalloonHorizontalDirection.RIGHT) = apply {
             leftConstraintTargetView = target
             leftConstraintTargetDirection = direction
         }
 
-        fun setTopConstraint(target: View, direction: BalloonVerticalDirection = BalloonVerticalDirection.BOTTOM) {
+        fun setTopConstraint(target: View, direction: BalloonVerticalDirection = BalloonVerticalDirection.BOTTOM) = apply {
             topConstraintTargetView = target
             topConstraintTargetDirection = direction
         }
 
-        fun setRightConstraint(target: View, direction: BalloonHorizontalDirection = BalloonHorizontalDirection.RIGHT) {
+        fun setRightConstraint(target: View, direction: BalloonHorizontalDirection = BalloonHorizontalDirection.LEFT) = apply {
             rightConstraintTargetView = target
             rightConstraintTargetDirection = direction
         }
 
-        fun setBottomConstraint(target: View, direction: BalloonVerticalDirection = BalloonVerticalDirection.TOP) {
+        fun setBottomConstraint(target: View, direction: BalloonVerticalDirection = BalloonVerticalDirection.TOP) = apply {
             bottomConstraintTargetView = target
             bottomConstraintTargetDirection = direction
         }

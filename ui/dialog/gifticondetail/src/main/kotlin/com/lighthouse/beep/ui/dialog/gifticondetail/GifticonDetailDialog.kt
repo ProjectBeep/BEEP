@@ -19,6 +19,9 @@ import com.lighthouse.beep.library.barcode.BarcodeGenerator
 import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import com.lighthouse.beep.navs.AppNavigator
+import com.lighthouse.beep.ui.designsystem.balloon.Balloon
+import com.lighthouse.beep.ui.designsystem.balloon.BalloonHorizontalDirection
+import com.lighthouse.beep.ui.designsystem.balloon.TextBalloonBuilder
 import com.lighthouse.beep.theme.R as ThemeR
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
@@ -28,6 +31,7 @@ import javax.inject.Inject
 import com.lighthouse.beep.ui.dialog.gifticondetail.usecash.GifticonUseCashDialog
 import com.lighthouse.beep.ui.dialog.gifticondetail.usecash.GifticonUseCashParam
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
@@ -49,6 +53,26 @@ class GifticonDetailDialog : DialogFragment() {
         get() = requireNotNull(_binding)
 
     private val viewModel by viewModels<GifticonDetailViewModel>()
+
+    private val editBalloon by lazy {
+        TextBalloonBuilder(requireContext())
+            .setText(R.string.dialog_gifticon_detail_edit_tutorial)
+            .setTextAppearanceRes(ThemeR.style.Text_Title7)
+            .setTextColorRes(ThemeR.color.white)
+            .setLifecycleOwner(viewLifecycleOwner)
+            .setPadding(horizontal = 12.dp, vertical = 6.dp)
+            .setMargin(right = 46.dp)
+            .setRightConstraint(binding.btnClose, BalloonHorizontalDirection.RIGHT)
+            .setCornerRadius(16f.dp)
+            .setBalloonColorRes(ThemeR.color.beep_pink)
+            .setArrowRotation(0)
+            .setDismissWhenClickOutside(false)
+            .setRootView(binding.root)
+            .setOnBalloonClickListener {
+                viewModel.setShownGifticonDetailEdit(true)
+                gotoEdit()
+            }
+    }
 
     private val balanceFormat = TextInputFormat.BALANCE
 
@@ -98,6 +122,9 @@ class GifticonDetailDialog : DialogFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.gifticonDetail.filterNotNull().take(1).collect {
+                if(!viewModel.isShownGifticonDetailEdit()) {
+                    editBalloon.show(binding.textEdit)
+                }
                 fadeInDetail()
             }
         }
@@ -159,8 +186,7 @@ class GifticonDetailDialog : DialogFragment() {
 
     private fun setUpOnClickEvent() {
         binding.btnEdit.setOnThrottleClickListener {
-            // navigator 로 Editor 페이지로 이동하기
-            dismiss()
+            gotoEdit()
         }
 
         binding.btnClose.setOnThrottleClickListener {
@@ -178,6 +204,11 @@ class GifticonDetailDialog : DialogFragment() {
                 else -> viewModel.useGifticon()
             }
         }
+    }
+
+    private fun gotoEdit() {
+        // navigator 로 Editor 페이지로 이동하기
+        dismiss()
     }
 
     private fun fadeInDetail() {

@@ -14,6 +14,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.theme.R as ThemeR
 
@@ -33,6 +34,9 @@ class TextBalloonBuilder(context: Context) : Balloon.Builder(context) {
 
     @ColorRes
     var balloonTextColorRes: Int = ThemeR.color.white
+
+    @StyleRes
+    var balloonTextTextAppearanceRes: Int = 0
 
     var balloonTextMaxLine: Int? = 1
 
@@ -62,6 +66,10 @@ class TextBalloonBuilder(context: Context) : Balloon.Builder(context) {
 
     fun setTextColorRes(@ColorRes resId: Int) = apply {
         balloonTextColorRes = resId
+    }
+
+    fun setTextAppearanceRes(@StyleRes resId: Int) = apply {
+        balloonTextTextAppearanceRes = resId
     }
 
     fun setMaxLine(value: Int) = apply {
@@ -97,6 +105,9 @@ class TextBalloonBuilder(context: Context) : Balloon.Builder(context) {
                 val textColor = balloonTextColorRes.let { context.getColor(it) }
                 setTextColor(textColor)
                 setTypeface(balloonTypeface, balloonTypefaceStyle)
+                if (balloonTextTextAppearanceRes != 0) {
+                    setTextAppearance(balloonTextTextAppearanceRes)
+                }
                 if(balloonUnderline) {
                     paintFlags = Paint.UNDERLINE_TEXT_FLAG
                 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="archive_title">사용 완료 쿠폰</string>
+
+    <string name="archive_used_gifticon_count">%d개의 쿠폰을 사용했어요</string>
+    <string name="archive_edit_gifticon">편집</string>
+    <string name="archive_edit_cancel">취소</string>
+
+    <string name="archive_delete_gifticon">내역 삭제</string>
+    <string name="archive_revert_gifticon">사용 완료 취소</string>
+
+    <string name="archive_delete_gifticon_message">%d개의 쿠폰 내역을 삭제했어요.</string>
+    <string name="archive_revert_gifticon_message">%d개의 쿠폰을 다시 활성화했어요.</string>
+</resources>
