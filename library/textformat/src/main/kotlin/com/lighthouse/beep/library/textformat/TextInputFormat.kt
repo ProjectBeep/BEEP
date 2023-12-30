@@ -1,9 +1,9 @@
-package com.lighthouse.beep.ui.dialog.textinput
+package com.lighthouse.beep.library.textformat
 
 import android.text.InputFilter
 import android.text.InputType
 import com.lighthouse.beep.core.common.exts.toDigit
-import com.lighthouse.beep.ui.dialog.textinput.filter.DigitFilterWithMaxLength
+import com.lighthouse.beep.library.textformat.filter.DigitFilterWithMaxLength
 import java.text.DecimalFormat
 
 enum class TextInputFormat(

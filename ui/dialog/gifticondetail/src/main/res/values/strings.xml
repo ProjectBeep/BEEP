@@ -15,4 +15,12 @@
 
     <string name="dialog_gifticon_detail_thumbnail_expired">기간 만료</string>
     <string name="dialog_gifticon_detail_thumbnail_used">사용 완료</string>
+
+    <string name="dialog_gifticon_detail_delete_message">기프티콘을 삭제하시겠어요?</string>
+    <string name="dialog_gifticon_detail_delete_cancel">아니요</string>
+    <string name="dialog_gifticon_detail_delete_ok">네,삭제할래요</string>
+
+    <string name="dialog_gifticon_detail_use_cash_message">얼마를 사용하시겠습니까?</string>
+    <string name="dialog_gifticon_detail_use_cash_cancel">취소</string>
+    <string name="dialog_gifticon_detail_use_cash_ok">사용하기</string>
 </resources>

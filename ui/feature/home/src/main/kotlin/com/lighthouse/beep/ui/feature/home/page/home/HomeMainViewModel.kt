@@ -200,7 +200,9 @@ internal class HomeMainViewModel @Inject constructor(
             HomeItem.GifticonItem(
                 id = it.id,
                 thumbnail = it.thumbnail,
-                type = it.type,
+                isCashCard = it.isCashCard,
+                remainCash = it.remainCash,
+                totalCash = it.totalCash,
                 brand = it.displayBrand,
                 name = it.name,
                 expiredDate = it.expireAt,

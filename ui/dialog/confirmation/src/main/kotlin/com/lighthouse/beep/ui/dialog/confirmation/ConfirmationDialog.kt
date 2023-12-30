@@ -1,5 +1,6 @@
 package com.lighthouse.beep.ui.dialog.confirmation
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +39,12 @@ open class ConfirmationDialog : DialogFragment() {
         onCancelClickListener = listener
     }
 
+    private var onDismissListener: OnDismissListener? = null
+
+    fun setOnDismissListener(listener: OnDismissListener) {
+        onDismissListener = listener
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.Theme_Dialog)
@@ -62,6 +69,11 @@ open class ConfirmationDialog : DialogFragment() {
         setUpContent()
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissListener?.onDismiss()
+    }
+
     private fun setUpRoot() {
         binding.root.setOnClickListener {
             dismiss()
@@ -76,7 +88,7 @@ open class ConfirmationDialog : DialogFragment() {
             isVisible = text.isNotEmpty()
         }
 
-        binding.tvOk.apply {
+        binding.btnOk.apply {
             text = ConfirmationParam.getOkText(context, arguments)
             isVisible = text.isNotEmpty()
             val okDismiss = ConfirmationParam.isOkDismiss(arguments)
@@ -90,7 +102,7 @@ open class ConfirmationDialog : DialogFragment() {
             }
         }
 
-        binding.tvCancel.apply {
+        binding.btnCancel.apply {
             text = ConfirmationParam.getCancelText(context, arguments)
             isVisible = text.isNotEmpty()
             val cancelDismiss = ConfirmationParam.isCancelDismiss(arguments)

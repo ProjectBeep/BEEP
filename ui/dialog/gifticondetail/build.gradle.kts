@@ -21,6 +21,8 @@ dependencies {
     implementation(projects.data.data)
 
     implementation(projects.ui.dialog.confirmation)
+
+    implementation(projects.library.textformat)
     implementation(projects.library.barcode)
 
     implementation(libs.androidx.fragment.ktx)

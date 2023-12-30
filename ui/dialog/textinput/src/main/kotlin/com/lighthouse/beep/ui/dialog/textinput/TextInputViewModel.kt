@@ -24,6 +24,7 @@ internal class TextInputViewModel(
             add(LengthFilter(maxLength))
         }
         addAll(inputFormat.filters)
+
     }.toTypedArray()
 
     val inputType = inputFormat.inputType

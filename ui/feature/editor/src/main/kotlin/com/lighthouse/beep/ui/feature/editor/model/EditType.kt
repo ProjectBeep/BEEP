@@ -7,7 +7,7 @@ import com.lighthouse.beep.library.recognizer.BalanceRecognizer
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
 import com.lighthouse.beep.library.recognizer.ExpiredRecognizer
 import com.lighthouse.beep.library.recognizer.TextRecognizer
-import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
+import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
 import com.lighthouse.beep.ui.feature.editor.R
 

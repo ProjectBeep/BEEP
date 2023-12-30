@@ -3,6 +3,7 @@ package com.lighthouse.beep.ui.dialog.textinput
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
+import com.lighthouse.beep.library.textformat.TextInputFormat
 
 data class TextInputParam(
     val text: String = "",

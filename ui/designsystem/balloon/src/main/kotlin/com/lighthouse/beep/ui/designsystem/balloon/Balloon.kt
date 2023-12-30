@@ -326,14 +326,47 @@ class Balloon private constructor(
         }
     }
 
-    private val rootViewRect = Rect()
     private val anchorRect = Rect()
 
+    private fun getRootContainerRect(): Rect {
+        val rootView = findRootView() ?: return Rect()
+        val rootRect = Rect()
+        rootView.getGlobalVisibleRect(rootRect)
+        val leftView = builder.leftConstraintTargetView
+        if (leftView != null) {
+            rootView.left = when (builder.leftConstraintTargetDirection) {
+                BalloonHorizontalDirection.LEFT -> leftView.left
+                BalloonHorizontalDirection.RIGHT -> leftView.right
+            }
+        }
+        val topView = builder.topConstraintTargetView
+        if (topView != null) {
+            rootView.top = when (builder.topConstraintTargetDirection) {
+                BalloonVerticalDirection.TOP -> topView.top
+                BalloonVerticalDirection.BOTTOM -> topView.bottom
+            }
+        }
+        val rightView = builder.rightConstraintTargetView
+        if (rightView != null) {
+            rootView.right = when (builder.rightConstraintTargetDirection) {
+                BalloonHorizontalDirection.LEFT -> rightView.left
+                BalloonHorizontalDirection.RIGHT -> rightView.right
+            }
+        }
+        val bottomView = builder.bottomConstraintTargetView
+        if (bottomView != null) {
+            rootView.bottom = when (builder.bottomConstraintTargetDirection) {
+                BalloonVerticalDirection.TOP -> bottomView.left
+                BalloonVerticalDirection.BOTTOM -> bottomView.right
+            }
+        }
+        return rootRect
+    }
+
     private fun doLayout(l: Int, t: Int, r: Int, b: Int) {
-        val rootView = findRootView() ?: return
         val anchor = anchorView ?: return
         val child = getChildAt(0)
-        rootView.getGlobalVisibleRect(rootViewRect)
+        val rootContainerRect = getRootContainerRect()
         anchor.getGlobalVisibleRect(anchorRect)
 
         val left = when (builder.alignment) {
@@ -342,14 +375,14 @@ class Balloon private constructor(
 
             BalloonAlignment.LEFT -> anchorRect.left - child.measuredWidth
             BalloonAlignment.RIGHT -> anchorRect.left + anchor.measuredWidth
-        } - rootViewRect.left
+        } - rootContainerRect.left
 
         val top = when (builder.alignment) {
             BalloonAlignment.TOP -> anchorRect.top - child.measuredHeight
             BalloonAlignment.BOTTOM -> anchorRect.top + anchor.measuredHeight
             BalloonAlignment.LEFT,
             BalloonAlignment.RIGHT -> anchorRect.top - (child.measuredHeight - anchor.measuredHeight) / 2
-        } - rootViewRect.top
+        } - rootContainerRect.top
 
         val right = left + child.measuredWidth
         val bottom = top + child.measuredHeight
@@ -408,7 +441,7 @@ class Balloon private constructor(
 
             BalloonAlignment.TOP,
             BalloonAlignment.BOTTOM -> getArrowConstraintPositionX(
-                anchorRect.left + anchor.measuredWidth / 2 - rootViewRect.left,
+                anchorRect.left + anchor.measuredWidth / 2 - rootContainerRect.left,
                 left + builder.marginLeft + offsetX,
                 right - builder.marginRight + offsetX,
             )
@@ -416,7 +449,7 @@ class Balloon private constructor(
         binding.balloonArrow.y = when (builder.alignment) {
             BalloonAlignment.LEFT,
             BalloonAlignment.RIGHT -> getArrowConstraintPositionY(
-                anchorRect.top + anchor.measuredHeight / 2 - rootViewRect.top,
+                anchorRect.top + anchor.measuredHeight / 2 - rootContainerRect.top,
                 top + builder.marginTop + offsetY,
                 bottom - builder.marginBottom + offsetY,
             )
@@ -563,6 +596,18 @@ class Balloon private constructor(
         @Px
         var marginBottom = 0
 
+        var leftConstraintTargetView: View? = null
+        var leftConstraintTargetDirection: BalloonHorizontalDirection = BalloonHorizontalDirection.RIGHT
+
+        var topConstraintTargetView: View? = null
+        var topConstraintTargetDirection: BalloonVerticalDirection = BalloonVerticalDirection.BOTTOM
+
+        var rightConstraintTargetView: View? = null
+        var rightConstraintTargetDirection: BalloonHorizontalDirection = BalloonHorizontalDirection.LEFT
+
+        var bottomConstraintTargetView: View? = null
+        var bottomConstraintTargetDirection: BalloonVerticalDirection = BalloonVerticalDirection.TOP
+
         @Px
         var cornerRadius: Float = 17.5f.dp
 
@@ -662,6 +707,26 @@ class Balloon private constructor(
 
         fun setMargin(@Px value: Int) = apply {
             setMargin(value, value, value, value)
+        }
+
+        fun setLeftConstraint(target: View, direction: BalloonHorizontalDirection = BalloonHorizontalDirection.LEFT) {
+            leftConstraintTargetView = target
+            leftConstraintTargetDirection = direction
+        }
+
+        fun setTopConstraint(target: View, direction: BalloonVerticalDirection = BalloonVerticalDirection.BOTTOM) {
+            topConstraintTargetView = target
+            topConstraintTargetDirection = direction
+        }
+
+        fun setRightConstraint(target: View, direction: BalloonHorizontalDirection = BalloonHorizontalDirection.RIGHT) {
+            rightConstraintTargetView = target
+            rightConstraintTargetDirection = direction
+        }
+
+        fun setBottomConstraint(target: View, direction: BalloonVerticalDirection = BalloonVerticalDirection.TOP) {
+            bottomConstraintTargetView = target
+            bottomConstraintTargetDirection = direction
         }
 
         fun setCornerRadius(@Px value: Float) = apply {

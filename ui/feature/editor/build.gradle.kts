@@ -27,6 +27,7 @@ dependencies {
     implementation(projects.ui.designsystem.cropview)
     implementation(projects.ui.designsystem.snackbar)
 
+    implementation(projects.library.textformat)
     implementation(projects.library.barcode)
     implementation(projects.library.recognizer)
 

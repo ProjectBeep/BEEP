@@ -11,5 +11,7 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.theme)
 
+    implementation(projects.library.textformat)
+
     implementation(libs.androidx.fragment.ktx)
 }

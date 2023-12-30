@@ -1,6 +1,8 @@
 package com.lighthouse.beep.model.gifticon
 
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 data class GifticonDetail(
     val id: Long,
@@ -15,4 +17,11 @@ data class GifticonDetail(
     val memo: String,
     val isUsed: Boolean,
     val expireAt: Date,
-)
+) {
+
+    val formattedExpiredDate: String
+        get() {
+            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            return formatter.format(expireAt)
+        }
+}

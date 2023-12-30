@@ -8,9 +8,9 @@ import com.lighthouse.beep.core.common.exts.ofMonth
 import com.lighthouse.beep.core.common.exts.ofYear
 import com.lighthouse.beep.core.common.exts.toFormattedString
 import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
+import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
-import com.lighthouse.beep.ui.dialog.textinput.TextInputFormat
 import java.util.Date
 
 internal data class GifticonData(

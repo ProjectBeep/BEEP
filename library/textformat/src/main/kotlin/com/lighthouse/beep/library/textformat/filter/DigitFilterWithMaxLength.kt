@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.dialog.textinput.filter
+package com.lighthouse.beep.library.textformat.filter
 
 import android.text.InputFilter
 import android.text.Spanned
