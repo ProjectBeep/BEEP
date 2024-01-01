@@ -6,11 +6,14 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewHeight
+import com.lighthouse.beep.core.ui.recyclerview.GridCalculator
 import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBar
 import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailDialog
 import com.lighthouse.beep.ui.dialog.gifticondetail.GifticonDetailListener
@@ -49,10 +52,10 @@ internal class ArchiveActivity : AppCompatActivity() {
         )
     }
 
-    private val usedGifticonListener = object: UsedGifticonListener {
+    private val usedGifticonListener = object : UsedGifticonListener {
         override fun isSelectedFlow(item: UsedGifticonItem): Flow<Boolean> {
             return viewModel.selectedGifticonListFlow
-                .map{ list -> list.find { it.id == item.id } != null }
+                .map { list -> list.find { it.id == item.id } != null }
                 .distinctUntilChanged()
         }
 
@@ -72,7 +75,7 @@ internal class ArchiveActivity : AppCompatActivity() {
         show(GifticonDetailDialog.TAG) {
             val param = GifticonDetailParam(item.id)
             GifticonDetailDialog.newInstance(param).apply {
-                setGifticonDetailListener(object: GifticonDetailListener {
+                setGifticonDetailListener(object : GifticonDetailListener {
                     override fun onDeleteGifticon() {
                         beepSnackBar.info()
                             .setTextResId(R.string.archive_delete_gifticon_message)
@@ -105,6 +108,9 @@ internal class ArchiveActivity : AppCompatActivity() {
 
     private fun setUpGridUsedGifticon() {
         binding.gridUsedGifticon.adapter = usedGifticonAdapter
+        val spanCount = GridCalculator.getSpanCount(172.dp, 17.dp, 48.dp, 2)
+        binding.gridUsedGifticon.layoutManager =
+            GridLayoutManager(this, spanCount)
     }
 
     private fun setUpCollectState() {
@@ -114,7 +120,6 @@ internal class ArchiveActivity : AppCompatActivity() {
                     finish()
                 } else {
                     binding.textUsedGifticonCount.text = it.size.toString()
-
                     usedGifticonAdapter.submitList(it)
                 }
             }
@@ -123,11 +128,12 @@ internal class ArchiveActivity : AppCompatActivity() {
         repeatOnStarted {
             var init = true
             viewModel.gifticonViewMode.collect { mode ->
-                when(mode) {
+                when (mode) {
                     GifticonViewMode.VIEW -> {
                         binding.textEdit.setText(R.string.archive_edit_gifticon)
                         binding.iconEdit.setImageResource(com.lighthouse.beep.theme.R.drawable.icon_edit)
                     }
+
                     GifticonViewMode.EDIT -> {
                         binding.textEdit.setText(R.string.archive_edit_cancel)
                         binding.iconEdit.setImageResource(com.lighthouse.beep.theme.R.drawable.icon_edit_cancel)
