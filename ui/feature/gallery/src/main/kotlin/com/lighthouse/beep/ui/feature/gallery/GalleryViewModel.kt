@@ -92,11 +92,11 @@ internal class GalleryViewModel @Inject constructor(
     private var requestNextJob: Job? = null
 
     fun requestRecommend(currentFirstVisible: Int = firstVisible) {
+        firstVisible = currentFirstVisible
+
         if (requestNextJob?.isActive == true || currentPage >= maxPage) {
             return
         }
-
-        firstVisible = currentFirstVisible
         if (loadedRecognizeData) {
             requestRecommendNext()
         } else {
