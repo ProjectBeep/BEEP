@@ -5,21 +5,12 @@ import com.lighthouse.beep.data.local.database.entity.DBGalleryRecognizeEntity
 import com.lighthouse.beep.data.local.database.mapper.gallery.toModel
 import com.lighthouse.beep.data.repository.gallery.GalleryRecognizeDataSource
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.model.gallery.GalleryImageRecognizeData
 import com.lighthouse.beep.model.gallery.GalleryRecognize
 import javax.inject.Inject
 
 internal class GalleryRecognizeDataSourceImpl @Inject constructor(
     private val dao: GalleryRecognizeDao,
 ): GalleryRecognizeDataSource {
-
-    override suspend fun getRecognizeData(data: GalleryImage): GalleryImageRecognizeData {
-        return when(dao.isGifticon(data.imagePath, data.dateAdded)){
-            true -> GalleryImageRecognizeData.GIFTICON
-            false -> GalleryImageRecognizeData.PICTURE
-            null -> GalleryImageRecognizeData.NONE
-        }
-    }
 
     override suspend fun getRecognizeDataList(): List<GalleryRecognize> {
         return dao.getRecognizeDataList().toModel()

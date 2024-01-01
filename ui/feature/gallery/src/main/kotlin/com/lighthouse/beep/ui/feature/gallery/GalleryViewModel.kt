@@ -15,6 +15,7 @@ import com.lighthouse.beep.model.gallery.GalleryRecognize
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import com.lighthouse.beep.ui.feature.gallery.model.DragMode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,7 +39,7 @@ internal class GalleryViewModel @Inject constructor(
 
         val spanCount = GridCalculator.getSpanCount(117.dp, 4.dp, 0, 3)
         private val rawCount = GridCalculator.getRowCount(117.dp, 4.dp)
-        private val pageCount = spanCount * rawCount * 2
+        private val pageCount = spanCount * rawCount
 
         const val maxSelectCount = 30
     }
@@ -74,42 +75,47 @@ internal class GalleryViewModel @Inject constructor(
     private var currentPage = 0
     private val maxPage = ceil(galleryRepository.getImageSize() / limit.toFloat()).toInt()
 
-    private var lastVisible = 0
+    private var firstVisible = 0
 
+    private val loadingRecognizeData = MutableStateFlow(false)
     private val recognizing = MutableStateFlow(false)
 
     val showRecognizeProgress = combine(
         bucketType,
         recognizing,
-    ) { type, recognizing ->
-        type == BucketType.RECOMMEND && recognizing
+        loadingRecognizeData,
+    ) { type, recognizing, loadingRecognizeData ->
+        type == BucketType.RECOMMEND && (recognizing || loadingRecognizeData)
     }
 
     private var requestNextJob: Job? = null
 
-    fun requestRecommend(currentLastVisible: Int = lastVisible) {
+    fun requestRecommend(currentFirstVisible: Int = firstVisible) {
         if (requestNextJob?.isActive == true || currentPage >= maxPage) {
             return
         }
 
-        lastVisible = currentLastVisible
+        firstVisible = currentFirstVisible
         if (loadedRecognizeData) {
-            requestRecommendNext(lastVisible)
+            requestRecommendNext()
         } else {
             viewModelScope.launch {
+                loadingRecognizeData.value = true
                 recognizeData +=
                     galleryRepository.getRecognizeDataList().associateBy { it.imagePath }
                 loadedRecognizeData = true
-                requestRecommendNext(lastVisible)
+                requestRecommendNext()
+            }.invokeOnCompletion {
+                loadingRecognizeData.value = false
             }
         }
     }
 
-    private fun requestRecommendNext(lastVisible: Int) {
+    private fun requestRecommendNext() {
         requestNextJob = viewModelScope.launch {
             recognizing.value = true
 
-            val targetSize = recommendList.value.size + pageCount
+            val targetSize = recommendList.value.size + pageCount * 2
             val list = mutableListOf<GalleryImage>()
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
                 val images = galleryRepository.getImages(currentPage, limit, pageOffset)
@@ -124,7 +130,7 @@ internal class GalleryViewModel @Inject constructor(
 
                 if (requestRecognizeList.isNotEmpty()) {
                     requestRecognizeList.map {
-                        launch {
+                        launch(Dispatchers.IO) {
                             val isGifticon =
                                 recognizeBarcodeUseCase(it.contentUri).getOrDefault("").isNotEmpty()
                             galleryRepository.saveRecognizeData(it, isGifticon)
@@ -137,7 +143,7 @@ internal class GalleryViewModel @Inject constructor(
 
                 currentPage += 1
 
-                if (recommendList.value.size <= lastVisible) {
+                if (recommendList.value.size - 1 <= firstVisible + pageCount) {
                     list.sortBy { -it.dateAdded.time }
                     _recommendList.value += list
                     list.clear()

@@ -2,7 +2,6 @@ package com.lighthouse.beep.data.repository.gallery
 
 import androidx.paging.PagingData
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.model.gallery.GalleryImageRecognizeData
 import com.lighthouse.beep.model.gallery.GalleryRecognize
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -26,10 +25,6 @@ internal class GalleryImageRepositoryImpl @Inject constructor(
 
     override fun getImageSize(): Int {
         return dataSource.getImageSize()
-    }
-
-    override suspend fun getRecognizeData(data: GalleryImage): GalleryImageRecognizeData {
-        return galleryDataSource.getRecognizeData(data)
     }
 
     override suspend fun getRecognizeDataList(): List<GalleryRecognize> {

@@ -99,8 +99,8 @@ internal class GalleryActivity : AppCompatActivity() {
     private val recommendScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val manager = recyclerView.layoutManager as? GridLayoutManager ?: return
-            val lastVisible = manager.findLastVisibleItemPosition()
-            viewModel.requestRecommend(lastVisible)
+            val firstVisible = manager.findFirstVisibleItemPosition()
+            viewModel.requestRecommend(firstVisible)
         }
     }
 
