@@ -33,7 +33,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/Text.Title2"
+            android:textAppearance="@style/Text.Title1"
             android:textColor="@color/font_dark_gray"
             android:text="@string/editor_title"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -57,7 +57,8 @@
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/list_selected"
         app:layout_constraintBottom_toTopOf="@id/list_editor_chip"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_editor_preview"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_crop"
@@ -70,7 +71,7 @@
         android:id="@+id/list_editor_chip"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="36dp"
         android:layout_marginStart="24dp"
         android:paddingStart="0dp"
         android:paddingEnd="24dp"
@@ -84,9 +85,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_preview"
         android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:minWidth="34dp"
-        android:padding="7dp"
+        android:layout_height="36dp"
+        android:minWidth="36dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="6dp"
         android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/list_editor_chip"
@@ -98,7 +100,6 @@
             android:id="@+id/text_preview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:includeFontPadding="false"
             android:paddingStart="4dp"
             android:paddingEnd="6dp"
             android:autoSizeTextType="none"
@@ -107,7 +108,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:lines="1"
             android:textColor="@color/editor_preview_chip"
-            android:textAppearance="@style/Text.Body1"
+            android:textAppearance="@style/Text.Title5"
             android:text="@string/editor_gifticon_preview" />
 
         <ImageView
@@ -144,14 +145,14 @@
     <TextView
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="60dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:gravity="center"
         android:backgroundTint="@color/bg_editor_register"
         android:background="@drawable/bg_rect_r16"
-        android:textColor="@color/white"
-        android:textAppearance="@style/Text.Title5"
+        android:textColor="@color/text_editor_register"
+        android:textAppearance="@style/Text.Title4"
         android:text="@string/editor_gifticon_register"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

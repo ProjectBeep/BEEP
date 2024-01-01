@@ -26,9 +26,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAppearance="@style/Text.Body1"
-        android:textColor="@color/font_gray"
-        android:textColorHint="@color/gray"
+        android:textAppearance="@style/Text.Title5"
+        android:textColor="@color/font_dark_gray"
+        android:textColorHint="@color/font_gray"
         android:hint="@string/editor_gifticon_preview_memo_hint"
         android:gravity="center_vertical"/>
 
@@ -39,8 +39,8 @@
         android:layout_marginBottom="12dp"
         app:layout_constraintEnd_toEndOf="@id/text_memo"
         app:layout_constraintBottom_toBottomOf="@id/text_memo"
-        android:textAppearance="@style/Text.Body1"
-        android:textColor="@color/gray"
+        android:textAppearance="@style/Text.Title5"
+        android:textColor="@color/font_gray"
         tools:text="0/25"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

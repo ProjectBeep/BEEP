@@ -30,7 +30,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/separator1"
-            android:textAppearance="@style/Text.Body1"
+            android:textAppearance="@style/Text.Title5"
             android:textColor="@color/font_dark_gray"
             android:gravity="center"
             tools:text="0000"/>
@@ -56,7 +56,7 @@
             app:layout_constraintStart_toEndOf="@id/separator1"
             app:layout_constraintEnd_toStartOf="@id/separator2"
             android:gravity="center"
-            android:textAppearance="@style/Text.Body1"
+            android:textAppearance="@style/Text.Title5"
             android:textColor="@color/font_dark_gray"
             tools:text="11"/>
 
@@ -79,7 +79,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/separator2"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/Text.Body1"
+            android:textAppearance="@style/Text.Title5"
             android:textColor="@color/font_dark_gray"
             android:gravity="center"
             tools:text="11"/>

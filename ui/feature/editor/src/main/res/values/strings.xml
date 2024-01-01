@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="editor_title">기프티콘 등록</string>
+    <string name="editor_title">쿠폰 등록</string>
 
     <string name="editor_gifticon_preview_cash">금액권</string>
     <string name="editor_gifticon_preview_memo_hint">함께 저장 할 메모를 입력해 주세요.</string>

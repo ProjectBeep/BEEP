@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="@id/icon_crop_mode_tutorial"
         app:layout_constraintStart_toEndOf="@id/icon_crop_mode_tutorial"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAppearance="@style/Text.Title5"
+        android:textAppearance="@style/Text.Body1"
         android:textColor="@color/white"
         tools:text="@string/editor_crop_touch_mode_tutorial"/>
 
@@ -56,19 +56,21 @@
         android:id="@+id/text_crop_mode_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="71dp"
+        android:layout_marginTop="124dp"
         app:layout_constraintTop_toTopOf="@id/crop_gifticon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAppearance="@style/Text.Body1"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAppearance="@style/Text.Title4"
         android:textColor="@color/white"
         android:text="@string/editor_crop_touch_mode_guide"/>
 
     <ImageView
         android:id="@+id/icon_crop_mode_guide"
-        android:layout_width="94dp"
-        android:layout_height="102dp"
-        android:layout_marginTop="42dp"
+        android:layout_width="104dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="38dp"
         app:layout_constraintTop_toBottomOf="@id/text_crop_mode_guide"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -139,7 +139,7 @@ internal class EditorPreviewViewHolder(
                 binding.groupBarcode.isVisible = barcode.isNotEmpty()
                 if (barcode.isNotEmpty()) {
                     binding.textBarcode.text = barcode
-                    val image = BarcodeGenerator.loadBarcode(barcode, 300.dp, 60.dp)
+                    val image = BarcodeGenerator.loadBarcode(barcode, 300.dp, 82.dp)
                     binding.imageBarcode.setImageBitmap(image)
                 }
             }

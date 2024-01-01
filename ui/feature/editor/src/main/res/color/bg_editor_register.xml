@@ -4,5 +4,5 @@
         android:state_activated="true"
         android:color="@color/beep_pink"/>
     
-    <item android:color="@color/gray"/>
+    <item android:color="@color/light_gray"/>
 </selector>
