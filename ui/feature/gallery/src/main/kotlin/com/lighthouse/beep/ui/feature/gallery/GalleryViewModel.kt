@@ -36,6 +36,7 @@ internal class GalleryViewModel @Inject constructor(
 
     companion object {
         private const val limit = 100
+        private const val unitCount = 5
 
         val spanCount = GridCalculator.getSpanCount(117.dp, 4.dp, 0, 3)
         private val rawCount = GridCalculator.getRowCount(117.dp, 4.dp)
@@ -69,7 +70,7 @@ internal class GalleryViewModel @Inject constructor(
     private val _recommendList = MutableStateFlow<List<GalleryImage>>(emptyList())
     val recommendList = _recommendList.asStateFlow()
 
-    private val offsetImageIdSet = mutableSetOf<Long>()
+    private val recommendIdSet = mutableSetOf<Long>()
     private var pageOffset = 0
 
     private var currentPage = 0
@@ -120,7 +121,10 @@ internal class GalleryViewModel @Inject constructor(
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
                 val images = galleryRepository.getImages(currentPage, limit, pageOffset)
                 val requestRecognizeList = images.filter {
-                    offsetImageIdSet.add(it.id)
+                    if (it.id in recommendIdSet) {
+                        return@filter false
+                    }
+
                     val data = recognizeData[it.imagePath]
                     if (data?.dateAdded == it.dateAdded && data.isGifticon) {
                         list.add(it)
@@ -128,37 +132,47 @@ internal class GalleryViewModel @Inject constructor(
                     data == null
                 }
 
-                if (requestRecognizeList.isNotEmpty()) {
-                    requestRecognizeList.map {
+                requestRecognizeList.windowed(unitCount, unitCount).forEach { requestList ->
+                    requestList.map {
                         launch(Dispatchers.IO) {
                             val isGifticon =
                                 recognizeBarcodeUseCase(it.contentUri).getOrDefault("").isNotEmpty()
-                            galleryRepository.saveRecognizeData(it, isGifticon)
+                            launch {
+                                galleryRepository.saveRecognizeData(it, isGifticon)
+                            }
                             if (isGifticon) {
                                 list.add(it)
                             }
                         }
                     }.joinAll()
-                }
 
+                    if (recommendList.value.size - 1 <= firstVisible + pageCount) {
+                        appendRecommendList(list)
+                    }
+                }
                 currentPage += 1
 
                 if (recommendList.value.size - 1 <= firstVisible + pageCount) {
-                    list.sortBy { -it.dateAdded.time }
-                    _recommendList.value += list
-                    list.clear()
+                    appendRecommendList(list)
                 }
             }
-
-            if (list.isNotEmpty()) {
-                list.sortBy { -it.dateAdded.time }
-                _recommendList.value += list
-            }
+            appendRecommendList(list)
         }.also {
             it.invokeOnCompletion {
                 recognizing.value = false
             }
         }
+    }
+
+    private fun appendRecommendList(list: MutableList<GalleryImage>) {
+        if (list.isEmpty()) {
+            return
+        }
+        recommendIdSet.addAll(list.map { it.id })
+
+        list.sortBy { -it.dateAdded.time }
+        _recommendList.value += list
+        list.clear()
     }
 
     fun cancelRecommendNext() {
@@ -221,7 +235,7 @@ internal class GalleryViewModel @Inject constructor(
     }
 
     fun insertGalleryContent(id: Long) {
-        if (id in offsetImageIdSet) {
+        if (id in recommendIdSet) {
             return
         }
 
@@ -230,7 +244,7 @@ internal class GalleryViewModel @Inject constructor(
 
             pageOffset += 1
 
-            offsetImageIdSet.add(item.id)
+            recommendIdSet.add(item.id)
             val isGifticon =
                 recognizeBarcodeUseCase(item.contentUri).getOrDefault("").isNotEmpty()
             galleryRepository.saveRecognizeData(item, isGifticon)
@@ -241,12 +255,12 @@ internal class GalleryViewModel @Inject constructor(
     }
 
     fun deleteGalleryContent(id: Long) {
-        if (id in offsetImageIdSet) {
+        if (id in recommendIdSet) {
             pageOffset -= 1
 
             _selectedList.remove { it.id == id }
             _recommendList.remove { it.id == id }
-            offsetImageIdSet.remove(id)
+            recommendIdSet.remove(id)
         }
     }
 }
