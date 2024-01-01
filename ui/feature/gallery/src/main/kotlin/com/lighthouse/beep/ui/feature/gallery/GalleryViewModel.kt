@@ -35,7 +35,6 @@ internal class GalleryViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        private const val limit = 100
         private const val unitCount = 5
 
         val spanCount = GridCalculator.getSpanCount(117.dp, 4.dp, 0, 3)
@@ -74,7 +73,7 @@ internal class GalleryViewModel @Inject constructor(
     private var pageOffset = 0
 
     private var currentPage = 0
-    private val maxPage = ceil(galleryRepository.getImageSize() / limit.toFloat()).toInt()
+    private val maxPage = ceil(galleryRepository.getImageSize() / pageCount.toFloat()).toInt()
 
     private var firstVisible = 0
 
@@ -115,11 +114,10 @@ internal class GalleryViewModel @Inject constructor(
     private fun requestRecommendNext() {
         requestNextJob = viewModelScope.launch {
             recognizing.value = true
-
-            val targetSize = recommendList.value.size + pageCount * 2
+            val targetSize = recommendList.value.size + (pageCount * 1.5f).toInt()
             val list = mutableListOf<GalleryImage>()
             while (currentPage < maxPage && recommendList.value.size < targetSize) {
-                val images = galleryRepository.getImages(currentPage, limit, pageOffset)
+                val images = galleryRepository.getImages(currentPage, pageCount, pageOffset)
                 val requestRecognizeList = images.filter {
                     if (it.id in recommendIdSet) {
                         return@filter false
@@ -137,9 +135,7 @@ internal class GalleryViewModel @Inject constructor(
                         launch(Dispatchers.IO) {
                             val isGifticon =
                                 recognizeBarcodeUseCase(it.contentUri).getOrDefault("").isNotEmpty()
-                            launch {
-                                galleryRepository.saveRecognizeData(it, isGifticon)
-                            }
+                            galleryRepository.saveRecognizeData(it, isGifticon)
                             if (isGifticon) {
                                 list.add(it)
                             }
