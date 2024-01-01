@@ -21,7 +21,6 @@ import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
 import com.lighthouse.beep.core.ui.content.OnContentChangeListener
 import com.lighthouse.beep.core.ui.content.registerGalleryContentObserver
 import com.lighthouse.beep.core.ui.recyclerview.decoration.GridItemDecoration
-import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.createThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
@@ -181,7 +180,6 @@ internal class GalleryActivity : AppCompatActivity() {
     private fun setUpSelectedGalleryList() {
         binding.listSelected.adapter = selectedGalleryAdapter
         binding.listSelected.setHasFixedSize(true)
-        binding.listSelected.addItemDecoration(LinearItemDecoration(14.5f.dp))
     }
 
     private fun setUpGalleryList() {
