@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gallery.GalleryImage
@@ -24,6 +25,7 @@ internal class GalleryViewHolder(
         super.bind(item)
 
         requestManager.load(item.contentUri)
+            .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.imageGallery)
     }
 

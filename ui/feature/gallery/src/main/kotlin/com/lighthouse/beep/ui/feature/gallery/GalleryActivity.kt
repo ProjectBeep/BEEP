@@ -100,7 +100,7 @@ internal class GalleryActivity : AppCompatActivity() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val manager = recyclerView.layoutManager as? GridLayoutManager ?: return
             val lastVisible = manager.findLastVisibleItemPosition()
-            viewModel.requestRecommendNext(lastVisible)
+            viewModel.requestRecommend(lastVisible)
         }
     }
 
@@ -267,7 +267,7 @@ internal class GalleryActivity : AppCompatActivity() {
                     BucketType.RECOMMEND -> {
                         binding.listGallery.adapter = galleryRecommendAdapter
                         binding.listGallery.addOnScrollListener(recommendScrollListener)
-                        viewModel.requestRecommendNext()
+                        viewModel.requestRecommend()
                     }
 
                     BucketType.ALL -> {

@@ -3,6 +3,8 @@ package com.lighthouse.beep.ui.feature.archive
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.auth.BeepAuth
+import com.lighthouse.beep.core.common.exts.displayWidth
+import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.model.gifticon.GifticonSortBy
 import com.lighthouse.beep.ui.feature.archive.model.GifticonViewMode
@@ -22,6 +24,14 @@ import javax.inject.Inject
 internal class ArchiveViewModel @Inject constructor(
     private val gifticonRepository: GifticonRepository
 ) : ViewModel() {
+
+    companion object {
+        private val imageWidth = 172.dp
+        private val space = 17.dp
+        private val padding = 24.dp
+
+        val spanCount = maxOf((displayWidth - padding * 2) ,2)
+    }
 
     val usedGifticonList = BeepAuth.currentUid.flatMapLatest { userUid ->
         gifticonRepository.getGifticonList(

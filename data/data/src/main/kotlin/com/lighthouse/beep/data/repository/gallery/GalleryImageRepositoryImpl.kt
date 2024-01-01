@@ -3,12 +3,13 @@ package com.lighthouse.beep.data.repository.gallery
 import androidx.paging.PagingData
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gallery.GalleryImageRecognizeData
+import com.lighthouse.beep.model.gallery.GalleryRecognize
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class GalleryImageRepositoryImpl @Inject constructor(
     private val dataSource: GalleryImageDataSource,
-    private val gifticonDataSource: GalleryRecognizeDataSource,
+    private val galleryDataSource: GalleryRecognizeDataSource,
 ) : GalleryImageRepository {
 
     override suspend fun getImage(id: Long): GalleryImage? {
@@ -28,10 +29,14 @@ internal class GalleryImageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getRecognizeData(data: GalleryImage): GalleryImageRecognizeData {
-        return gifticonDataSource.getRecognizeData(data)
+        return galleryDataSource.getRecognizeData(data)
+    }
+
+    override suspend fun getRecognizeDataList(): List<GalleryRecognize> {
+        return galleryDataSource.getRecognizeDataList()
     }
 
     override suspend fun saveRecognizeData(data: GalleryImage, isGifticon: Boolean) {
-        gifticonDataSource.saveRecognizeData(data, isGifticon)
+        galleryDataSource.saveRecognizeData(data, isGifticon)
     }
 }
