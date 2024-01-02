@@ -59,7 +59,7 @@ class GifticonDetailDialog : DialogFragment() {
             .setTextAppearanceRes(ThemeR.style.Text_Title7)
             .setTextColorRes(ThemeR.color.white)
             .setLifecycleOwner(viewLifecycleOwner)
-            .setPadding(horizontal = 12.dp, vertical = 6.dp)
+            .setPadding(horizontal = 12.dp, vertical = 8.dp)
             .setMargin(right = 46.dp)
             .setRightConstraint(binding.btnClose, BalloonHorizontalDirection.RIGHT)
             .setCornerRadius(16f.dp)
@@ -230,18 +230,13 @@ class GifticonDetailDialog : DialogFragment() {
         binding.root.isEnabled = true
         binding.root.animate()
             .setDuration(300)
-            .setUpdateListener {
-                if (isAdded) {
-                    binding.btnClose.alpha = it.animatedFraction
-                    binding.containerContent.alpha = it.animatedFraction
-                }
-            }.start()
+            .alpha(1f)
+            .start()
     }
 
     private fun hideDetail() {
         binding.root.isEnabled = false
-        binding.btnClose.alpha = 0f
-        binding.containerContent.alpha = 0f
+        binding.root.alpha = 0f
     }
 
     private fun showDeleteDialog() {

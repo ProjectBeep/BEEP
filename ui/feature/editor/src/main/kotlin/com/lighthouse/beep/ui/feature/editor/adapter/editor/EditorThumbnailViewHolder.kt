@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.ui.feature.editor.databinding.SectionEditorThumbnailBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditorChip
 import com.lighthouse.beep.ui.feature.editor.model.EditGifticonThumbnail
-import com.lighthouse.beep.ui.feature.editor.model.loadThumbnail
 
 internal class EditorThumbnailViewHolder(
     parent: ViewGroup,
@@ -30,8 +31,27 @@ internal class EditorThumbnailViewHolder(
             binding.groupRecommend.isVisible = data !is EditGifticonThumbnail.BuiltIn
             binding.groupThumbnail.isVisible = data is EditGifticonThumbnail.BuiltIn
 
-            requestManager.loadThumbnail(data)
-                .into(binding.imageThumbnail)
+            when (data) {
+                is EditGifticonThumbnail.Default -> {
+                    requestManager
+                        .load(data.originUri)
+                        .transform(CenterCrop())
+                        .into(binding.imageThumbnail)
+                }
+
+                is EditGifticonThumbnail.Crop -> {
+                    requestManager
+                        .load(data.bitmap)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(binding.imageThumbnail)
+                }
+
+                is EditGifticonThumbnail.BuiltIn -> {
+                    requestManager
+                        .load(data.builtIn.smallIconRes)
+                        .into(binding.imageThumbnail)
+                }
+            }
 
             if (data is EditGifticonThumbnail.BuiltIn) {
                 binding.textThumbnail.setText(data.builtIn.titleRes)

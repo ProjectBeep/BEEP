@@ -12,10 +12,10 @@ import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
+import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredGifticonBinding
 import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
-import com.lighthouse.beep.ui.feature.home.model.loadThumbnail
 
 @SuppressLint("SetTextI18n")
 internal class GifticonViewHolder(
@@ -34,8 +34,19 @@ internal class GifticonViewHolder(
     override fun bind(item: HomeItem.GifticonItem) {
         super.bind(item)
 
-        requestManager.loadThumbnail(item)
-            .into(binding.imageThumbnail)
+        when (val thumbnail = item.thumbnail) {
+            is GifticonThumbnail.Image -> {
+                requestManager
+                    .load(thumbnail.uri)
+                    .into(binding.imageThumbnail)
+            }
+
+            is GifticonThumbnail.BuildIn -> {
+                requestManager
+                    .load(thumbnail.icon.largeIconRes)
+                    .into(binding.imageThumbnail)
+            }
+        }
 
         binding.textBrand.text = item.brand
         binding.textGifticonName.text = item.name

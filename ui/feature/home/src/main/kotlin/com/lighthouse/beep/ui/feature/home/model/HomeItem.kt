@@ -1,10 +1,7 @@
 package com.lighthouse.beep.ui.feature.home.model
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.RequestManager
 import com.lighthouse.beep.core.common.exts.calculateDDay
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import java.text.SimpleDateFormat
@@ -39,18 +36,6 @@ internal interface HomeItem {
                 val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
                 return formatter.format(expiredDate)
             }
-    }
-}
-
-internal fun RequestManager.loadThumbnail(item: HomeItem.GifticonItem): RequestBuilder<Drawable> {
-    return when (val thumbnail = item.thumbnail) {
-        is GifticonThumbnail.BuildIn -> {
-            load(thumbnail.icon.largeIconRes)
-        }
-
-        is GifticonThumbnail.Image -> {
-            load(thumbnail.uri)
-        }
     }
 }
 

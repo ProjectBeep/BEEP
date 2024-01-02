@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
@@ -12,8 +14,8 @@ import com.lighthouse.beep.library.barcode.BarcodeGenerator
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorPreviewBinding
+import com.lighthouse.beep.ui.feature.editor.model.EditGifticonThumbnail
 import com.lighthouse.beep.ui.feature.editor.model.EditType
-import com.lighthouse.beep.ui.feature.editor.model.loadThumbnail
 import kotlinx.coroutines.flow.combine
 
 internal class EditorPreviewViewHolder(
@@ -87,8 +89,27 @@ internal class EditorPreviewViewHolder(
         val model = EditorPreviewDisplayModel(listener.getGifticonDataFlow(item))
 
         model.thumbnailCropData.collect(lifecycleOwner) { data ->
-            requestManager.loadThumbnail(data)
-                .into(binding.imageThumbnail)
+            when (data) {
+                is EditGifticonThumbnail.Default -> {
+                    requestManager
+                        .load(data.originUri)
+                        .transform(CenterCrop())
+                        .into(binding.imageThumbnail)
+                }
+
+                is EditGifticonThumbnail.Crop -> {
+                    requestManager
+                        .load(data.bitmap)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(binding.imageThumbnail)
+                }
+
+                is EditGifticonThumbnail.BuiltIn -> {
+                    requestManager
+                        .load(data.builtIn.largeIconRes)
+                        .into(binding.imageThumbnail)
+                }
+            }
         }
 
         model.gifticonName.collect(lifecycleOwner) { name ->
