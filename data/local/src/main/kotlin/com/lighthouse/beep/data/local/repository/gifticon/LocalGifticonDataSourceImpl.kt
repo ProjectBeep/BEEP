@@ -1,5 +1,8 @@
 package com.lighthouse.beep.data.local.repository.gifticon
 
+import androidx.room.withTransaction
+import com.lighthouse.beep.data.local.database.BeepDatabase
+import com.lighthouse.beep.data.local.database.dao.GalleryImageDataDao
 import com.lighthouse.beep.data.local.database.dao.GifticonDao
 import com.lighthouse.beep.data.local.database.mapper.gifticon.toEntity
 import com.lighthouse.beep.data.local.database.mapper.gifticon.toEntityForCreate
@@ -17,7 +20,9 @@ import java.util.Date
 import javax.inject.Inject
 
 internal class LocalGifticonDataSourceImpl @Inject constructor(
+    private val db: BeepDatabase,
     private val gifticonDao: GifticonDao,
+    private val galleryImageDataDao: GalleryImageDataDao,
 ) : LocalGifticonDataSource {
 
     override fun isExistGifticon(userId: String, isUsed: Boolean): Flow<Boolean> {
@@ -80,7 +85,17 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         userId: String,
         editInfoList: List<GifticonEditInfo>,
     ): List<Long> {
-        return gifticonDao.insertGifticonList(editInfoList.toEntityForCreate(userId))
+        return db.withTransaction {
+            editInfoList.map {
+                val gifticonId = gifticonDao.insertGifticon(it.toEntityForCreate(userId))
+                galleryImageDataDao.updateAddedGifticonId(
+                    gifticonId = gifticonId,
+                    imagePath = it.imagePath,
+                    addedData = it.imageAddedDate,
+                )
+                gifticonId
+            }
+        }
     }
 
     override suspend fun updateGifticon(
@@ -91,14 +106,21 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteGifticon(userId: String) {
-        gifticonDao.deleteGifticon(userId)
+        db.withTransaction {
+            val gifticonIdList = gifticonDao.getGifticonIdList(userId)
+            galleryImageDataDao.deleteAddedGifticonId(gifticonIdList)
+            gifticonDao.deleteGifticon(userId)
+        }
     }
 
     override suspend fun deleteGifticon(
         userId: String,
         gifticonIdList: List<Long>,
     ) {
-        gifticonDao.deleteGifticon(userId, gifticonIdList)
+        db.withTransaction {
+            galleryImageDataDao.deleteAddedGifticonId(gifticonIdList)
+            gifticonDao.deleteGifticon(userId, gifticonIdList)
+        }
     }
 
     override suspend fun transferGifticon(

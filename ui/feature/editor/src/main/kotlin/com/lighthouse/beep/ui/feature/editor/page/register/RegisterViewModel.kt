@@ -246,6 +246,7 @@ internal class RegisterViewModel @Inject constructor(
                         gifticonDataMap[gallery.id] = it.toData(
                             originUri = gallery.contentUri,
                             imagePath = gallery.imagePath,
+                            imageAddedDate = gallery.dateAdded,
                         )
                     }
                 }

@@ -19,6 +19,7 @@ internal data class DBGifticonEntity(
     @ColumnInfo(name = "thumbnail_rect") val thumbnailRect: Rect,
     @ColumnInfo(name = "gifticon_uri") val gifticonUri: Uri?,
     @ColumnInfo(name = "image_path") val imagePath: String,
+    @ColumnInfo(name = "image_added_date") val imageAddedDate: Date,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "brand") val brand: String,
     @ColumnInfo(name = "display_brand") val displayBrand: String,

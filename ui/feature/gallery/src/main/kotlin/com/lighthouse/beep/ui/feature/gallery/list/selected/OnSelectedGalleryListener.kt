@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.gallery.adapter.selected
+package com.lighthouse.beep.ui.feature.gallery.list.selected
 
 import com.lighthouse.beep.model.gallery.GalleryImage
 

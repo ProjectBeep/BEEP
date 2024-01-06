@@ -1,4 +1,4 @@
-package com.lighthouse.beep.ui.feature.gallery.adapter.gallery
+package com.lighthouse.beep.ui.feature.gallery.list.gallery
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -43,5 +43,15 @@ internal class GalleryViewHolder(
             binding.textSelectedOrder.text = (index + 1).toString()
             binding.imageGallery.isSelected = isSelected
         }
+
+        listener.getAddedGifticonFlow(item).collect(
+            lifecycleOwner = lifecycleOwner,
+            defaultBlock = {
+                binding.viewAddedGifticon.isVisible = false
+            },
+            block = { isAdded ->
+                binding.viewAddedGifticon.isVisible = isAdded
+            },
+        )
     }
 }

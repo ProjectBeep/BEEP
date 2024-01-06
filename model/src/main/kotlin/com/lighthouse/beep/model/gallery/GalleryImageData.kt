@@ -2,8 +2,9 @@ package com.lighthouse.beep.model.gallery
 
 import java.util.Date
 
-data class GalleryRecognize(
+data class GalleryImageData(
     val imagePath: String,
-    val dateAdded: Date,
+    val addedDate: Date,
     val isGifticon: Boolean,
+    val addedGifticonId: Long?,
 )

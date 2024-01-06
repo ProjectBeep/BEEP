@@ -32,16 +32,17 @@ import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.permission.ext.setUpRequirePermission
-import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryAllAdapter
-import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.GalleryRecommendAdapter
-import com.lighthouse.beep.ui.feature.gallery.adapter.gallery.OnGalleryListener
-import com.lighthouse.beep.ui.feature.gallery.adapter.selected.OnSelectedGalleryListener
-import com.lighthouse.beep.ui.feature.gallery.adapter.selected.SelectedGalleryAdapter
+import com.lighthouse.beep.ui.feature.gallery.list.gallery.GalleryAllAdapter
+import com.lighthouse.beep.ui.feature.gallery.list.gallery.GalleryRecommendAdapter
+import com.lighthouse.beep.ui.feature.gallery.list.gallery.OnGalleryListener
+import com.lighthouse.beep.ui.feature.gallery.list.selected.OnSelectedGalleryListener
+import com.lighthouse.beep.ui.feature.gallery.list.selected.SelectedGalleryAdapter
 import com.lighthouse.beep.ui.feature.gallery.databinding.ActivityGalleryBinding
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import com.lighthouse.beep.ui.feature.gallery.model.DragMode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -56,7 +57,13 @@ internal class GalleryActivity : AppCompatActivity() {
         override fun getSelectedIndexFlow(item: GalleryImage): Flow<Int> {
             return viewModel.selectedList.map { list ->
                 list.indexOfFirst { it.id == item.id }
-            }
+            }.distinctUntilChanged()
+        }
+
+        override fun getAddedGifticonFlow(item: GalleryImage): Flow<Boolean> {
+            return viewModel.recognizeDataFlow.map {
+                it[item.imagePath]?.addedGifticonId != null
+            }.distinctUntilChanged()
         }
 
         override fun onClick(item: GalleryImage) {

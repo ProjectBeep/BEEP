@@ -11,14 +11,16 @@ import com.lighthouse.beep.core.ui.recyclerview.GridCalculator
 import com.lighthouse.beep.data.repository.gallery.GalleryImageRepository
 import com.lighthouse.beep.domain.usecase.recognize.RecognizeBarcodeUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.beep.model.gallery.GalleryRecognize
+import com.lighthouse.beep.model.gallery.GalleryImageData
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import com.lighthouse.beep.ui.feature.gallery.model.DragMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -63,7 +65,10 @@ internal class GalleryViewModel @Inject constructor(
         bucketScrollInfoMap[type] = scrollInfo
     }
 
-    private val recognizeData = mutableMapOf<String, GalleryRecognize>()
+    private val recognizeData = mutableMapOf<String, GalleryImageData>()
+    private val _recognizeDataFlow = MutableSharedFlow<Map<String, GalleryImageData>>(replay = 1)
+    val recognizeDataFlow = _recognizeDataFlow.asSharedFlow()
+
     private var loadedRecognizeData = false
 
     private val _recommendList = MutableStateFlow<List<GalleryImage>>(emptyList())
@@ -103,6 +108,8 @@ internal class GalleryViewModel @Inject constructor(
                 loadingRecognizeData.value = true
                 recognizeData +=
                     galleryRepository.getRecognizeDataList().associateBy { it.imagePath }
+                _recognizeDataFlow.emit(recognizeData)
+
                 loadedRecognizeData = true
                 requestRecommendNext()
             }.invokeOnCompletion {
@@ -124,7 +131,7 @@ internal class GalleryViewModel @Inject constructor(
                     }
 
                     val data = recognizeData[it.imagePath]
-                    if (data?.dateAdded == it.dateAdded && data.isGifticon) {
+                    if (data?.addedDate == it.dateAdded && data.isGifticon) {
                         list.add(it)
                     }
                     data == null
@@ -257,6 +264,12 @@ internal class GalleryViewModel @Inject constructor(
             _selectedList.remove { it.id == id }
             _recommendList.remove { it.id == id }
             recommendIdSet.remove(id)
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            _recognizeDataFlow.emit(emptyMap())
         }
     }
 }

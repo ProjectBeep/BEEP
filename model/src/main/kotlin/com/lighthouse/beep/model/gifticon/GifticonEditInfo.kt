@@ -14,6 +14,7 @@ data class GifticonEditInfo(
     val gifticonUri: Uri?,
     val originUri: Uri,
     val imagePath: String,
+    val imageAddedDate: Date,
     val name: String,
     val displayBrand: String,
     val barcode: String,

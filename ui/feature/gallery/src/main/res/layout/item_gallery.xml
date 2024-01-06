@@ -18,6 +18,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/view_added_gifticon"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        android:background="@color/medium_pink"/>
+
     <TextView
         android:id="@+id/text_selected_order"
         android:layout_width="24dp"

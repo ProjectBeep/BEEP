@@ -66,6 +66,7 @@ internal interface GifticonDao {
                 "thumbnail_rect, " +
                 "gifticon_uri, " +
                 "image_path, " +
+                "image_added_date, " +
                 "name, " +
                 "brand, " +
                 "display_brand, " +
@@ -84,6 +85,11 @@ internal interface GifticonDao {
         userId: String,
         gifticonId: Long,
     ): DBGifticonEditInfo?
+
+    @Query("SELECT id FROM gifticon_table WHERE user_id = :userId")
+    suspend fun getGifticonIdList(
+        userId: String
+    ): List<Long>
 
     @Query(
         "SELECT thumbnail_uri, " +
@@ -190,7 +196,7 @@ internal interface GifticonDao {
     fun getUsedGifticonList(userId: String): Flow<List<DBGifticonListItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGifticonList(list: List<DBGifticonEntity>): List<Long>
+    suspend fun insertGifticon(list: DBGifticonEntity): Long
 
     @Update(entity = DBGifticonEntity::class)
     suspend fun updateGifticon(editInfo: DBGifticonEditInfo)

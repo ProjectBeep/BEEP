@@ -5,13 +5,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(tableName = "gallery_recognize")
-internal data class DBGalleryRecognizeEntity(
+@Entity(tableName = "gallery_image_data")
+internal data class DBGalleryImageDataEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "image_path")
     val imagePath: String,
-    @ColumnInfo(name = "date_added")
-    val dateAdded: Date,
+    @ColumnInfo(name = "added_data")
+    val addedDate: Date,
     @ColumnInfo(name = "is_gifticon")
-    val isGifticon: Boolean
+    val isGifticon: Boolean,
+    @ColumnInfo(name = "added_gifticon_id")
+    val addedGifticonId: Long?,
 )

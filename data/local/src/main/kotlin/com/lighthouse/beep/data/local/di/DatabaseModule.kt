@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.lighthouse.beep.data.local.database.BeepDatabase
 import com.lighthouse.beep.data.local.database.dao.BrandLocationDao
-import com.lighthouse.beep.data.local.database.dao.GalleryRecognizeDao
+import com.lighthouse.beep.data.local.database.dao.GalleryImageDataDao
 import com.lighthouse.beep.data.local.database.dao.GifticonDao
 import dagger.Module
 import dagger.Provides
@@ -46,5 +46,5 @@ internal object DatabaseModule {
     @Singleton
     fun provideGalleryRecognizeDao(
         database: BeepDatabase
-    ): GalleryRecognizeDao = database.galleryRecognizeDao()
+    ): GalleryImageDataDao = database.galleryImageDataDao()
 }
