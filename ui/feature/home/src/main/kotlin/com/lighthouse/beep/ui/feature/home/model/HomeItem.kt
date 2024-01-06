@@ -3,6 +3,7 @@ package com.lighthouse.beep.ui.feature.home.model
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import com.lighthouse.beep.core.common.exts.calculateDDay
+import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -30,6 +31,9 @@ internal interface HomeItem {
     ) : HomeItem {
         val dday: Int
             get() = expiredDate.calculateDDay()
+
+        val formattedBalance: String
+            get() = TextInputFormat.BALANCE.valueToTransformed(remainCash.toString())
 
         val formattedExpiredDate: String
             get() {

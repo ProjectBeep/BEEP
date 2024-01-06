@@ -32,7 +32,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/Text.Title1"
+            android:textAppearance="@style/Text.Title2"
             android:textColor="@color/font_dark_gray"
             android:text="@string/gallery_title"/>
 
@@ -55,13 +55,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_selected"
         android:orientation="horizontal"
-        android:paddingHorizontal="16.5dp"
+        android:paddingHorizontal="16dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/container_toolbar"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:layout_height="@dimen/selected_list_height"
         tools:listitem="@layout/item_selected_gallery"/>
 
     <com.google.android.material.tabs.TabLayout
@@ -117,7 +116,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/Text.Title4"
+            android:textAppearance="@style/Text.Title7"
             android:textColor="@color/font_dark_gray"
             android:text="@string/selected_item_empty" />
 

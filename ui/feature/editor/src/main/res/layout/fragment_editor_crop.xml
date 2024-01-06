@@ -10,7 +10,6 @@
         android:id="@+id/crop_gifticon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="16dp"
         android:background="@color/bg"
         tools:background="@color/black_30"/>
 
@@ -40,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="@id/icon_crop_mode_tutorial"
         app:layout_constraintStart_toEndOf="@id/icon_crop_mode_tutorial"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAppearance="@style/Text.Body1"
+        android:textAppearance="@style/Text.Body3"
         android:textColor="@color/white"
         tools:text="@string/editor_crop_touch_mode_tutorial"/>
 
@@ -92,7 +91,7 @@
         app:layout_constraintTop_toTopOf="@id/icon_crop_touch_mode"
         app:layout_constraintBottom_toBottomOf="@id/icon_crop_touch_mode"
         app:layout_constraintEnd_toStartOf="@id/icon_crop_touch_mode"
-        android:textAppearance="@style/Text.Body5"
+        android:textAppearance="@style/Text.SubTitle2"
         android:textColor="@color/white"
         android:text="@string/editor_crop_touch_mode"/>
 

@@ -1,6 +1,7 @@
 package com.lighthouse.beep.ui.feature.home.page.home.section.gifticon
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
@@ -13,6 +14,8 @@ import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
+import com.lighthouse.beep.theme.R as ThemeR
+import com.lighthouse.beep.ui.feature.home.R
 import com.lighthouse.beep.ui.feature.home.databinding.ItemExpiredGifticonBinding
 import com.lighthouse.beep.ui.feature.home.model.GifticonViewMode
 import com.lighthouse.beep.ui.feature.home.model.HomeItem
@@ -29,6 +32,7 @@ internal class GifticonViewHolder(
 
     init {
         binding.imageThumbnail.clipToOutline = true
+        binding.containerGifticon.clipToOutline = true
     }
 
     override fun bind(item: HomeItem.GifticonItem) {
@@ -51,11 +55,43 @@ internal class GifticonViewHolder(
         binding.textBrand.text = item.brand
         binding.textGifticonName.text = item.name
         binding.textExpiredDate.text = item.formattedExpiredDate
-        binding.textDday.text = "D-${item.dday}"
 
-        val isExpired = item.dday < 0
+        binding.dividerBalance.isVisible = item.isCashCard
+        binding.textBalance.isVisible = item.isCashCard
+
+        binding.textBalance.text =
+            context.getString(R.string.home_gifticon_balance_format, item.formattedBalance)
+
+        updateGifticonByDDay(item)
+    }
+
+    private fun updateGifticonByDDay(item: HomeItem.GifticonItem) {
+        val dday = item.dday
+
+        binding.textDday.text = "D-${dday}"
+
+        val isExpired = dday < 0
+        binding.textBrand.alpha = if (isExpired) 0.5f else 1f
+        binding.textGifticonName.alpha = if (isExpired) 0.5f else 1f
+        binding.textExpiredDate.alpha = if (isExpired) 0.5f else 1f
+        binding.dividerBalance.alpha = if (isExpired) 0.5f else 1f
+        binding.textBalance.alpha = if (isExpired) 0.5f else 1f
+
         binding.containerExpired.isVisible = isExpired
         binding.textDday.isVisible = !isExpired
+
+        when {
+            dday <= 7 -> {
+                binding.textDday.backgroundTintList =
+                    ColorStateList.valueOf(getColor(ThemeR.color.font_medium_gray))
+                binding.textDday.setTextColor(getColor(ThemeR.color.white))
+            }
+            dday > 7 -> {
+                binding.textDday.backgroundTintList =
+                    ColorStateList.valueOf(getColor(ThemeR.color.light_gray))
+                binding.textDday.setTextColor(getColor(ThemeR.color.font_medium_gray))
+            }
+        }
     }
 
     override fun onSetUpClickEvent(item: HomeItem.GifticonItem) {
@@ -66,7 +102,7 @@ internal class GifticonViewHolder(
 
     override fun onCollectState(lifecycleOwner: LifecycleOwner, item: HomeItem.GifticonItem) {
         listener.getNextDayEventFlow().collect(lifecycleOwner) { _ ->
-            binding.textDday.text = "D-${item.dday}"
+            updateGifticonByDDay(item)
         }
 
         listener.isSelectedFlow(item).collect(

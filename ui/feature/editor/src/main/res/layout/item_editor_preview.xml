@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_preview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginHorizontal="24dp"
-    android:layout_marginVertical="16dp"
-    app:layout_constraintTop_toBottomOf="@id/list_selected"
-    app:layout_constraintBottom_toTopOf="@id/list_editor_chip"
-    app:cardCornerRadius="16dp"
+    android:layout_marginBottom="16dp"
     app:cardBackgroundColor="@color/white"
-    app:strokeWidth="1dp"
+    app:cardCornerRadius="16dp"
+    app:layout_constraintBottom_toTopOf="@id/list_editor_chip"
+    app:layout_constraintTop_toBottomOf="@id/list_selected"
     app:strokeColor="@color/light_gray"
-    app:cardElevation="4dp">
+    app:strokeWidth="1dp"
+    android:background="@color/bg">
 
     <ScrollView
         android:id="@+id/scroll"
@@ -24,268 +23,269 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_preview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:backgroundTint="@color/white"
-            tools:background="@drawable/bg_rect_r16">
+            android:layout_height="300dp"
+            tools:background="@drawable/bg_rect_r16"
+            tools:backgroundTint="@color/white">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_start"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintGuide_begin="20dp"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_center"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintGuide_percent="0.5"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_end"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintGuide_end="20dp"/>
-
-            <ImageView
-                android:id="@+id/image_thumbnail"
-                android:layout_width="132dp"
-                android:layout_height="132dp"
-                android:layout_marginTop="24dp"
+            <Switch
+                android:id="@+id/switch_cash"
+                style="@style/Beep.Switch"
+                android:layout_width="44dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="31dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toTopOf="@id/image_thumbnail"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="@id/guide_start"
-                app:layout_constraintEnd_toEndOf="@id/guide_end"
-                android:scaleType="centerCrop"
-                android:contentDescription="@null"
-                android:backgroundTint="@color/light_gray"
-                android:background="@drawable/bg_rect_r8"/>
+                app:layout_constraintVertical_chainStyle="packed"
+                android:background="@null"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <TextView
                 android:id="@+id/text_cash_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintTop_toTopOf="@id/switch_cash"
+                android:layout_marginStart="4dp"
+                android:text="@string/editor_gifticon_preview_cash"
+                android:textAppearance="@style/Text.Body3"
+                android:textColor="@color/font_medium_gray"
                 app:layout_constraintBottom_toBottomOf="@id/switch_cash"
-                app:layout_constraintEnd_toStartOf="@id/switch_cash"
-                android:textAppearance="@style/Text.Body5"
-                android:textColor="@color/font_gray"
-                android:text="@string/editor_gifticon_preview_cash"/>
+                app:layout_constraintStart_toEndOf="@id/switch_cash"
+                app:layout_constraintTop_toTopOf="@id/switch_cash" />
 
-            <Switch
-                android:id="@+id/switch_cash"
-                android:layout_width="32dp"
-                android:layout_height="16dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/guide_end"
-                style="@style/Beep.Switch"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_center"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <ImageView
+                android:id="@+id/image_thumbnail"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="31dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_rect_r8"
+                android:backgroundTint="@color/light_gray"
+                android:contentDescription="@null"
+                android:minWidth="120dp"
+                android:minHeight="120dp"
+                app:layout_constraintBottom_toTopOf="@id/text_name"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/switch_cash"
+                tools:layout_width="120dp"/>
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:constraint_referenced_ids="text_name_label, text_brand_label, text_expired_label"
-                app:barrierDirection="end"/>
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="text_name_label, text_brand_label, text_expired_label" />
 
             <TextView
                 android:id="@+id/text_name_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:paddingVertical="2dp"
-                android:paddingHorizontal="4dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="-3dp"
                 android:layout_marginStart="28dp"
-                app:layout_constraintTop_toBottomOf="@id/image_thumbnail"
-                app:layout_constraintStart_toStartOf="parent"
-                android:textAppearance="@style/Text.Body3"
-                android:textColor="@color/medium_gray"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="4dp"
                 android:text="@string/editor_gifticon_property_name"
-                android:backgroundTint="@color/bg"
-                android:background="@drawable/bg_rect_r6"/>
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_name" />
 
             <TextView
                 android:id="@+id/text_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="23dp"
+                android:layout_marginEnd="28dp"
                 android:includeFontPadding="false"
-                app:layout_constraintStart_toStartOf="@id/barrier"
-                app:layout_constraintEnd_toEndOf="@id/guide_end"
-                app:layout_constraintTop_toTopOf="@id/text_name_label"
-                android:textAppearance="@style/Text.Title5"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="@style/Text.Body1"
                 android:textColor="@color/font_dark_gray"
-                tools:text="스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노"/>
+                app:layout_constraintBottom_toTopOf="@id/text_brand"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/barrier"
+                app:layout_constraintTop_toBottomOf="@id/image_thumbnail"
+                tools:text="스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노" />
 
             <ImageView
                 android:id="@+id/icon_name_empty"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_name_label"
                 app:layout_constraintStart_toStartOf="@id/barrier"
                 app:layout_constraintTop_toTopOf="@id/text_name_label"
-                app:layout_constraintBottom_toBottomOf="@id/text_name_label"
-                android:visibility="invisible"
-                android:contentDescription="@null"
-                app:tint="@color/gray"
-                android:src="@drawable/icon_empty_info"/>
+                app:tint="@color/gray" />
 
             <TextView
                 android:id="@+id/text_brand_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:paddingVertical="2dp"
+                android:layout_marginTop="-3dp"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
                 android:paddingHorizontal="4dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/text_name"
-                app:layout_constraintStart_toStartOf="@id/text_name_label"
-                android:textAppearance="@style/Text.Body3"
-                android:textColor="@color/medium_gray"
                 android:text="@string/editor_gifticon_property_brand"
-                android:backgroundTint="@color/bg"
-                android:background="@drawable/bg_rect_r6"/>
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="@id/text_name_label"
+                app:layout_constraintTop_toTopOf="@id/text_brand" />
 
             <TextView
                 android:id="@+id/text_brand"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:includeFontPadding="false"
-                app:layout_constraintStart_toEndOf="@id/barrier"
-                app:layout_constraintTop_toTopOf="@id/text_brand_label"
-                app:layout_constraintEnd_toEndOf="@id/guide_end"
-                android:textAppearance="@style/Text.Title5"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="28dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="@style/Text.Body1"
                 android:textColor="@color/font_dark_gray"
-                tools:text="스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/barrier"
+                app:layout_constraintTop_toBottomOf="@id/text_name"
+                app:layout_constraintBottom_toTopOf="@id/text_expired"
+                tools:text="스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스" />
 
             <ImageView
                 android:id="@+id/icon_brand_empty"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_brand_label"
                 app:layout_constraintStart_toStartOf="@id/barrier"
                 app:layout_constraintTop_toTopOf="@id/text_brand_label"
-                app:layout_constraintBottom_toBottomOf="@id/text_brand_label"
-                android:visibility="invisible"
-                android:contentDescription="@null"
-                app:tint="@color/gray"
-                android:src="@drawable/icon_empty_info"/>
+                app:tint="@color/gray" />
 
             <TextView
                 android:id="@+id/text_expired_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:paddingVertical="2dp"
+                android:layout_marginTop="-3dp"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
                 android:paddingHorizontal="4dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/text_brand"
-                app:layout_constraintStart_toStartOf="@id/text_name_label"
-                android:textAppearance="@style/Text.Body3"
-                android:textColor="@color/medium_gray"
                 android:text="@string/editor_gifticon_property_expired"
-                android:backgroundTint="@color/bg"
-                android:background="@drawable/bg_rect_r6"/>
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="@id/text_name_label"
+                app:layout_constraintTop_toTopOf="@id/text_expired" />
 
             <TextView
                 android:id="@+id/text_expired"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:includeFontPadding="false"
-                app:layout_constraintStart_toStartOf="@id/barrier"
-                app:layout_constraintTop_toTopOf="@id/text_expired_label"
-                app:layout_constraintBottom_toBottomOf="@id/text_expired_label"
-                android:textAppearance="@style/Text.Title5"
+                android:layout_marginTop="14dp"
+                android:textAppearance="@style/Text.Body1"
                 android:textColor="@color/font_dark_gray"
-                tools:text="2021-11-06"/>
+                app:layout_constraintTop_toBottomOf="@id/text_brand"
+                app:layout_constraintStart_toStartOf="@id/barrier"
+                tools:text="2021-11-06" />
 
             <ImageView
                 android:id="@+id/icon_expired_empty"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_expired_label"
                 app:layout_constraintStart_toStartOf="@id/barrier"
                 app:layout_constraintTop_toTopOf="@id/text_expired_label"
-                app:layout_constraintBottom_toBottomOf="@id/text_expired_label"
-                android:visibility="invisible"
-                android:contentDescription="@null"
-                app:tint="@color/gray"
-                android:src="@drawable/icon_empty_info"/>
+                app:tint="@color/gray" />
 
             <TextView
                 android:id="@+id/text_balance_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingVertical="2dp"
-                android:paddingHorizontal="4dp"
                 android:layout_marginStart="4dp"
-                app:layout_constraintTop_toTopOf="@id/text_expired_label"
-                app:layout_constraintBottom_toBottomOf="@id/text_expired_label"
-                app:layout_constraintStart_toStartOf="@id/guide_center"
-                android:textAppearance="@style/Text.Body3"
-                android:textColor="@color/medium_gray"
+                android:layout_marginTop="-3dp"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="4dp"
                 android:text="@string/editor_gifticon_property_balance"
-                android:backgroundTint="@color/bg"
-                android:background="@drawable/bg_rect_r6"/>
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="@id/guide_center"
+                app:layout_constraintTop_toTopOf="@id/text_balance" />
 
             <TextView
                 android:id="@+id/text_balance"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
                 android:layout_marginStart="4dp"
-                app:layout_constraintStart_toEndOf="@id/text_balance_label"
-                app:layout_constraintTop_toTopOf="@id/text_balance_label"
-                app:layout_constraintBottom_toBottomOf="@id/text_balance_label"
-                app:layout_constraintEnd_toEndOf="@id/guide_end"
+                android:layout_marginEnd="28dp"
                 android:gravity="center_vertical"
-                android:textAppearance="@style/Text.Title5"
+                android:textAppearance="@style/Text.Body1"
                 android:textColor="@color/font_dark_gray"
-                tools:text="5,000 원"/>
+                app:layout_constraintTop_toBottomOf="@id/text_brand"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/text_balance_label"
+                tools:text="5,000 원" />
 
             <ImageView
                 android:id="@+id/icon_balance_empty"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_balance_label"
                 app:layout_constraintStart_toEndOf="@id/text_balance_label"
                 app:layout_constraintTop_toTopOf="@id/text_balance_label"
-                app:layout_constraintBottom_toBottomOf="@id/text_balance_label"
-                android:visibility="invisible"
-                android:contentDescription="@null"
-                app:tint="@color/gray"
-                android:src="@drawable/icon_empty_info"/>
+                app:tint="@color/gray" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/container_barcode_empty"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:layout_marginHorizontal="20dp"
-                app:layout_constraintTop_toBottomOf="@id/text_expired_label"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/bg_rect_r16"
                 android:backgroundTint="@color/bg"
-                android:background="@drawable/bg_rect_r16">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_expired_label">
 
                 <ImageView
                     android:id="@+id/icon_barcode_empty"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:contentDescription="@null"
-                    app:tint="@color/gray"
                     android:src="@drawable/icon_empty_info"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/gray"
                     tools:tint="@color/gray" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -299,12 +299,12 @@
                 android:id="@+id/image_barcode"
                 android:layout_width="0dp"
                 android:layout_height="82dp"
-                android:layout_marginTop="38dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="40dp"
                 app:layout_constraintVertical_bias="0"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintBottom_toTopOf="@id/text_barcode"
-                app:layout_constraintTop_toBottomOf="@id/text_expired_label"
+                app:layout_constraintTop_toBottomOf="@id/text_expired"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:contentDescription="@null"/>
@@ -315,9 +315,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
-                android:includeFontPadding="false"
-                app:layout_constraintStart_toStartOf="@id/guide_start"
-                app:layout_constraintEnd_toEndOf="@id/guide_end"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image_barcode"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:gravity="center"

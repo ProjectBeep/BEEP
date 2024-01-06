@@ -3,6 +3,7 @@ package com.lighthouse.beep.ui.feature.editor.adapter.preview
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -29,6 +30,16 @@ internal class EditorPreviewViewHolder(
 
     init {
         binding.imageThumbnail.clipToOutline = true
+
+        binding.containerPreview.viewTreeObserver.addOnGlobalLayoutListener {
+            val diff = binding.containerPreview.height - binding.scroll.height
+            val newImageHeight = maxOf(binding.imageThumbnail.height - diff, 120.dp)
+            if (newImageHeight != binding.imageThumbnail.height) {
+                binding.imageThumbnail.updateLayoutParams {
+                    height = newImageHeight
+                }
+            }
+        }
     }
 
     override fun onSetUpClickEvent(item: GalleryImage) {

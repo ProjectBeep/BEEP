@@ -385,7 +385,6 @@ internal class EditorActivity : AppCompatActivity(), OnEditorProvider {
     private fun setUpGifticonList() {
         binding.listSelected.adapter = editorGifticonAdapter
         binding.listSelected.setHasFixedSize(true)
-        binding.listSelected.addItemDecoration(LinearItemDecoration(14.5f.dp))
         binding.listSelected.layoutManager =
             CenterScrollLayoutManager(this, RecyclerView.HORIZONTAL, false)
     }

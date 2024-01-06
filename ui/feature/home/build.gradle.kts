@@ -17,6 +17,8 @@ dependencies {
 
     implementation(projects.permission)
 
+    implementation(projects.library.textformat)
+
     implementation(projects.ui.dialog.gifticondetail)
     implementation(projects.ui.dialog.confirmation)
 

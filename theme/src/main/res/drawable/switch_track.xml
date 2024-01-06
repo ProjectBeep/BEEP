@@ -1,30 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true">
-        <shape>
-            <size
-                android:width="32dp"
-                android:height="16dp"/>
+    <item
+        android:state_checked="true">
 
-            <corners
-                android:radius="16dp"/>
+        <layer-list>
+            <item
+                android:top="2dp"
+                android:bottom="2dp">
+                <shape>
+                    <size
+                        android:width="36dp"
+                        android:height="17dp"/>
 
-            <solid
-                android:color="@color/medium_pink"/>
-        </shape>
+                    <corners
+                        android:radius="16dp"/>
+
+                    <solid
+                        android:color="@color/medium_pink"/>
+                </shape>
+            </item>
+
+            <item
+                android:width="15dp"
+                android:height="16dp"
+                android:left="6dp"
+                android:bottom="1dp"
+                android:gravity="start|center_vertical"
+                android:drawable="@drawable/switch_text_on"/>
+        </layer-list>
     </item>
 
     <item android:state_checked="false">
-        <shape>
-            <size
-                android:width="32dp"
-                android:height="16dp"/>
+        <layer-list>
+            <item
+                android:top="2dp"
+                android:bottom="2dp">
+                <shape>
+                    <size
+                        android:width="36dp"
+                        android:height="17dp"/>
 
-            <corners
-                android:radius="16dp"/>
+                    <corners
+                        android:radius="16dp"/>
 
-            <solid
-                android:color="@color/gray"/>
-        </shape>
+                    <solid
+                        android:color="@color/gray"/>
+                </shape>
+            </item>
+
+            <item
+                android:width="19dp"
+                android:height="16dp"
+                android:right="4dp"
+                android:bottom="1dp"
+                android:gravity="end|center_vertical"
+                android:drawable="@drawable/switch_text_off"/>
+        </layer-list>
     </item>
 </selector>

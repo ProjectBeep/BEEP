@@ -13,6 +13,12 @@
         <item name="colorSecondary">@color/beep_pink</item>
         <item name="colorAccent">@color/beep_pink</item>
         <item name="android:windowAnimationStyle">@null</item>
+
+        <item name="android:textViewStyle">@style/Beep.Text</item>
+    </style>
+
+    <style name="Beep.Text" parent="Widget.AppCompat.TextView">
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="Theme.BEEP" parent="PlatformAdjusted.Theme.Beep" />

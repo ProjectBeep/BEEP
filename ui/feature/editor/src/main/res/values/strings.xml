@@ -2,7 +2,7 @@
 <resources>
     <string name="editor_title">쿠폰 등록</string>
 
-    <string name="editor_gifticon_preview_cash">금액권</string>
+    <string name="editor_gifticon_preview_cash">금액권으로 전환</string>
     <string name="editor_gifticon_preview_memo_hint">함께 저장 할 메모를 입력해 주세요.</string>
     <string name="editor_gifticon_preview_name_hint">제품명을 등록해 주세요.</string>
     <string name="editor_gifticon_preview_brand_hint">브랜드를 등록해 주세요.</string>
@@ -24,11 +24,11 @@
 
     <string name="editor_crop_touch_mode_guide">인식할 구역을 문질러\n직접 선택해 보세요</string>
 
-    <string name="editor_crop_touch_mode_tutorial">%s 영역을 직접 터치해 보세요.</string>
+    <string name="editor_crop_touch_mode_tutorial">%s 영역을 직접 문질러 보세요.</string>
     <string name="editor_crop_window_mode_tutorial">%s 영역을 직접 크롭해 보세요.</string>
 
-    <string name="editor_crop_touch_mode">터치</string>
-    <string name="editor_crop_window_mode">크롭</string>
+    <string name="editor_crop_touch_mode">문지르기</string>
+    <string name="editor_crop_window_mode">크롭하기</string>
 
     <string name="editor_preview_balance">%s 원</string>
 

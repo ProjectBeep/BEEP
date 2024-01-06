@@ -36,12 +36,12 @@ abstract class LifecycleViewHolder<T>(view: View) : RecyclerView.ViewHolder(view
     private var viewHolderScope: CoroutineScope? = null
 
     init {
-        view.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
+        view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
                 val viewTreeLifecycleOwner = v.findViewTreeLifecycleOwner()
                 val boundItem = boundItem
                 lifecycleOwner = viewTreeLifecycleOwner
-                if(boundItem != null && viewTreeLifecycleOwner != null) {
+                if (boundItem != null && viewTreeLifecycleOwner != null) {
                     onCollectState(viewTreeLifecycleOwner, boundItem)
                 }
             }

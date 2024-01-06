@@ -6,8 +6,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.lighthouse.beep.core.common.exts.dp
-import com.lighthouse.beep.core.ui.recyclerview.decoration.LinearItemDecoration
 import com.lighthouse.beep.core.ui.exts.getScrollInfo
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
@@ -52,9 +50,7 @@ internal class GifticonHeaderViewHolder(
         }
 
         private fun onBrandScroll(recyclerView: RecyclerView) {
-            val scrollInfo = recyclerView.getScrollInfo { position ->
-                if(position > 0) 4.dp else 0
-            }
+            val scrollInfo = recyclerView.getScrollInfo()
             listener.onBrandScroll(scrollInfo)
         }
     }
@@ -62,7 +58,6 @@ internal class GifticonHeaderViewHolder(
     init {
         binding.listBrand.adapter = brandAdapter
         binding.listBrand.layoutManager = brandLayoutManager
-        binding.listBrand.addItemDecoration(LinearItemDecoration(8.dp))
         binding.listBrand.addOnScrollListener(brandScrollListener)
 
         binding.tabExpired.addOnTabSelectedListener(object : OnTabSelectedListener {

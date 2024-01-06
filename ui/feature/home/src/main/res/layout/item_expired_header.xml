@@ -11,10 +11,11 @@
         android:id="@+id/tab_expired"
         android:layout_width="match_parent"
         android:layout_height="44dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabSelectedTextAppearance="@style/Text.Title4"
+        app:tabSelectedTextAppearance="@style/Text.Title7"
         app:tabSelectedTextColor="@color/black"
-        app:tabTextAppearance="@style/Text.Title5"
+        app:tabTextAppearance="@style/Text.Title7"
         app:tabTextColor="@color/font_medium_gray"
         app:tabRippleColor="@color/light_gray"
         app:tabIndicatorColor="@color/black"
@@ -28,7 +29,7 @@
         android:layout_marginStart="24dp"
         app:layout_constraintTop_toBottomOf="@id/tab_expired"
         app:layout_constraintStart_toStartOf="parent"
-        android:textAppearance="@style/Text.Title1"
+        android:textAppearance="@style/Text.Title2"
         android:textColor="@color/font_dark_gray"
         android:text="@string/expired_title"/>
     
@@ -36,7 +37,7 @@
         android:id="@+id/icon_title"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintTop_toTopOf="@id/text_title"
         app:layout_constraintBottom_toBottomOf="@id/text_title"
         app:layout_constraintStart_toEndOf="@id/text_title"
@@ -63,8 +64,8 @@
             app:layout_constraintEnd_toStartOf="@id/icon_edit"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textAppearance="@style/Text.Title4"
-            android:textColor="@color/medium_gray"
+            android:textAppearance="@style/Text.Body1"
+            android:textColor="@color/font_medium_gray"
             android:text="@string/edit_gifticon"/>
 
         <ImageView
@@ -75,20 +76,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@color/medium_gray"
+            app:tint="@color/font_medium_gray"
             android:contentDescription="@null"
             android:src="@drawable/icon_edit"
-            tools:tint="@color/medium_gray"/>
+            tools:tint="@color/font_medium_gray"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_brand"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:paddingHorizontal="24dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:paddingHorizontal="20dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/text_title"
         app:layout_constraintBottom_toBottomOf="parent"
