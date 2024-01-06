@@ -2,6 +2,7 @@ package com.lighthouse.beep.core.ui.keyboard
 
 import android.graphics.Rect
 import android.os.Build
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.activity.ComponentActivity
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -36,7 +38,7 @@ class KeyboardProvider(
         width = 0
         height = ViewGroup.LayoutParams.MATCH_PARENT
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
             softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
 
             view.setOnApplyWindowInsetsListener { _, insets ->
