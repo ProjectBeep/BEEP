@@ -25,6 +25,11 @@ interface LocalGifticonDataSource {
         gifticonId: Long,
     ): Flow<GifticonDetail?>
 
+    suspend fun getGifticonEditInfo(
+        userId: String,
+        gifticonId: Long,
+    ): GifticonEditInfo?
+
     suspend fun getGifticonResourceList(
         userId: String,
         gifticonIdList: List<Long>,
@@ -33,6 +38,8 @@ interface LocalGifticonDataSource {
     suspend fun getGifticonResourceList(
         userId: String
     ): List<GifticonResource>
+
+
 
     fun getGifticonList(
         userId: String,

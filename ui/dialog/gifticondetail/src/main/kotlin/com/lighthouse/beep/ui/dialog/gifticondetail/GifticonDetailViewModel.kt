@@ -23,7 +23,7 @@ internal class GifticonDetailViewModel @Inject constructor(
     private val deviceRepository: DeviceRepository,
 ) : ViewModel() {
 
-    private val gifticonId = GifticonDetailParam.getGifticonId(savedStateHandle)
+    val gifticonId = GifticonDetailParam.getGifticonId(savedStateHandle)
 
     val gifticonDetail = gifticonRepository.getGifticonDetail(BeepAuth.userUid, gifticonId)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)

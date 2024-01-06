@@ -35,6 +35,10 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         return gifticonDao.getGifticonDetail(userId, gifticonId).map{ it?.toModel() }
     }
 
+    override suspend fun getGifticonEditInfo(userId: String, gifticonId: Long): GifticonEditInfo? {
+        return gifticonDao.getGifticonEditInfo(userId, gifticonId)?.toModel()
+    }
+
     override suspend fun getGifticonResourceList(userId: String, gifticonIdList: List<Long>): List<GifticonResource> {
         return gifticonDao.getGifticonResourceList(userId, gifticonIdList).toModel()
     }

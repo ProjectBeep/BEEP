@@ -24,6 +24,11 @@ interface GifticonRepository {
         gifticonId: Long,
     ): Flow<GifticonDetail?>
 
+    suspend fun getGifticonEditInfo(
+        userId: String,
+        gifticonId: Long,
+    ): GifticonEditInfo?
+
     fun getGifticonList(
         userId: String,
         isUsed: Boolean,

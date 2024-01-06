@@ -9,6 +9,7 @@ import com.lighthouse.beep.core.common.exts.ofYear
 import com.lighthouse.beep.core.common.exts.toFormattedString
 import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
 import com.lighthouse.beep.library.textformat.TextInputFormat
+import com.lighthouse.beep.model.gifticon.GifticonBuiltInThumbnail
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import java.util.Date
@@ -29,6 +30,7 @@ internal data class GifticonData(
     val isCashCard: Boolean = false,
     val balance: String = "",
     val balanceCropData: GifticonCropData = GifticonCropData.None,
+    val remainCash: String = "",
     val memo: String = "",
 ) {
     val displayBarcode: String = TextInputFormat.BARCODE.valueToTransformed(barcode)
@@ -49,7 +51,7 @@ internal data class GifticonData(
         get() = EditType.entries.any { it.isInvalid(this) }
 }
 
-internal fun GifticonRecognizeInfo?.toGifticonData(
+internal fun GifticonRecognizeInfo?.toData(
     originUri: Uri,
     imagePath: String,
 ): GifticonData {
@@ -78,38 +80,82 @@ internal fun GifticonRecognizeInfo?.toGifticonData(
         expireAt = expiredAt,
         isCashCard = isCashCard,
         balance = balance.toString(),
+        remainCash = balance.toString(),
     )
 }
 
 internal fun GifticonData.toEditInfo(): GifticonEditInfo {
     return GifticonEditInfo(
-        thumbnailType = when(thumbnail) {
+        thumbnailType = when (thumbnail) {
             is EditGifticonThumbnail.BuiltIn -> GifticonThumbnail.TYPE_BUILT_IN
             else -> GifticonThumbnail.TYPE_IMAGE
         },
-        thumbnailBuiltInCode = when(thumbnail) {
+        thumbnailBuiltInCode = when (thumbnail) {
             is EditGifticonThumbnail.BuiltIn -> thumbnail.builtIn.code
             else -> ""
         },
-        thumbnailBitmap = when(thumbnail) {
+        thumbnailBitmap = when (thumbnail) {
             is EditGifticonThumbnail.Crop -> thumbnail.bitmap
             else -> null
         },
-        thumbnailUri = null,
-        thumbnailRect = when(thumbnail) {
+        thumbnailUri = when (thumbnail) {
+            is EditGifticonThumbnail.Crop -> thumbnail.uri
+            else -> null
+        },
+        thumbnailRect = when (thumbnail) {
             is EditGifticonThumbnail.Crop -> thumbnail.rect
             else -> EMPTY_RECT
         },
-        gifticonUri = null,
+        gifticonUri = originUri,
         originUri = originUri,
         imagePath = imagePath,
         name = name,
         displayBrand = brand,
         barcode = displayBarcode,
         isCashCard = isCashCard,
-        totalCash = balance.toIntOrNull() ?: 0,
-        remainCash = balance.toIntOrNull() ?: 0,
+        totalCash = if(isCashCard) balance.toIntOrNull() ?: 0 else 0,
+        remainCash = if(isCashCard) remainCash.toIntOrNull() ?: 0 else 0,
         memo = memo,
         expireAt = expireAt,
+    )
+}
+
+internal fun GifticonEditInfo?.toData(): GifticonData? {
+    this ?: return null
+
+    return GifticonData(
+        originUri = originUri,
+        imagePath = imagePath,
+        thumbnail = when {
+            thumbnailType == GifticonThumbnail.TYPE_IMAGE && thumbnailUri != null -> {
+                EditGifticonThumbnail.Crop(
+                    uri = thumbnailUri,
+                    rect = thumbnailRect,
+                )
+            }
+
+            else -> {
+                EditGifticonThumbnail.BuiltIn(
+                    GifticonBuiltInThumbnail.of(thumbnailBuiltInCode)
+                )
+            }
+        },
+        thumbnailCropData = when {
+            thumbnailType == GifticonThumbnail.TYPE_IMAGE && thumbnailUri != null -> {
+                GifticonCropData(
+                    rect = thumbnailRect,
+                    zoom = 1f,
+                )
+            }
+            else -> GifticonCropData.None
+        },
+        name = name,
+        brand = displayBrand,
+        barcode = barcode.replace(" ", ""),
+        expireAt = expireAt,
+        isCashCard = isCashCard,
+        balance = totalCash.toString(),
+        remainCash = remainCash.toString(),
+        memo = memo,
     )
 }

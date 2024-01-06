@@ -12,8 +12,12 @@ sealed interface ActivityNavItem {
 
     data object Gallery : ActivityNavItem
 
-    data class Editor(
+    data class Register(
         val list: List<GalleryImage> = emptyList()
+    ) : ActivityNavItem
+
+    data class Edit(
+        val gifticonId: Long = -1
     ) : ActivityNavItem
 
     data object Archive : ActivityNavItem

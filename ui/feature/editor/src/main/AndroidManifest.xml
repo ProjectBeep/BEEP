@@ -3,7 +3,12 @@
 
     <application>
         <activity
-            android:name=".EditorActivity"
+            android:name=".page.register.RegisterActivity"
+            android:windowSoftInputMode="adjustNothing|stateVisible"
+            android:theme="@style/Theme.BEEP"/>
+
+        <activity
+            android:name=".page.edit.EditActivity"
             android:windowSoftInputMode="adjustNothing|stateVisible"
             android:theme="@style/Theme.BEEP"/>
     </application>

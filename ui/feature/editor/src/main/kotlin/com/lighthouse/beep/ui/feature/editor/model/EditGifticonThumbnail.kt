@@ -12,7 +12,8 @@ internal sealed interface EditGifticonThumbnail {
     ): EditGifticonThumbnail
 
     data class Crop(
-        val bitmap: Bitmap,
+        val uri: Uri? = null,
+        val bitmap: Bitmap? = null,
         val rect: Rect,
     ) : EditGifticonThumbnail
 

@@ -1,5 +1,6 @@
 package com.lighthouse.beep.data.local.database.mapper.gifticon
 
+import android.net.Uri
 import com.lighthouse.beep.core.common.exts.EMPTY_DATE
 import com.lighthouse.beep.data.local.database.entity.DBGifticonEntity
 import com.lighthouse.beep.data.local.database.model.DBGifticonEditInfo
@@ -59,5 +60,26 @@ internal fun GifticonEditInfo.toEntity(
         memo = memo,
         expireAt = expireAt,
         updatedAt = Date(),
+    )
+}
+
+internal fun DBGifticonEditInfo.toModel(): GifticonEditInfo {
+    return GifticonEditInfo(
+        thumbnailType = thumbnailType,
+        thumbnailBuiltInCode = thumbnailBuiltInCode,
+        thumbnailBitmap = null,
+        thumbnailUri = thumbnailUri,
+        thumbnailRect = thumbnailRect,
+        gifticonUri = gifticonUri,
+        originUri = gifticonUri ?: Uri.EMPTY,
+        imagePath = imagePath,
+        name = name,
+        displayBrand = displayBrand,
+        barcode = barcode,
+        isCashCard = isCashCard,
+        totalCash = totalCash,
+        remainCash = remainCash,
+        memo = memo,
+        expireAt = expireAt,
     )
 }

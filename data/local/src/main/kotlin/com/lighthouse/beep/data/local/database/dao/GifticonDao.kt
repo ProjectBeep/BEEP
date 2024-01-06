@@ -59,6 +59,33 @@ internal interface GifticonDao {
     ): Flow<DBGifticonDetail?>
 
     @Query(
+        "SELECT id, " +
+                "thumbnail_type, " +
+                "thumbnail_built_in_code, " +
+                "thumbnail_uri, " +
+                "thumbnail_rect, " +
+                "gifticon_uri, " +
+                "image_path, " +
+                "name, " +
+                "brand, " +
+                "display_brand, " +
+                "barcode, " +
+                "is_cash_card, " +
+                "total_cash, " +
+                "remain_cash, " +
+                "memo, " +
+                "expire_at, " +
+                "updated_at " +
+                "FROM gifticon_table " +
+                "WHERE user_id = :userId AND id = :gifticonId " +
+                "LIMIT 1",
+    )
+    suspend fun getGifticonEditInfo(
+        userId: String,
+        gifticonId: Long,
+    ): DBGifticonEditInfo?
+
+    @Query(
         "SELECT thumbnail_uri, " +
                 "gifticon_uri " +
                 "FROM gifticon_table " +

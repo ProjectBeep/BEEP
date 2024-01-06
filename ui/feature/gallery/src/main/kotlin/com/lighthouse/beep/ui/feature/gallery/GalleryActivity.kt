@@ -370,7 +370,7 @@ internal class GalleryActivity : AppCompatActivity() {
         binding.btnConfirm.setOnClickListener(createThrottleClickListener {
             if (viewModel.isSelected.value) {
                 val intent =
-                    navigator.getIntent(this, ActivityNavItem.Editor(viewModel.selectedList.value))
+                    navigator.getIntent(this, ActivityNavItem.Register(viewModel.selectedList.value))
                 editorLauncher.launch(intent)
             }
         })

@@ -28,6 +28,13 @@ internal class GifticonRepositoryImpl @Inject constructor(
         return localGifticonDataSource.getGifticonDetail(userId, gifticonId)
     }
 
+    override suspend fun getGifticonEditInfo(
+        userId: String,
+        gifticonId: Long,
+    ): GifticonEditInfo? {
+        return localGifticonDataSource.getGifticonEditInfo(userId, gifticonId)
+    }
+
     override fun getGifticonList(
         userId: String,
         isUsed: Boolean,

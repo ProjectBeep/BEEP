@@ -6,19 +6,20 @@
     android:id="@+id/container_chip"
     android:layout_width="wrap_content"
     android:layout_height="32dp"
+    android:layout_marginHorizontal="4dp"
     android:background="@drawable/chip">
 
     <TextView
         android:id="@+id/chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
         android:paddingVertical="6dp"
         android:paddingHorizontal="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_vertical"
         android:textColor="@color/chip_text"
         android:textAppearance="@style/Text.Body3"
         tools:text="전체"/>

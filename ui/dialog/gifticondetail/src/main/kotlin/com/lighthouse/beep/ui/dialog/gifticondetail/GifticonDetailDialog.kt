@@ -19,6 +19,7 @@ import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.library.barcode.BarcodeGenerator
 import com.lighthouse.beep.library.textformat.TextInputFormat
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
+import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.ui.designsystem.balloon.BalloonHorizontalDirection
 import com.lighthouse.beep.ui.designsystem.balloon.TextBalloonBuilder
@@ -222,7 +223,10 @@ class GifticonDetailDialog : DialogFragment() {
     }
 
     private fun gotoEdit() {
-        // navigator 로 Editor 페이지로 이동하기
+        val intent = navigator.getIntent(requireContext(), ActivityNavItem.Edit(
+            gifticonId = viewModel.gifticonId
+        ))
+        startActivity(intent)
         dismiss()
     }
 

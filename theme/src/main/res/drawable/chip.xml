@@ -14,7 +14,7 @@
                 android:radius="30dp"/>
 
             <solid
-                android:color="#FFF4F7"/>
+                android:color="@color/beep_pink_10"/>
         </shape>
     </item>
 

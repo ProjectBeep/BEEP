@@ -1,5 +1,6 @@
 package com.lighthouse.beep.ui.feature.home.page.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.auth.BeepAuth
@@ -97,7 +98,10 @@ internal class HomeMainViewModel @Inject constructor(
     fun deleteSelectedGifticon() {
         viewModelScope.launch {
             val gifticonIdList = selectedGifticonList.map { it.id }
-            gifticonRepository.deleteGifticon(BeepAuth.userUid, gifticonIdList)
+            gifticonRepository.deleteGifticon(BeepAuth.userUid, gifticonIdList).onFailure {
+            it.printStackTrace()
+                Log.d("TEST", "${it.message}")
+            }
             setGifticonViewModel(GifticonViewMode.VIEW)
         }
     }

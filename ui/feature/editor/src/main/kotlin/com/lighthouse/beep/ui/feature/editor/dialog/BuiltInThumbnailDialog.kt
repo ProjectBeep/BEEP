@@ -1,14 +1,15 @@
 package com.lighthouse.beep.ui.feature.editor.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.lighthouse.beep.core.common.exts.cast
 import com.lighthouse.beep.model.gifticon.GifticonBuiltInThumbnail
 import com.lighthouse.beep.ui.dialog.bottomsheet.BeepBottomSheetDialog
-import com.lighthouse.beep.ui.feature.editor.EditorViewModel
+import com.lighthouse.beep.ui.feature.editor.EditorInfoProvider
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.DialogBuiltInThumbnailBinding
 import com.lighthouse.beep.ui.feature.editor.dialog.adapter.BuiltInThumbnailAdapter
@@ -25,7 +26,9 @@ class BuiltInThumbnailDialog : BeepBottomSheetDialog() {
         const val TAG = "BuiltInThumbnail"
     }
 
-    private val editorViewModel by activityViewModels<EditorViewModel>()
+//    private val editorViewModel by activityViewModels<EditorViewModel>()
+
+    private lateinit var builtInThumbnailListener: BuiltInThumbnailListener
 
     private var _binding: DialogBuiltInThumbnailBinding? = null
     private val binding
@@ -34,7 +37,7 @@ class BuiltInThumbnailDialog : BeepBottomSheetDialog() {
     private val builtInThumbnailAdapter = BuiltInThumbnailAdapter(
         listener = object : OnBuiltInThumbnailListener {
             override fun isSelectedFlow(item: GifticonBuiltInThumbnail): Flow<Boolean> {
-                return editorViewModel.selectedGifticonDataFlow.map {
+                return builtInThumbnailListener.selectedGifticonDataFlow.map {
                     val builtIn = it.thumbnail as? EditGifticonThumbnail.BuiltIn
                     builtIn?.builtIn == item
                 }.distinctUntilChanged()
@@ -42,18 +45,21 @@ class BuiltInThumbnailDialog : BeepBottomSheetDialog() {
 
             override fun onClick(item: GifticonBuiltInThumbnail) {
                 val editData = EditData.BuiltInThumbnail(item)
-                editorViewModel.updateGifticonData(editData = editData)
+                builtInThumbnailListener.updateGifticonData(editData)
                 hideDialog()
             }
 
             override fun getBackgroundRes(position: Int): Int {
                 val manager =
-                    binding.gridBuiltInThumbnail.layoutManager as? GridLayoutManager ?: return R.drawable.bg_built_in_thumbnail
+                    binding.gridBuiltInThumbnail.layoutManager as? GridLayoutManager
+                        ?: return R.drawable.bg_built_in_thumbnail
                 val spanCount = manager.spanCount
-                val itemCount = binding.gridBuiltInThumbnail.adapter?.itemCount ?: return R.drawable.bg_built_in_thumbnail
+                val itemCount = binding.gridBuiltInThumbnail.adapter?.itemCount
+                    ?: return R.drawable.bg_built_in_thumbnail
                 val spanIndex = manager.spanSizeLookup.getSpanIndex(position, spanCount)
                 val groupIndex = manager.spanSizeLookup.getSpanGroupIndex(position, spanCount)
-                val lastGroupIndex = manager.spanSizeLookup.getSpanGroupIndex(itemCount - 1, spanCount)
+                val lastGroupIndex =
+                    manager.spanSizeLookup.getSpanGroupIndex(itemCount - 1, spanCount)
 
                 return when {
                     groupIndex == 0 && spanIndex == 0 -> R.drawable.bg_built_in_thumbnail_lt
@@ -65,6 +71,13 @@ class BuiltInThumbnailDialog : BeepBottomSheetDialog() {
             }
         }
     )
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        builtInThumbnailListener =
+            requireActivity().cast<EditorInfoProvider>().builtInThumbnailListener
+    }
 
     override fun onCreateContentView(
         inflater: LayoutInflater,

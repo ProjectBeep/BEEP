@@ -4,7 +4,8 @@ import android.content.Context
 import com.lighthouse.beep.ui.feature.login.page.login.LoginParam
 import android.content.Intent
 import com.lighthouse.beep.ui.feature.archive.ArchiveParam
-import com.lighthouse.beep.ui.feature.editor.EditorParam
+import com.lighthouse.beep.ui.feature.editor.page.edit.EditParam
+import com.lighthouse.beep.ui.feature.editor.page.register.RegisterParam
 import com.lighthouse.beep.ui.feature.gallery.GalleryParam
 import com.lighthouse.beep.ui.feature.home.HomeParam
 import com.lighthouse.beep.ui.feature.setting.SettingParam
@@ -22,7 +23,8 @@ internal class AppNavigatorImpl @Inject constructor() : AppNavigator {
             is ActivityNavItem.Login -> LoginParam()
             is ActivityNavItem.Home -> HomeParam()
             is ActivityNavItem.Gallery -> GalleryParam()
-            is ActivityNavItem.Editor -> EditorParam(navItem.list)
+            is ActivityNavItem.Register -> RegisterParam(navItem.list)
+            is ActivityNavItem.Edit -> EditParam(navItem.gifticonId)
             is ActivityNavItem.Archive -> ArchiveParam()
             is ActivityNavItem.Setting -> SettingParam()
         }

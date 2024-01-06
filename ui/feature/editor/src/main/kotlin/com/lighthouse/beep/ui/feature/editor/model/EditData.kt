@@ -203,17 +203,21 @@ internal sealed interface EditData {
 
     data class Balance(val balance: String) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.balance != balance
+            return data.balance != balance || data.remainCash != balance
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(balance = balance)
+            return data.copy(
+                balance = balance,
+                remainCash = balance,
+            )
         }
     }
 
     data class CropBalance(val balance: String, val rect: Rect, val zoom: Float) : EditData {
         override fun isModified(data: GifticonData): Boolean {
             return data.balance != balance ||
+                    data.remainCash != balance ||
                     data.balanceCropData.rect != rect ||
                     data.balanceCropData.zoom != zoom
         }
@@ -221,6 +225,7 @@ internal sealed interface EditData {
         override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(
                 balance = balance,
+                remainCash = balance,
                 balanceCropData = GifticonCropData(
                     rect = rect,
                     zoom = zoom,

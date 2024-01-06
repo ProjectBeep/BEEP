@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="editor_title">쿠폰 등록</string>
+    <string name="register_title">쿠폰 등록</string>
 
     <string name="editor_gifticon_preview_cash">금액권으로 전환</string>
     <string name="editor_gifticon_preview_memo_hint">함께 저장 할 메모를 입력해 주세요.</string>
@@ -39,9 +39,9 @@
     <string name="editor_gifticon_delete_ok">네,삭제할래요</string>
     <string name="editor_gifticon_delete_cancel">아니요</string>
 
-    <string name="editor_gifticon_exit_message">쿠폰을 등록하지 않고 나가시겠어요?</string>
-    <string name="editor_gifticon_exit_ok">네,나갈래요</string>
-    <string name="editor_gifticon_exit_cancel">아니요</string>
+    <string name="register_gifticon_exit_message">쿠폰을 등록하지 않고 나가시겠어요?</string>
+    <string name="register_gifticon_exit_ok">네,나갈래요</string>
+    <string name="register_gifticon_exit_cancel">아니요</string>
 
     <string name="editor_gifticon_delete_success">해당 이미지를 제거 했습니다</string>
     <string name="editor_gifticon_delete_revert">취소</string>
@@ -49,4 +49,13 @@
     <string name="editor_gifticon_register_partial_success">%d개의 쿠폰을 우선 등록했어요</string>
     <string name="editor_gifticon_register_revert">취소</string>
     <string name="editor_gifticon_register_failed">등록할 수 없어요.</string>
+
+    <string name="edit_title">쿠폰 편집</string>
+    <string name="edit_gifticon_edit">쿠폰 편집하기</string>
+
+    <string name="edit_gifticon_exit_message">쿠폰을 편집하지 않고 나가시겠어요?</string>
+    <string name="edit_gifticon_exit_ok">네,나갈래요</string>
+    <string name="edit_gifticon_exit_cancel">아니요</string>
+
+    <string name="edit_gifticon_failed">편집할 수 없어요.</string>
 </resources>
