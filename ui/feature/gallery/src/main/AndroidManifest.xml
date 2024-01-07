@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".GalleryActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>

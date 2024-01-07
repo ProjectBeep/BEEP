@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".HomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>

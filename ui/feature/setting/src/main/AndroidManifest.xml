@@ -4,12 +4,15 @@
     <application>
         <activity
             android:name=".SettingActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.BEEP.Setting"/>
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.BEEP.OSS" />
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.BEEP.OSS" />
     </application>
 </manifest>

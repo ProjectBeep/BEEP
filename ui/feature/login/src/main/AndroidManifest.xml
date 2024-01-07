@@ -4,10 +4,12 @@
     <application>
         <activity
             android:name=".page.login.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.BEEP"/>
 
         <activity
             android:name=".page.permission.RequestPermissionActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.BEEP"/>
     </application>
 </manifest>
