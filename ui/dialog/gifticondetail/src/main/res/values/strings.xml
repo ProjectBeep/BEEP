@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="dialog_gifticon_detail_close_content_description">닫기</string>
+
     <string name="dialog_gifticon_detail_edit">편집</string>
     <string name="dialog_gifticon_detail_total_cash">총 금액</string>
     <string name="dialog_gifticon_detail_remain_cash">남은 금액</string>

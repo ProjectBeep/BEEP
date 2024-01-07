@@ -16,6 +16,7 @@ import java.util.Date
 
 internal data class GifticonData(
     val originUri: Uri,
+    val thumbnailUri: Uri? = null,
     val imagePath: String,
     val imageAddedDate: Date,
     val thumbnail: EditGifticonThumbnail = EditGifticonThumbnail.Default(originUri),
@@ -102,10 +103,7 @@ internal fun GifticonData.toEditInfo(): GifticonEditInfo {
             is EditGifticonThumbnail.Crop -> thumbnail.bitmap
             else -> null
         },
-        thumbnailUri = when (thumbnail) {
-            is EditGifticonThumbnail.Crop -> thumbnail.uri
-            else -> null
-        },
+        thumbnailUri = thumbnailUri,
         thumbnailRect = when (thumbnail) {
             is EditGifticonThumbnail.Crop -> thumbnail.rect
             else -> EMPTY_RECT
@@ -130,13 +128,14 @@ internal fun GifticonEditInfo?.toData(): GifticonData? {
 
     return GifticonData(
         originUri = originUri,
+        thumbnailUri = thumbnailUri,
         imagePath = imagePath,
         imageAddedDate = imageAddedDate,
         thumbnail = when {
             thumbnailType == GifticonThumbnail.TYPE_IMAGE && thumbnailUri != null -> {
-                EditGifticonThumbnail.Crop(
-                    uri = thumbnailUri,
-                    rect = thumbnailRect,
+                EditGifticonThumbnail.Default(
+                    originUri = originUri,
+                    thumbnailUri = thumbnailUri,
                 )
             }
 

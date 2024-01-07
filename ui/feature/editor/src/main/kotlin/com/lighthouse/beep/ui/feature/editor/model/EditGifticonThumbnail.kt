@@ -9,10 +9,10 @@ internal sealed interface EditGifticonThumbnail {
 
     data class Default(
         val originUri: Uri,
+        val thumbnailUri: Uri? = null,
     ): EditGifticonThumbnail
 
     data class Crop(
-        val uri: Uri? = null,
         val bitmap: Bitmap? = null,
         val rect: Rect,
     ) : EditGifticonThumbnail

@@ -34,14 +34,14 @@ internal class EditorThumbnailViewHolder(
             when (data) {
                 is EditGifticonThumbnail.Default -> {
                     requestManager
-                        .load(data.originUri)
+                        .load(data.thumbnailUri ?: data.originUri)
                         .transform(CenterCrop())
                         .into(binding.imageThumbnail)
                 }
 
                 is EditGifticonThumbnail.Crop -> {
                     requestManager
-                        .load(data.bitmap ?: data.uri)
+                        .load(data.bitmap)
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .into(binding.imageThumbnail)
                 }

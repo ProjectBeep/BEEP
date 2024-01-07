@@ -14,7 +14,7 @@
         android:layout_marginEnd="-10dp"
         app:layout_constraintBottom_toTopOf="@id/container_content"
         app:layout_constraintEnd_toEndOf="@id/container_content"
-        android:contentDescription="@null"
+        android:contentDescription="@string/dialog_gifticon_detail_close_content_description"
         android:src="@drawable/icon_gifticon_detail_close"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout

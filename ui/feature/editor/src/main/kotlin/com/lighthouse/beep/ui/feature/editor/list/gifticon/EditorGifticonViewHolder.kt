@@ -45,7 +45,7 @@ internal class EditorGifticonViewHolder(
             when (data) {
                 is EditGifticonThumbnail.Default -> {
                     requestManager
-                        .load(data.originUri)
+                        .load(data.thumbnailUri ?: data.originUri)
                         .transform(CenterCrop())
                         .into(binding.imageGifticon)
                 }
