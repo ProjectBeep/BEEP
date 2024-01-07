@@ -68,8 +68,6 @@ internal class GifticonViewHolder(
     private fun updateGifticonByDDay(item: HomeItem.GifticonItem) {
         val dday = item.dday
 
-        binding.textDday.text = "D-${dday}"
-
         val isExpired = dday < 0
         binding.textBrand.alpha = if (isExpired) 0.5f else 1f
         binding.textGifticonName.alpha = if (isExpired) 0.5f else 1f
@@ -80,7 +78,19 @@ internal class GifticonViewHolder(
         binding.containerExpired.isVisible = isExpired
         binding.textDday.isVisible = !isExpired
 
+
+        binding.textDday.text = when {
+            dday < 0 -> ""
+            dday == 0 -> "D-Day"
+            else -> "D-${dday}"
+        }
+
         when {
+            dday == 0 -> {
+                binding.textDday.backgroundTintList =
+                    ColorStateList.valueOf(getColor(ThemeR.color.deep_gray))
+                binding.textDday.setTextColor(getColor(ThemeR.color.white))
+            }
             dday <= 7 -> {
                 binding.textDday.backgroundTintList =
                     ColorStateList.valueOf(getColor(ThemeR.color.font_medium_gray))
