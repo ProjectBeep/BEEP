@@ -17,7 +17,7 @@
         android:scaleType="centerCrop"
         android:backgroundTint="@color/light_gray"
         android:background="@drawable/bg_rect_r8"
-        android:contentDescription="@null"/>
+        android:contentDescription="@string/gallery_image_delete_content_description"/>
     
     <ImageView
         android:id="@+id/btn_delete"

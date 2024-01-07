@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="archive_back_content_description">뒤로가기</string>
+
     <string name="archive_title">사용 완료 쿠폰</string>
 
     <string name="archive_used">사용 완료</string>

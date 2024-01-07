@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="home_profile_image_content_description">사용자 프로필 이미지</string>
+    <string name="home_goto_archive_content_description">보관함으로 이동</string>
+    <string name="home_goto_setting_content_description">설정으로 이동</string>
+
+    <string name="home_gifticon_image_content_description">기프티콘 이미지</string>
+    <string name="home_banner_image_content_description">배너 이미지</string>
 
     <string name="home_empty_gifticon_title">등록된 쿠폰이 없어요</string>
     <string name="home_empty_gifticon_description">삡에서 쿠폰을 손쉽게 등록하고\n간편하게 관리해요!</string>

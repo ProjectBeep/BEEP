@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="@id/text_editor"
         app:layout_constraintBottom_toBottomOf="@id/text_editor"
         app:layout_constraintEnd_toEndOf="@id/text_editor"
-        android:contentDescription="@null"
+        android:contentDescription="@string/editor_gifticon_text_clear_content_description"
         app:tint="@color/gray"
         android:src="@drawable/icon_close"/>
 

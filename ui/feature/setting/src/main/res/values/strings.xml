@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="setting_back_content_description">뒤로가기</string>
+
     <string name="setting_toolbar_title">설정</string>
 
     <string name="setting_usable_gifticon">사용 가능 쿠폰</string>

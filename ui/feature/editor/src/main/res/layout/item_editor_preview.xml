@@ -68,7 +68,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/bg_rect_r8"
                 android:backgroundTint="@color/light_gray"
-                android:contentDescription="@null"
+                android:contentDescription="@string/editor_gifticon_content_description"
                 app:layout_constraintBottom_toTopOf="@id/text_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

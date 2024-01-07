@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:scaleType="centerCrop"
-        android:contentDescription="@null"
+        android:contentDescription="@string/editor_gifticon_thumbnail_content_description"
         android:backgroundTint="@color/light_gray"
         android:background="@drawable/bg_rect_r8"/>
 
@@ -72,7 +72,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@null"
+            android:contentDescription="@string/editor_goto_built_in_thumbnail_content_description"
             android:src="@drawable/icon_editor_expand_right"/>
 
         <androidx.constraintlayout.widget.Group
@@ -102,7 +102,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@null"
+            android:contentDescription="@string/editor_gifticon_thumbnail_clear_content_description"
             app:tint="@color/gray"
             android:src="@drawable/icon_close"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

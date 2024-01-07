@@ -28,23 +28,24 @@
         
         <ImageView
             android:id="@+id/icon_confirm"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="6dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="14dp"
             app:layout_constraintTop_toBottomOf="@id/text_warning"
             app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@null"
+            android:contentDescription="@string/withdrawal_confirm_content_description"
             android:src="@drawable/icon_withdrawal_confirm_selector"/>
 
         <TextView
             android:id="@+id/text_confirm"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_height="48dp"
             app:layout_constraintTop_toTopOf="@id/icon_confirm"
             app:layout_constraintBottom_toBottomOf="@id/icon_confirm"
             app:layout_constraintStart_toEndOf="@id/icon_confirm"
+            android:gravity="center_vertical"
             android:textAppearance="@style/Text.Body1"
             android:textColor="@color/font_dark_gray"
             android:text="@string/withdrawal_confirm"/>

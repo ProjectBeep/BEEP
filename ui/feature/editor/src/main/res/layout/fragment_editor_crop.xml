@@ -73,7 +73,7 @@
         app:layout_constraintTop_toBottomOf="@id/text_crop_mode_guide"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@null"
+        android:contentDescription="@string/editor_crop_touch_mode_guide_image_content_description"
         android:src="@drawable/image_crop_touch_guide"/>
 
     <androidx.constraintlayout.widget.Group
@@ -103,6 +103,6 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/crop_gifticon"
-        android:contentDescription="@null"
+        android:contentDescription="@string/editor_crop_touch_mode_content_description"
         android:src="@drawable/icon_crop_touch_mode"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

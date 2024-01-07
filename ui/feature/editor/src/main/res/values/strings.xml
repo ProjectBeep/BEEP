@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="edit_back_content_description">뒤로가기</string>
+    <string name="register_back_content_description">뒤로가기</string>
+
+    <string name="editor_crop_touch_mode_guide_image_content_description">자르기 터치 모드 가이드 이미지</string>
+    <string name="editor_crop_touch_mode_content_description">자르기 터치 모드 변경</string>
+    <string name="editor_gifticon_delete_content_description">기프티콘 제거 버튼</string>
+    <string name="editor_gifticon_content_description">기프티콘 이미지</string>
+    <string name="editor_gifticon_thumbnail_content_description">기프티콘 썸네일 이미지</string>
+    <string name="editor_gifticon_thumbnail_clear_content_description">썸네일 제거 버튼</string>
+    <string name="editor_goto_built_in_thumbnail_content_description">내장 썸네일로 이동하기</string>
+    <string name="editor_gifticon_text_clear_content_description">텍스트 제거 버튼</string>
+
     <string name="register_title">쿠폰 등록</string>
 
     <string name="editor_gifticon_preview_cash">금액권으로 전환</string>

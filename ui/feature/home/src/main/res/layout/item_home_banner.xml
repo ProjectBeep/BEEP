@@ -6,5 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scaleType="centerCrop"
-    android:contentDescription="@null"
+    android:contentDescription="@string/home_banner_image_content_description"
     tools:src="@drawable/img_banner_location_coming_soon"/>
