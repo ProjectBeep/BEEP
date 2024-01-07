@@ -1,8 +1,6 @@
 buildscript {
     dependencies {
-        val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
-        val gmsOosVersion = libs.findVersion("gms-oss-licenses-plugin").get()
-        classpath("com.google.android.gms:oss-licenses-plugin:$gmsOosVersion")
+        classpath("com.google.android.gms:oss-licenses-plugin:0.10.6")
     }
 }
 

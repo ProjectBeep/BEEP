@@ -22,4 +22,5 @@ dependencies {
     implementation(projects.ui.dialog.withdrawal)
 
     implementation(libs.glide)
+    implementation(libs.gms.play.services.oss.licences)
 }

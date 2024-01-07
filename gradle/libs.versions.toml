@@ -4,6 +4,7 @@ androidStudioGradlePlugin = "8.1.4"
 # AndroidX
 activity = "1.8.2"
 lifecycle = "2.6.2"
+ossLicensesPlugin = "0.10.6"
 paging = "3.2.1"
 room = "2.6.1"
 hilt-work = "1.1.0"
@@ -112,6 +113,7 @@ mlkit-text-recognition-korean = "com.google.mlkit:text-recognition-korean:16.0.0
 mlkit-barcode-scanning = "com.google.mlkit:barcode-scanning:17.2.0"
 
 ## Zxing
+oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
 zxing-android-embedded = "com.journeyapps:zxing-android-embedded:4.3.0"
 zxing-core = "com.google.zxing:core:3.5.1"
 ## Squareup

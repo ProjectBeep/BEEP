@@ -13,3 +13,5 @@ beep-release.jks
 credential.json
 beep-debug.jks
 google-services.json
+/private_key.pepk
+/app/release/

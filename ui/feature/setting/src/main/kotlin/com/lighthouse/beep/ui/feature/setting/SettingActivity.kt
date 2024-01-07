@@ -1,6 +1,7 @@
 package com.lighthouse.beep.ui.feature.setting
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.lighthouse.beep.auth.AuthActivity
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
@@ -111,11 +113,11 @@ internal class SettingActivity : AppCompatActivity() {
         }
 
         binding.btnEtcPersonalInfoPolicy.setOnThrottleClickListener {
-
+            gotoPersonalInfoPolicy()
         }
 
         binding.btnEtcOpenSourceLibrary.setOnThrottleClickListener {
-
+            gotoOssLicenses()
         }
 
         binding.btnAccountLogout.setOnThrottleClickListener {
@@ -125,6 +127,17 @@ internal class SettingActivity : AppCompatActivity() {
         binding.btnAccountWithdrawal.setOnThrottleClickListener {
             showWithdrawalDialog()
         }
+    }
+
+    private fun gotoPersonalInfoPolicy() {
+        val uri = Uri.parse("https://beep-3fcc2.web.app/")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
+    }
+
+    private fun gotoOssLicenses() {
+        val intent = Intent(this, OssLicensesMenuActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showLogoutDialog() {

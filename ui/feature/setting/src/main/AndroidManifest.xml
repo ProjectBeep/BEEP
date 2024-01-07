@@ -5,5 +5,11 @@
         <activity
             android:name=".SettingActivity"
             android:theme="@style/Theme.BEEP.Setting"/>
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/Theme.BEEP.OSS" />
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/Theme.BEEP.OSS" />
     </application>
 </manifest>

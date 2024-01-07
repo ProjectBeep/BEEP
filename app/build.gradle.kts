@@ -6,6 +6,7 @@ import java.util.Properties
 plugins {
     id("beep.android.application")
     id("beep.android.hilt")
+    id("com.google.android.gms.oss-licenses-plugin")
     alias(libs.plugins.gms)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.ksp)
@@ -49,9 +50,8 @@ android {
         release {
             signingConfig = signingConfigs.getByName("release")
 
-//            isDebuggable = false
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -80,6 +80,8 @@ dependencies {
     implementation(projects.data.local)
 
     implementation(projects.auth)
+
+    implementation(projects.ui.dialog.gifticondetail)
 
     implementation(projects.ui.feature.login)
     implementation(projects.ui.feature.home)
