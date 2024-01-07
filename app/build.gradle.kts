@@ -21,8 +21,8 @@ android {
 
     defaultConfig {
         applicationId = "com.lighthouse.beep"
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 4
+        versionName = "1.0.3"
 
         val naverMapApiId = keystoreProperties.getProperty("naver_map_api_id")
         manifestPlaceholders["naver_map_api_id"] = naverMapApiId
@@ -52,6 +52,9 @@ android {
 
             isMinifyEnabled = true
             isShrinkResources = true
+
+            ndk.debugSymbolLevel = "FULL"
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
