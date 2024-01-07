@@ -2,11 +2,11 @@ package com.lighthouse.beep.domain.usecase.recognize
 
 import android.content.Context
 import android.net.Uri
-import com.lighthouse.beep.core.common.exts.calculateSampleSize
-import com.lighthouse.beep.core.common.exts.decodeSampledBitmap
+import com.lighthouse.beep.core.common.exts.decodeBitmap
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
 import com.lighthouse.beep.library.recognizer.BarcodeScanMode
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
 import javax.inject.Inject
 
 class RecognizeBarcodeUseCase @Inject constructor(
@@ -15,8 +15,7 @@ class RecognizeBarcodeUseCase @Inject constructor(
     private val barcodeRecognizer =  BarcodeRecognizer()
 
     suspend operator fun invoke(uri: Uri): Result<String> = runCatching {
-        val sampleSize = context.calculateSampleSize(uri, 360)
-        val bitmap = context.decodeSampledBitmap(uri, sampleSize)
+        val bitmap = context.decodeBitmap(uri) ?: throw IOException("이미지를 decode 하지 못했습니다")
         barcodeRecognizer.recognize(bitmap, BarcodeScanMode.IMAGE)
     }
 }
