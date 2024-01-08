@@ -14,6 +14,5 @@ internal fun DBGalleryImageDataEntity.toModel(): GalleryImageData {
         imagePath = imagePath,
         addedDate = addedDate,
         isGifticon = isGifticon,
-        addedGifticonId = addedGifticonId,
     )
 }

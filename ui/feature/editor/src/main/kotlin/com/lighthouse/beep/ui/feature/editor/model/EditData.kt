@@ -2,6 +2,7 @@ package com.lighthouse.beep.ui.feature.editor.model
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import com.lighthouse.beep.model.gifticon.GifticonBarcodeType
 import com.lighthouse.beep.model.gifticon.GifticonBuiltInThumbnail
 import java.util.Date
 
@@ -134,25 +135,39 @@ internal sealed interface EditData {
         }
     }
 
-    data class Barcode(val barcode: String) : EditData {
+    data class Barcode(
+        val barcodeType: GifticonBarcodeType,
+        val barcode: String,
+    ) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.barcode != barcode
+            return data.barcodeType != barcodeType ||
+                    data.barcode != barcode
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
-            return data.copy(barcode = barcode)
+            return data.copy(
+                barcodeType = barcodeType,
+                barcode = barcode,
+            )
         }
     }
 
-    data class CropBarcode(val barcode: String, val rect: Rect, val zoom: Float) : EditData {
+    data class CropBarcode(
+        val barcodeType: GifticonBarcodeType,
+        val barcode: String,
+        val rect: Rect,
+        val zoom: Float,
+    ) : EditData {
         override fun isModified(data: GifticonData): Boolean {
-            return data.barcode != barcode ||
+            return data.barcodeType != barcodeType ||
+                    data.barcode != barcode ||
                     data.barcodeCropData.rect != rect ||
                     data.barcodeCropData.zoom != zoom
         }
 
         override fun updatedGifticon(data: GifticonData): GifticonData {
             return data.copy(
+                barcodeType = barcodeType,
                 barcode = barcode,
                 barcodeCropData = GifticonCropData(
                     rect = rect,

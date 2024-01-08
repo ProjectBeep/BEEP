@@ -3,7 +3,6 @@ package com.lighthouse.beep.library.recognizer
 import android.graphics.Bitmap
 import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
 import com.lighthouse.beep.library.recognizer.parser.BalanceParser
-import com.lighthouse.beep.library.recognizer.parser.BarcodeParser
 import com.lighthouse.beep.library.recognizer.parser.ExpiredParser
 import com.lighthouse.beep.library.recognizer.recognizer.TemplateRecognizer
 import com.lighthouse.beep.library.recognizer.recognizer.giftishow.GiftishowRecognizer
@@ -15,7 +14,6 @@ import kotlinx.coroutines.withContext
 
 class GifticonRecognizer {
 
-    private val barcodeParser = BarcodeParser()
     private val expiredParser = ExpiredParser()
     private val balanceParser = BalanceParser()
 
@@ -37,12 +35,8 @@ class GifticonRecognizer {
 
     suspend fun recognize(bitmap: Bitmap): GifticonRecognizeInfo = withContext(Dispatchers.IO) {
         val inputs = textRecognizer.recognize(bitmap)
-        var barcodeResult = barcodeParser.parseBarcode(inputs)
-        if (barcodeResult.barcode.isEmpty()) {
-            val barcode = barcodeRecognizer.recognize(bitmap, BarcodeScanMode.IMAGE)
-            barcodeResult = barcodeResult.copy(barcode = barcode)
-        }
-        val expiredResult = expiredParser.parseExpiredDate(barcodeResult.filtered)
+        val barcode = barcodeRecognizer.recognize(bitmap, BarcodeScanMode.IMAGE)
+        val expiredResult = expiredParser.parseExpiredDate(inputs)
         var info = GifticonRecognizeInfo(
             imageWidth = bitmap.width,
             imageHeight = bitmap.height,
@@ -53,7 +47,8 @@ class GifticonRecognizer {
         }
         val balanceResult = balanceParser.parseCashCard(info.candidate)
         info.copy(
-            barcode = barcodeResult.barcode,
+            barcodeType = barcode.type,
+            barcode = barcode.barcode,
             expiredAt = expiredResult.expired,
             isCashCard = balanceResult.balance > 0,
             balance = balanceResult.balance,

@@ -1,8 +1,5 @@
 package com.lighthouse.beep.data.local.repository.gifticon
 
-import androidx.room.withTransaction
-import com.lighthouse.beep.data.local.database.BeepDatabase
-import com.lighthouse.beep.data.local.database.dao.GalleryImageDataDao
 import com.lighthouse.beep.data.local.database.dao.GifticonDao
 import com.lighthouse.beep.data.local.database.mapper.gifticon.toEntity
 import com.lighthouse.beep.data.local.database.mapper.gifticon.toEntityForCreate
@@ -12,6 +9,7 @@ import com.lighthouse.beep.data.repository.gifticon.LocalGifticonDataSource
 import com.lighthouse.beep.model.brand.BrandCategory
 import com.lighthouse.beep.model.gifticon.GifticonDetail
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
+import com.lighthouse.beep.model.gifticon.GifticonImageData
 import com.lighthouse.beep.model.gifticon.GifticonListItem
 import com.lighthouse.beep.model.gifticon.GifticonSortBy
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +18,7 @@ import java.util.Date
 import javax.inject.Inject
 
 internal class LocalGifticonDataSourceImpl @Inject constructor(
-    private val db: BeepDatabase,
     private val gifticonDao: GifticonDao,
-    private val galleryImageDataDao: GalleryImageDataDao,
 ) : LocalGifticonDataSource {
 
     override fun isExistGifticon(userId: String, isUsed: Boolean): Flow<Boolean> {
@@ -76,26 +72,15 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         ).map { it.toModel() }
     }
 
-    override fun getUsedGifticonList(userId: String): Flow<List<GifticonListItem>> {
-        return gifticonDao.getUsedGifticonList(userId)
-            .map { it.toModel() }
+    override suspend fun getGifticonImageDataList(userId: String): List<GifticonImageData> {
+        return gifticonDao.getGifticonImageDataList(userId).toModel()
     }
 
     override suspend fun insertGifticonList(
         userId: String,
         editInfoList: List<GifticonEditInfo>,
     ): List<Long> {
-        return db.withTransaction {
-            editInfoList.map {
-                val gifticonId = gifticonDao.insertGifticon(it.toEntityForCreate(userId))
-                galleryImageDataDao.updateAddedGifticonId(
-                    gifticonId = gifticonId,
-                    imagePath = it.imagePath,
-                    addedData = it.imageAddedDate,
-                )
-                gifticonId
-            }
-        }
+        return gifticonDao.insertGifticonList(editInfoList.toEntityForCreate(userId))
     }
 
     override suspend fun updateGifticon(
@@ -106,21 +91,14 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteGifticon(userId: String) {
-        db.withTransaction {
-            val gifticonIdList = gifticonDao.getGifticonIdList(userId)
-            galleryImageDataDao.deleteAddedGifticonId(gifticonIdList)
-            gifticonDao.deleteGifticon(userId)
-        }
+        gifticonDao.deleteGifticon(userId)
     }
 
     override suspend fun deleteGifticon(
         userId: String,
         gifticonIdList: List<Long>,
     ) {
-        db.withTransaction {
-            galleryImageDataDao.deleteAddedGifticonId(gifticonIdList)
-            gifticonDao.deleteGifticon(userId, gifticonIdList)
-        }
+        gifticonDao.deleteGifticon(userId, gifticonIdList)
     }
 
     override suspend fun transferGifticon(

@@ -10,6 +10,7 @@ data class GifticonRecognizeInfo(
     val name: String = "",
     val brand: String = "",
     val expiredAt: Date = Date(0),
+    val barcodeType: Int = 0,
     val barcode: String = "",
     val isCashCard: Boolean = false,
     val balance: Int = 0,

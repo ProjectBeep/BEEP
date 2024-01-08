@@ -15,8 +15,12 @@ dependencies {
     implementation(projects.data.data)
     implementation(projects.domain)
 
+    implementation(projects.auth)
+
     implementation(projects.navs)
     implementation(projects.permission)
+
+    implementation(projects.library.recognizer)
 
     implementation(libs.androidx.paging.runtime)
     implementation(libs.glide)

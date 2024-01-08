@@ -21,7 +21,6 @@ internal class GalleryRecognizeDataSourceImpl @Inject constructor(
             data.imagePath,
             data.dateAdded,
             isGifticon,
-            null,
         ))
     }
 }

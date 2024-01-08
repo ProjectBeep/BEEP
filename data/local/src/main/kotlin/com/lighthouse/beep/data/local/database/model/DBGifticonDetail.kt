@@ -14,6 +14,7 @@ internal class DBGifticonDetail(
     @ColumnInfo(name = "thumbnail_rect") val thumbnailRect: Rect,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "display_brand") val displayBrand: String,
+    @ColumnInfo(name = "barcode_type") val barcodeType: String,
     @ColumnInfo(name = "barcode") val barcode: String,
     @ColumnInfo(name = "is_cash_card") val isCashCard: Boolean,
     @ColumnInfo(name = "total_cash") val totalCash: Int,

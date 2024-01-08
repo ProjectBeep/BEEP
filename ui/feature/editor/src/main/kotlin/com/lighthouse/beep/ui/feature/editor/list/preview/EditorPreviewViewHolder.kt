@@ -26,9 +26,10 @@ internal class EditorPreviewViewHolder(
     private val binding: ItemEditorPreviewBinding = ItemEditorPreviewBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
     ),
-): LifecycleViewHolder<Long>(binding.root) {
+) : LifecycleViewHolder<Long>(binding.root) {
 
     private var init = false
+
     init {
         binding.imageThumbnail.clipToOutline = true
 
@@ -177,17 +178,21 @@ internal class EditorPreviewViewHolder(
             }
         }
 
-        model.displayBarcode.collect(
+        combine(
+            model.barcode,
+            model.displayBarcode,
+        ) { barcode, displayBarcode ->
+            barcode to displayBarcode
+        }.collect(
             lifecycleOwner = lifecycleOwner,
             defaultBlock = {
-                binding.textBarcode.text = ""
                 binding.imageBarcode.setImageBitmap(null)
             },
-            block = { barcode ->
+            block = { (barcode, displayBarcode) ->
                 binding.containerBarcodeEmpty.isVisible = barcode.isEmpty()
                 binding.groupBarcode.isVisible = barcode.isNotEmpty()
+                binding.textBarcode.text = displayBarcode
                 if (barcode.isNotEmpty()) {
-                    binding.textBarcode.text = barcode
                     val image = BarcodeGenerator.loadBarcode(barcode, 300.dp, 82.dp)
                     binding.imageBarcode.setImageBitmap(image)
                 }

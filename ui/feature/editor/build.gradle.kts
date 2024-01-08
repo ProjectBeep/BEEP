@@ -34,4 +34,6 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.squareup.moshi.kotlin)
+
+    implementation(libs.mlkit.barcode.scanning)
 }

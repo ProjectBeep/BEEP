@@ -8,6 +8,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.library.textformat)
+
     implementation(libs.kotlin.serialization.json)
     implementation(libs.kotlin.datetime)
 

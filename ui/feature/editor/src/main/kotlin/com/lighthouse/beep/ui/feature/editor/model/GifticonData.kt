@@ -1,6 +1,7 @@
 package com.lighthouse.beep.ui.feature.editor.model
 
 import android.net.Uri
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.lighthouse.beep.core.common.exts.EMPTY_DATE
 import com.lighthouse.beep.core.common.exts.EMPTY_RECT
 import com.lighthouse.beep.core.common.exts.ofDate
@@ -9,6 +10,7 @@ import com.lighthouse.beep.core.common.exts.ofYear
 import com.lighthouse.beep.core.common.exts.toFormattedString
 import com.lighthouse.beep.library.recognizer.model.GifticonRecognizeInfo
 import com.lighthouse.beep.library.textformat.TextInputFormat
+import com.lighthouse.beep.model.gifticon.GifticonBarcodeType
 import com.lighthouse.beep.model.gifticon.GifticonBuiltInThumbnail
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
@@ -25,6 +27,7 @@ internal data class GifticonData(
     val nameCropData: GifticonCropData = GifticonCropData.None,
     val brand: String = "",
     val brandCropData: GifticonCropData = GifticonCropData.None,
+    val barcodeType: GifticonBarcodeType = GifticonBarcodeType.CODE_128,
     val barcode: String = "",
     val barcodeCropData: GifticonCropData = GifticonCropData.None,
     val expireAt: Date = EMPTY_DATE,
@@ -81,6 +84,10 @@ internal fun GifticonRecognizeInfo?.toData(
         } ?: GifticonCropData.None,
         name = name,
         brand = brand,
+        barcodeType = when(barcodeType) {
+            Barcode.FORMAT_QR_CODE -> GifticonBarcodeType.QR_CODE
+            else -> GifticonBarcodeType.CODE_128
+        },
         barcode = barcode,
         expireAt = expiredAt,
         isCashCard = isCashCard,
@@ -114,7 +121,8 @@ internal fun GifticonData.toEditInfo(): GifticonEditInfo {
         imageAddedDate = imageAddedDate,
         name = name,
         displayBrand = brand,
-        barcode = displayBarcode,
+        barcodeType = barcodeType.name,
+        barcode = barcode,
         isCashCard = isCashCard,
         totalCash = if(isCashCard) balance.toIntOrNull() ?: 0 else 0,
         remainCash = if(isCashCard) remainCash.toIntOrNull() ?: 0 else 0,
@@ -156,7 +164,8 @@ internal fun GifticonEditInfo?.toData(): GifticonData? {
         },
         name = name,
         brand = displayBrand,
-        barcode = barcode.replace(" ", ""),
+        barcodeType = GifticonBarcodeType.of(barcodeType),
+        barcode = barcode,
         expireAt = expireAt,
         isCashCard = isCashCard,
         balance = totalCash.toString(),

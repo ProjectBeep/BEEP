@@ -38,6 +38,14 @@ internal class EditorPreviewDisplayModel(
             }
         }.distinctUntilChanged()
 
+    val barcode = gifticonDataFlow
+        .map {
+            when (EditType.BARCODE.isInvalid(it)) {
+                true -> ""
+                false -> it.barcode
+            }
+        }.distinctUntilChanged()
+
     val displayBarcode = gifticonDataFlow
         .map {
             when (EditType.BARCODE.isInvalid(it)) {

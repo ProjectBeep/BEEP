@@ -13,6 +13,8 @@ data class GalleryImage(
     val imagePath: String,
     val dateAdded: Date,
 ) {
+    val gifticonImageDataKey = "${imagePath}-${dateAdded.time}"
+
     companion object {
         fun fromJson(json: String): List<GalleryImage> {
             if (json.isEmpty()) {

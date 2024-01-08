@@ -35,15 +35,27 @@ object BarcodeGenerator {
         backgroundColor: Int = Color.WHITE,
     ): Bitmap = withContext(Dispatchers.IO) {
         val bitMatrix = Code128Writer().encode(value, BarcodeFormat.CODE_128, width, height)
-
-        val pixels = IntArray(width * height) { i ->
-            val y = i / width
-            val x = i % width
-            if (bitMatrix.get(x, y)) Color.BLACK else backgroundColor
+        var xScale = 1
+        var yScale = 1
+        while ((xScale + 1) * bitMatrix.width < width) {
+            xScale += 1
+        }
+        while ((yScale + 1) * bitMatrix.height < height) {
+            yScale += 1
         }
 
-        Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).apply {
-            setPixels(pixels, 0, width, 0, 0, width, height)
+        val bitmap =
+            Bitmap.createBitmap(bitMatrix.width * xScale, bitMatrix.height * yScale, Bitmap.Config.ARGB_8888)
+        for (x in 0 until bitMatrix.width) {
+            for (y in 0 until bitMatrix.height) {
+                val color = if (bitMatrix.get(x, y)) Color.BLACK else backgroundColor
+                for (xs in 0 until xScale) {
+                    for (ys in 0 until yScale) {
+                        bitmap.setPixel(x * xScale + xs, y * yScale + ys, color)
+                    }
+                }
+            }
         }
+        bitmap
     }
 }

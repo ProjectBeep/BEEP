@@ -3,6 +3,7 @@ package com.lighthouse.beep.data.repository.gifticon
 import com.lighthouse.beep.model.brand.BrandCategory
 import com.lighthouse.beep.model.gifticon.GifticonDetail
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
+import com.lighthouse.beep.model.gifticon.GifticonImageData
 import com.lighthouse.beep.model.gifticon.GifticonListItem
 import com.lighthouse.beep.model.gifticon.GifticonSortBy
 import kotlinx.coroutines.flow.Flow
@@ -53,8 +54,8 @@ internal class GifticonRepositoryImpl @Inject constructor(
         return localGifticonDataSource.getGifticonListByBrand(userId, brand.lowercase(), gifticonSortBy, isAsc)
     }
 
-    override fun getUsedGifticonList(userId: String): Flow<List<GifticonListItem>> {
-        return localGifticonDataSource.getUsedGifticonList(userId)
+    override suspend fun getGifticonImageDataList(userId: String): List<GifticonImageData> {
+        return localGifticonDataSource.getGifticonImageDataList(userId)
     }
 
     override suspend fun insertGifticonList(

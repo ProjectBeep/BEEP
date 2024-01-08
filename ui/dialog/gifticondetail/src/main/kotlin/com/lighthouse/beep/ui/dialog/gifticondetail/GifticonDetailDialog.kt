@@ -131,10 +131,10 @@ class GifticonDetailDialog : DialogFragment() {
                 if(!viewModel.isShownGifticonDetailEdit()) {
                     editBalloon.show(binding.textEdit)
                 }
-                fadeInDetail()
             }
         }
 
+        var init = true
         viewLifecycleOwner.repeatOnStarted {
             viewModel.gifticonDetail.filterNotNull().collect {
                 when (val thumbnail = it.thumbnail) {
@@ -176,10 +176,7 @@ class GifticonDetailDialog : DialogFragment() {
                 binding.textExpire.text = it.formattedExpiredDate
                 binding.textMemo.text = it.memo
 
-                val bgColor = ContextCompat.getColor(requireContext(), ThemeR.color.bg)
-                val image = BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 80.dp, bgColor)
-                binding.imageBarcode.setImageBitmap(image)
-                binding.textBarcode.text = it.barcode
+                binding.textBarcode.text = it.displayBarcode
 
                 if (it.isUsed) {
                     binding.btnDelete.setText(R.string.dialog_gifticon_detail_delete_used)
@@ -188,6 +185,15 @@ class GifticonDetailDialog : DialogFragment() {
                     binding.btnDelete.setText(R.string.dialog_gifticon_detail_delete)
                     binding.btnUseAndRevert.setText(R.string.dialog_gifticon_detail_use)
                 }
+
+                if (init) {
+                    init = false
+                    fadeInDetail()
+                }
+
+                val bgColor = ContextCompat.getColor(requireContext(), ThemeR.color.bg)
+                val image = BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 80.dp, bgColor)
+                binding.imageBarcode.setImageBitmap(image)
             }
         }
     }

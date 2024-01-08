@@ -1,6 +1,7 @@
 package com.lighthouse.beep.data.local.database.mapper.gifticon
 
 import com.lighthouse.beep.data.local.database.model.DBGifticonDetail
+import com.lighthouse.beep.model.gifticon.GifticonBarcodeType
 import com.lighthouse.beep.model.gifticon.GifticonDetail
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 
@@ -25,6 +26,7 @@ internal fun DBGifticonDetail.toModel(): GifticonDetail {
         },
         name = name,
         displayBrand = displayBrand,
+        barcodeType = GifticonBarcodeType.of(barcodeType),
         barcode = barcode,
         memo = memo,
         isUsed = isUsed,

@@ -5,6 +5,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import com.lighthouse.beep.library.recognizer.model.BarcodeInfo
 import com.lighthouse.beep.library.recognizer.parser.BarcodeParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -18,43 +19,51 @@ class BarcodeRecognizer {
     private val textRecognizer = TextRecognizer()
 
     private val options = BarcodeScannerOptions.Builder()
-        .setBarcodeFormats(Barcode.FORMAT_CODE_128)
-        .build()
+        .setBarcodeFormats(
+            Barcode.FORMAT_QR_CODE,
+            Barcode.FORMAT_CODE_128,
+            Barcode.FORMAT_PDF417,
+        ).build()
 
     private val client = BarcodeScanning.getClient(options)
 
     suspend fun recognize(
         bitmap: Bitmap,
         scanMode: BarcodeScanMode = BarcodeScanMode.BOTH,
-    ): String = withContext(Dispatchers.IO) {
-        var barcode = ""
+    ): BarcodeInfo = withContext(Dispatchers.IO) {
+        var info = BarcodeInfo.None
         if (scanMode == BarcodeScanMode.BOTH || scanMode == BarcodeScanMode.IMAGE) {
-            barcode = recognizeImage(bitmap)
+            info = recognizeImage(bitmap)
         }
-        if (barcode.isEmpty() &&
+        if (info.isNone &&
             (scanMode == BarcodeScanMode.BOTH || scanMode == BarcodeScanMode.TEXT)
         ) {
-            barcode = recognizeText(bitmap)
+            info = recognizeText(bitmap)
         }
-        barcode
+        info
     }
 
-    private suspend fun recognizeImage(bitmap: Bitmap): String {
+    private suspend fun recognizeImage(bitmap: Bitmap): BarcodeInfo {
         return suspendCancellableCoroutine { continuation ->
             val image = InputImage.fromBitmap(bitmap, 0)
             client.process(image).addOnCompleteListener {
-                val barcode = when {
-                    it.isSuccessful -> it.result.firstOrNull()?.rawValue ?: ""
-                    else -> ""
-                }
-                continuation.resume(barcode)
+                val result = it.result.firstOrNull()
+                val info = BarcodeInfo(
+                    type = result?.valueType ?: Barcode.FORMAT_CODE_128,
+                    barcode = result?.rawValue ?: "",
+                )
+                continuation.resume(info)
             }
         }
     }
 
-    private suspend fun recognizeText(bitmap: Bitmap): String {
+    private suspend fun recognizeText(bitmap: Bitmap): BarcodeInfo {
         val inputs = textRecognizer.recognize(bitmap)
-        return barcodeParser.parseBarcode(inputs).barcode
+        val result = barcodeParser.parseBarcode(inputs)
+        return BarcodeInfo(
+            type = result.type,
+            barcode = result.barcode
+        )
     }
 }
 

@@ -1,5 +1,6 @@
 package com.lighthouse.beep.library.recognizer.parser
 
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.lighthouse.beep.library.recognizer.model.BarcodeParserResult
 
 internal class BarcodeParser {
@@ -10,6 +11,7 @@ internal class BarcodeParser {
         "\\b(\\d{4}[- ]+\\d{4}[- ]+\\d{4}[- ]+\\d{4}[- ]+\\d{2})\\b".toRegex(),
         "\\b(\\d{4}[- ]+\\d{4}[- ]+\\d{4}[- ]+\\d{4})\\b".toRegex(),
         "\\b(\\d{4}[- ]+\\d{4}[- ]+\\d{4}[- ]+\\d{2})\\b".toRegex(),
+        "\\b(\\d{4}[- ]+\\d{5}[- ]+\\d{4})\\b".toRegex(),
         "\\b(\\d{4}[- ]+\\d{4}[- ]+\\d{4})\\b".toRegex(),
         "\\b(\\d{16})\\b".toRegex(),
         "\\b(\\d{14})\\b".toRegex(),
@@ -35,6 +37,10 @@ internal class BarcodeParser {
                 }
             }
         }
-        return BarcodeParserResult(barcode, barcodeFiltered)
+        return BarcodeParserResult(
+            Barcode.FORMAT_CODE_128,
+            barcode,
+            barcodeFiltered
+        )
     }
 }

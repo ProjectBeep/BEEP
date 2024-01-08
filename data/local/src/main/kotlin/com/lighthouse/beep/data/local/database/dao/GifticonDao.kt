@@ -9,6 +9,7 @@ import com.lighthouse.beep.data.local.database.entity.DBGifticonEntity
 import com.lighthouse.beep.data.local.database.model.DBBrandCategory
 import com.lighthouse.beep.data.local.database.model.DBGifticonDetail
 import com.lighthouse.beep.data.local.database.model.DBGifticonEditInfo
+import com.lighthouse.beep.data.local.database.model.DBGifticonImageData
 import com.lighthouse.beep.data.local.database.model.DBGifticonListItem
 import com.lighthouse.beep.data.local.database.model.DBGifticonResource
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +43,7 @@ internal interface GifticonDao {
                 "thumbnail_rect, " +
                 "name, " +
                 "display_brand, " +
+                "barcode_type, " +
                 "barcode, " +
                 "is_cash_card, " +
                 "total_cash, " +
@@ -70,6 +72,7 @@ internal interface GifticonDao {
                 "name, " +
                 "brand, " +
                 "display_brand, " +
+                "barcode_type, " +
                 "barcode, " +
                 "is_cash_card, " +
                 "total_cash, " +
@@ -175,28 +178,11 @@ internal interface GifticonDao {
         isAsc: Int,
     ): Flow<List<DBGifticonListItem>>
 
-    @Query(
-        "SELECT id, " +
-                "user_id, " +
-                "thumbnail_type, " +
-                "thumbnail_built_in_code, " +
-                "thumbnail_uri, " +
-                "thumbnail_rect, " +
-                "name, " +
-                "display_brand, " +
-                "is_cash_card, " +
-                "total_cash, " +
-                "remain_cash, " +
-                "is_used, " +
-                "expire_at " +
-                "FROM gifticon_table " +
-                "WHERE user_id = :userId AND is_used = 1 " +
-                "ORDER BY used_at DESC"
-    )
-    fun getUsedGifticonList(userId: String): Flow<List<DBGifticonListItem>>
+    @Query("SELECT id, image_path, image_added_date FROM gifticon_table WHERE user_id = :userId")
+    suspend fun getGifticonImageDataList(userId: String): List<DBGifticonImageData>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGifticon(list: DBGifticonEntity): Long
+    suspend fun insertGifticonList(list: List<DBGifticonEntity>): List<Long>
 
     @Update(entity = DBGifticonEntity::class)
     suspend fun updateGifticon(editInfo: DBGifticonEditInfo)

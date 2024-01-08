@@ -14,6 +14,4 @@ internal data class DBGalleryImageDataEntity(
     val addedDate: Date,
     @ColumnInfo(name = "is_gifticon")
     val isGifticon: Boolean,
-    @ColumnInfo(name = "added_gifticon_id")
-    val addedGifticonId: Long?,
 )

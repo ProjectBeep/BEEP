@@ -7,6 +7,14 @@ import com.lighthouse.beep.data.local.database.model.DBGifticonEditInfo
 import com.lighthouse.beep.model.gifticon.GifticonEditInfo
 import java.util.Date
 
+internal fun List<GifticonEditInfo>.toEntityForCreate(
+    userId: String,
+): List<DBGifticonEntity> {
+    return map {
+        it.toEntityForCreate(userId)
+    }
+}
+
 internal fun GifticonEditInfo.toEntityForCreate(
     userId: String,
 ): DBGifticonEntity {
@@ -23,6 +31,7 @@ internal fun GifticonEditInfo.toEntityForCreate(
         name = name,
         brand = displayBrand.lowercase(),
         displayBrand = displayBrand,
+        barcodeType = barcodeType,
         barcode = barcode,
         isCashCard = isCashCard,
         totalCash = totalCash,
@@ -51,6 +60,7 @@ internal fun GifticonEditInfo.toEntity(
         name = name,
         brand = displayBrand.lowercase(),
         displayBrand = displayBrand,
+        barcodeType = barcodeType,
         barcode = barcode,
         isCashCard = isCashCard,
         totalCash = totalCash,
@@ -74,6 +84,7 @@ internal fun DBGifticonEditInfo.toModel(): GifticonEditInfo {
         imageAddedDate = imageAddedDate,
         name = name,
         displayBrand = displayBrand,
+        barcodeType = barcodeType,
         barcode = barcode,
         isCashCard = isCashCard,
         totalCash = totalCash,

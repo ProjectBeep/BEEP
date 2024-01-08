@@ -6,5 +6,4 @@ data class GalleryImageData(
     val imagePath: String,
     val addedDate: Date,
     val isGifticon: Boolean,
-    val addedGifticonId: Long?,
 )

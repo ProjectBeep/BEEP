@@ -17,6 +17,7 @@ data class GifticonEditInfo(
     val imageAddedDate: Date,
     val name: String,
     val displayBrand: String,
+    val barcodeType: String,
     val barcode: String,
     val isCashCard: Boolean,
     val totalCash: Int,

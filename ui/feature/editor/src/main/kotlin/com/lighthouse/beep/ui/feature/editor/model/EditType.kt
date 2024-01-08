@@ -3,11 +3,13 @@ package com.lighthouse.beep.ui.feature.editor.model
 import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.annotation.StringRes
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.lighthouse.beep.library.recognizer.BalanceRecognizer
 import com.lighthouse.beep.library.recognizer.BarcodeRecognizer
 import com.lighthouse.beep.library.recognizer.ExpiredRecognizer
 import com.lighthouse.beep.library.recognizer.TextRecognizer
 import com.lighthouse.beep.library.textformat.TextInputFormat
+import com.lighthouse.beep.model.gifticon.GifticonBarcodeType
 import com.lighthouse.beep.ui.dialog.textinput.TextInputParam
 import com.lighthouse.beep.ui.feature.editor.R
 
@@ -120,15 +122,25 @@ internal enum class EditType(
         hintResId = R.string.editor_gifticon_preview_barcode_hint,
     ) {
         private val barcodeRecognizer = BarcodeRecognizer()
-        private val validBarcodeCount = setOf(12, 14, 16, 18, 20, 22, 24)
 
         override fun createEditDataWithText(value: String): EditData {
-            return EditData.Barcode(value)
+            return EditData.Barcode(
+                barcodeType = GifticonBarcodeType.CODE_128,
+                barcode = value,
+            )
         }
 
         override suspend fun createEditDataWithCrop(bitmap: Bitmap, rect: Rect, zoom: Float): EditData {
-            val value = barcodeRecognizer.recognize(bitmap)
-            return EditData.CropBarcode(value, rect, zoom)
+            val info = barcodeRecognizer.recognize(bitmap)
+            return EditData.CropBarcode(
+                barcodeType = when(info.type) {
+                    Barcode.FORMAT_QR_CODE -> GifticonBarcodeType.QR_CODE
+                    else -> GifticonBarcodeType.CODE_128
+                },
+                barcode = info.barcode,
+                rect = rect,
+                zoom = zoom,
+            )
         }
 
         override fun createTextInputParam(data: GifticonData?): TextInputParam {
@@ -139,7 +151,7 @@ internal enum class EditType(
         }
 
         override fun isInvalid(data: GifticonData): Boolean {
-            return data.barcode.length !in validBarcodeCount
+            return data.barcode.length < 12
         }
 
         override fun getText(data: GifticonData): String {

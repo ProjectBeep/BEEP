@@ -2,6 +2,7 @@ package com.lighthouse.beep.ui.feature.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.common.exts.add
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.common.exts.remove
@@ -9,6 +10,7 @@ import com.lighthouse.beep.core.common.exts.removeAt
 import com.lighthouse.beep.core.ui.model.ScrollInfo
 import com.lighthouse.beep.core.ui.recyclerview.GridCalculator
 import com.lighthouse.beep.data.repository.gallery.GalleryImageRepository
+import com.lighthouse.beep.data.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.domain.usecase.recognize.RecognizeBarcodeUseCase
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gallery.GalleryImageData
@@ -33,6 +35,7 @@ import kotlin.math.ceil
 @HiltViewModel
 internal class GalleryViewModel @Inject constructor(
     private val galleryRepository: GalleryImageRepository,
+    private val gifticonRepository: GifticonRepository,
     private val recognizeBarcodeUseCase: RecognizeBarcodeUseCase,
 ) : ViewModel() {
 
@@ -66,8 +69,10 @@ internal class GalleryViewModel @Inject constructor(
     }
 
     private val recognizeData = mutableMapOf<String, GalleryImageData>()
-    private val _recognizeDataFlow = MutableSharedFlow<Map<String, GalleryImageData>>(replay = 1)
-    val recognizeDataFlow = _recognizeDataFlow.asSharedFlow()
+
+    private val gifticonData = mutableSetOf<String>()
+    private val _gifticonDataFlow = MutableSharedFlow<Set<String>>(replay = 1)
+    val gifticonDataFlow = _gifticonDataFlow.asSharedFlow()
 
     private var loadedRecognizeData = false
 
@@ -108,7 +113,11 @@ internal class GalleryViewModel @Inject constructor(
                 loadingRecognizeData.value = true
                 recognizeData +=
                     galleryRepository.getRecognizeDataList().associateBy { it.imagePath }
-                _recognizeDataFlow.emit(recognizeData)
+
+                gifticonRepository.getGifticonImageDataList(BeepAuth.userUid).forEach {
+                    gifticonData += "${it.imagePath}-${it.imageAddedDate.time}"
+                }
+                _gifticonDataFlow.emit(gifticonData)
 
                 loadedRecognizeData = true
                 requestRecommendNext()
@@ -140,8 +149,8 @@ internal class GalleryViewModel @Inject constructor(
                 requestRecognizeList.windowed(unitCount, unitCount).forEach { requestList ->
                     requestList.map {
                         launch(Dispatchers.IO) {
-                            val isGifticon =
-                                recognizeBarcodeUseCase(it.contentUri).getOrDefault("").isNotEmpty()
+                            val barcode = recognizeBarcodeUseCase(it.contentUri).getOrNull()
+                            val isGifticon = !barcode?.barcode.isNullOrEmpty()
                             galleryRepository.saveRecognizeData(it, isGifticon)
                             if (isGifticon) {
                                 list.add(it)
@@ -248,8 +257,8 @@ internal class GalleryViewModel @Inject constructor(
             pageOffset += 1
 
             recommendIdSet.add(item.id)
-            val isGifticon =
-                recognizeBarcodeUseCase(item.contentUri).getOrDefault("").isNotEmpty()
+            val barcode = recognizeBarcodeUseCase(item.contentUri).getOrNull()
+            val isGifticon = !barcode?.barcode.isNullOrEmpty()
             galleryRepository.saveRecognizeData(item, isGifticon)
             if (isGifticon) {
                 _recommendList.value = listOf(item) + _recommendList.value
@@ -269,7 +278,7 @@ internal class GalleryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _recognizeDataFlow.emit(emptyMap())
+            _gifticonDataFlow.emit(emptySet())
         }
     }
 }

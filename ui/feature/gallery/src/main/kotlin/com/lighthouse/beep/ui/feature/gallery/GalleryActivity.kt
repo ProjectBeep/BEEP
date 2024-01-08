@@ -61,8 +61,8 @@ internal class GalleryActivity : AppCompatActivity() {
         }
 
         override fun getAddedGifticonFlow(item: GalleryImage): Flow<Boolean> {
-            return viewModel.recognizeDataFlow.map {
-                it[item.imagePath]?.addedGifticonId != null
+            return viewModel.gifticonDataFlow.map {
+                item.gifticonImageDataKey in it
             }.distinctUntilChanged()
         }
 
