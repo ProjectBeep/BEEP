@@ -2,6 +2,9 @@ package com.lighthouse.beep.ui.feature.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.TerminalSeparatorType
+import androidx.paging.cachedIn
+import androidx.paging.insertHeaderItem
 import androidx.paging.map
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.common.exts.add
@@ -27,6 +30,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
@@ -78,11 +82,12 @@ internal class GalleryViewModel @Inject constructor(
 
     private var loadedRecognizeData = false
 
-    private val _useSelectedStorage = MutableStateFlow(false)
-    val useSelectedStorage = _useSelectedStorage.asStateFlow()
+    private val useSelectedStorage = MutableStateFlow(false)
+    val useSelectedStorageValue
+        get() = useSelectedStorage.value
 
     fun setUseSelectedStorage(value: Boolean) {
-        _useSelectedStorage.value = value
+        useSelectedStorage.value = value
     }
 
     private val recommendImageList = MutableStateFlow<List<GalleryImage>>(emptyList())
@@ -102,7 +107,8 @@ internal class GalleryViewModel @Inject constructor(
     private var pageOffset = 0
 
     private var currentPage = 0
-    private val maxPage = ceil(galleryRepository.getImageSize() / pageCount.toFloat()).toInt()
+    private var lastPage = -1
+    private var maxPage = ceil(galleryRepository.getImageSize() / pageCount.toFloat()).toInt()
 
     private var firstVisible = 0
 
@@ -115,6 +121,16 @@ internal class GalleryViewModel @Inject constructor(
         loadingRecognizeData,
     ) { type, recognizing, loadingRecognizeData ->
         type == BucketType.RECOMMEND && (recognizing || loadingRecognizeData)
+    }
+
+    fun refreshGalleryImage() {
+        lastPage = currentPage
+        currentPage = 0
+        pageOffset = 0
+        maxPage = ceil(galleryRepository.getImageSize() / pageCount.toFloat()).toInt()
+        if (bucketType.value == BucketType.RECOMMEND) {
+            requestRecommend(0)
+        }
     }
 
     private var requestNextJob: Job? = null
@@ -149,7 +165,7 @@ internal class GalleryViewModel @Inject constructor(
     private fun requestRecommendNext() {
         requestNextJob = viewModelScope.launch {
             recognizing.value = true
-            val targetSize = recommendImageList.value.size + (pageCount * 1.5f).toInt()
+            val targetSize = recommendImageList.value.size + pageCount
             val list = mutableListOf<GalleryImage>()
             while (currentPage < maxPage && recommendImageList.value.size < targetSize) {
                 val images = galleryRepository.getImages(currentPage, pageCount, pageOffset)
@@ -165,7 +181,7 @@ internal class GalleryViewModel @Inject constructor(
                     data == null
                 }
 
-                requestRecognizeList.windowed(unitCount, unitCount).forEach { requestList ->
+                requestRecognizeList.windowed(unitCount, unitCount, true).forEach { requestList ->
                     requestList.map {
                         launch(Dispatchers.IO) {
                             val barcode = recognizeBarcodeUseCase(it.contentUri).getOrNull()
@@ -200,9 +216,14 @@ internal class GalleryViewModel @Inject constructor(
             return
         }
         recommendIdSet.addAll(list.map { it.id })
-
-        list.sortBy { -it.dateAdded.time }
-        recommendImageList.value += list
+        if (lastPage >= currentPage) {
+            list += recommendImageList.value
+            list.sortBy { -it.dateAdded.time }
+            recommendImageList.value = list.toList()
+        } else {
+            list.sortBy { -it.dateAdded.time }
+            recommendImageList.value += list
+        }
         list.clear()
     }
 
@@ -210,13 +231,16 @@ internal class GalleryViewModel @Inject constructor(
         requestNextJob?.cancel()
     }
 
-    val allList = galleryRepository.getImages(pageCount).map { data ->
-        data.map {
-            if (it.id == -1L) {
-                GalleryItem.AddItem
-            } else {
-                GalleryItem.Image(it)
-            }
+    val allList = useSelectedStorage.flatMapLatest { useSelectedStorage ->
+        if (useSelectedStorage) {
+            galleryRepository.getImages(pageCount).map { data ->
+                data.map<GalleryImage, GalleryItem> { GalleryItem.Image(it) }
+                    .insertHeaderItem(TerminalSeparatorType.FULLY_COMPLETE, GalleryItem.AddItem)
+            }.cachedIn(viewModelScope)
+        } else {
+            galleryRepository.getImages(pageCount).map { data ->
+                data.map<GalleryImage, GalleryItem> { GalleryItem.Image(it) }
+            }.cachedIn(viewModelScope)
         }
     }
 

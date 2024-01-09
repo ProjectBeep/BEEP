@@ -55,8 +55,8 @@ internal class GalleryActivity : AppCompatActivity() {
     private val viewModel by viewModels<GalleryViewModel>()
 
     private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            refreshGalleryImage()
         }
 
     private val onGalleryAddListener = object: OnGalleryAddItemListener {
@@ -152,7 +152,17 @@ internal class GalleryActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.setUseSelectedStorage(BeepPermission.checkSelectedStoragePermission(this))
+        val oldValue = viewModel.useSelectedStorageValue
+        val newValue = BeepPermission.checkSelectedStoragePermission(this)
+        viewModel.setUseSelectedStorage(newValue)
+
+        if (oldValue && !newValue) {
+            viewModel.refreshGalleryImage()
+        }
+        if (oldValue != newValue) {
+            galleryAllAdapter.refresh()
+        }
+
         if (!BeepPermission.checkStoragePermission(this)) {
             finish()
         }
@@ -403,5 +413,10 @@ internal class GalleryActivity : AppCompatActivity() {
                 editorLauncher.launch(intent)
             }
         })
+    }
+
+    private fun refreshGalleryImage() {
+        viewModel.refreshGalleryImage()
+        galleryAllAdapter.refresh()
     }
 }
