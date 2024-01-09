@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="gallery_image_delete_content_description">선택 제거</string>
+    <string name="gallery_image_add_content_description">이미지 권한 추가</string>
 
     <string name="gallery_close_content_description">닫기</string>
     <string name="gallery_list_content_description">갤러리 이미지 리스트</string>

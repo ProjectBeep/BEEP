@@ -9,10 +9,11 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.lighthouse.beep.core.common.exts.dp
-import com.lighthouse.beep.core.ui.exts.setListener
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
 import com.lighthouse.beep.library.barcode.BarcodeGenerator
+import com.lighthouse.beep.library.textformat.TextInputFormat
+import com.lighthouse.beep.model.gifticon.GifticonBarcodeType
 import com.lighthouse.beep.ui.feature.editor.R
 import com.lighthouse.beep.ui.feature.editor.databinding.ItemEditorPreviewBinding
 import com.lighthouse.beep.ui.feature.editor.model.EditGifticonThumbnail
@@ -28,30 +29,19 @@ internal class EditorPreviewViewHolder(
     ),
 ) : LifecycleViewHolder<Long>(binding.root) {
 
-    private var init = false
-
     init {
         binding.imageThumbnail.clipToOutline = true
 
+        binding.containerPreview.alpha = 0f
         binding.containerPreview.viewTreeObserver.addOnGlobalLayoutListener {
             val diff = binding.containerPreview.height - binding.scroll.height
             val newImageSize = maxOf(binding.imageThumbnail.height - diff, 120.dp)
             if (newImageSize != binding.imageThumbnail.height) {
+
                 binding.imageThumbnail.updateLayoutParams {
                     width = newImageSize
                     height = newImageSize
                 }
-            }
-
-            if (!init) {
-                init = true
-                binding.containerPreview.animate()
-                    .setListener(doOnStart = {
-                        binding.containerPreview.alpha = 0f
-                    })
-                    .alpha(1f)
-                    .setDuration(500)
-                    .start()
             }
         }
     }
@@ -178,23 +168,52 @@ internal class EditorPreviewViewHolder(
             }
         }
 
+        var init = false
         combine(
+            model.barcodeType,
             model.barcode,
-            model.displayBarcode,
-        ) { barcode, displayBarcode ->
-            barcode to displayBarcode
+        ) { type, barcode ->
+            type to barcode
         }.collect(
             lifecycleOwner = lifecycleOwner,
             defaultBlock = {
                 binding.imageBarcode.setImageBitmap(null)
             },
-            block = { (barcode, displayBarcode) ->
+            block = { (type, barcode) ->
                 binding.containerBarcodeEmpty.isVisible = barcode.isEmpty()
                 binding.groupBarcode.isVisible = barcode.isNotEmpty()
-                binding.textBarcode.text = displayBarcode
+
+                val textVisible = type != GifticonBarcodeType.QR_CODE && barcode.isNotEmpty()
+                binding.textBarcode.isVisible = textVisible
+                binding.textBarcode.text = TextInputFormat.BARCODE.valueToTransformed(barcode)
+
+                binding.imageBarcode.updateLayoutParams {
+                    when (type) {
+                        GifticonBarcodeType.CODE_128 -> {
+                            width = 300.dp
+                            height = 82.dp
+                        }
+                        GifticonBarcodeType.QR_CODE -> {
+                            width = 150.dp
+                            height = 150.dp
+                        }
+                    }
+                }
+
                 if (barcode.isNotEmpty()) {
-                    val image = BarcodeGenerator.loadBarcode(barcode, 300.dp, 82.dp)
+                    val image = when(type) {
+                        GifticonBarcodeType.CODE_128 -> BarcodeGenerator.loadBarcode(barcode, 300.dp, 82.dp)
+                        GifticonBarcodeType.QR_CODE -> BarcodeGenerator.loadQrCode(barcode, 150.dp, 150.dp)
+                    }
                     binding.imageBarcode.setImageBitmap(image)
+                }
+
+                if (!init) {
+                    init = true
+                    binding.containerPreview.animate()
+                        .alpha(1f)
+                        .setDuration(500)
+                        .start()
                 }
             }
         )

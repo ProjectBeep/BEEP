@@ -49,7 +49,7 @@ class BarcodeRecognizer {
             client.process(image).addOnCompleteListener {
                 val result = it.result.firstOrNull()
                 val info = BarcodeInfo(
-                    type = result?.valueType ?: Barcode.FORMAT_CODE_128,
+                    type = result?.format ?: Barcode.FORMAT_CODE_128,
                     barcode = result?.rawValue ?: "",
                 )
                 continuation.resume(info)

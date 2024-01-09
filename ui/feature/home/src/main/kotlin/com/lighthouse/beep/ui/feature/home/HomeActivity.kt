@@ -17,7 +17,6 @@ import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.permission.dialog.StoragePermissionDialog
-import com.lighthouse.beep.permission.ext.checkSelfPermissions
 import com.lighthouse.beep.ui.feature.home.databinding.ActivityHomeBinding
 import com.lighthouse.beep.ui.feature.home.model.HomePageState
 import com.lighthouse.beep.ui.feature.home.page.empty.HomeEmptyFragment
@@ -40,8 +39,7 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation {
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-            val deniedList = result.filter { !it.value }.map { it.key }
-            if (deniedList.isEmpty()) {
+            if (BeepPermission.checkStoragePermission(this)) {
                 gotoGallery()
             } else {
                 showRequestPermissionDialog()
@@ -61,7 +59,7 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation {
     private fun setUpCollectState() {
         repeatOnStarted {
             viewModel.homePageState.collect { state ->
-                when(state) {
+                when (state) {
                     HomePageState.MAIN -> replaceMainPage()
                     HomePageState.EMPTY -> replaceEmptyPage()
                     else -> Unit
@@ -132,11 +130,15 @@ internal class HomeActivity : AppCompatActivity(), HomeNavigation {
     }
 
     override fun gotoGallery() {
-        if (checkSelfPermissions(BeepPermission.storage)) {
-            val intent = navigator.getIntent(this, ActivityNavItem.Gallery)
-            startActivity(intent)
-        } else {
-            galleryLauncher.launch(BeepPermission.storage)
+        when {
+            BeepPermission.checkStoragePermission(this) -> {
+                val intent = navigator.getIntent(this, ActivityNavItem.Gallery)
+                startActivity(intent)
+            }
+
+            else -> {
+                galleryLauncher.launch(BeepPermission.storage)
+            }
         }
     }
 

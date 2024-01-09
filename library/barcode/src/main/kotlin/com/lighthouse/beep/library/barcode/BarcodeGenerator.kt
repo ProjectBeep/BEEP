@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.oned.Code128Writer
+import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,23 +19,55 @@ object BarcodeGenerator {
         height: Int,
         backgroundColor: Int = Color.WHITE,
     ): Bitmap {
-        val barcodeKey = "${value}-${width}-${height}"
+        val barcodeKey = "${value}-${width}-${height}-${backgroundColor}"
         val barcode = barcodeCache.get(barcodeKey)
         if (barcode != null) {
             return barcode
         }
-        return generate(value, width, height, backgroundColor).also {
+        return generate(
+            format = BarcodeFormat.CODE_128,
+            value = value,
+            width = width,
+            height = height,
+            backgroundColor = backgroundColor
+        ).also {
+            barcodeCache.put(barcodeKey, it)
+        }
+    }
+
+    suspend fun loadQrCode(
+        value: String,
+        width: Int,
+        height: Int,
+        backgroundColor: Int = Color.WHITE,
+    ): Bitmap {
+        val barcodeKey = "${value}-${width}-${height}-${backgroundColor}"
+        val barcode = barcodeCache.get(barcodeKey)
+        if (barcode != null) {
+            return barcode
+        }
+        return generate(
+            format = BarcodeFormat.QR_CODE,
+            value = value,
+            width = width,
+            height = height,
+            backgroundColor = backgroundColor
+        ).also {
             barcodeCache.put(barcodeKey, it)
         }
     }
 
     private suspend fun generate(
+        format: BarcodeFormat,
         value: String,
         width: Int,
         height: Int,
         backgroundColor: Int = Color.WHITE,
     ): Bitmap = withContext(Dispatchers.IO) {
-        val bitMatrix = Code128Writer().encode(value, BarcodeFormat.CODE_128, width, height)
+        val bitMatrix = when(format) {
+            BarcodeFormat.CODE_128 -> Code128Writer().encode(value, format, width, height)
+            else -> QRCodeWriter().encode(value, format, width, height)
+        }
         var xScale = 1
         var yScale = 1
         while ((xScale + 1) * bitMatrix.width < width) {
@@ -45,7 +78,11 @@ object BarcodeGenerator {
         }
 
         val bitmap =
-            Bitmap.createBitmap(bitMatrix.width * xScale, bitMatrix.height * yScale, Bitmap.Config.ARGB_8888)
+            Bitmap.createBitmap(
+                bitMatrix.width * xScale,
+                bitMatrix.height * yScale,
+                Bitmap.Config.ARGB_8888
+            )
         for (x in 0 until bitMatrix.width) {
             for (y in 0 until bitMatrix.height) {
                 val color = if (bitMatrix.get(x, y)) Color.BLACK else backgroundColor

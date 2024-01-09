@@ -23,7 +23,6 @@ import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewWidth
 import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManager
 import com.lighthouse.beep.permission.BeepPermission
-import com.lighthouse.beep.permission.ext.setUpRequirePermission
 import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBar
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationParam
@@ -261,13 +260,20 @@ internal class EditActivity : AppCompatActivity(), EditorInfoProvider {
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setUpRequirePermission(BeepPermission.storage)
         setUpBackPress()
         setUpPreview()
         setUpPropertyChipList()
         setUpRecycleEditor()
         setUpCollectState()
         setUpOnClickEvent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!BeepPermission.checkStoragePermission(this)) {
+            finish()
+        }
     }
 
     private fun setUpBackPress() {

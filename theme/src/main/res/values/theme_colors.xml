@@ -14,6 +14,7 @@
     <color name="purple">#D5A1E9</color>
     <color name="bg">#F8F8F8</color>
     <color name="light_gray">#DEE0E1</color>
+    <color name="light_gray_50">#80DEE0E1</color>
     <color name="gray">#AEB0B1</color>
     <color name="gray_50">#80AEB0B1</color>
     <color name="medium_gray">#838486</color>

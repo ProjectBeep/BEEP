@@ -32,7 +32,7 @@ enum class TextInputFormat(
     },
     BARCODE(
         separator = ' ',
-        filters = arrayOf(DigitFilterWithMaxLength(24)),
+        filters = arrayOf(DigitFilterWithMaxLength(48)),
         rawInputType = InputType.TYPE_CLASS_NUMBER,
         inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_NORMAL,
     ) {

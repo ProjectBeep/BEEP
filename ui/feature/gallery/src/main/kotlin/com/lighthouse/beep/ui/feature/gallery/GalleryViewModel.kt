@@ -2,6 +2,7 @@ package com.lighthouse.beep.ui.feature.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.map
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.common.exts.add
 import com.lighthouse.beep.core.common.exts.dp
@@ -16,6 +17,7 @@ import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.model.gallery.GalleryImageData
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import com.lighthouse.beep.ui.feature.gallery.model.DragMode
+import com.lighthouse.beep.ui.feature.gallery.model.GalleryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -76,8 +78,25 @@ internal class GalleryViewModel @Inject constructor(
 
     private var loadedRecognizeData = false
 
-    private val _recommendList = MutableStateFlow<List<GalleryImage>>(emptyList())
-    val recommendList = _recommendList.asStateFlow()
+    private val _useSelectedStorage = MutableStateFlow(false)
+    val useSelectedStorage = _useSelectedStorage.asStateFlow()
+
+    fun setUseSelectedStorage(value: Boolean) {
+        _useSelectedStorage.value = value
+    }
+
+    private val recommendImageList = MutableStateFlow<List<GalleryImage>>(emptyList())
+
+    val recommendList = combine(
+        useSelectedStorage,
+        recommendImageList
+    ) { useSelectedStorage, list ->
+        if (useSelectedStorage) {
+            listOf(GalleryItem.AddItem) + list.map { GalleryItem.Image(it) }
+        } else {
+            list.map { GalleryItem.Image(it) }
+        }
+    }
 
     private val recommendIdSet = mutableSetOf<Long>()
     private var pageOffset = 0
@@ -130,9 +149,9 @@ internal class GalleryViewModel @Inject constructor(
     private fun requestRecommendNext() {
         requestNextJob = viewModelScope.launch {
             recognizing.value = true
-            val targetSize = recommendList.value.size + (pageCount * 1.5f).toInt()
+            val targetSize = recommendImageList.value.size + (pageCount * 1.5f).toInt()
             val list = mutableListOf<GalleryImage>()
-            while (currentPage < maxPage && recommendList.value.size < targetSize) {
+            while (currentPage < maxPage && recommendImageList.value.size < targetSize) {
                 val images = galleryRepository.getImages(currentPage, pageCount, pageOffset)
                 val requestRecognizeList = images.filter {
                     if (it.id in recommendIdSet) {
@@ -158,13 +177,13 @@ internal class GalleryViewModel @Inject constructor(
                         }
                     }.joinAll()
 
-                    if (recommendList.value.size - 1 <= firstVisible + pageCount) {
+                    if (recommendImageList.value.size - 1 <= firstVisible + pageCount) {
                         appendRecommendList(list)
                     }
                 }
                 currentPage += 1
 
-                if (recommendList.value.size - 1 <= firstVisible + pageCount) {
+                if (recommendImageList.value.size - 1 <= firstVisible + pageCount) {
                     appendRecommendList(list)
                 }
             }
@@ -183,7 +202,7 @@ internal class GalleryViewModel @Inject constructor(
         recommendIdSet.addAll(list.map { it.id })
 
         list.sortBy { -it.dateAdded.time }
-        _recommendList.value += list
+        recommendImageList.value += list
         list.clear()
     }
 
@@ -191,7 +210,15 @@ internal class GalleryViewModel @Inject constructor(
         requestNextJob?.cancel()
     }
 
-    val allList = galleryRepository.getImages(pageCount)
+    val allList = galleryRepository.getImages(pageCount).map { data ->
+        data.map {
+            if (it.id == -1L) {
+                GalleryItem.AddItem
+            } else {
+                GalleryItem.Image(it)
+            }
+        }
+    }
 
     private val _selectedList = MutableStateFlow<List<GalleryImage>>(emptyList())
     val selectedList = _selectedList.asStateFlow()
@@ -216,14 +243,14 @@ internal class GalleryViewModel @Inject constructor(
         }
     }
 
-    fun isSelectedItem(item: GalleryImage): Boolean {
-        return _selectedList.value.indexOfFirst { it.id == item.id } != -1
+    fun isSelectedItem(item: GalleryItem.Image): Boolean {
+        return _selectedList.value.indexOfFirst { it.id == item.item.id } != -1
     }
 
-    fun dragItem(item: GalleryImage, dragMode: DragMode) {
+    fun dragItem(item: GalleryItem.Image, dragMode: DragMode) {
         when (dragMode) {
-            DragMode.SELECT -> selectItem(item)
-            DragMode.DELETE -> deleteItem(item)
+            DragMode.SELECT -> selectItem(item.item)
+            DragMode.DELETE -> deleteItem(item.item)
             else -> {}
         }
     }
@@ -261,7 +288,7 @@ internal class GalleryViewModel @Inject constructor(
             val isGifticon = !barcode?.barcode.isNullOrEmpty()
             galleryRepository.saveRecognizeData(item, isGifticon)
             if (isGifticon) {
-                _recommendList.value = listOf(item) + _recommendList.value
+                recommendImageList.value = listOf(item) + recommendImageList.value
             }
         }
     }
@@ -271,7 +298,7 @@ internal class GalleryViewModel @Inject constructor(
             pageOffset -= 1
 
             _selectedList.remove { it.id == id }
-            _recommendList.remove { it.id == id }
+            recommendImageList.remove { it.id == id }
             recommendIdSet.remove(id)
         }
     }

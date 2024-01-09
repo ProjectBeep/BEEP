@@ -37,7 +37,7 @@ internal class RequestPermissionActivity : AppCompatActivity() {
 
     private fun setUpOnClickEvent() {
         binding.btnAgree.setOnClickListener(createThrottleClickListener {
-            permissionLauncher.launch(BeepPermission.all)
+            permissionLauncher.launch(BeepPermission.notification + BeepPermission.location)
         })
     }
 

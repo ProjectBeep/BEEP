@@ -28,7 +28,6 @@ import com.lighthouse.beep.core.ui.recyclerview.scroller.CenterScrollLayoutManag
 import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.permission.BeepPermission
-import com.lighthouse.beep.permission.ext.setUpRequirePermission
 import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBar
 import com.lighthouse.beep.ui.designsystem.snackbar.BeepSnackBarAction
 import com.lighthouse.beep.ui.dialog.confirmation.ConfirmationDialog
@@ -334,7 +333,6 @@ internal class RegisterActivity : AppCompatActivity(), EditorInfoProvider {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setUpRequirePermission(BeepPermission.storage)
         setUpGalleryContentObserver()
         setUpBackPress()
         setUpGifticonList()
@@ -343,6 +341,14 @@ internal class RegisterActivity : AppCompatActivity(), EditorInfoProvider {
         setUpRecycleEditor()
         setUpCollectState()
         setUpOnClickEvent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!BeepPermission.checkStoragePermission(this)) {
+            finish()
+        }
     }
 
     private fun setUpGalleryContentObserver() {

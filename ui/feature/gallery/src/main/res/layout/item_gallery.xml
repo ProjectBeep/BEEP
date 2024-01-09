@@ -19,12 +19,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/view_added_gifticon"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/view_register_gifticon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/image_gallery"
+        app:layout_constraintEnd_toEndOf="@id/image_gallery"
+        app:layout_constraintTop_toTopOf="@id/image_gallery"
+        app:layout_constraintBottom_toBottomOf="@id/image_gallery"
         android:visibility="gone"
-        android:background="@color/medium_pink"/>
+        android:background="@drawable/bg_gallery_registered"/>
+
+    <ImageView
+        android:id="@+id/icon_register_gifticon"
+        android:layout_width="28dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_gallery_register_gifticon"/>
 
     <TextView
         android:id="@+id/text_selected_order"

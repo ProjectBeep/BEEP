@@ -9,34 +9,34 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.recyclerview.viewholder.LifecycleViewHolder
-import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.beep.ui.feature.gallery.databinding.ItemGalleryBinding
+import com.lighthouse.beep.ui.feature.gallery.model.GalleryItem
 
 internal class GalleryViewHolder(
     parent: ViewGroup,
     private val requestManager: RequestManager,
-    private val listener: OnGalleryListener,
+    private val listener: OnGalleryItemListener,
     private val binding: ItemGalleryBinding = ItemGalleryBinding.inflate(
         LayoutInflater.from(parent.context), parent, false
     )
-) : LifecycleViewHolder<GalleryImage>(binding.root) {
+) : LifecycleViewHolder<GalleryItem.Image>(binding.root) {
 
-    override fun bind(item: GalleryImage) {
+    override fun bind(item: GalleryItem.Image) {
         super.bind(item)
 
-        requestManager.load(item.contentUri)
+        requestManager.load(item.item.contentUri)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.imageGallery)
     }
 
-    override fun onSetUpClickEvent(item: GalleryImage) {
+    override fun onSetUpClickEvent(item: GalleryItem.Image) {
         binding.root.setOnThrottleClickListener {
             listener.onClick(item)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onCollectState(lifecycleOwner: LifecycleOwner, item: GalleryImage) {
+    override fun onCollectState(lifecycleOwner: LifecycleOwner, item: GalleryItem.Image) {
         listener.getSelectedIndexFlow(item).collect(lifecycleOwner, default = -1) { index ->
             val isSelected = index != -1
             binding.textSelectedOrder.isVisible = isSelected
@@ -47,10 +47,12 @@ internal class GalleryViewHolder(
         listener.getAddedGifticonFlow(item).collect(
             lifecycleOwner = lifecycleOwner,
             defaultBlock = {
-                binding.viewAddedGifticon.isVisible = false
+                binding.iconRegisterGifticon.isVisible = false
+                binding.viewRegisterGifticon.isVisible = false
             },
             block = { isAdded ->
-                binding.viewAddedGifticon.isVisible = isAdded
+                binding.iconRegisterGifticon.isVisible = isAdded
+                binding.viewRegisterGifticon.isVisible = isAdded
             },
         )
     }

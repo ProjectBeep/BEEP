@@ -31,15 +31,16 @@ import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.permission.BeepPermission
-import com.lighthouse.beep.permission.ext.setUpRequirePermission
 import com.lighthouse.beep.ui.feature.gallery.list.gallery.GalleryAllAdapter
 import com.lighthouse.beep.ui.feature.gallery.list.gallery.GalleryRecommendAdapter
-import com.lighthouse.beep.ui.feature.gallery.list.gallery.OnGalleryListener
+import com.lighthouse.beep.ui.feature.gallery.list.gallery.OnGalleryItemListener
 import com.lighthouse.beep.ui.feature.gallery.list.selected.OnSelectedGalleryListener
 import com.lighthouse.beep.ui.feature.gallery.list.selected.SelectedGalleryAdapter
 import com.lighthouse.beep.ui.feature.gallery.databinding.ActivityGalleryBinding
+import com.lighthouse.beep.ui.feature.gallery.list.gallery.OnGalleryAddItemListener
 import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import com.lighthouse.beep.ui.feature.gallery.model.DragMode
+import com.lighthouse.beep.ui.feature.gallery.model.GalleryItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -53,21 +54,32 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<GalleryViewModel>()
 
-    private val onGalleryListener = object : OnGalleryListener {
-        override fun getSelectedIndexFlow(item: GalleryImage): Flow<Int> {
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+
+        }
+
+    private val onGalleryAddListener = object: OnGalleryAddItemListener {
+        override fun onClick(item: GalleryItem.AddItem) {
+            galleryLauncher.launch(BeepPermission.storage)
+        }
+    }
+
+    private val onGalleryListener = object : OnGalleryItemListener {
+        override fun getSelectedIndexFlow(item: GalleryItem.Image): Flow<Int> {
             return viewModel.selectedList.map { list ->
-                list.indexOfFirst { it.id == item.id }
+                list.indexOfFirst { it.id == item.item.id }
             }.distinctUntilChanged()
         }
 
-        override fun getAddedGifticonFlow(item: GalleryImage): Flow<Boolean> {
+        override fun getAddedGifticonFlow(item: GalleryItem.Image): Flow<Boolean> {
             return viewModel.gifticonDataFlow.map {
-                item.gifticonImageDataKey in it
+                item.item.gifticonImageDataKey in it
             }.distinctUntilChanged()
         }
 
-        override fun onClick(item: GalleryImage) {
-            viewModel.toggleItem(item)
+        override fun onClick(item: GalleryItem.Image) {
+            viewModel.toggleItem(item.item)
         }
     }
 
@@ -78,6 +90,7 @@ internal class GalleryActivity : AppCompatActivity() {
     private val galleryRecommendAdapter by lazy {
         GalleryRecommendAdapter(
             requestManager,
+            onGalleryAddListener,
             onGalleryListener,
         )
     }
@@ -85,6 +98,7 @@ internal class GalleryActivity : AppCompatActivity() {
     private val galleryAllAdapter by lazy {
         GalleryAllAdapter(
             requestManager,
+            onGalleryAddListener,
             onGalleryListener,
         )
     }
@@ -127,13 +141,21 @@ internal class GalleryActivity : AppCompatActivity() {
         binding = ActivityGalleryBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        setUpRequirePermission(BeepPermission.storage)
         setUpGalleryContentObserver()
         setUpBucketTypeTab()
         setUpSelectedGalleryList()
         setUpGalleryList()
         setUpCollectState()
         setUpOnClickEvent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.setUseSelectedStorage(BeepPermission.checkSelectedStoragePermission(this))
+        if (!BeepPermission.checkStoragePermission(this)) {
+            finish()
+        }
     }
 
     override fun onStop() {
@@ -196,7 +218,7 @@ internal class GalleryActivity : AppCompatActivity() {
         binding.listGallery.addOnItemTouchListener(object : OnLongPressDragListener() {
             private var dragMode = DragMode.NONE
 
-            private fun getItem(position: Int): GalleryImage? {
+            private fun getItem(position: Int): GalleryItem.Image? {
                 return when (viewModel.bucketType.value) {
                     BucketType.ALL -> galleryAllAdapter.getItemByPosition(position)
                     BucketType.RECOMMEND -> galleryRecommendAdapter.getItemByPosition(position)

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +19,7 @@ import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.library.barcode.BarcodeGenerator
 import com.lighthouse.beep.library.textformat.TextInputFormat
+import com.lighthouse.beep.model.gifticon.GifticonBarcodeType
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
@@ -128,7 +130,7 @@ class GifticonDetailDialog : DialogFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.gifticonDetail.filterNotNull().take(1).collect {
-                if(!viewModel.isShownGifticonDetailEdit()) {
+                if (!viewModel.isShownGifticonDetailEdit()) {
                     editBalloon.show(binding.textEdit)
                 }
             }
@@ -174,8 +176,9 @@ class GifticonDetailDialog : DialogFragment() {
                     getString(R.string.dialog_gifticon_detail_balance, total)
 
                 binding.textExpire.text = it.formattedExpiredDate
-                binding.textMemo.text = it.memo
+                binding.textMemo.text = it.memo.ifEmpty { "-" }
 
+                binding.textBarcode.isVisible = it.barcodeType != GifticonBarcodeType.QR_CODE
                 binding.textBarcode.text = it.displayBarcode
 
                 if (it.isUsed) {
@@ -186,14 +189,37 @@ class GifticonDetailDialog : DialogFragment() {
                     binding.btnUseAndRevert.setText(R.string.dialog_gifticon_detail_use)
                 }
 
+                val bgColor = ContextCompat.getColor(requireContext(), ThemeR.color.bg)
+                binding.imageBarcode.updateLayoutParams {
+                    when (it.barcodeType) {
+                        GifticonBarcodeType.CODE_128 -> {
+                            width = 300.dp
+                            height = 82.dp
+                        }
+                        GifticonBarcodeType.QR_CODE -> {
+                            width = 150.dp
+                            height = 150.dp
+                        }
+                    }
+                }
+
                 if (init) {
                     init = false
                     fadeInDetail()
                 }
 
-                val bgColor = ContextCompat.getColor(requireContext(), ThemeR.color.bg)
-                val image = BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 80.dp, bgColor)
-                binding.imageBarcode.setImageBitmap(image)
+                if (it.barcode.isNotEmpty()) {
+                    val image = when (it.barcodeType) {
+                        GifticonBarcodeType.CODE_128 ->
+                            BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 82.dp, bgColor)
+
+                        GifticonBarcodeType.QR_CODE ->
+                            BarcodeGenerator.loadQrCode(it.barcode, 150.dp, 150.dp, bgColor)
+                    }
+                    binding.imageBarcode.setImageBitmap(image)
+                }
+
+
             }
         }
     }
@@ -217,9 +243,11 @@ class GifticonDetailDialog : DialogFragment() {
                     viewModel.revertUseGifticon()
                     gifticonDetailListener?.onRevertGifticon()
                 }
+
                 viewModel.isCashCard -> {
                     showUseCashDialog()
                 }
+
                 else -> {
                     viewModel.useGifticon()
                     gifticonDetailListener?.onUseGifticon()
@@ -229,9 +257,11 @@ class GifticonDetailDialog : DialogFragment() {
     }
 
     private fun gotoEdit() {
-        val intent = navigator.getIntent(requireContext(), ActivityNavItem.Edit(
-            gifticonId = viewModel.gifticonId
-        ))
+        val intent = navigator.getIntent(
+            requireContext(), ActivityNavItem.Edit(
+                gifticonId = viewModel.gifticonId
+            )
+        )
         startActivity(intent)
         dismiss()
     }
