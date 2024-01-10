@@ -197,8 +197,8 @@ class GifticonDetailDialog : DialogFragment() {
                             height = 82.dp
                         }
                         GifticonBarcodeType.QR_CODE -> {
-                            width = 150.dp
-                            height = 150.dp
+                            width = 120.dp
+                            height = 120.dp
                         }
                     }
                 }
@@ -214,7 +214,7 @@ class GifticonDetailDialog : DialogFragment() {
                             BarcodeGenerator.loadBarcode(it.barcode, 300.dp, 82.dp, bgColor)
 
                         GifticonBarcodeType.QR_CODE ->
-                            BarcodeGenerator.loadQrCode(it.barcode, 150.dp, 150.dp, bgColor)
+                            BarcodeGenerator.loadQrCode(it.barcode, 120.dp, 120.dp, bgColor)
                     }
                     binding.imageBarcode.setImageBitmap(image)
                 }

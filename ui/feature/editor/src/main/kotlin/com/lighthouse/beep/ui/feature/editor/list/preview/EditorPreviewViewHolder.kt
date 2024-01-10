@@ -194,8 +194,8 @@ internal class EditorPreviewViewHolder(
                             height = 82.dp
                         }
                         GifticonBarcodeType.QR_CODE -> {
-                            width = 150.dp
-                            height = 150.dp
+                            width = 120.dp
+                            height = 120.dp
                         }
                     }
                 }
@@ -203,7 +203,7 @@ internal class EditorPreviewViewHolder(
                 if (barcode.isNotEmpty()) {
                     val image = when(type) {
                         GifticonBarcodeType.CODE_128 -> BarcodeGenerator.loadBarcode(barcode, 300.dp, 82.dp)
-                        GifticonBarcodeType.QR_CODE -> BarcodeGenerator.loadQrCode(barcode, 150.dp, 150.dp)
+                        GifticonBarcodeType.QR_CODE -> BarcodeGenerator.loadQrCode(barcode, 120.dp, 120.dp)
                     }
                     binding.imageBarcode.setImageBitmap(image)
                 }

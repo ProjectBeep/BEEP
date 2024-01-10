@@ -3,10 +3,12 @@ package com.lighthouse.beep.library.barcode
 import android.graphics.Bitmap
 import android.graphics.Color
 import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
 import com.google.zxing.oned.Code128Writer
 import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.EnumMap
 
 object BarcodeGenerator {
 
@@ -64,9 +66,14 @@ object BarcodeGenerator {
         height: Int,
         backgroundColor: Int = Color.WHITE,
     ): Bitmap = withContext(Dispatchers.IO) {
+        val hints = mapOf(
+            EncodeHintType.MARGIN to 0
+        )
         val bitMatrix = when(format) {
-            BarcodeFormat.CODE_128 -> Code128Writer().encode(value, format, width, height)
-            else -> QRCodeWriter().encode(value, format, width, height)
+            BarcodeFormat.CODE_128 -> Code128Writer().encode(value, format, width, height, hints)
+            else -> {
+                QRCodeWriter().encode(value, format, width, height, hints)
+            }
         }
         var xScale = 1
         var yScale = 1
