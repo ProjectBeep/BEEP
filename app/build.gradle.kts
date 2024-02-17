@@ -21,8 +21,8 @@ android {
 
     defaultConfig {
         applicationId = "com.lighthouse.beep"
-        versionCode = 5
-        versionName = "1.0.4"
+        versionCode = 6
+        versionName = "1.0.5"
 
         val naverMapApiId = keystoreProperties.getProperty("naver_map_api_id")
         manifestPlaceholders["naver_map_api_id"] = naverMapApiId

@@ -17,6 +17,10 @@ class RecognizeBarcodeUseCase @Inject constructor(
 
     suspend operator fun invoke(uri: Uri): Result<BarcodeInfo> = runCatching {
         val bitmap = context.decodeBitmap(uri) ?: throw IOException("이미지를 decode 하지 못했습니다")
-        barcodeRecognizer.recognize(bitmap, BarcodeScanMode.IMAGE)
+        if (bitmap.width > 32 && bitmap.height > 32) {
+            barcodeRecognizer.recognize(bitmap, BarcodeScanMode.IMAGE)
+        } else{
+            BarcodeInfo.None
+        }
     }
 }
