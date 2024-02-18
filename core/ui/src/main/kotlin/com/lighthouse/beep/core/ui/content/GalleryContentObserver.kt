@@ -16,7 +16,7 @@ import com.google.firebase.ktx.Firebase
 
 internal class GalleryContentObserver(
     lifecycleOwner: LifecycleOwner,
-    contentResolver: ContentResolver,
+    private val contentResolver: ContentResolver,
     private val listener: OnContentChangeListener,
 ) {
     private val handler = Handler(Looper.getMainLooper())
@@ -44,7 +44,7 @@ internal class GalleryContentObserver(
         }
 
         private fun getContentId(uri: Uri?): Long? {
-            return uri?.lastPathSegment?.toLong()
+            return uri?.lastPathSegment?.toLongOrNull()
         }
     }
 
