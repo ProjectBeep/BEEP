@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="dialog_gifticon_detail_close_content_description">닫기</string>
+    <string name="dialog_gifticon_detail_barcode_copy_description">바코드 복사</string>
 
     <string name="dialog_gifticon_detail_edit">편집</string>
     <string name="dialog_gifticon_detail_total_cash">총 금액</string>
@@ -11,7 +12,7 @@
     <string name="dialog_gifticon_detail_edit_tutorial">기한을 쉽게 편집할 수 있어요</string>
 
     <string name="dialog_gifticon_detail_delete">삭제</string>
-    <string name="dialog_gifticon_detail_use">사용하기</string>
+    <string name="dialog_gifticon_detail_use">사용 완료</string>
     <string name="dialog_gifticon_detail_edit_expired">유효기간 편집</string>
     <string name="dialog_gifticon_detail_move_to_archive">보관함으로 이동</string>
     <string name="dialog_gifticon_detail_delete_used">내역 삭제</string>

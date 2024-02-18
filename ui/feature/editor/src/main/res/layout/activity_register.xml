@@ -156,7 +156,7 @@
         <TextView
             android:id="@+id/btn_register"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="52dp"
             android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -164,7 +164,7 @@
             android:backgroundTint="@color/bg_editor_register"
             android:background="@drawable/bg_rect_r16"
             android:textColor="@color/text_editor_register"
-            android:textAppearance="@style/Text.Title4"
+            android:textAppearance="@style/Text.Title7"
             android:text="@string/editor_gifticon_register"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

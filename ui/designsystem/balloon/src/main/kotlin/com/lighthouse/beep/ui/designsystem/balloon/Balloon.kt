@@ -331,35 +331,41 @@ class Balloon private constructor(
     private fun getRootContainerRect(): Rect {
         val rootView = findRootView() ?: return Rect()
         val rootRect = Rect()
+        val tempRect = Rect()
         rootView.getGlobalVisibleRect(rootRect)
         val leftView = builder.leftConstraintTargetView
         if (leftView != null) {
+            leftView.getGlobalVisibleRect(tempRect)
             rootRect.left = when (builder.leftConstraintTargetDirection) {
-                BalloonHorizontalDirection.LEFT -> leftView.left
-                BalloonHorizontalDirection.RIGHT -> leftView.right
+                BalloonHorizontalDirection.LEFT -> maxOf(rootRect.left, tempRect.left)
+                BalloonHorizontalDirection.RIGHT -> maxOf(rootRect.left, tempRect.right)
             }
         }
         val topView = builder.topConstraintTargetView
         if (topView != null) {
+            topView.getGlobalVisibleRect(tempRect)
             rootRect.top = when (builder.topConstraintTargetDirection) {
-                BalloonVerticalDirection.TOP -> topView.top
-                BalloonVerticalDirection.BOTTOM -> topView.bottom
+                BalloonVerticalDirection.TOP -> maxOf(rootRect.top, tempRect.top)
+                BalloonVerticalDirection.BOTTOM -> maxOf(rootRect.top, tempRect.bottom)
             }
         }
         val rightView = builder.rightConstraintTargetView
         if (rightView != null) {
+            rightView.getGlobalVisibleRect(tempRect)
             rootRect.right = when (builder.rightConstraintTargetDirection) {
-                BalloonHorizontalDirection.LEFT -> rightView.left
-                BalloonHorizontalDirection.RIGHT -> rightView.right
+                BalloonHorizontalDirection.LEFT -> minOf(rootRect.right, tempRect.left)
+                BalloonHorizontalDirection.RIGHT -> minOf(rootRect.right, tempRect.right)
             }
         }
         val bottomView = builder.bottomConstraintTargetView
         if (bottomView != null) {
+            bottomView.getGlobalVisibleRect(tempRect)
             rootRect.bottom = when (builder.bottomConstraintTargetDirection) {
-                BalloonVerticalDirection.TOP -> bottomView.left
-                BalloonVerticalDirection.BOTTOM -> bottomView.right
+                BalloonVerticalDirection.TOP -> minOf(rootRect.bottom, tempRect.top)
+                BalloonVerticalDirection.BOTTOM -> minOf(rootRect.bottom, tempRect.bottom)
             }
         }
+
         return rootRect
     }
 
@@ -369,20 +375,22 @@ class Balloon private constructor(
         val rootContainerRect = getRootContainerRect()
         anchor.getGlobalVisibleRect(anchorRect)
 
-        val left = when (builder.alignment) {
+        val baseLeft = when (builder.alignment) {
             BalloonAlignment.TOP,
             BalloonAlignment.BOTTOM -> anchorRect.left - (child.measuredWidth - anchor.measuredWidth) / 2
 
             BalloonAlignment.LEFT -> anchorRect.left - child.measuredWidth
             BalloonAlignment.RIGHT -> anchorRect.left + anchor.measuredWidth
         } - rootContainerRect.left
+        val left = maxOf(rootContainerRect.left, baseLeft)
 
-        val top = when (builder.alignment) {
+        val baseTop = when (builder.alignment) {
             BalloonAlignment.TOP -> anchorRect.top - child.measuredHeight
             BalloonAlignment.BOTTOM -> anchorRect.top + anchor.measuredHeight
             BalloonAlignment.LEFT,
             BalloonAlignment.RIGHT -> anchorRect.top - (child.measuredHeight - anchor.measuredHeight) / 2
         } - rootContainerRect.top
+        val top = maxOf(rootContainerRect.top, baseTop)
 
         val right = left + child.measuredWidth
         val bottom = top + child.measuredHeight
@@ -441,7 +449,7 @@ class Balloon private constructor(
 
             BalloonAlignment.TOP,
             BalloonAlignment.BOTTOM -> getArrowConstraintPositionX(
-                anchorRect.left + anchor.measuredWidth / 2 - rootContainerRect.left,
+                anchorRect.left + anchor.measuredWidth / 2,
                 left + builder.marginLeft + offsetX,
                 right - builder.marginRight + offsetX,
             )
@@ -462,9 +470,13 @@ class Balloon private constructor(
     }
 
     private fun getArrowConstraintPositionX(anchorCenterX: Int, left: Int, right: Int): Float {
-        val minPosition = left + builder.cornerRadius
-        val maxPosition = right - builder.cornerRadius - builder.arrowWidth
+        val card = binding.balloonCard
+        val radius = minOf(card.measuredHeight / 2f, card.measuredWidth / 2f, builder.cornerRadius)
+
+        val minPosition = left + radius
+        val maxPosition = right - radius - builder.arrowWidth
         val arrowPosition = anchorCenterX - builder.arrowWidth / 2f
+
         return if (minPosition < maxPosition) {
             arrowPosition.coerceIn(minPosition, maxPosition) - left
         } else {
@@ -473,8 +485,11 @@ class Balloon private constructor(
     }
 
     private fun getArrowConstraintPositionY(anchorCenterY: Int, top: Int, bottom: Int): Float {
-        val minPosition = top + builder.cornerRadius
-        val maxPosition = bottom - builder.cornerRadius - builder.arrowHeight
+        val card = binding.balloonCard
+        val radius = minOf(card.measuredHeight / 2f, card.measuredWidth / 2f, builder.cornerRadius)
+
+        val minPosition = top + radius
+        val maxPosition = bottom - radius - builder.arrowHeight
         val arrowPosition = anchorCenterY - builder.arrowHeight / 2f
         return if (minPosition < maxPosition) {
             arrowPosition - top

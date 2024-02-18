@@ -1,11 +1,14 @@
 package com.lighthouse.beep.ui.dialog.gifticondetail
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.DialogFragment
@@ -23,6 +26,7 @@ import com.lighthouse.beep.model.gifticon.GifticonBarcodeType
 import com.lighthouse.beep.model.gifticon.GifticonThumbnail
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
+import com.lighthouse.beep.ui.designsystem.balloon.BalloonAlignment
 import com.lighthouse.beep.ui.designsystem.balloon.BalloonHorizontalDirection
 import com.lighthouse.beep.ui.designsystem.balloon.TextBalloonBuilder
 import com.lighthouse.beep.theme.R as ThemeR
@@ -59,13 +63,14 @@ class GifticonDetailDialog : DialogFragment() {
     private val editBalloon by lazy {
         TextBalloonBuilder(requireContext())
             .setText(R.string.dialog_gifticon_detail_edit_tutorial)
-            .setTextAppearanceRes(ThemeR.style.Text_Title7)
+            .setTextAppearanceRes(ThemeR.style.Text_Body3)
             .setTextColorRes(ThemeR.color.white)
             .setLifecycleOwner(viewLifecycleOwner)
+            .setAlignment(BalloonAlignment.BOTTOM)
+            .setLeftConstraint(binding.imageThumbnail, BalloonHorizontalDirection.RIGHT)
+            .setMargin(left = 7.dp)
             .setPadding(horizontal = 12.dp, vertical = 8.dp)
-            .setMargin(right = 46.dp)
-            .setRightConstraint(binding.btnClose, BalloonHorizontalDirection.RIGHT)
-            .setCornerRadius(16f.dp)
+            .setCornerRadius(30f.dp)
             .setBalloonColorRes(ThemeR.color.beep_pink)
             .setArrowRotation(0)
             .setDismissWhenClickOutside(false)
@@ -131,7 +136,7 @@ class GifticonDetailDialog : DialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.gifticonDetail.filterNotNull().take(1).collect {
                 if (!viewModel.isShownGifticonDetailEdit()) {
-                    editBalloon.show(binding.textEdit)
+                    editBalloon.show(binding.btnEdit)
                 }
             }
         }
@@ -181,6 +186,8 @@ class GifticonDetailDialog : DialogFragment() {
                 binding.textBarcode.isVisible = it.barcodeType != GifticonBarcodeType.QR_CODE
                 binding.textBarcode.text = it.displayBarcode
 
+                binding.iconBarcodeCopy.isVisible = it.barcodeType != GifticonBarcodeType.QR_CODE
+
                 if (it.isUsed) {
                     binding.btnDelete.setText(R.string.dialog_gifticon_detail_delete_used)
                     binding.btnUseAndRevert.setText(R.string.dialog_gifticon_detail_revert_use)
@@ -196,6 +203,7 @@ class GifticonDetailDialog : DialogFragment() {
                             width = 300.dp
                             height = 82.dp
                         }
+
                         GifticonBarcodeType.QR_CODE -> {
                             width = 120.dp
                             height = 120.dp
@@ -218,8 +226,6 @@ class GifticonDetailDialog : DialogFragment() {
                     }
                     binding.imageBarcode.setImageBitmap(image)
                 }
-
-
             }
         }
     }
@@ -254,6 +260,16 @@ class GifticonDetailDialog : DialogFragment() {
                 }
             }
         }
+
+        binding.containerBarcode.setOnThrottleClickListener {
+            copyToClipboard(viewModel.displayBarcode)
+        }
+    }
+
+    private fun copyToClipboard(text: String) {
+        val clipboard = requireContext().getSystemService<ClipboardManager>() ?: return
+        val clipData = ClipData.newPlainText("Beep Barcode Text", text)
+        clipboard.setPrimaryClip(clipData)
     }
 
     private fun gotoEdit() {

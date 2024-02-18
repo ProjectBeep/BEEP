@@ -34,6 +34,9 @@ internal class GifticonDetailViewModel @Inject constructor(
     val remainCash
         get() = gifticonDetail.value?.remainCash ?: 0
 
+    val displayBarcode
+        get() = gifticonDetail.value?.displayBarcode ?: ""
+
     val isUsed
         get() = gifticonDetail.value?.isUsed ?: false
 
