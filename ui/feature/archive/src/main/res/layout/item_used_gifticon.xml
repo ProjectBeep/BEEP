@@ -91,7 +91,7 @@
         app:layout_constraintBottom_toTopOf="@id/text_expire"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textAppearance="@style/Text.Body1"
+        android:textAppearance="@style/Text.Title7"
         android:textColor="@color/font_dark_gray"
         tools:text="긴 텍스트 실험하기긴 텍스트 실험하기긴 텍스트 실험하기긴 텍스트 실험하기긴 텍스트 실험하기긴 텍스트 실험하기"/>
 
@@ -104,7 +104,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:textAppearance="@style/Text.Body4"
+        android:textAppearance="@style/Text.Body5"
         android:textColor="@color/font_medium_gray"
         tools:text="2022.11.08"/>
 

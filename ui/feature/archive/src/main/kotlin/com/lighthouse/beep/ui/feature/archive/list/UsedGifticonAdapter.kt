@@ -7,12 +7,12 @@ import com.lighthouse.beep.ui.feature.archive.model.Diff
 import com.lighthouse.beep.ui.feature.archive.model.UsedGifticonItem
 
 internal class UsedGifticonAdapter(
-    private val requestManager: RequestManager,
+    private val getRequestManager: () -> RequestManager,
     private val usedGifticonListener: UsedGifticonListener,
 ): ListAdapter<UsedGifticonItem, UsedGifticonViewHolder>(Diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsedGifticonViewHolder {
-        return UsedGifticonViewHolder(parent, requestManager, usedGifticonListener)
+        return UsedGifticonViewHolder(parent, getRequestManager(), usedGifticonListener)
     }
 
     override fun onBindViewHolder(holder: UsedGifticonViewHolder, position: Int) {

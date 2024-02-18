@@ -45,31 +45,27 @@ internal class ArchiveActivity : AppCompatActivity() {
             .setRootView(binding.root)
     }
 
-    private val usedGifticonAdapter by lazy {
-        UsedGifticonAdapter(
-            requestManager = requestManager,
-            usedGifticonListener = usedGifticonListener,
-        )
-    }
-
-    private val usedGifticonListener = object : UsedGifticonListener {
-        override fun isSelectedFlow(item: UsedGifticonItem): Flow<Boolean> {
-            return viewModel.selectedGifticonListFlow
-                .map { list -> list.find { it.id == item.id } != null }
-                .distinctUntilChanged()
-        }
-
-        override fun getViewModeFlow(): Flow<GifticonViewMode> {
-            return viewModel.gifticonViewMode
-        }
-
-        override fun onClick(item: UsedGifticonItem) {
-            when (viewModel.gifticonViewMode.value) {
-                GifticonViewMode.VIEW -> showGifticonDetail(item)
-                GifticonViewMode.EDIT -> viewModel.selectGifticon(item)
+    private val usedGifticonAdapter = UsedGifticonAdapter(
+        getRequestManager = { requestManager },
+        usedGifticonListener = object : UsedGifticonListener {
+            override fun isSelectedFlow(item: UsedGifticonItem): Flow<Boolean> {
+                return viewModel.selectedGifticonListFlow
+                    .map { list -> list.find { it.id == item.id } != null }
+                    .distinctUntilChanged()
             }
-        }
-    }
+
+            override fun getViewModeFlow(): Flow<GifticonViewMode> {
+                return viewModel.gifticonViewMode
+            }
+
+            override fun onClick(item: UsedGifticonItem) {
+                when (viewModel.gifticonViewMode.value) {
+                    GifticonViewMode.VIEW -> showGifticonDetail(item)
+                    GifticonViewMode.EDIT -> viewModel.selectGifticon(item)
+                }
+            }
+        },
+    )
 
     private fun showGifticonDetail(item: UsedGifticonItem) {
         show(GifticonDetailDialog.TAG) {
