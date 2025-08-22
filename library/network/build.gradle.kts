@@ -4,6 +4,12 @@ plugins {
 
 android {
     namespace = "com.lighthouse.beep.library.network"
+
+    buildTypes {
+        release {
+            isMinifyEnabled
+        }
+    }
 }
 
 dependencies {

@@ -10,20 +10,22 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.kakao.sdk.auth.AuthApiClient
-import com.kakao.sdk.common.KakaoSdk
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.common.model.KakaoSdkError
-import com.kakao.sdk.user.UserApiClient
+// Kakao 로그인 관련 import 주석 처리
+// import com.kakao.sdk.auth.AuthApiClient
+// import com.kakao.sdk.common.KakaoSdk
+// import com.kakao.sdk.common.model.ClientError
+// import com.kakao.sdk.common.model.ClientErrorCause
+// import com.kakao.sdk.common.model.KakaoSdkError
+// import com.kakao.sdk.user.UserApiClient
 import com.lighthouse.beep.ui.core.binding.viewBindings
 import com.lighthouse.beep.ui.core.exts.repeatOnStarted
 import com.lighthouse.beep.ui.core.utils.throttle.OnThrottleClickListener
 import com.lighthouse.beep.ui.page.intro.BuildConfig
 import com.lighthouse.beep.ui.page.intro.R
 import com.lighthouse.beep.ui.page.intro.databinding.FragmentIntroBinding
-import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.NidOAuthLoginState
+// Naver 로그인 관련 import 주석 처리
+// import com.navercorp.nid.NaverIdLoginSDK
+// import com.navercorp.nid.oauth.NidOAuthLoginState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -54,20 +56,21 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
             }
         }
 
-    private val naverLoginLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            when (result.resultCode) {
-                Activity.RESULT_OK -> {
-                    Log.d("NAVER_LOGIN", "login accessToken : ${NaverIdLoginSDK.getAccessToken()}")
-                }
-
-                Activity.RESULT_CANCELED -> {
-                }
-
-                else -> {
-                }
-            }
-        }
+    // Naver 로그인 런처 주석 처리
+    // private val naverLoginLauncher =
+    //     registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    //         when (result.resultCode) {
+    //             Activity.RESULT_OK -> {
+    //                 Log.d("NAVER_LOGIN", "login accessToken : ${NaverIdLoginSDK.getAccessToken()}")
+    //             }
+    //
+    //             Activity.RESULT_CANCELED -> {
+    //             }
+    //
+    //             else -> {
+    //             }
+    //         }
+    //     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         animateLogo()
@@ -75,13 +78,14 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
         setUpSignInLoading()
         setUpClickEvent()
 
-        NaverIdLoginSDK.initialize(
-            requireContext(),
-            BuildConfig.NAVER_LOGIN_CLIENT_ID,
-            BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
-            getString(com.lighthouse.beep.theme.R.string.app_name),
-        )
-        Log.d("NAVER_LOGIN", "accessToken : ${NaverIdLoginSDK.getAccessToken()}")
+        // Naver SDK 초기화 주석 처리
+        // NaverIdLoginSDK.initialize(
+        //     requireContext(),
+        //     BuildConfig.NAVER_LOGIN_CLIENT_ID,
+        //     BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
+        //     getString(com.lighthouse.beep.theme.R.string.app_name),
+        // )
+        // Log.d("NAVER_LOGIN", "accessToken : ${NaverIdLoginSDK.getAccessToken()}")
     }
 
     private fun animateLogo() {
@@ -150,68 +154,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
             },
         )
 
-        binding.btnKakaoLogin.setOnClickListener(
-            OnThrottleClickListener(viewLifecycleOwner) {
-                KakaoSdk.init(requireContext(), "b8bffbe2e013b8cc065cef5b395fe23c")
-                if (AuthApiClient.instance.hasToken()) {
-                    UserApiClient.instance.accessTokenInfo { token, error ->
-                        if (error != null) {
-                            if (error is KakaoSdkError && error.isInvalidTokenError()) {
-                                Log.d("AUTH_TEST", "kakao auth need login")
-                            } else {
-                                Log.d("AUTH_TEST", "kakao auth error")
-                            }
-                        } else {
-                            val accessToken =
-                                AuthApiClient.instance.tokenManagerProvider.manager.getToken()?.accessToken
-                            Log.d("AUTH_TEST", "kakao success : $accessToken")
-                        }
-                    }
-                } else {
-                    if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
-                        UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
-                            if (error != null) {
-                                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                                    Log.d("AUTH_TEST", "kakao talk login cancel : $error")
-                                } else {
-                                    Log.d("AUTH_TEST", "kakao talk error : $error")
-                                }
-                            } else {
-                                Log.d("AUTH_TEST", "kakao talk token : $token")
-                            }
-                        }
-                    } else {
-                        UserApiClient.instance.loginWithKakaoAccount(requireContext()) { token, error ->
-                            if (error != null) {
-                                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                                    Log.d("AUTH_TEST", "kakao account login cancel : $error")
-                                } else {
-                                    Log.d("AUTH_TEST", "kakao account error : $error")
-                                }
-                            } else {
-                                Log.d("AUTH_TEST", "kakao account token : $token")
-                            }
-                        }
-                    }
-                }
-            },
-        )
-
-        binding.btnNaverLogin.setOnClickListener(
-            OnThrottleClickListener(viewLifecycleOwner) {
-                NaverIdLoginSDK.initialize(
-                    requireContext(),
-                    BuildConfig.NAVER_LOGIN_CLIENT_ID,
-                    BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
-                    getString(com.lighthouse.beep.theme.R.string.app_name),
-                )
-                if (NaverIdLoginSDK.getState() == NidOAuthLoginState.OK) {
-                    NaverIdLoginSDK.getAccessToken()
-                } else {
-                    NaverIdLoginSDK.authenticate(requireContext(), naverLoginLauncher)
-                }
-            },
-        )
+        // Kakao, Naver 로그인 버튼 제거됨 - 해당 클릭 이벤트도 제거
 
         binding.tvGuestSignin.setOnClickListener(
             OnThrottleClickListener(viewLifecycleOwner) {
