@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.BEEP.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/beep_pink</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_beep</item>
-        <item name="postSplashScreenTheme">@style/Theme.BEEP</item>
-    </style>
-</resources>

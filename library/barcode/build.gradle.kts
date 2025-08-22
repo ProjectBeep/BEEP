@@ -8,4 +8,5 @@ android {
 
 dependencies {
     implementation(libs.zxing.core)
+    implementation(libs.kotlin.coroutine.core)
 }

@@ -4,6 +4,8 @@ import kotlin.math.floor
 
 /**
  * 정확히 받아오는 데이터는 dd 이기 때문에 가능 하면 dd 기준으로 데이터를 저장하고 불러오기
+ * Degress/Minutes/Seconds (DMS)
+ * Decimal Degrees (DD)
  *
  * @property degree 도
  * @property minutes 분

@@ -1,16 +1,12 @@
 package com.lighthouse.beep.data.repository.gifticon
 
-import com.lighthouse.beep.domain.repository.gifticon.GifticonRepository
 import com.lighthouse.beep.model.brand.BrandCategory
 import com.lighthouse.beep.model.gifticon.GifticonDetail
-import com.lighthouse.beep.model.gifticon.GifticonForAddition
-import com.lighthouse.beep.model.gifticon.GifticonForUpdate
+import com.lighthouse.beep.model.gifticon.GifticonEditInfo
+import com.lighthouse.beep.model.gifticon.GifticonImageData
 import com.lighthouse.beep.model.gifticon.GifticonListItem
-import com.lighthouse.beep.model.gifticon.GifticonNotification
 import com.lighthouse.beep.model.gifticon.GifticonSortBy
-import com.lighthouse.beep.model.user.UsageHistory
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 import javax.inject.Inject
 
 internal class GifticonRepositoryImpl @Inject constructor(
@@ -18,173 +14,141 @@ internal class GifticonRepositoryImpl @Inject constructor(
     private val gifticonStorage: LocalGifticonStorage,
 ) : GifticonRepository {
 
-    override suspend fun getGifticonDetail(
+    override fun isExistGifticon(userId: String, isUsed: Boolean): Flow<Boolean> {
+        return localGifticonDataSource.isExistGifticon(userId, isUsed)
+    }
+
+    override fun getGifticonCount(userId: String, isUsed: Boolean): Flow<Int> {
+        return localGifticonDataSource.getGifticonCount(userId, isUsed)
+    }
+
+    override fun getGifticonDetail(
         userId: String,
         gifticonId: Long,
-    ): Result<GifticonDetail> {
+    ): Flow<GifticonDetail?> {
         return localGifticonDataSource.getGifticonDetail(userId, gifticonId)
+    }
+
+    override suspend fun getGifticonEditInfo(
+        userId: String,
+        gifticonId: Long,
+    ): GifticonEditInfo? {
+        return localGifticonDataSource.getGifticonEditInfo(userId, gifticonId)
+    }
+
+    override fun getGifticonList(
+        userId: String,
+        isUsed: Boolean,
+        gifticonSortBy: GifticonSortBy,
+        isAsc: Boolean
+    ): Flow<List<GifticonListItem>> {
+        return localGifticonDataSource.getGifticonList(userId, isUsed, gifticonSortBy, isAsc)
+    }
+
+    override fun getGifticonListByBrand(
+        userId: String,
+        brand: String,
+        gifticonSortBy: GifticonSortBy,
+        isAsc: Boolean
+    ): Flow<List<GifticonListItem>> {
+        return localGifticonDataSource.getGifticonListByBrand(userId, brand.lowercase(), gifticonSortBy, isAsc)
+    }
+
+    override suspend fun getGifticonImageDataList(userId: String): List<GifticonImageData> {
+        return localGifticonDataSource.getGifticonImageDataList(userId)
     }
 
     override suspend fun insertGifticonList(
         userId: String,
-        gifticonForAdditionList: List<GifticonForAddition>,
-    ): Result<Unit> = runCatching {
-        gifticonForAdditionList.forEach { item ->
-            val result = gifticonStorage.createGifticonImage(
-                item.originUri,
-                item.croppedUri,
-                item.croppedRect,
-            )
-            localGifticonDataSource.insertGifticon(userId, item, result.getOrThrow())
+        gifticonInfoList: List<GifticonEditInfo>,
+    ): List<Long> {
+        val editInfoList = gifticonInfoList.map {
+            val originResult = gifticonStorage.saveGifticonOriginImage(it.originUri)
+            val thumbnail = it.thumbnailBitmap
+            if (thumbnail != null) {
+                val thumbnailUri = gifticonStorage.saveGifticonThumbnailImage(thumbnail)
+                it.copy(
+                    gifticonUri = originResult.gifticonUri,
+                    thumbnailUri = thumbnailUri,
+                )
+            } else {
+                val thumbnailResult =
+                    gifticonStorage.cropAndSaveGifticonThumbnailImage(originResult.gifticonBitmap)
+                it.copy(
+                    gifticonUri = originResult.gifticonUri,
+                    thumbnailUri = thumbnailResult.thumbnailUri,
+                    thumbnailRect = thumbnailResult.thumbnailRect,
+                )
+            }
         }
+        return localGifticonDataSource.insertGifticonList(userId, editInfoList)
     }
 
     override suspend fun updateGifticon(
-        gifticonForUpdate: GifticonForUpdate,
+        gifticonId: Long,
+        gifticonInfo: GifticonEditInfo
     ): Result<Unit> = runCatching {
-        val result = gifticonStorage.updateGifticonImage(
-            gifticonForUpdate.newCroppedUri,
-            gifticonForUpdate.newCroppedRect,
-        )
-        localGifticonDataSource.updateGifticon(gifticonForUpdate, result.getOrThrow())
+        val thumbnail = gifticonInfo.thumbnailBitmap
+        var editInfo = gifticonInfo
+        if (thumbnail != null) {
+            gifticonStorage.deleteFile(editInfo.thumbnailUri)
+            editInfo = editInfo.copy(
+                thumbnailUri = gifticonStorage.saveGifticonThumbnailImage(thumbnail)
+            )
+        }
+        localGifticonDataSource.updateGifticon(gifticonId, editInfo)
+    }
+
+    override suspend fun deleteGifticon(userId: String): Result<Unit> = runCatching {
+        localGifticonDataSource.getGifticonResourceList(userId).forEach {
+            gifticonStorage.deleteFile(it.gifticonUri)
+            gifticonStorage.deleteFile(it.thumbnailUri)
+        }
+        localGifticonDataSource.deleteGifticon(userId)
     }
 
     override suspend fun deleteGifticon(
         userId: String,
-        gifticonId: Long,
-    ): Result<Unit> {
-        return localGifticonDataSource.deleteGifticon(userId, gifticonId)
+        gifticonIdList: List<Long>,
+    ): Result<Unit> = runCatching {
+        localGifticonDataSource.getGifticonResourceList(userId, gifticonIdList).forEach {
+            gifticonStorage.deleteFile(it.gifticonUri)
+            gifticonStorage.deleteFile(it.thumbnailUri)
+        }
+        localGifticonDataSource.deleteGifticon(userId, gifticonIdList)
     }
 
     override suspend fun transferGifticon(
         oldUserId: String,
         newUserId: String,
-    ): Result<Unit> {
-        return localGifticonDataSource.transferGifticon(oldUserId, newUserId)
+    ): Result<Unit> = runCatching {
+        localGifticonDataSource.transferGifticon(oldUserId, newUserId)
     }
 
-    override suspend fun hasGifticonBrand(userId: String, brand: String): Result<Boolean> {
-        return localGifticonDataSource.hasGifticonBrand(userId, brand)
+    override fun getBrandCategoryList(userId: String): Flow<List<BrandCategory>> {
+        return localGifticonDataSource.getBrandCategoryList(userId)
     }
 
-    override suspend fun getGifticonList(
+    override suspend fun useGifticonList(
         userId: String,
+        gifticonIdList: List<Long>,
+    ): Result<Unit> = runCatching {
+        localGifticonDataSource.useGifticonList(userId, gifticonIdList)
+    }
+
+    override suspend fun revertGifticonList(
+        userId: String,
+        gifticonIdList: List<Long>,
+    ): Result<Unit> = runCatching {
+        localGifticonDataSource.revertGifticonList(userId, gifticonIdList)
+    }
+
+    override suspend fun updateGifticonUseInfo(
+        userId: String,
+        gifticonId: Long,
         isUsed: Boolean,
-        updatedAt: Date,
-        excludeExpire: Boolean,
-        gifticonSortBy: GifticonSortBy,
-        isAsc: Boolean,
-        offset: Int,
-        limit: Int,
-    ): List<GifticonListItem> {
-        return localGifticonDataSource.getGifticons(
-            userId,
-            isUsed,
-            updatedAt,
-            excludeExpire,
-            gifticonSortBy,
-            isAsc,
-            offset,
-            limit,
-        )
-    }
-
-    override suspend fun getGifticonNotifications(
-        userId: String,
-        dDaySet: Set<Int>,
-    ): List<GifticonNotification> {
-        return localGifticonDataSource.getGifticonNotifications(userId, dDaySet)
-    }
-
-    override suspend fun getGifticonByBrand(
-        userId: String,
-        filters: Set<String>,
-        isUsed: Boolean,
-        updatedAt: Date,
-        excludeExpire: Boolean,
-        gifticonSortBy: GifticonSortBy,
-        isAsc: Boolean,
-        offset: Int,
-        limit: Int,
-    ): List<GifticonListItem> {
-        return localGifticonDataSource.getGifticonByBrand(
-            userId,
-            filters,
-            isUsed,
-            updatedAt,
-            excludeExpire,
-            gifticonSortBy,
-            isAsc,
-            offset,
-            limit,
-        )
-    }
-
-    override fun getBrandCategoryList(
-        userId: String,
-        isUsed: Boolean,
-        excludeExpire: Boolean,
-    ): Flow<List<BrandCategory>> {
-        return localGifticonDataSource.getBrandCategoryList(
-            userId,
-            isUsed,
-            excludeExpire,
-        )
-    }
-
-    override suspend fun useGifticon(
-        userId: String,
-        gifticonId: Long,
-        usageHistory: UsageHistory,
-    ): Result<Unit> {
-        return localGifticonDataSource.useGifticon(
-            userId,
-            gifticonId,
-            usageHistory,
-        )
-    }
-
-    override suspend fun useCashCardGifticon(
-        userId: String,
-        gifticonId: Long,
-        amount: Int,
-        usageHistory: UsageHistory,
-    ): Result<Unit> {
-        return localGifticonDataSource.useCashCardGifticon(
-            userId,
-            gifticonId,
-            amount,
-            usageHistory,
-        )
-    }
-
-    override suspend fun revertUsedGifticon(
-        userId: String,
-        gifticonId: Long,
-    ): Result<Unit> {
-        return localGifticonDataSource.revertUsedGifticon(
-            userId,
-            gifticonId,
-        )
-    }
-
-    override fun getUsageHistory(
-        userId: String,
-        gifticonId: Long,
-    ): Flow<List<UsageHistory>> {
-        return localGifticonDataSource.getUsageHistory(
-            userId,
-            gifticonId,
-        )
-    }
-
-    override suspend fun insertUsageHistory(
-        gifticonId: Long,
-        usageHistory: UsageHistory,
-    ): Result<Unit> {
-        return localGifticonDataSource.insertUsageHistory(
-            gifticonId,
-            usageHistory,
-        )
+        remain: Int,
+    ): Result<Unit> = runCatching {
+        localGifticonDataSource.updateGifticonUseInfo(userId, gifticonId, isUsed, remain)
     }
 }

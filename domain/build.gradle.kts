@@ -8,13 +8,14 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
+    implementation(projects.core.common)
     implementation(projects.model)
+
+    implementation(projects.data.data)
+
+    implementation(projects.library.recognizer)
 
     implementation(libs.kotlin.coroutine.core)
     implementation(libs.androidx.paging.common.ktx)
     implementation(libs.javax.inject)
-
-//    implementation(platform(libs.firebase.bom))
-//    implementation(libs.firebase.auth.ktx)
 }

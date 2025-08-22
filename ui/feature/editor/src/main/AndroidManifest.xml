@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name=".page.register.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing|stateVisible"
+            android:theme="@style/Theme.BEEP"/>
+
+        <activity
+            android:name=".page.edit.EditActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing|stateVisible"
+            android:theme="@style/Theme.BEEP"/>
+    </application>
+</manifest>

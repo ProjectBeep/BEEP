@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gallery_image_delete_content_description">선택 제거</string>
+    <string name="gallery_image_add_content_description">이미지 권한 추가</string>
+
+    <string name="gallery_close_content_description">닫기</string>
+    <string name="gallery_list_content_description">갤러리 이미지 리스트</string>
+
+    <string name="gallery_title">사진 선택</string>
+    <string name="confirm">선택</string>
+
+    <string name="bucket_type_recommend">추천</string>
+    <string name="bucket_type_all">앨범</string>
+
+    <string name="selected_item_empty">이미지를 선택해주세요</string>
+    <string name="selected_item_count">선택된 항목 %d / %d개</string>
+</resources>

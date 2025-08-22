@@ -23,6 +23,7 @@ data class DmsPos(
     }
 
     // 참고 : https://www.geodatasource.com/developers/java
+    // m 단위의 거리를 반환 한다
     private fun calculateDistance(lat1: Dms, lon1: Dms, lat2: Dms, lon2: Dms): Double {
         val theta = (lon1.dd - lon2.dd) * Math.PI / 180.0
         return acos(

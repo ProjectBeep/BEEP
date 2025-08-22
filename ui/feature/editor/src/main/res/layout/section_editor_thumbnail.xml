@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="56dp">
+    
+    <ImageView
+        android:id="@+id/image_thumbnail"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/editor_gifticon_thumbnail_content_description"
+        android:backgroundTint="@color/light_gray"
+        android:background="@drawable/bg_rect_r8"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_thumbnail_info"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintTop_toTopOf="@id/image_thumbnail"
+        app:layout_constraintBottom_toBottomOf="@id/image_thumbnail"
+        app:layout_constraintStart_toEndOf="@id/image_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_editor_thumbnail_info">
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_recommend"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="text_thumbnail_recommend1,text_thumbnail_recommend2,icon_arrow"
+            tools:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/text_thumbnail_recommend1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:layout_marginStart="16dp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/text_thumbnail_recommend2"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAppearance="@style/Text.SubTitle2"
+            android:textColor="@color/font_medium_gray"
+            android:text="@string/editor_gifticon_preview_thumbnail_recommend1"/>
+
+        <TextView
+            android:id="@+id/text_thumbnail_recommend2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:includeFontPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/text_thumbnail_recommend1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/text_thumbnail_recommend1"
+            android:textAppearance="@style/Text.Body5"
+            android:textColor="@color/medium_pink"
+            android:text="@string/editor_gifticon_preview_thumbnail_recommend2"/>
+
+        <ImageView
+            android:id="@+id/icon_arrow"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/editor_goto_built_in_thumbnail_content_description"
+            android:src="@drawable/icon_editor_expand_right"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_thumbnail"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:constraint_referenced_ids="text_thumbnail, icon_clear"/>
+
+        <TextView
+            android:id="@+id/text_thumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAppearance="@style/Text.Title7"
+            android:textColor="@color/font_dark_gray"
+            tools:text="커피/베이커리"/>
+
+        <ImageView
+            android:id="@+id/icon_clear"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/editor_gifticon_thumbnail_clear_content_description"
+            app:tint="@color/gray"
+            android:src="@drawable/icon_close"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

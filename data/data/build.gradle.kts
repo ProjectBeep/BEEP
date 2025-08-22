@@ -1,5 +1,6 @@
 plugins {
-    id("beep.android.data")
+    id("beep.android.feature")
+    id("beep.android.hilt")
 }
 
 android {
@@ -7,9 +8,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
-    implementation(projects.domain)
-    implementation(projects.library.recognizer)
+    implementation(projects.core.common)
+    implementation(projects.model)
 
     implementation(libs.androidx.paging.common.ktx)
 

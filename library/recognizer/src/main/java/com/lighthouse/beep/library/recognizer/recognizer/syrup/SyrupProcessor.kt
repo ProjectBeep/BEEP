@@ -29,7 +29,7 @@ internal class SyrupProcessor : BaseProcessor() {
         )
     }
 
-    override fun processGifticonImage(bitmap: Bitmap): GifticonProcessImage {
+    override fun processGifticonImage(origin: Bitmap, bitmap: Bitmap): GifticonProcessImage {
         return cropGifticonImage(bitmap, 0.0625f, 0.4375f, 0.375f, 0.6458f)
     }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="setting_back_content_description">뒤로가기</string>
+
+    <string name="setting_toolbar_title">설정</string>
+
+    <string name="setting_usable_gifticon">사용 가능 쿠폰</string>
+    <string name="setting_used_gifticon">사용 완료 쿠폰</string>
+    <string name="setting_gifticon_count">%d개</string>
+
+    <string name="setting_etc_group_title">기타 설정</string>
+
+    <string name="setting_etc_personal_info_policy">개인 정보 처리 방침</string>
+    <string name="setting_etc_open_source_library">오픈 소스 라이브러리</string>
+
+    <string name="setting_account_group_title">계정 관리</string>
+    <string name="setting_account_logout">로그아웃</string>
+    <string name="setting_account_withdrawal">회원탈퇴</string>
+
+    <string name="setting_logout_message">\'삡\'에서 로그아웃 하시겠습니까?</string>
+    <string name="setting_logout_cancel">취소</string>
+    <string name="setting_logout_ok">로그아웃하기</string>
+</resources>

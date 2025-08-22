@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="font_medium_gray">#838486</color>
+    <color name="font_gray">#666666</color>
+    <color name="font_dark_gray">#333333</color>
+    <color name="font_black">#000000</color>
+</resources>

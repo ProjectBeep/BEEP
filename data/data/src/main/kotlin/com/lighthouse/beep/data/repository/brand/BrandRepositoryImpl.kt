@@ -1,6 +1,5 @@
 package com.lighthouse.beep.data.repository.brand
 
-import com.lighthouse.beep.domain.repository.brand.BrandRepository
 import com.lighthouse.beep.model.brand.BrandLocation
 import com.lighthouse.beep.model.location.Dms
 import com.lighthouse.beep.model.location.DmsPos

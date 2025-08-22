@@ -1,22 +1,33 @@
 package com.lighthouse.beep.ui.dialog.datepicker
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.DialogInterface
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
-import android.widget.NumberPicker
-import android.widget.NumberPicker.OnValueChangeListener
-import androidx.fragment.app.DialogFragment
+import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import com.lighthouse.beep.ui.core.binding.viewBindings
-import com.lighthouse.beep.ui.core.exts.repeatOnStarted
+import com.lighthouse.beep.core.ui.exts.repeatOnStarted
+import com.lighthouse.beep.ui.dialog.bottomsheet.BeepBottomSheetDialog
+import com.lighthouse.beep.ui.dialog.datepicker.adapter.DatePickerAdapter
+import com.lighthouse.beep.ui.dialog.datepicker.adapter.DatePickerLayoutManager
 import com.lighthouse.beep.ui.dialog.datepicker.databinding.DialogSpinnerDatePickerBinding
 
-class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
+class DatePickerDialog : BeepBottomSheetDialog() {
 
-    private val binding: DialogSpinnerDatePickerBinding by viewBindings()
+    companion object {
+        const val TAG = "DatePicker"
+
+        fun newInstance(params: DatePickerParam): DatePickerDialog {
+            return DatePickerDialog().apply {
+                arguments = params.buildBundle()
+            }
+        }
+    }
+
+    private var _binding: DialogSpinnerDatePickerBinding? = null
+    private val binding: DialogSpinnerDatePickerBinding
+        get() = requireNotNull(_binding)
 
     private val viewModel: DatePickerViewModel by viewModels(
         factoryProducer = {
@@ -24,108 +35,73 @@ class DatePickerDialog : DialogFragment(R.layout.dialog_spinner_date_picker) {
         },
     )
 
-    private var onDatePickListener: OnDatePickListener? = null
-    fun setOnDatePickerListener(listener: OnDatePickListener?) {
-        onDatePickListener = listener
+    private val yearAdapter = DatePickerAdapter()
+    private val monthAdapter = DatePickerAdapter()
+    private val dateAdapter = DatePickerAdapter()
+
+    override fun onCreateContentView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = DialogSpinnerDatePickerBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            window?.apply {
-                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            }
-        }
+    override fun onDestroyContentView() {
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setUpRoot()
-        setUpPickers()
-        setUpBtnOk()
-        bindData()
+        attachHandle(binding.viewHandle)
+        setUpSpinner()
     }
 
-    private fun setUpRoot() {
-        binding.root.setOnClickListener {
-            dismiss()
-        }
-    }
+    private fun setUpSpinner() {
+        yearAdapter.submitList(viewModel.yearList)
 
-    private fun setUpBtnOk() {
-        binding.btnOk.setOnClickListener {
-            onDatePickListener?.onDatePick(viewModel.year, viewModel.month, viewModel.dayOfMonth)
-            dismiss()
-        }
-    }
-
-    private fun setUpPicker(
-        picker: NumberPicker,
-        min: Int,
-        max: Int,
-        initValue: Int,
-        listener: OnValueChangeListener,
-    ) {
-        picker.apply {
-            wrapSelectorWheel = false
-            minValue = min
-            maxValue = max
-            value = initValue
-            setOnValueChangedListener(listener)
-        }
-    }
-
-    private fun setUpPickers() {
-        setUpPicker(
-            binding.npYear,
-            DatePickerViewModel.MIN_YEAR,
-            DatePickerViewModel.MAX_YEAR,
-            viewModel.year,
-        ) { _, _, newValue ->
-            viewModel.year = newValue
+        val yearPosition = yearAdapter.getPosition(viewModel.year)
+        binding.spinnerYear.apply {
+            adapter = yearAdapter
+            layoutManager = DatePickerLayoutManager(context) {
+                viewModel.setYear(yearAdapter.getValue(it))
+            }
+            scrollToPosition(yearPosition)
         }
 
-        setUpPicker(
-            binding.npMonth,
-            DatePickerViewModel.MIN_MONTH,
-            DatePickerViewModel.MAX_MONTH,
-            viewModel.month,
-        ) { _, _, newValue ->
-            viewModel.month = newValue
+        monthAdapter.submitList(viewModel.monthList)
+
+        val monthPosition = monthAdapter.getPosition(viewModel.month)
+        binding.spinnerMonth.apply {
+            adapter = monthAdapter
+            layoutManager = DatePickerLayoutManager(context) {
+                viewModel.setMonth(monthAdapter.getValue(it))
+            }
+            scrollToPosition(monthPosition)
         }
 
-        setUpPicker(
-            binding.npDayOfMonth,
-            DatePickerViewModel.MIN_DAY_OF_MONTH,
-            DatePickerViewModel.MAX_DAY_OF_MONTH,
-            viewModel.dayOfMonth,
-        ) { _, _, newValue ->
-            viewModel.dayOfMonth = newValue
-        }
-    }
-
-    private fun bindData() {
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.maxDayOfMonth.collect { newValue ->
-                binding.npDayOfMonth.maxValue = newValue
+            viewModel.dateList.collect { dateList ->
+                dateAdapter.submitList(dateList)
+
+                val position = dateAdapter.getPosition(viewModel.dayOfMonth)
+                binding.spinnerDate.scrollToPosition(position)
             }
+        }
+
+        binding.spinnerDate.apply {
+            adapter = dateAdapter
+            layoutManager = DatePickerLayoutManager(context) {
+                viewModel.setDayOfMonth(dateAdapter.getValue(it))
+            }
+            itemAnimator = null
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onDismiss(dialog: DialogInterface) {
+        val result = DatePickerResult(viewModel.year, viewModel.month, viewModel.dayOfMonth)
+        setFragmentResult(DatePickerResult.KEY, result.buildBundle())
 
-        dialog?.window?.apply {
-            attributes = attributes.apply {
-                width = WindowManager.LayoutParams.MATCH_PARENT
-                height = WindowManager.LayoutParams.MATCH_PARENT
-            }
-        }
-    }
-
-    companion object {
-        fun newInstance(params: DatePickerParams): DatePickerDialog {
-            return DatePickerDialog().apply {
-                arguments = params.buildBundle()
-            }
-        }
+        super.onDismiss(dialog)
     }
 }

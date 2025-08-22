@@ -1,11 +1,51 @@
-<resources>
-    <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="NightAdjusted.Theme.Beep" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+    </style>
+
+    <style name="PlatformAdjusted.Theme.Beep" parent="NightAdjusted.Theme.Beep">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="colorPrimary">@color/beep_pink</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/beep_pink</item>
         <item name="colorSecondary">@color/beep_pink</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="colorError">@color/error</item>
-        <item name="colorOnError">@color/white</item>
+        <item name="colorAccent">@color/beep_pink</item>
+        <item name="android:windowAnimationStyle">@null</item>
+
+        <item name="android:textViewStyle">@style/Beep.Text</item>
+    </style>
+
+    <style name="Beep.Text" parent="Widget.AppCompat.TextView">
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Theme.BEEP" parent="PlatformAdjusted.Theme.Beep" />
+
+    <style name="Theme.BEEP.SharedElementTransition" parent="Theme.BEEP">
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="Theme.Dialog" parent="Theme.BEEP">
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorSecondary">@color/beep_pink</item>
+        <item name="colorAccent">@color/beep_pink</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/black_30</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="ViewPrimaryStyle">
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorSecondary">@color/beep_pink</item>
+        <item name="colorAccent">@color/beep_pink</item>
+        <item name="colorControlActivated">@color/beep_pink</item>
+    </style>
+    
+    <style name="BottomSheetDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_bottom_slide_up_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_bottom_slide_down_exit</item>
     </style>
 </resources>

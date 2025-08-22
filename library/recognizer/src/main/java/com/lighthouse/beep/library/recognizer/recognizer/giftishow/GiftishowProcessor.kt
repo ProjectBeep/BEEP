@@ -21,7 +21,25 @@ internal class GiftishowProcessor : BaseProcessor() {
         )
     }
 
-    override fun processGifticonImage(bitmap: Bitmap): GifticonProcessImage {
-        return cropGifticonImage(bitmap, 0.1f, 0.04f, 0.43f, 0.37f)
+    override fun processGifticonImage(origin: Bitmap, bitmap: Bitmap): GifticonProcessImage {
+        val offsetX = (origin.width - bitmap.width) / 2
+        val offsetY = origin.height - bitmap.height
+        val image = cropGifticonImage(bitmap, 0.1f, 0.04f, 0.43f, 0.37f)
+        return image.copy(
+            rect = image.rect.apply {
+                offset(offsetX, offsetY)
+            },
+        )
+    }
+
+    override fun preProcess(bitmap: Bitmap): Bitmap {
+        val ratio = bitmap.width.toFloat() / bitmap.height
+        return if (ratio > 1f) {
+            val size = bitmap.height
+            Bitmap.createBitmap(bitmap, (bitmap.width - size) / 2, 0, size, size)
+        } else {
+            val size = bitmap.width
+            Bitmap.createBitmap(bitmap, 0, bitmap.height - size, size, size)
+        }
     }
 }

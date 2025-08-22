@@ -8,11 +8,17 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+}
 
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.hilt.gradlePlugin)
+    compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.firebase.crashlytics.gradlePlugin)
 }
 
 gradlePlugin {
@@ -25,29 +31,13 @@ gradlePlugin {
             id = "beep.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
+        register("androidFeature") {
+            id = "beep.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
         register("androidHilt") {
             id = "beep.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
-        }
-        register("androidUI") {
-            id = "beep.android.ui"
-            implementationClass = "AndroidUIConventionPlugin"
-        }
-        register("androidDesignSystem") {
-            id = "beep.android.design.system"
-            implementationClass = "AndroidDesignSystemConventionPlugin"
-        }
-        register("androidPage") {
-            id = "beep.android.page"
-            implementationClass = "AndroidPageConventionPlugin"
-        }
-        register("androidDialog") {
-            id = "beep.android.dialog"
-            implementationClass = "AndroidDialogConventionPlugin"
-        }
-        register("androidData") {
-            id = "beep.android.data"
-            implementationClass = "AndroidDataConventionPlugin"
         }
     }
 }

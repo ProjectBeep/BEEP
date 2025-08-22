@@ -2,6 +2,6 @@
 <resources>
     <string name="date_picker_year">년</string>
     <string name="date_picker_month">월</string>
-    <string name="date_picker_day">일</string>
+    <string name="date_picker_date">일</string>
     <string name="date_picker_ok">확인</string>
 </resources>

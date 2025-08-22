@@ -13,7 +13,15 @@ import com.lighthouse.beep.ui.dialog.originimage.databinding.DialogOriginImageBi
 
 class OriginImageDialog : DialogFragment(R.layout.dialog_origin_image) {
 
-    private val binding: DialogOriginImageBinding by viewBindings()
+    companion object {
+        fun newInstance(params: OriginImageParams): OriginImageDialog {
+            return OriginImageDialog().apply {
+                arguments = params.buildBundle()
+            }
+        }
+    }
+
+    private val binding by viewBindings<DialogOriginImageBinding>()
 
     private val originUri
         get() = OriginImageParams.getUri(arguments)
@@ -21,6 +29,7 @@ class OriginImageDialog : DialogFragment(R.layout.dialog_origin_image) {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             window?.apply {
+                setDimAmount(0f)
                 setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             }
         }
@@ -41,14 +50,6 @@ class OriginImageDialog : DialogFragment(R.layout.dialog_origin_image) {
             attributes = attributes.apply {
                 width = WindowManager.LayoutParams.MATCH_PARENT
                 height = WindowManager.LayoutParams.MATCH_PARENT
-            }
-        }
-    }
-
-    companion object {
-        fun newInstance(params: OriginImageParams): OriginImageDialog {
-            return OriginImageDialog().apply {
-                arguments = params.buildBundle()
             }
         }
     }

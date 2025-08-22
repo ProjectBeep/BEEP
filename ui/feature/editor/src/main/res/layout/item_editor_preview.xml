@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_preview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="24dp"
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="16dp"
+    app:layout_constraintBottom_toTopOf="@id/list_editor_chip"
+    app:layout_constraintTop_toBottomOf="@id/list_selected"
+    app:strokeColor="@color/light_gray"
+    app:strokeWidth="1dp"
+    android:background="@color/bg">
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_preview"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            tools:background="@drawable/bg_rect_r16"
+            tools:backgroundTint="@color/white">
+
+            <Switch
+                android:id="@+id/switch_cash"
+                style="@style/Beep.Switch"
+                android:layout_width="44dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="31dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toTopOf="@id/image_thumbnail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                android:background="@null"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <TextView
+                android:id="@+id/text_cash_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/editor_gifticon_preview_cash"
+                android:textAppearance="@style/Text.Body3"
+                android:textColor="@color/font_medium_gray"
+                app:layout_constraintBottom_toBottomOf="@id/switch_cash"
+                app:layout_constraintStart_toEndOf="@id/switch_cash"
+                app:layout_constraintTop_toTopOf="@id/switch_cash" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_center"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <ImageView
+                android:id="@+id/image_thumbnail"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginHorizontal="31dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_rect_r8"
+                android:backgroundTint="@color/light_gray"
+                android:contentDescription="@string/editor_gifticon_content_description"
+                app:layout_constraintBottom_toTopOf="@id/text_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/switch_cash"
+                tools:layout_width="120dp"/>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="text_name_label, text_brand_label, text_expired_label" />
+
+            <TextView
+                android:id="@+id/text_name_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp"
+                android:layout_marginStart="28dp"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="4dp"
+                android:text="@string/editor_gifticon_property_name"
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_name" />
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="23dp"
+                android:layout_marginEnd="28dp"
+                android:includeFontPadding="false"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="@style/Text.Body1"
+                android:textColor="@color/font_dark_gray"
+                app:layout_constraintBottom_toTopOf="@id/text_brand"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/barrier"
+                app:layout_constraintTop_toBottomOf="@id/image_thumbnail"
+                tools:text="스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노스타벅스 아메리카노" />
+
+            <ImageView
+                android:id="@+id/icon_name_empty"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_name_label"
+                app:layout_constraintStart_toStartOf="@id/barrier"
+                app:layout_constraintTop_toTopOf="@id/text_name_label"
+                app:tint="@color/gray" />
+
+            <TextView
+                android:id="@+id/text_brand_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="4dp"
+                android:text="@string/editor_gifticon_property_brand"
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="@id/text_name_label"
+                app:layout_constraintTop_toTopOf="@id/text_brand" />
+
+            <TextView
+                android:id="@+id/text_brand"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="28dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="@style/Text.Body1"
+                android:textColor="@color/font_dark_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/barrier"
+                app:layout_constraintTop_toBottomOf="@id/text_name"
+                app:layout_constraintBottom_toTopOf="@id/text_expired"
+                tools:text="스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스스타벅스" />
+
+            <ImageView
+                android:id="@+id/icon_brand_empty"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_brand_label"
+                app:layout_constraintStart_toStartOf="@id/barrier"
+                app:layout_constraintTop_toTopOf="@id/text_brand_label"
+                app:tint="@color/gray" />
+
+            <TextView
+                android:id="@+id/text_expired_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="4dp"
+                android:text="@string/editor_gifticon_property_expired"
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="@id/text_name_label"
+                app:layout_constraintTop_toTopOf="@id/text_expired" />
+
+            <TextView
+                android:id="@+id/text_expired"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="14dp"
+                android:textAppearance="@style/Text.Body1"
+                android:textColor="@color/font_dark_gray"
+                app:layout_constraintTop_toBottomOf="@id/text_brand"
+                app:layout_constraintStart_toStartOf="@id/barrier"
+                tools:text="2021-11-06" />
+
+            <ImageView
+                android:id="@+id/icon_expired_empty"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_expired_label"
+                app:layout_constraintStart_toStartOf="@id/barrier"
+                app:layout_constraintTop_toTopOf="@id/text_expired_label"
+                app:tint="@color/gray" />
+
+            <TextView
+                android:id="@+id/text_balance_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="-3dp"
+                android:background="@drawable/bg_rect_r6"
+                android:backgroundTint="@color/skyblue_10"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="4dp"
+                android:text="@string/editor_gifticon_property_balance"
+                android:textAppearance="@style/Text.Body5"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="@id/guide_center"
+                app:layout_constraintTop_toTopOf="@id/text_balance" />
+
+            <TextView
+                android:id="@+id/text_balance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="28dp"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/Text.Body1"
+                android:textColor="@color/font_dark_gray"
+                app:layout_constraintTop_toBottomOf="@id/text_brand"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/text_balance_label"
+                tools:text="5,000 원" />
+
+            <ImageView
+                android:id="@+id/icon_balance_empty"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/icon_empty_info"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/text_balance_label"
+                app:layout_constraintStart_toEndOf="@id/text_balance_label"
+                app:layout_constraintTop_toTopOf="@id/text_balance_label"
+                app:tint="@color/gray" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_barcode_empty"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_rect_r16"
+                android:backgroundTint="@color/bg"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_expired_label">
+
+                <ImageView
+                    android:id="@+id/icon_barcode_empty"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/icon_empty_info"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/gray"
+                    tools:tint="@color/gray" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_barcode"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:constraint_referenced_ids="image_barcode, text_barcode"/>
+
+            <ImageView
+                android:id="@+id/image_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="40dp"
+                app:layout_goneMarginBottom="24dp"
+                app:layout_constraintVertical_bias="0"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintBottom_toTopOf="@id/text_barcode"
+                app:layout_constraintTop_toBottomOf="@id/text_expired"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:contentDescription="@null"/>
+
+            <TextView
+                android:id="@+id/text_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginHorizontal="12dp"
+                android:maxLines="2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_barcode"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:gravity="center"
+                android:textAppearance="@style/Text.Body1"
+                android:textColor="@color/font_dark_gray"
+                tools:text="1234 1234 1234 1234 1234 1234 1234 1234 1234 1234 1234 1234"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</com.google.android.material.card.MaterialCardView>

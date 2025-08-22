@@ -2,13 +2,13 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id("beep.android.data")
+    id("beep.android.library")
+    id("beep.android.hilt")
 }
 
 android {
     namespace = "com.lighthouse.beep.data.remote"
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         buildConfig = true
     }
@@ -24,10 +24,12 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
+    implementation(projects.core.common)
     implementation(projects.model)
     implementation(projects.data.data)
 
     implementation(libs.squareup.retrofit2)
     implementation(libs.squareup.retrofit2.converter.moshi)
+
+    implementation(libs.javax.inject)
 }

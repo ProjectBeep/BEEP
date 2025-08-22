@@ -1,23 +1,33 @@
 package com.lighthouse.beep.model.gifticon
 
-import android.graphics.Rect
-import android.net.Uri
+import com.lighthouse.beep.library.textformat.TextInputFormat
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 data class GifticonDetail(
     val id: Long,
     val userId: String,
-    val croppedUri: Uri?,
-    val croppedRect: Rect,
-    val originUri: Uri?,
+    val isCashCard: Boolean,
+    val remainCash: Int,
+    val totalCash: Int,
+    val thumbnail: GifticonThumbnail,
     val name: String,
     val displayBrand: String,
+    val barcodeType: GifticonBarcodeType,
     val barcode: String,
-    val isCashCard: Boolean,
-    val totalCash: Int,
-    val remainCash: Int,
     val memo: String,
     val isUsed: Boolean,
     val expireAt: Date,
-    val createdAt: Date,
-)
+) {
+    val displayBarcode = TextInputFormat.BARCODE.valueToTransformed(barcode)
+
+    val isExpired: Boolean
+        get() = Date() >= expireAt
+
+    val formattedExpiredDate: String
+        get() {
+            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            return formatter.format(expireAt)
+        }
+}

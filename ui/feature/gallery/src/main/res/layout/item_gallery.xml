@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/image_gallery"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:foreground="@drawable/fg_gallery_selected"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_register_gifticon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/image_gallery"
+        app:layout_constraintEnd_toEndOf="@id/image_gallery"
+        app:layout_constraintTop_toTopOf="@id/image_gallery"
+        app:layout_constraintBottom_toBottomOf="@id/image_gallery"
+        android:visibility="gone"
+        android:background="@drawable/bg_gallery_registered"/>
+
+    <ImageView
+        android:id="@+id/icon_register_gifticon"
+        android:layout_width="28dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_gallery_register_gifticon"/>
+
+    <TextView
+        android:id="@+id/text_selected_order"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/bg_oval"
+        android:backgroundTint="@color/beep_pink"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:textAppearance="@style/Text.Title5"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="30" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

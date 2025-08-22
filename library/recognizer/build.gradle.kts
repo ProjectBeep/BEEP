@@ -10,4 +10,5 @@ dependencies {
     implementation(libs.kotlin.coroutine.core)
 
     implementation(libs.mlkit.text.recognition.korean)
+    implementation(libs.mlkit.barcode.scanning)
 }

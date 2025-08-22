@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="beep_pink">#FF2869</color>
+    <color name="medium_pink">#FF94B4</color>
+    <color name="light_pink">#FFEAF0</color>
+    <color name="red">#F35252</color>
+    <color name="orange">#F48E4A</color>
+    <color name="yellow">#FABB5D</color>
+    <color name="mint">#7CDDD6</color>
+    <color name="skyblue">#A6DEF4</color>
+    <color name="skyblue_10">#1AA6DEF4</color>
+    <color name="blue">#619CE4</color>
+    <color name="blue_50">#80619CE4</color>
+    <color name="purple">#D5A1E9</color>
+    <color name="bg">#F8F8F8</color>
+    <color name="light_gray">#DEE0E1</color>
+    <color name="light_gray_50">#80DEE0E1</color>
+    <color name="gray">#AEB0B1</color>
+    <color name="gray_50">#80AEB0B1</color>
+    <color name="medium_gray">#838486</color>
+    <color name="deep_gray">#525354</color>
+    <color name="black_gray">#2C2C2E</color>
+
+    <color name="beep_pink_10">#1AFF2869</color>
+    <color name="beep_pink_20">#33FF2869</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_30">#4D000000</color>
+    <color name="black">#000000</color>
+    <color name="white_0">#00FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+</resources>

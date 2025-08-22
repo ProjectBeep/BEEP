@@ -3,31 +3,68 @@
 import java.io.FileInputStream
 import java.util.Properties
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("beep.android.application")
     id("beep.android.hilt")
+    id("com.google.android.gms.oss-licenses-plugin")
+    alias(libs.plugins.gms)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.lighthouse.beep"
 
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
     defaultConfig {
         applicationId = "com.lighthouse.beep"
-        versionCode = 1
-        versionName = "1.0.0"
-
-        val keystorePropertiesFile = rootProject.file("keystore.properties")
-        val keystoreProperties = Properties()
-        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+        versionCode = 6
+        versionName = "1.0.5"
 
         val naverMapApiId = keystoreProperties.getProperty("naver_map_api_id")
         manifestPlaceholders["naver_map_api_id"] = naverMapApiId
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = File(rootDir, keystoreProperties.getProperty("debug_store_file_name"))
+            storePassword = keystoreProperties.getProperty("debug_store_password")
+            keyAlias = keystoreProperties.getProperty("debug_key_alias")
+            keyPassword = keystoreProperties.getProperty("debug_key_password")
+        }
+        create("release") {
+            storeFile = File(rootDir, keystoreProperties.getProperty("release_store_file_name"))
+            storePassword = keystoreProperties.getProperty("release_store_password")
+            keyAlias = keystoreProperties.getProperty("release_key_alias")
+            keyPassword = keystoreProperties.getProperty("release_key_password")
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        release {
+            signingConfig = signingConfigs.getByName("release")
+
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            ndk.debugSymbolLevel = "FULL"
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+        }
+    }
+
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
 
     packaging {
@@ -36,48 +73,36 @@ android {
 }
 
 dependencies {
-//    implementation(projects.core)
-//    implementation(projects.worker)
-//    implementation(projects.utilsLocation)
-//    implementation(projects.utilsRecognizer)
+    implementation(projects.core.common)
+    implementation(projects.core.ui)
+    implementation(projects.model)
     implementation(projects.theme)
-    implementation(projects.domain)
+
     implementation(projects.data.data)
-    implementation(projects.data.content)
-    implementation(projects.data.database)
-    implementation(projects.data.datastore)
-    implementation(projects.data.encryptedpreference)
     implementation(projects.data.remote)
-    implementation(projects.auth.auth)
-    implementation(projects.auth.google)
+    implementation(projects.data.local)
 
-    implementation(projects.ui.core)
-    implementation(projects.ui.page.intro)
-    implementation(projects.ui.page.main)
+    implementation(projects.auth)
 
-//    implementation(projects.navApp)
-//    implementation(projects.navMain)
-//    implementation(projects.uiCoffee)
-//    implementation(projects.uiCommon)
-//    implementation(projects.uiIntro)
-//    implementation(projects.uiMain)
-//    implementation(projects.uiGifticonlist)
-//    implementation(projects.uiHome)
-//    implementation(projects.uiOpensourcelicense)
-//    implementation(projects.uiPersonalinfopolicy)
-//    implementation(projects.uiSecurity)
-//    implementation(projects.uiSetting)
-//    implementation(projects.uiTermsofuse)
-//    implementation(projects.uiUsedgifticon)
+    implementation(projects.ui.dialog.gifticondetail)
 
+    implementation(projects.ui.feature.login)
+    implementation(projects.ui.feature.home)
+    implementation(projects.ui.feature.gallery)
+    implementation(projects.ui.feature.editor)
+    implementation(projects.ui.feature.archive)
+    implementation(projects.ui.feature.setting)
+
+    implementation(projects.navs)
+
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.fragment.ktx)
 
-    implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.work.runtime.ktx)
-
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics.ktx)
 }
 
 kapt {

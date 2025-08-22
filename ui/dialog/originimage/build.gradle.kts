@@ -1,5 +1,5 @@
 plugins {
-    id("beep.android.dialog")
+    id("beep.android.library")
 }
 
 android {
@@ -7,5 +7,10 @@ android {
 }
 
 dependencies {
+    implementation(projects.ui.core)
+    implementation(projects.core)
+
     implementation(libs.coil)
+
+    implementation(libs.androidx.fragment.ktx)
 }

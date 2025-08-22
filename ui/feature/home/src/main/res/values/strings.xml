@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_profile_image_content_description">사용자 프로필 이미지</string>
+    <string name="home_goto_archive_content_description">보관함으로 이동</string>
+    <string name="home_goto_setting_content_description">설정으로 이동</string>
+
+    <string name="home_gifticon_image_content_description">기프티콘 이미지</string>
+    <string name="home_banner_image_content_description">배너 이미지</string>
+
+    <string name="home_empty_gifticon_title">등록된 쿠폰이 없어요</string>
+    <string name="home_empty_gifticon_description">삡에서 쿠폰을 손쉽게 등록하고\n간편하게 관리해요!</string>
+    <string name="home_empty_gifticon_goto_register">쿠폰 등록하러 가기</string>
+
+    <string name="home_goto_register">쿠폰 등록</string>
+
+    <string name="home_expired_gifticon">기간 만료</string>
+
+    <string name="map_title">근처에서 사용할 수 있어요</string>
+
+    <string name="goto_map">지도 보러가기</string>
+
+    <string name="expired_title">사용 기한이 임박했어요</string>
+
+    <string name="dday_order">디데이순</string>
+    <string name="recent_order">최신등록순</string>
+
+    <string name="brand_all">전체</string>
+
+    <string name="edit_gifticon">편집</string>
+    <string name="edit_cancel">취소</string>
+
+    <string name="home_gifticon_balance_format">잔액 %s원</string>
+
+    <string name="home_delete_gifticon">삭제</string>
+    <string name="home_use_gifticon">사용 완료</string>
+
+    <string name="home_edit_gifticon_message">쿠폰을 편집했어요.</string>
+    <string name="home_use_gifticon_message">쿠폰을 사용했어요.</string>
+    <string name="home_use_cash_gifticon_message">금액권 쿠폰을 사용했어요.</string>
+    <string name="home_use_multi_gifticon_message">%d개의 쿠폰을 사용했어요.</string>
+    <string name="home_delete_gifticon_message">쿠폰을 삭제했어요.</string>
+    <string name="home_delete_multi_gifticon_message">%d개의 쿠폰을 삭제했어요.</string>
+
+</resources>
