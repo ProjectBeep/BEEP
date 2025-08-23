@@ -5,7 +5,9 @@
       "Bash(chmod:*)",
       "WebSearch",
       "WebSearch",
-      "WebSearch"
+      "WebSearch",
+      "Bash(keytool:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": [],
