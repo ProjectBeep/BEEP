@@ -12,6 +12,7 @@
         <item name="colorAccent">@color/beep_pink</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/black_30</item>
         <item name="android:windowIsFloating">false</item>
