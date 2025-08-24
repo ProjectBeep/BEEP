@@ -4,8 +4,13 @@ import android.content.Context
 import androidx.room.Room
 import com.lighthouse.beep.data.local.database.BeepDatabase
 import com.lighthouse.beep.data.local.database.dao.BrandLocationDao
+import com.lighthouse.beep.data.local.database.dao.DetailDao
 import com.lighthouse.beep.data.local.database.dao.GalleryImageDataDao
 import com.lighthouse.beep.data.local.database.dao.GifticonDao
+import com.lighthouse.beep.data.local.database.dao.GroupDao
+import com.lighthouse.beep.data.local.database.dao.ItemDao
+import com.lighthouse.beep.data.local.database.dao.UsageHistoryDao
+import com.lighthouse.beep.data.local.database.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +34,36 @@ internal object DatabaseModule {
             BeepDatabase.DATABASE_NAME,
         ).build()
     }
+
+    @Provides
+    @Singleton
+    fun provideItemDao(
+        database: BeepDatabase,
+    ): ItemDao = database.itemDao()
+
+    @Provides
+    @Singleton
+    fun provideUserDao(
+        database: BeepDatabase,
+    ): UserDao = database.userDao()
+
+    @Provides
+    @Singleton
+    fun provideGroupDao(
+        database: BeepDatabase,
+    ): GroupDao = database.groupDao()
+
+    @Provides
+    @Singleton
+    fun provideDetailDao(
+        database: BeepDatabase
+    ): DetailDao = database.detailDao()
+
+    @Provides
+    @Singleton
+    fun provideUsageHistoryDao(
+        database: BeepDatabase
+    ): UsageHistoryDao = database.usageHistoryDao()
 
     @Provides
     @Singleton

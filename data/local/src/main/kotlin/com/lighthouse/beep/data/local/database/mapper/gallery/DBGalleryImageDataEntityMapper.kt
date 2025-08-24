@@ -12,7 +12,7 @@ internal fun List<DBGalleryImageDataEntity>.toModel(): List<GalleryImageData> {
 internal fun DBGalleryImageDataEntity.toModel(): GalleryImageData {
     return GalleryImageData(
         imagePath = imagePath,
-        addedDate = addedDate,
+        addedDate = java.util.Date(dateAdded),
         isGifticon = isGifticon,
     )
 }

@@ -11,7 +11,7 @@ internal fun List<DBGifticonResource>.toModel(): List<GifticonResource> {
 
 internal fun DBGifticonResource.toModel(): GifticonResource {
     return GifticonResource(
-        gifticonUri = gifticonUri,
+        gifticonUri = originUri ?: android.net.Uri.EMPTY,
         thumbnailUri = thumbnailUri,
     )
 }

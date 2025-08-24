@@ -13,20 +13,19 @@ internal fun List<DBGifticonListItem>.toModel(): List<GifticonListItem> {
 internal fun DBGifticonListItem.toModel(): GifticonListItem {
     return GifticonListItem(
         id = id,
-        userId = userId,
+        userId = "", // 새 모델에서는 Item 레벨에서 관리
         isCashCard = isCashCard,
-        remainCash = remainCash,
-        totalCash = totalCash,
+        remainCash = remainCash ?: 0,
+        totalCash = totalCash ?: 0,
         thumbnail = when {
-            thumbnailType == GifticonThumbnail.TYPE_IMAGE && thumbnailUri != null -> {
+            thumbnailUri != null -> {
                 GifticonThumbnail.Image(
                     uri = thumbnailUri,
-                    rect = thumbnailRect,
+                    rect = android.graphics.Rect(), // 기본값 사용
                 )
             }
-
             else -> {
-                GifticonThumbnail.BuildIn(thumbnailBuiltInCode)
+                GifticonThumbnail.BuildIn("")
             }
         },
         name = name,

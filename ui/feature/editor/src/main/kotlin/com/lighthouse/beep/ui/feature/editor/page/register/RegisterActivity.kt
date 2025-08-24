@@ -21,6 +21,7 @@ import com.lighthouse.beep.core.ui.content.registerGalleryContentObserver
 import com.lighthouse.beep.core.ui.exts.dismiss
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.core.ui.exts.setVisible
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewWidth
@@ -333,6 +334,7 @@ internal class RegisterActivity : AppCompatActivity(), EditorInfoProvider {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUpSystemInsetsPadding(binding.root)
         setUpGalleryContentObserver()
         setUpBackPress()
         setUpGifticonList()

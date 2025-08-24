@@ -19,7 +19,7 @@ internal class GalleryRecognizeDataSourceImpl @Inject constructor(
     override suspend fun saveRecognizeData(data: GalleryImage, isGifticon: Boolean) {
         dao.insertGalleryImageData(DBGalleryImageDataEntity(
             data.imagePath,
-            data.dateAdded,
+            data.dateAdded.time,
             isGifticon,
         ))
     }

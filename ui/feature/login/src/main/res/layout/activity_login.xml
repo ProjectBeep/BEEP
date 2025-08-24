@@ -59,88 +59,18 @@
         android:layout_marginBottom="18dp"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         app:layout_constraintEnd_toEndOf="@id/guide_end"
-        app:layout_constraintBottom_toTopOf="@id/btn_login_naver"
+        app:layout_constraintBottom_toTopOf="@id/btn_login_google"
         android:textAppearance="@style/Text.Body3"
         android:textColor="@color/font_gray"
         android:text="@string/login_method"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_login_naver"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_login_kakao"
-        app:layout_constraintStart_toStartOf="@id/guide_start"
-        app:layout_constraintEnd_toEndOf="@id/guide_end"
-        android:background="@drawable/bg_rect_r40"
-        android:backgroundTint="@color/naver_container">
 
-        <ImageView
-            android:id="@+id/icon_naver_login"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@null"
-            app:tint="@color/naver_symbol"
-            android:src="@drawable/icon_naver"/>
-
-        <TextView
-            android:id="@+id/text_naver_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/naver_label"
-            android:textAppearance="@style/Text.Title4"
-            android:text="@string/naver_login"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_login_kakao"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_login_google"
-        app:layout_constraintStart_toStartOf="@id/guide_start"
-        app:layout_constraintEnd_toEndOf="@id/guide_end"
-        android:background="@drawable/bg_rect_r40"
-        android:backgroundTint="@color/kakao_container">
-
-        <ImageView
-            android:id="@+id/icon_kakao_login"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@null"
-            app:tint="@color/kakao_symbol"
-            android:src="@drawable/icon_kakao"/>
-
-        <TextView
-            android:id="@+id/text_kakao_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/kakao_label"
-            android:textAppearance="@style/Text.Title4"
-            android:text="@string/kakao_login"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_login_google"
         android:layout_width="0dp"
         android:layout_height="52dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/btn_login_guest"
         app:layout_constraintStart_toStartOf="@id/guide_start"
         app:layout_constraintEnd_toEndOf="@id/guide_end"

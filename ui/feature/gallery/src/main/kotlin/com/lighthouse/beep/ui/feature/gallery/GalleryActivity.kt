@@ -2,20 +2,24 @@ package com.lighthouse.beep.ui.feature.gallery
 
 import android.animation.Animator
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.animation.DecelerateInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.animation.SimpleAnimatorListener
 import com.lighthouse.beep.core.ui.content.OnContentChangeListener
@@ -32,13 +36,11 @@ import com.lighthouse.beep.navs.AppNavigator
 import com.lighthouse.beep.navs.result.EditorResult
 import com.lighthouse.beep.permission.BeepPermission
 import com.lighthouse.beep.ui.feature.gallery.list.gallery.GalleryAllAdapter
-import com.lighthouse.beep.ui.feature.gallery.list.gallery.GalleryRecommendAdapter
 import com.lighthouse.beep.ui.feature.gallery.list.gallery.OnGalleryItemListener
 import com.lighthouse.beep.ui.feature.gallery.list.selected.OnSelectedGalleryListener
 import com.lighthouse.beep.ui.feature.gallery.list.selected.SelectedGalleryAdapter
 import com.lighthouse.beep.ui.feature.gallery.databinding.ActivityGalleryBinding
 import com.lighthouse.beep.ui.feature.gallery.list.gallery.OnGalleryAddItemListener
-import com.lighthouse.beep.ui.feature.gallery.model.BucketType
 import com.lighthouse.beep.ui.feature.gallery.model.DragMode
 import com.lighthouse.beep.ui.feature.gallery.model.GalleryItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,14 +89,6 @@ internal class GalleryActivity : AppCompatActivity() {
         Glide.with(this)
     }
 
-    private val galleryRecommendAdapter by lazy {
-        GalleryRecommendAdapter(
-            requestManager,
-            onGalleryAddListener,
-            onGalleryListener,
-        )
-    }
-
     private val galleryAllAdapter by lazy {
         GalleryAllAdapter(
             requestManager,
@@ -116,14 +110,6 @@ internal class GalleryActivity : AppCompatActivity() {
         )
     }
 
-    private val recommendScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            val manager = recyclerView.layoutManager as? GridLayoutManager ?: return
-            val firstVisible = manager.findFirstVisibleItemPosition()
-            viewModel.requestRecommend(firstVisible)
-        }
-    }
-
     private val editorLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
@@ -141,8 +127,8 @@ internal class GalleryActivity : AppCompatActivity() {
         binding = ActivityGalleryBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        setUpEdgeToEdge()
         setUpGalleryContentObserver()
-        setUpBucketTypeTab()
         setUpSelectedGalleryList()
         setUpGalleryList()
         setUpCollectState()
@@ -169,11 +155,28 @@ internal class GalleryActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        viewModel.cancelRecommendNext()
         binding.listGallery.stopScroll()
-        saveBucketScroll()
-
+        saveScroll()
         super.onStop()
+    }
+
+    private fun setUpEdgeToEdge() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Toolbar에 top margin 추가 (status bar 영역만큼)
+            binding.containerToolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = systemBars.top
+            }
+            
+            // Footer에 bottom margin 추가 (navigation bar 영역만큼)
+            binding.containerFooter.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = systemBars.bottom
+            }
+            
+            insets
+        }
     }
 
     private fun setUpGalleryContentObserver() {
@@ -188,32 +191,11 @@ internal class GalleryActivity : AppCompatActivity() {
         })
     }
 
-    private fun setUpBucketTypeTab() {
-        binding.tabBucketType.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab ?: return
-                binding.listGallery.stopScroll()
-                saveBucketScroll()
-                viewModel.setBucketType(BucketType.entries[tab.position])
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
-            override fun onTabReselected(tab: TabLayout.Tab?) = Unit
-        })
-
-        BucketType.entries.forEach {
-            val tab = binding.tabBucketType.newTab().apply {
-                setText(it.titleRes)
-            }
-            binding.tabBucketType.addTab(tab)
-        }
-    }
-
-    private fun saveBucketScroll() {
+    private fun saveScroll() {
         val scrollInfo = binding.listGallery.getScrollInfo { position ->
             if (position > 0) 4.dp else 0
         }
-        viewModel.setBucketScroll(scrollInfo = scrollInfo)
+        viewModel.setScrollInfo(scrollInfo)
     }
 
     private fun setUpSelectedGalleryList() {
@@ -223,16 +205,14 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private fun setUpGalleryList() {
         binding.listGallery.layoutManager = GridLayoutManager(this, GalleryViewModel.spanCount)
+        binding.listGallery.adapter = galleryAllAdapter
         binding.listGallery.setHasFixedSize(true)
         binding.listGallery.addItemDecoration(GridItemDecoration(4f.dp))
         binding.listGallery.addOnItemTouchListener(object : OnLongPressDragListener() {
             private var dragMode = DragMode.NONE
 
             private fun getItem(position: Int): GalleryItem.Image? {
-                return when (viewModel.bucketType.value) {
-                    BucketType.ALL -> galleryAllAdapter.getItemByPosition(position)
-                    BucketType.RECOMMEND -> galleryRecommendAdapter.getItemByPosition(position)
-                }
+                return galleryAllAdapter.getItemByPosition(position)
             }
 
             override fun onStartDrag(): Boolean {
@@ -298,61 +278,15 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private fun setUpCollectState() {
         repeatOnStarted {
-            viewModel.bucketType.collect { type ->
-                binding.listGallery.clearOnScrollListeners()
-                when (type) {
-                    BucketType.RECOMMEND -> {
-                        binding.listGallery.adapter = galleryRecommendAdapter
-                        binding.listGallery.addOnScrollListener(recommendScrollListener)
-                        viewModel.requestRecommend()
-                    }
-
-                    BucketType.ALL -> {
-                        binding.listGallery.adapter = galleryAllAdapter
-                        viewModel.cancelRecommendNext()
-                    }
-                }
-
-                val scrollInfo = viewModel.bucketScroll
-                val manager = binding.listGallery.layoutManager as? GridLayoutManager
-                manager?.scrollToPositionWithOffset(scrollInfo.position, scrollInfo.offset)
-            }
-        }
-
-        repeatOnStarted {
-            viewModel.recommendList.collect {
-                galleryRecommendAdapter.submitList(it)
-            }
-        }
-
-        repeatOnStarted {
             viewModel.allList.collect {
                 galleryAllAdapter.submitData(it)
             }
         }
 
-        repeatOnStarted {
-            var animator: ViewPropertyAnimator? = null
-            viewModel.showRecognizeProgress.collect { isShow ->
-                val translationY = if (isShow) (-150f).dp else 60f.dp
-                animator?.cancel()
-                animator = binding.progressRecognize.animate()
-                    .setInterpolator(DecelerateInterpolator())
-                    .translationY(translationY)
-                    .setDuration(300)
-                    .setListener(object : SimpleAnimatorListener() {
-                        override fun onAnimationStart(animator: Animator) {
-                            binding.progressRecognize.isVisible = true
-                        }
-
-                        override fun onAnimationEnd(animator: Animator) {
-                            binding.progressRecognize.isVisible = isShow
-                        }
-                    }).also {
-                        it.start()
-                    }
-            }
-        }
+        // Restore scroll position
+        val scrollInfo = viewModel.getScrollInfo()
+        val manager = binding.listGallery.layoutManager as? GridLayoutManager
+        manager?.scrollToPositionWithOffset(scrollInfo.position, scrollInfo.offset)
 
         repeatOnStarted {
             viewModel.selectedList.collect { list ->

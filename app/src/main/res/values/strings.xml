@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BEEP</string>
+    <string name="app_description">바코드 QR 기프티콘 관리 앱</string>
+    <string name="app_keywords">바코드, QR, 기프티콘, 삡, BEEP, 쿠폰, 할인권, 모바일상품권</string>
+    
+    <!-- Shortcuts -->
+    <string name="shortcut_scan_qr_short">QR 스캔</string>
+    <string name="shortcut_scan_qr_long">QR 코드 바코드 스캔</string>
+    <string name="shortcut_add_gifticon_short">기프티콘 추가</string>
+    <string name="shortcut_add_gifticon_long">기프티콘 쿠폰 추가</string>
 </resources>

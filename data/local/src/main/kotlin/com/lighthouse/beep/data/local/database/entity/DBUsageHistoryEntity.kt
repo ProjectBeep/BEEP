@@ -15,6 +15,9 @@ import java.util.Date
             childColumns = ["item_id"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        androidx.room.Index(value = ["item_id"])
     ]
 )
 internal data class DBUsageHistoryEntity(

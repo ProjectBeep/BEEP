@@ -12,7 +12,7 @@ internal fun List<DBGifticonImageData>.toModel(): List<GifticonImageData> {
 internal fun DBGifticonImageData.toModel(): GifticonImageData {
     return GifticonImageData(
         id = id,
-        imagePath = imagePath,
-        imageAddedDate = imageAddedDate,
+        imagePath = originUri?.toString() ?: "",
+        imageAddedDate = java.util.Date(),
     )
 }

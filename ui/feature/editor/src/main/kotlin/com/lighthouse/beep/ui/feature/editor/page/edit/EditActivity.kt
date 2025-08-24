@@ -18,6 +18,7 @@ import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.preventTouchPropagation
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.core.ui.exts.setVisible
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewWidth
@@ -260,6 +261,7 @@ internal class EditActivity : AppCompatActivity(), EditorInfoProvider {
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUpSystemInsetsPadding(binding.root)
         setUpBackPress()
         setUpPreview()
         setUpPropertyChipList()

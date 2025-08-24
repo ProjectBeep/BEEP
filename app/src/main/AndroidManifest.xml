@@ -25,15 +25,72 @@
         android:theme="@style/Theme.BEEP.Splash"
         tools:targetApi="31">
 
+        <!-- 앱 검색을 위한 메타데이터 -->
+        <meta-data
+            android:name="app_description"
+            android:value="@string/app_description" />
+        <meta-data
+            android:name="app_keywords"
+            android:value="@string/app_keywords" />
+        
+        <!-- 앱 shortcuts 설정 -->
+        <meta-data
+            android:name="android.app.shortcuts"
+            android:resource="@xml/shortcuts" />
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- 앱 검색을 위한 추가 intent-filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <!-- 검색 키워드를 위한 메타데이터 -->
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
+
+        <!-- 검색 키워드를 위한 alias activities -->
+        <activity-alias
+            android:name=".BarcodeActivity"
+            android:targetActivity=".MainActivity"
+            android:label="바코드"
+            android:enabled="true"
+            android:exported="false">
+        </activity-alias>
+
+        <activity-alias
+            android:name=".QRActivity"
+            android:targetActivity=".MainActivity"
+            android:label="QR"
+            android:enabled="true"
+            android:exported="false">
+        </activity-alias>
+
+        <activity-alias
+            android:name=".GifticonActivity"
+            android:targetActivity=".MainActivity"
+            android:label="기프티콘"
+            android:enabled="true"
+            android:exported="false">
+        </activity-alias>
+
+        <activity-alias
+            android:name=".BeepActivity"
+            android:targetActivity=".MainActivity"
+            android:label="삡"
+            android:enabled="true"
+            android:exported="false">
+        </activity-alias>
+
     </application>
 </manifest>

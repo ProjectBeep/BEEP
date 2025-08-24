@@ -32,8 +32,7 @@ fun ComponentActivity.setUpSystemInsetsPadding(root: View) {
                 top = windowInsets.systemWindowInsetTop,
                 bottom = windowInsets.systemWindowInsetBottom
             )
-            view.setOnApplyWindowInsetsListener(null)
-            return@setOnApplyWindowInsetsListener windowInsets
+            windowInsets
         }
     }
 }

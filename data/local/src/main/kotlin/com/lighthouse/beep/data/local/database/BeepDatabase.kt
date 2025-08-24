@@ -7,11 +7,17 @@ import com.lighthouse.beep.data.local.database.converter.DateConverter
 import com.lighthouse.beep.data.local.database.converter.DmsConverter
 import com.lighthouse.beep.data.local.database.converter.RectConverter
 import com.lighthouse.beep.data.local.database.converter.UriConverter
+import com.lighthouse.beep.data.local.database.dao.BrandLocationDao
 import com.lighthouse.beep.data.local.database.dao.DetailDao
+import com.lighthouse.beep.data.local.database.dao.GalleryImageDataDao
+import com.lighthouse.beep.data.local.database.dao.GifticonDao
 import com.lighthouse.beep.data.local.database.dao.GroupDao
 import com.lighthouse.beep.data.local.database.dao.ItemDao
 import com.lighthouse.beep.data.local.database.dao.UsageHistoryDao
 import com.lighthouse.beep.data.local.database.dao.UserDao
+import com.lighthouse.beep.data.local.database.entity.DBBrandLocationEntity
+import com.lighthouse.beep.data.local.database.entity.DBBrandSectionEntity
+import com.lighthouse.beep.data.local.database.entity.DBGalleryImageDataEntity
 import com.lighthouse.beep.data.local.database.entity.DBGifticonDetailEntity
 import com.lighthouse.beep.data.local.database.entity.DBGroupEntity
 import com.lighthouse.beep.data.local.database.entity.DBGroupItemEntity
@@ -35,6 +41,9 @@ import com.lighthouse.beep.data.local.database.entity.DBWifiDetailEntity
         DBGroupItemEntity::class,
         DBUsageHistoryEntity::class,
         DBPendingChangeEntity::class,
+        DBGalleryImageDataEntity::class,
+        DBBrandLocationEntity::class,
+        DBBrandSectionEntity::class,
     ],
     version = 1,
     exportSchema = false,
@@ -52,6 +61,9 @@ internal abstract class BeepDatabase : RoomDatabase() {
     abstract fun groupDao(): GroupDao
     abstract fun detailDao(): DetailDao
     abstract fun usageHistoryDao(): UsageHistoryDao
+    abstract fun gifticonDao(): GifticonDao
+    abstract fun galleryImageDataDao(): GalleryImageDataDao
+    abstract fun brandLocationDao(): BrandLocationDao
 
     companion object {
         const val DATABASE_NAME = "beep_database"

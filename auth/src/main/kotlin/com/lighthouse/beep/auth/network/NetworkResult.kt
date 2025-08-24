@@ -1,6 +1,6 @@
 package com.lighthouse.beep.auth.network
 
-internal sealed class NetworkResult {
+sealed class NetworkResult {
 
     data class Success(val response: String) : NetworkResult()
 

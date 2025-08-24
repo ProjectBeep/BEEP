@@ -54,7 +54,12 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         gifticonSortBy: GifticonSortBy,
         isAsc: Boolean
     ): Flow<List<GifticonListItem>> {
-        return gifticonDao.getGifticonList(userId, isUsed, gifticonSortBy.code, if (isAsc) 1 else 0)
+        val sortByString = when (gifticonSortBy) {
+            com.lighthouse.beep.model.gifticon.GifticonSortBy.RECENT -> "recent"
+            com.lighthouse.beep.model.gifticon.GifticonSortBy.DEADLINE -> "expire"
+            com.lighthouse.beep.model.gifticon.GifticonSortBy.UPDATE -> "name"
+        }
+        return gifticonDao.getGifticonList(userId, isUsed, sortByString, if (isAsc) 1 else 0)
             .map { it.toModel() }
     }
 
@@ -64,10 +69,15 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         gifticonSortBy: GifticonSortBy,
         isAsc: Boolean
     ): Flow<List<GifticonListItem>> {
+        val sortByString = when (gifticonSortBy) {
+            com.lighthouse.beep.model.gifticon.GifticonSortBy.RECENT -> "recent"
+            com.lighthouse.beep.model.gifticon.GifticonSortBy.DEADLINE -> "expire"
+            com.lighthouse.beep.model.gifticon.GifticonSortBy.UPDATE -> "name"
+        }
         return gifticonDao.getGifticonListByBrand(
             userId,
             brand,
-            gifticonSortBy.code,
+            sortByString,
             if (isAsc) 1 else 0
         ).map { it.toModel() }
     }
@@ -119,7 +129,7 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
     }
 
     override suspend fun revertGifticonList(userId: String, gifticonIdList: List<Long>) {
-        gifticonDao.revertGifticonList(userId, gifticonIdList, Date())
+        gifticonDao.revertGifticonList(userId, gifticonIdList)
     }
 
     override suspend fun updateGifticonUseInfo(
@@ -128,6 +138,6 @@ internal class LocalGifticonDataSourceImpl @Inject constructor(
         isUsed: Boolean,
         remain: Int,
     ) {
-        gifticonDao.updateGifticonUseInfo(userId, gifticonId, isUsed, remain, Date())
+        gifticonDao.updateGifticonUseInfo(userId, gifticonId, isUsed, remain)
     }
 }

@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.lighthouse.beep.core.common.exts.dp
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.core.ui.exts.viewHeight
 import com.lighthouse.beep.core.ui.recyclerview.GridCalculator
@@ -97,6 +98,7 @@ internal class ArchiveActivity : AppCompatActivity() {
         binding = ActivityArchiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUpSystemInsetsPadding(binding.root)
         setUpGridUsedGifticon()
         setUpCollectState()
         setUpOnClickEvent()

@@ -15,6 +15,7 @@ import com.lighthouse.beep.auth.AuthActivity
 import com.lighthouse.beep.auth.BeepAuth
 import com.lighthouse.beep.core.ui.exts.repeatOnStarted
 import com.lighthouse.beep.core.ui.exts.setOnThrottleClickListener
+import com.lighthouse.beep.core.ui.exts.setUpSystemInsetsPadding
 import com.lighthouse.beep.core.ui.exts.show
 import com.lighthouse.beep.navs.ActivityNavItem
 import com.lighthouse.beep.navs.AppNavigator
@@ -60,6 +61,7 @@ internal class SettingActivity : AppCompatActivity() {
         binding = ActivitySettingBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        setUpSystemInsetsPadding(binding.root)
         setUpContainer()
         setUpCollectState()
         setUpOnClickEvent()

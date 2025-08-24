@@ -11,7 +11,7 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-internal class NetworkTask(
+class NetworkTask(
     private val client: OkHttpClient,
 ) {
 
@@ -41,7 +41,11 @@ internal class NetworkTask(
                             ),
                         )
                     } else {
-                        continuation.resumeWithException(IllegalStateException())
+                        val errorBody = response.body?.string() ?: "No error body"
+                        val errorMessage = "HTTP ${response.code}: ${response.message}. Response: $errorBody"
+                        continuation.resumeWithException(
+                            IllegalStateException(errorMessage)
+                        )
                     }
                 }
             })

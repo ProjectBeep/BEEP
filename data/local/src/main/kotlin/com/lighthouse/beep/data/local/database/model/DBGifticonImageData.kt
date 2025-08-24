@@ -5,6 +5,11 @@ import java.util.Date
 
 internal data class DBGifticonImageData(
     @ColumnInfo(name = "id") val id: Long,
-    @ColumnInfo(name = "image_path") val imagePath: String,
-    @ColumnInfo(name = "image_added_date") val imageAddedDate: Date,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "brand") val brand: String,
+    @ColumnInfo(name = "display_brand") val displayBrand: String,
+    @ColumnInfo(name = "origin_uri") val originUri: android.net.Uri?,
+    @ColumnInfo(name = "cropped_rect") val croppedRect: android.graphics.Rect?,
+    @ColumnInfo(name = "cropped_uri") val croppedUri: android.net.Uri?,
+    @ColumnInfo(name = "thumbnail_uri") val thumbnailUri: android.net.Uri?,
 )

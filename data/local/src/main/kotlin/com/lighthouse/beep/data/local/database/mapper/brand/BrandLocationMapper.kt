@@ -5,14 +5,16 @@ import com.lighthouse.beep.model.brand.BrandLocation
 
 internal fun BrandLocation.toEntity(sectionId: Long): DBBrandLocationEntity {
     return DBBrandLocationEntity(
-        placeUrl = placeUrl,
+        id = null,
         sectionId = sectionId,
-        addressName = addressName,
+        placeUrl = placeUrl,
         placeName = placeName,
+        addressName = addressName,
         categoryName = categoryName,
-        displayBrand = displayBrand,
         brand = displayBrand.lowercase(),
+        displayBrand = displayBrand,
         x = x,
         y = y,
+        createdAt = java.util.Date()
     )
 }
